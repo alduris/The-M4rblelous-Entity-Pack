@@ -1,0 +1,20 @@
+{"frames": {
+
+"Kill_WaterSpitter.png":
+{
+	"frame": {"x":2,"y":2,"w":27,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":16},
+	"sourceSize": {"w":27,"h":16}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "waterspittercrit.png",
+	"format": "RGBA8888",
+	"size": {"w":31,"h":20},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:f65d3c15ffeaff3e7bdb830085e6a1d5:7cc2703fc10e02ca915e6cad3c6a2969:4a0dcaee8772c4d7221adbd1f0e9ddb3$"
+}
+}

@@ -1,0 +1,44 @@
+{"frames": {
+
+"JellyLLGrad.png":
+{
+	"frame": {"x":2,"y":2,"w":120,"h":119},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":120,"h":119},
+	"sourceSize": {"w":120,"h":119}
+},
+"JellyLLGraf.png":
+{
+	"frame": {"x":2,"y":123,"w":120,"h":119},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":120,"h":119},
+	"sourceSize": {"w":120,"h":119}
+},
+"Kill_JellyLL.png":
+{
+	"frame": {"x":2,"y":244,"w":25,"h":25},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":25},
+	"sourceSize": {"w":25,"h":25}
+},
+"Kill_Polliwog.png":
+{
+	"frame": {"x":29,"y":244,"w":27,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":16},
+	"sourceSize": {"w":27,"h":16}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "coralreef.png",
+	"format": "RGBA8888",
+	"size": {"w":124,"h":271},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:93cd032cd88a450419bf7dc674a1461c:b01ab49dfd802fb20d80bd5dead01be3:439247e3ed517678b5115304c164f72d$"
+}
+}
