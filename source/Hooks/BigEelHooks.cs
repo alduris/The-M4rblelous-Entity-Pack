@@ -676,7 +676,11 @@ public static class BigEelHooks
                 for (var k = 0; k < 2; k++)
                 {
                     for (var l = 0; l < self.fins.Length; l++)
-                        sprites[self.FinSprite(l, k)].shader = Custom.rainWorld.Shaders[alt ? "MiniLeviEelFin" : "AMiniLeviEelFin"];
+                    {
+                        var fin = sprites[self.FinSprite(l, k)];
+                        fin.shader = Custom.rainWorld.Shaders[alt ? "MiniLeviEelFin" : "AMiniLeviEelFin"];
+                        fin.MoveToBack();
+                    }
                     var s = sprites[self.BeakSprite(k, 0)];
                     s.scaleX *= .35f;
                     s.scaleY *= .4f;
@@ -725,7 +729,11 @@ public static class BigEelHooks
                 for (var k = 0; k < 2; k++)
                 {
                     for (var l = 0; l < self.fins.Length; l++)
-                        sprites[self.FinSprite(l, k)].shader = Custom.rainWorld.Shaders["TentaclePlant"];
+                    {
+                        var fin = sprites[self.FinSprite(l, k)];
+                        fin.shader = Custom.rainWorld.Shaders["TentaclePlant"];
+                        fin.MoveToBack();
+                    }
                     var s = sprites[self.BeakSprite(k, 0)];
                     s.scaleX *= .35f;
                     s.scaleY *= .4f;
