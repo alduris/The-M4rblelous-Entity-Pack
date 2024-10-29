@@ -78,6 +78,33 @@ public static class SnailHooks
         }
     }
 
+    internal static void On_Snail_VibrateLeeches(On.Snail.orig_VibrateLeeches orig, Snail self, float rad)
+    {
+        orig(self, rad);
+        if (self.bodyChunks[1].submersion <= .5f)
+            return;
+        var crits = self.room.abstractRoom.creatures;
+        for (var i = 0; i < crits.Count; i++)
+        {
+            if (crits[i].realizedCreature is MiniLeech l && l.room == self.room && Custom.DistLess(self.mainBodyChunk.pos, l.mainBodyChunk.pos, rad) && (Custom.DistLess(self.mainBodyChunk.pos, l.mainBodyChunk.pos, rad / 4f) || self.room.VisualContact(self.mainBodyChunk.pos, l.mainBodyChunk.pos)))
+                l.HeardSnailClick(self.mainBodyChunk.pos);
+        }
+    }
+
+    internal static void IL_SnailAI_CreatureUnease(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
+            x => x.MatchCall(out _)))
+        {
+            c.Emit(OpCodes.Ldarg_1)
+             .EmitDelegate((bool flag, AbstractCreature crit) => flag || crit.creatureTemplate.type == CreatureTemplateType.MiniBlackLeech);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Leech.Swim! (part 2)");
+    }
+
     internal static void IL_SnailAI_TileIdleScore(ILContext il)
     {
         var c = new ILCursor(il);
@@ -112,7 +139,21 @@ public static class SnailHooks
              .Emit(OpCodes.Ldloc, il.Body.Variables[loc2]);
         }
         else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SnailAI.TileIdleScore!");
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SnailAI.TileIdleScore! (part 1)");
+        c.Index = 0;
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdloc(loc2),
+            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
+            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
+            x => x.MatchLdfld<CreatureTemplate>("type"),
+            x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
+            x => x.MatchCall(out _)))
+        {
+            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc2])
+             .EmitDelegate((bool flag, Tracker.CreatureRepresentation rep) => flag || rep.representedCreature.creatureTemplate.type == CreatureTemplateType.MiniBlackLeech);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SnailAI.TileIdleScore! (part 2)");
     }
 
     internal static float On_SnailAI_TileIdleScore(On.SnailAI.orig_TileIdleScore orig, SnailAI self, WorldCoordinate pos) => self.snail is BouncingBall s && s.NarrowSpace() ? float.MinValue : orig(self, pos);

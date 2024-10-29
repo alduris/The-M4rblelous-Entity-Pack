@@ -76,7 +76,7 @@ public static class AbstractPhysicalObjectHooks
             orig(self);
     }
 
-    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || orig(type);
+    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || type == AbstractObjectType.StarLemon || orig(type);
 
     internal static void On_AbstractCreature_ctor(On.AbstractCreature.orig_ctor orig, AbstractCreature self, World world, CreatureTemplate creatureTemplate, Creature realizedCreature, WorldCoordinate pos, EntityID ID)
     {
@@ -178,6 +178,13 @@ public static class AbstractPhysicalObjectHooks
         }
     }
 
+    internal static bool On_AbstractCreature_WantToStayInDenUntilEndOfCycle(On.AbstractCreature.orig_WantToStayInDenUntilEndOfCycle orig, AbstractCreature self)
+    {
+        if (self.realizedCreature is MiniLeech l && l.fleeFromRain)
+            return true;
+        return orig(self);
+    }
+
     internal static void On_AbstractPhysicalObject_Realize(On.AbstractPhysicalObject.orig_Realize orig, AbstractPhysicalObject self)
     {
         orig(self);
@@ -203,6 +210,8 @@ public static class AbstractPhysicalObjectHooks
                 self.realizedObject = new RubberBlossom(self);
             else if (self.type == AbstractObjectType.MarineEye)
                 self.realizedObject = new MarineEye(self);
+            else if (self.type == AbstractObjectType.StarLemon)
+                self.realizedObject = new StarLemon(self);
         }
     }
 

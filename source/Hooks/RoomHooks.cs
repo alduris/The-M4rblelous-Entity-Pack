@@ -12,6 +12,24 @@ namespace LBMergedMods.Hooks;
 
 public static class RoomHooks
 {
+    internal static void On_FlareBomb_Update(On.FlareBomb.orig_Update orig, FlareBomb self, bool eu)
+    {
+        orig(self, eu);
+        if (self.burning > 0f)
+        {
+            var crits = self.room.abstractRoom.creatures;
+            for (var i = 0; i < crits.Count; i++)
+            {
+                if (crits[i]?.realizedCreature is MiniLeech l && l!.dead && Custom.DistLess(self.firstChunk.pos, l.firstChunk.pos, self.LightIntensity * 600f))
+                {
+                    l.airDrown = 1f;
+                    l.Die();
+                    l.firstChunk.vel += Custom.DegToVec(Random.value * 360f) * Random.value * 7f;
+                }
+            }
+        }
+    }
+
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)
     {
         if (LBMergedModsPlugin.Bundle is null && self.game is RainWorldGame g)
@@ -25,6 +43,7 @@ public static class RoomHooks
                 g.rainWorld.Shaders["AMiniLeviEelFin"] = FShader.CreateShader("AMiniLeviEelFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "AMiniLeviEelFin.shader"));
                 g.rainWorld.Shaders["GRJEelBody"] = FShader.CreateShader("GRJEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "GRJEelBody.shader"));
                 g.rainWorld.Shaders["GRJMiniEelBody"] = FShader.CreateShader("GRJMiniEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "GRJMiniEelBody.shader"));
+                g.rainWorld.Shaders["StarLemonBloom"] = FShader.CreateShader("StarLemonBloom", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "StarLemonBloom.shader"));
                 _MiniLeviColorA = Shader.PropertyToID("_MiniLeviColorA");
                 _MiniLeviColorB = Shader.PropertyToID("_MiniLeviColorB");
                 _MiniLeviColorHead = Shader.PropertyToID("_MiniLeviColorHead");
@@ -63,6 +82,8 @@ public static class RoomHooks
                         self.abstractRoom.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LimeMushroom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), self.abstractRoom.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.MarineEye && (game.session is not StoryGameSession session14 || !session14.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, i)))
                         self.abstractRoom.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MarineEye, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), self.abstractRoom.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.StarLemon && (game.session is not StoryGameSession session15 || !session15.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, i)))
+                        self.abstractRoom.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), self.abstractRoom.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.RubberBlossom)
                     {
                         AbstractConsumable plant;
@@ -168,10 +189,21 @@ public static class RoomHooks
         }
     }
 
+    internal static float On_Room_PlaceQCScore(On.Room.orig_PlaceQCScore orig, Room self, IntVector2 pos, CreatureSpecificAImap critMap, int node, CreatureTemplate.Type critType, List<IntVector2> QCPositions)
+    {
+        var num = orig(self, pos, critMap, node, critType, QCPositions);
+        if (critType == CreatureTemplateType.MiniBlackLeech)
+        {
+            num += self.aimap.getAItile(pos).visibility;
+            num += self.aimap.getTerrainProximity(pos) * .2f;
+        }
+        return num;
+    }
+
     internal static void On_Room_SpawnMultiplayerItem(On.Room.orig_SpawnMultiplayerItem orig, Room self, PlacedObject placedObj)
     {
         var data = (placedObj.data as PlacedObject.MultiplayerItemData)!;
-        if (data.type == MultiplayerItemType.ThornyStrawberry || data.type == MultiplayerItemType.LittleBalloon || data.type == MultiplayerItemType.BouncingMelon || data.type == MultiplayerItemType.Physalis || data.type == MultiplayerItemType.LimeMushroom || data.type == MultiplayerItemType.MarineEye)
+        if (data.type == MultiplayerItemType.ThornyStrawberry || data.type == MultiplayerItemType.LittleBalloon || data.type == MultiplayerItemType.BouncingMelon || data.type == MultiplayerItemType.Physalis || data.type == MultiplayerItemType.LimeMushroom || data.type == MultiplayerItemType.MarineEye || data.type == MultiplayerItemType.StarLemon)
         {
             var tp = new AbstractPhysicalObject.AbstractObjectType(data.type.value);
             if (tp.Index >= 0 && Random.value <= data.chance)

@@ -302,7 +302,7 @@ public static class BigSpiderHooks
     internal static CreatureTemplate.Relationship On_BigSpiderAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.BigSpiderAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, BigSpiderAI self, RelationshipTracker.DynamicRelationship dRelation)
     {
         var res = orig(self, dRelation);
-        if (self is SporantulaAI && dRelation?.trackerRep?.representedCreature is AbstractCreature cr && SporeMemory.TryGetValue(self.creature, out var mem))
+        if (self is SporantulaAI && dRelation.trackerRep?.representedCreature is AbstractCreature cr && SporeMemory.TryGetValue(self.creature, out var mem))
         {
             if (cr.creatureTemplate.type == CreatureTemplate.Type.Deer)
             {
@@ -321,6 +321,25 @@ public static class BigSpiderHooks
             }
             if (dRelation.state is BigSpiderAI.SpiderTrackState s)
                 s.armed = false;
+        }
+        else if (self.creature.creatureTemplate.type == CreatureTemplate.Type.BigSpider || (self.creature.creatureTemplate.type?.value is string s && s.Contains("MaracaSpider")))
+        {
+            if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c && self.StaticRelationship(c.abstractCreature).type == CreatureTemplate.Relationship.Type.Eats)
+            {
+                var grs = c.grasps;
+                if (grs is not null)
+                {
+                    for (var i = 0; i < grs.Length; i++)
+                    {
+                        if (grs[i]?.grabbed is StarLemon)
+                        {
+                            res.type = CreatureTemplate.Relationship.Type.Ignores;
+                            res.intensity = 0f;
+                            break;
+                        }
+                    }
+                }
+            }
         }
         return res;
     }

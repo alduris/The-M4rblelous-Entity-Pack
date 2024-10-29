@@ -5,6 +5,7 @@ using ArenaBehaviors;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Random = UnityEngine.Random;
+using System.Collections.Generic;
 
 namespace LBMergedMods.Hooks;
 
@@ -15,7 +16,7 @@ public static class ArenaHooks
     internal static void On_ArenaGameSession_SpawnItem(On.ArenaGameSession.orig_SpawnItem orig, ArenaGameSession self, Room room, PlacedObject placedObj)
     {
         var data = (placedObj.data as PlacedObject.MultiplayerItemData)!;
-        if (data.type != MultiplayerItemType.ThornyStrawberry && data.type != MultiplayerItemType.LittleBalloon && data.type != MultiplayerItemType.BouncingMelon && data.type != MultiplayerItemType.Physalis && data.type != MultiplayerItemType.LimeMushroom && data.type != MultiplayerItemType.MarineEye)
+        if (data.type != MultiplayerItemType.ThornyStrawberry && data.type != MultiplayerItemType.LittleBalloon && data.type != MultiplayerItemType.BouncingMelon && data.type != MultiplayerItemType.Physalis && data.type != MultiplayerItemType.LimeMushroom && data.type != MultiplayerItemType.MarineEye && data.type != MultiplayerItemType.StarLemon)
             orig(self, room, placedObj);
         else if (!self.SpawnDefaultRoomItems || Random.value > data.chance)
         {
@@ -43,6 +44,27 @@ public static class ArenaHooks
                 return false;
         }
         return orig(self);
+    }
+
+    internal static void IL_ExitManager_Update(ILContext il)
+    {
+        var c = new ILCursor(il);
+        int loc1 = 0, loc2 = 0;
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdloc(out loc1),
+            x => x.MatchLdloc(out loc2),
+            x => x.MatchCallOrCallvirt(out _),
+            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
+            x => x.MatchLdfld<CreatureTemplate>("type"),
+            x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
+            x => x.MatchCall(out _)))
+        {
+            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc1])
+             .Emit(OpCodes.Ldloc, il.Body.Variables[loc2])
+             .EmitDelegate((bool flag, List<AbstractCreature> challengeKillList, int l) => flag && challengeKillList[l].creatureTemplate.type != CreatureTemplateType.MiniBlackLeech);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ExitManager.Update!");
     }
 
     internal static void IL_MultiplayerMenu_ctor(ILContext il)
@@ -152,6 +174,7 @@ public static class ArenaHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SandboxGameSession.SpawnEntity! (part 1)");
         c.Index = 0;
+        loc = 0;
         if (c.TryGotoNext(MoveType.After,
             x => x.MatchLdloc(out loc),
             x => x.MatchCallOrCallvirt<AbstractRoom>("AddEntity"))
@@ -182,5 +205,5 @@ public static class ArenaHooks
         killScores[(int)SandboxUnlockID.Bigrub] = 2;
     }
 
-    internal static bool On_SandboxSettingsInterface_IsThisSandboxUnlockVisible(On.Menu.SandboxSettingsInterface.orig_IsThisSandboxUnlockVisible orig, MultiplayerUnlocks.SandboxUnlockID sandboxUnlockID) => orig(sandboxUnlockID) && sandboxUnlockID != SandboxUnlockID.SeedBat && sandboxUnlockID != SandboxUnlockID.Bigrub;
+    internal static bool On_SandboxSettingsInterface_IsThisSandboxUnlockVisible(On.Menu.SandboxSettingsInterface.orig_IsThisSandboxUnlockVisible orig, MultiplayerUnlocks.SandboxUnlockID sandboxUnlockID) => orig(sandboxUnlockID) && sandboxUnlockID != SandboxUnlockID.SeedBat && sandboxUnlockID != SandboxUnlockID.Bigrub && sandboxUnlockID != SandboxUnlockID.MiniBlackLeech;
 }

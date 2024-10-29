@@ -66,6 +66,8 @@ public static class IconHooks
             return AntherCol;
         if (itemType == AbstractObjectType.MarineEye)
             return MarineCol;
+        if (itemType == AbstractObjectType.StarLemon)
+            return new(1f, 210f / 255f, 0f);
         return orig(itemType, intData);
     }
 
@@ -91,6 +93,8 @@ public static class IconHooks
             return "Symbol_BigStationPlantFruit";
         if (itemType == AbstractObjectType.MarineEye)
             return "Symbol_MarineEye";
+        if (itemType == AbstractObjectType.StarLemon)
+            return "Icon_StarLemon";
         return orig(itemType, intData);
     }
 

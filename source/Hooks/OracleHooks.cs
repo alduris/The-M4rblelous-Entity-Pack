@@ -25,6 +25,8 @@ public static class OracleHooks
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a plant anther. You can eat it safely!"), 0));
             else if (self.describeItem == MiscItemType.MarineEye)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a strange edible flower filled with a blue liquid."), 0));
+            else if (self.describeItem == MiscItemType.StarLemon)
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a very big shiny fruit, how did you bring it here?"), 0));
         }
     }
 
@@ -58,6 +60,8 @@ public static class OracleHooks
             return MiscItemType.GummyAnther;
         if (testItem is MarineEye)
             return MiscItemType.MarineEye;
+        if (testItem is StarLemon)
+            return MiscItemType.StarLemon;
         return orig(self, testItem);
     }
 

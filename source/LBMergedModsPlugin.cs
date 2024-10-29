@@ -9,6 +9,7 @@ using Fisobs.Core;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using MonoMod.RuntimeDetour;
+using Fisobs.Sandbox;
 
 #pragma warning disable CS0618 // ignore false message
 [module: UnverifiableCode]
@@ -313,9 +314,21 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.MirosBirdAbstractAI.Raid += IL_MirosBirdAbstractAI_Raid;
         On.JetFishAI.SocialEvent += On_JetFishAI_SocialEvent;
         On.Water.DrawSprites += On_Water_DrawSprites;
+        IL.Leech.Swim += IL_Leech_Swim;
+        On.AbstractCreature.WantToStayInDenUntilEndOfCycle += On_AbstractCreature_WantToStayInDenUntilEndOfCycle;
+        IL.ArenaBehaviors.ExitManager.Update += IL_ExitManager_Update;
+        IL.SnailAI.CreatureUnease += IL_SnailAI_CreatureUnease;
+        IL.SnailAI.TileIdleScore += IL_SnailAI_TileIdleScore;
+        On.Snail.VibrateLeeches += On_Snail_VibrateLeeches;
+        On.OverseerAbstractAI.AllowSwarmTarget += On_OverseerAbstractAI_AllowSwarmTarget;
+        On.GarbageWormAI.CreateTrackerRepresentationForCreature += On_GarbageWormAI_CreateTrackerRepresentationForCreature;
+        On.Room.PlaceQCScore += On_Room_PlaceQCScore;
+        new Hook(typeof(SandboxRegistry).GetMethod("DoSpawn", ALL_FLAGS), On_SandboxRegistry_DoSpawn);
+        On.FlareBomb.Update += On_FlareBomb_Update;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
+                        new MiniLeechCritob(),
                         new NoodleEaterCritob(),
                         new PolliwogCritob(),
                         new WaterSpitterCritob(),

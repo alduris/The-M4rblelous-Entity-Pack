@@ -36,8 +36,9 @@ public static class PlayerHooks
             return Player.ObjectGrabability.OneHand;
         if (obj is RubberBlossom)
             return Player.ObjectGrabability.CantGrab;
-        else
-            return orig(self, obj);
+        if (obj is StarLemon)
+            return Player.ObjectGrabability.TwoHands;
+        return orig(self, obj);
     }
 
     internal static void On_Player_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp)
@@ -371,6 +372,14 @@ public static class PlayerHooks
             if (Mathf.Abs(num) > .85f && self.FunStuff)
                 self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
         }
+        else if (food is StarLemon)
+        {
+            var num = self.foodPreference[SlugNPCAI.Food.GlowWeed.index];
+            if (Mathf.Abs(num) > .4f)
+                self.foodReaction += (int)(num * 120f);
+            if (Mathf.Abs(num) > .85f && self.FunStuff)
+                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
+        }
         else
             orig(self, food);
     }
@@ -390,6 +399,8 @@ public static class PlayerHooks
             res = SlugFood.GummyAnther!;
         else if (food is MarineEye)
             res = SlugFood.MarineEye!;
+        else if (food is StarLemon)
+            res = SlugFood.StarLemon!;
         return res;
     }
 

@@ -1,10 +1,28 @@
 ﻿global using static LBMergedMods.Hooks.MainHooks;
+using Fisobs.Core;
+using Fisobs.Sandbox;
+using System;
+using ArenaBehaviors;
+using System.Collections.Generic;
 
 namespace LBMergedMods.Hooks;
 
 public static class MainHooks
 {
     internal static bool s_init;
+
+    internal static void On_ChallengeTools_CreatureName(On.Expedition.ChallengeTools.orig_CreatureName orig, ref string?[] creatureNames)
+    {
+        orig(ref creatureNames);
+        creatureNames[(int)CreatureTemplateType.MiniBlackLeech] = null;
+    }
+
+    internal static void On_ChallengeTools_GenerateCreatureScores(On.Expedition.ChallengeTools.orig_GenerateCreatureScores orig, ref Dictionary<string, int> dict)
+    {
+        orig(ref dict);
+        if (dict.ContainsKey("MiniBlackLeech"))
+            dict.Remove("MiniBlackLeech");
+    }
 
     internal static void On_RainWorld_OnModsDisabled(On.RainWorld.orig_OnModsDisabled orig, RainWorld self, ModManager.Mod[] newlyDisabledMods)
     {
@@ -25,6 +43,8 @@ public static class MainHooks
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.LimeMushroom);
                 if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.MarineEye))
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.MarineEye);
+                if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.StarLemon))
+                    MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.StarLemon);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.NoodleEater))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.NoodleEater);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SilverLizard))
@@ -104,6 +124,8 @@ public static class MainHooks
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.LimeMushroom);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.MarineEye))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.MarineEye);
+        if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.StarLemon))
+            MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.StarLemon);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SeedBat))
             MultiplayerUnlocks.CreatureUnlockList.Add(SandboxUnlockID.SeedBat);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Bigrub))
@@ -117,6 +139,8 @@ public static class MainHooks
         {
             //heheh, later than other mods for modcat compatibility
             On.PlayerGraphics.DrawSprites += On_PlayerGraphics_DrawSprites;
+            On.Expedition.ChallengeTools.GenerateCreatureScores += On_ChallengeTools_GenerateCreatureScores;
+            On.Expedition.ChallengeTools.CreatureName += On_ChallengeTools_CreatureName;
             if (ModManager.MSC)
             {
                 SlugFood.ThornyStrawberry = new(nameof(SlugFood.ThornyStrawberry), true);
@@ -125,6 +149,7 @@ public static class MainHooks
                 SlugFood.Physalis = new(nameof(SlugFood.Physalis), true);
                 SlugFood.GummyAnther = new(nameof(SlugFood.GummyAnther), true);
                 SlugFood.MarineEye = new(nameof(SlugFood.MarineEye), true);
+                SlugFood.StarLemon = new(nameof(SlugFood.StarLemon), true);
                 ResizeGourmandCombos();
                 InitGourmandCombos();
                 On.MoreSlugcats.GourmandCombos.InitCraftingLibrary += On_GourmandCombos_InitCraftingLibrary;
@@ -153,6 +178,16 @@ public static class MainHooks
             Futile.atlasManager.UnloadAtlas("BlizzorNeck");
         LBMergedModsPlugin.Bundle?.Unload(true);
         LBMergedModsPlugin.Bundle = null;
+    }
+
+    internal static void On_SandboxRegistry_DoSpawn(Action<SandboxGameSession, SandboxEditor.PlacedIconData, EntitySaveData, ISandboxHandler> orig, SandboxGameSession session, SandboxEditor.PlacedIconData p, EntitySaveData data, ISandboxHandler handler)
+    {
+        orig(session, p, data, handler);
+        if (p.data.critType == CreatureTemplateType.MiniBlackLeech)
+        {
+            for (var i = 1; i <= 4; i++)
+                orig(session, p, data, handler);
+        }
     }
 
     internal static void On_SoundLoader_LoadSounds(On.SoundLoader.orig_LoadSounds orig, SoundLoader self)

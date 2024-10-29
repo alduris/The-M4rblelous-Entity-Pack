@@ -47,7 +47,8 @@ public static class CreatureTemplateType
         HazerMom = new(nameof(HazerMom), true),
         TintedBeetle = new(nameof(TintedBeetle), true),
         Blizzor = new(nameof(Blizzor), true),
-        MoleSalamander = new(nameof(MoleSalamander), true);
+        MoleSalamander = new(nameof(MoleSalamander), true),
+        MiniBlackLeech = new(nameof(MiniBlackLeech), true);
 
     static CreatureTemplateType()
     {
@@ -69,7 +70,8 @@ public static class CreatureTemplateType
             FlyingBigEel,
             MiniFlyingBigEel,
             HazerMom,
-            TintedBeetle];
+            TintedBeetle,
+            MiniBlackLeech];
     }
 
     public static void UnregisterValues()
@@ -179,6 +181,11 @@ public static class CreatureTemplateType
             MoleSalamander.Unregister();
             MoleSalamander = null!;
         }
+        if (MiniBlackLeech is not null)
+        {
+            MiniBlackLeech.Unregister();
+            MiniBlackLeech = null!;
+        }
     }
 }
 
@@ -212,7 +219,9 @@ public static class SandboxUnlockID
         LimeMushroom = new(nameof(LimeMushroom), true),
         Blizzor = new(nameof(Blizzor), true),
         MoleSalamander = new(nameof(MoleSalamander), true),
-        MarineEye = new(nameof(MarineEye), true);
+        MarineEye = new(nameof(MarineEye), true),
+        MiniBlackLeech = new(nameof(MiniBlackLeech), true),
+        StarLemon = new(nameof(StarLemon), true);
 
     public static void UnregisterValues()
     {
@@ -361,6 +370,16 @@ public static class SandboxUnlockID
             MarineEye.Unregister();
             MarineEye = null!;
         }
+        if (MiniBlackLeech is not null)
+        {
+            MiniBlackLeech.Unregister();
+            MiniBlackLeech = null!;
+        }
+        if (StarLemon is not null)
+        {
+            StarLemon.Unregister();
+            StarLemon = null!;
+        }
     }
 }
 
@@ -378,7 +397,8 @@ public static class PlacedObjectType
         DeadAlbinoFormHazer = new(nameof(DeadAlbinoFormHazer), true),
         LimeMushroom = new(nameof(LimeMushroom), true),
         RubberBlossom = new(nameof(RubberBlossom), true),
-        MarineEye = new(nameof(MarineEye), true);
+        MarineEye = new(nameof(MarineEye), true),
+        StarLemon = new(nameof(StarLemon), true);
 
     public static void UnregisterValues()
     {
@@ -447,6 +467,11 @@ public static class PlacedObjectType
             MarineEye.Unregister();
             MarineEye = null!;
         }
+        if (StarLemon is not null)
+        {
+            StarLemon.Unregister();
+            StarLemon = null!;
+        }
     }
 }
 
@@ -461,7 +486,8 @@ public static class AbstractObjectType
         LimeMushroom = new(nameof(LimeMushroom), true),
         RubberBlossom = new(nameof(RubberBlossom), true),
         GummyAnther = new(nameof(GummyAnther), true),
-        MarineEye = new(nameof(MarineEye), true);
+        MarineEye = new(nameof(MarineEye), true),
+        StarLemon = new(nameof(StarLemon), true);
 
     public static void UnregisterValues()
     {
@@ -515,6 +541,11 @@ public static class AbstractObjectType
             MarineEye.Unregister();
             MarineEye = null!;
         }
+        if (StarLemon is not null)
+        {
+            StarLemon.Unregister();
+            StarLemon = null!;
+        }
     }
 }
 
@@ -525,7 +556,8 @@ public static class MultiplayerItemType
         BouncingMelon = new(nameof(BouncingMelon), true),
         Physalis = new(nameof(Physalis), true),
         LimeMushroom = new(nameof(LimeMushroom), true),
-        MarineEye = new(nameof(MarineEye), true);
+        MarineEye = new(nameof(MarineEye), true),
+        StarLemon = new(nameof(StarLemon), true);
 
     public static void UnregisterValues()
     {
@@ -559,6 +591,11 @@ public static class MultiplayerItemType
             MarineEye.Unregister();
             MarineEye = null!;
         }
+        if (StarLemon is not null)
+        {
+            StarLemon.Unregister();
+            StarLemon = null!;
+        }
     }
 }
 
@@ -571,7 +608,8 @@ public static class MiscItemType
         Physalis = new(nameof(Physalis), true),
         LimeMushroom = new(nameof(LimeMushroom), true),
         GummyAnther = new(nameof(GummyAnther), true),
-        MarineEye = new(nameof(MarineEye), true);
+        MarineEye = new(nameof(MarineEye), true),
+        StarLemon = new(nameof(StarLemon), true);
 
     public static void UnregisterValues()
     {
@@ -615,12 +653,17 @@ public static class MiscItemType
             MarineEye.Unregister();
             MarineEye = null!;
         }
+        if (StarLemon is not null)
+        {
+            StarLemon.Unregister();
+            StarLemon = null!;
+        }
     }
 }
 
 public static class SlugFood
 {
-    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye;
+    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon;
 
     public static void UnregisterValues()
     {
@@ -653,6 +696,11 @@ public static class SlugFood
         {
             MarineEye.Unregister();
             MarineEye = null;
+        }
+        if (StarLemon is not null)
+        {
+            StarLemon.Unregister();
+            StarLemon = null;
         }
     }
 }

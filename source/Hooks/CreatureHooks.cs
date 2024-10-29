@@ -3,7 +3,6 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using RWCustom;
-using Mono.Cecil;
 using System;
 using MoreSlugcats;
 using UnityEngine;
@@ -22,7 +21,7 @@ public static class CreatureHooks
         return orig(self, lookAtPoint, bonus);
     }
 
-    internal static bool On_BigJellyFish_ValidGrabCreature(On.MoreSlugcats.BigJellyFish.orig_ValidGrabCreature orig, BigJellyFish self, AbstractCreature abs) => abs.creatureTemplate.type != CreatureTemplateType.MiniLeviathan && abs.creatureTemplate.type != CreatureTemplateType.FlyingBigEel && abs.creatureTemplate.type != CreatureTemplateType.MiniFlyingBigEel && orig(self, abs);
+    internal static bool On_BigJellyFish_ValidGrabCreature(On.MoreSlugcats.BigJellyFish.orig_ValidGrabCreature orig, BigJellyFish self, AbstractCreature abs) => abs.creatureTemplate.type != CreatureTemplateType.MiniLeviathan && abs.creatureTemplate.type != CreatureTemplateType.FlyingBigEel && abs.creatureTemplate.type != CreatureTemplateType.MiniFlyingBigEel && abs.creatureTemplate.type != CreatureTemplateType.MiniBlackLeech && orig(self, abs);
 
     internal static CreatureTemplate.Relationship On_DropBugAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.DropBugAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, DropBugAI self, RelationshipTracker.DynamicRelationship dRelation)
     {
@@ -106,6 +105,13 @@ public static class CreatureHooks
 
     internal static bool On_CreatureTemplate_get_IsVulture(Func<CreatureTemplate, bool> orig, CreatureTemplate self) => orig(self) || self.type == CreatureTemplateType.FatFireFly;
 
+    internal static Tracker.CreatureRepresentation? On_GarbageWormAI_CreateTrackerRepresentationForCreature(On.GarbageWormAI.orig_CreateTrackerRepresentationForCreature orig, GarbageWormAI self, AbstractCreature otherCreature)
+    {
+        if (otherCreature.creatureTemplate.type == CreatureTemplateType.MiniBlackLeech)
+            return null;
+        return orig(self, otherCreature);
+    }
+
     internal static void IL_GarbageWormAI_Update(ILContext il)
     {
         var c = new ILCursor(il);
@@ -133,41 +139,6 @@ public static class CreatureHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook GarbageWormAI.Update!");
-    }
-
-    internal static void IL_Leech_Swim(ILContext il)
-    {
-        MethodReference? ref1 = null;
-        var label = il.DefineLabel();
-        var c = new ILCursor(il);
-        var loc = 0;
-        if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<Leech>("school"),
-            x => x.MatchLdfld<Leech.LeechSchool>("prey"),
-            x => x.MatchLdloc(out loc),
-            x => x.MatchCallOrCallvirt(out ref1),
-            x => x.MatchLdfld<Leech.LeechSchool.LeechPrey>("creature"),
-            x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Snail"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrfalse(out _))
-        && ref1 is not null)
-        {
-            label.Target = c.Next;
-            c.Index -= 10;
-            c.Emit<Leech>(OpCodes.Ldfld, "school")
-             .Emit<Leech.LeechSchool>(OpCodes.Ldfld, "prey")
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
-             .Emit(OpCodes.Callvirt, ref1)
-             .Emit<Leech.LeechSchool.LeechPrey>(OpCodes.Ldfld, "creature")
-             .Emit(OpCodes.Isinst, il.Import(typeof(BouncingBall)))
-             .Emit(OpCodes.Brtrue, label)
-             .Emit(OpCodes.Ldarg_0);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Leech.Swim!");
     }
 
     internal static bool On_PathFinder_CoordinateReachableAndGetbackable(On.PathFinder.orig_CoordinateReachableAndGetbackable orig, PathFinder self, WorldCoordinate coord)

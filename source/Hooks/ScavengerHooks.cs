@@ -30,7 +30,7 @@ public static class ScavengerHooks
             else
                 res = st.SpikesRemoved() ? 1 : 3;
         }
-        else if (obj is BlobPiece or Physalis or LimeMushroom or MarineEye)
+        else if (obj is BlobPiece or Physalis or LimeMushroom or MarineEye or StarLemon)
         {
             if (self.scavenger.room is Room rm)
             {
@@ -39,7 +39,7 @@ public static class ScavengerHooks
                     return 0;
             }
             if (!(weaponFiltered && self.NeedAWeapon))
-                res = obj is Physalis ? 5 : (obj is LimeMushroom ? 3 : 2);
+                res = obj is Physalis ? 5 : (obj is LimeMushroom or StarLemon ? 3 : 2);
         }
         return res;
     }
