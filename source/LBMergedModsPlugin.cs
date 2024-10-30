@@ -351,8 +351,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
     public void OnDisable()
     {
         StrawberryData = null!;
-        s_DrainMite = null;
-        s_SnootShootNoot = null;
         Seed = null!;
         Big = null!;
         Albino = null!;

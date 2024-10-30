@@ -14,8 +14,6 @@ namespace LBMergedMods.Hooks;
 
 public static class LizardHooks
 {
-    internal static CreatureTemplate.Type? s_DrainMite, s_SnootShootNoot;
-
     internal static void On_AxolotlGills_DrawSprites(On.LizardCosmetics.AxolotlGills.orig_DrawSprites orig, AxolotlGills self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
         orig(self, sLeaser, rCam, timeStacker, camPos);
@@ -87,8 +85,6 @@ public static class LizardHooks
             Random.InitState(abstractCreature.ID.RandomSeed);
             self.effectColor = abstractCreature.superSizeMe ? Custom.HSL2RGB(Custom.WrappedRandomVariation(86f / 360f, .05f, .6f), Custom.WrappedRandomVariation(.95f, .05f, .1f), Custom.ClampedRandomVariation(.5f, .05f, .1f)) : Custom.HSL2RGB(Custom.WrappedRandomVariation(.8333f, .05f, .6f), Custom.WrappedRandomVariation(.9f, .05f, .1f), Custom.ClampedRandomVariation(.7f, .05f, .1f));
             Random.state = state;
-            s_DrainMite ??= new("DrainMite");
-            s_SnootShootNoot ??= new("SnootShootNoot");
             self.tongue ??= new(self);
         }
         else if (tpl == CreatureTemplateType.Polliwog)
@@ -437,9 +433,9 @@ public static class LizardHooks
             var rel = dRelation.trackerRep.representedCreature.creatureTemplate.type;
             if ((rel == CreatureTemplate.Type.Slugcat && res.type == CreatureTemplate.Relationship.Type.Eats) || res.type == CreatureTemplate.Relationship.Type.Attacks)
                 res.type = CreatureTemplate.Relationship.Type.Afraid;
-            if (s_DrainMite is not null && s_DrainMite.Index != -1 && rel == s_DrainMite)
+            if (rel?.value == "DrainMite")
                 res = new(CreatureTemplate.Relationship.Type.Eats, 1f);
-            else if (s_SnootShootNoot is not null && s_SnootShootNoot.Index != -1 && rel == s_SnootShootNoot)
+            else if (rel?.value == "SnootShootNoot")
                 res = new(CreatureTemplate.Relationship.Type.Afraid, .15f);
         }
         return res;

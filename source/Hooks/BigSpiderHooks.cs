@@ -322,7 +322,7 @@ public static class BigSpiderHooks
             if (dRelation.state is BigSpiderAI.SpiderTrackState s)
                 s.armed = false;
         }
-        else if (self.creature.creatureTemplate.type == CreatureTemplate.Type.BigSpider || (self.creature.creatureTemplate.type?.value is string s && s.Contains("MaracaSpider")))
+        else if (self.creature.creatureTemplate.type == CreatureTemplate.Type.BigSpider || self.creature.creatureTemplate.type?.value == "MaracaSpider")
         {
             if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c && self.StaticRelationship(c.abstractCreature).type == CreatureTemplate.Relationship.Type.Eats)
             {

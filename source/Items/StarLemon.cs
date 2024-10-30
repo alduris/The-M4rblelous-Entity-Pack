@@ -252,7 +252,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
         for (var i = 0; i < crits.Count; i++)
         {
             var cr = crits[i];
-            if (cr.realizedCreature is Creature c && c.Consious && c.mainBodyChunk is BodyChunk ch && Custom.DistLess(ch.pos, fc.pos, 70f) && (c.Template.type == CreatureTemplate.Type.BigSpider || c.Template.type == CreatureTemplate.Type.Spider || (c.Template.type?.value is string s && s.Contains("MaracaSpider")) || c is MiniLeech))
+            if (cr.realizedCreature is Creature c && c.Consious && c.mainBodyChunk is BodyChunk ch && Custom.DistLess(ch.pos, fc.pos, 70f) && (c.Template.type == CreatureTemplate.Type.BigSpider || c.Template.type == CreatureTemplate.Type.Spider || c.Template.type?.value == "MaracaSpider" || c is MiniLeech))
                 ch.vel += Custom.DirVec(fc.pos, ch.pos) * 6f;
         }
         LastRotation = Rotation;
