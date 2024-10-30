@@ -72,7 +72,7 @@ public class MiniLeech : Leech
                             break;
                         }
                     }
-                    firstChunk.vel *= safariControlled || flag ? 1.03f : .1f;
+                    firstChunk.vel *= safariControlled || flag || fleeFromRain ? 1.03f : .1f;
                 }
             }
         }

@@ -12,24 +12,6 @@ namespace LBMergedMods.Hooks;
 
 public static class RoomHooks
 {
-    internal static void On_FlareBomb_Update(On.FlareBomb.orig_Update orig, FlareBomb self, bool eu)
-    {
-        orig(self, eu);
-        if (self.burning > 0f)
-        {
-            var crits = self.room.abstractRoom.creatures;
-            for (var i = 0; i < crits.Count; i++)
-            {
-                if (crits[i]?.realizedCreature is MiniLeech l && l!.dead && Custom.DistLess(self.firstChunk.pos, l.firstChunk.pos, self.LightIntensity * 600f))
-                {
-                    l.airDrown = 1f;
-                    l.Die();
-                    l.firstChunk.vel += Custom.DegToVec(Random.value * 360f) * Random.value * 7f;
-                }
-            }
-        }
-    }
-
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)
     {
         if (LBMergedModsPlugin.Bundle is null && self.game is RainWorldGame g)
@@ -211,22 +193,6 @@ public static class RoomHooks
         }
         else
             orig(self, placedObj);
-    }
-
-    internal static void On_Water_DrawSprites(On.Water.orig_DrawSprites orig, Water self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
-    {
-        orig(self, sLeaser, rCam, timeStacker, camPos);
-        if (self.room?.game?.Players is List<AbstractCreature> clist)
-        {
-            for (var i = 0; i < clist.Count; i++)
-            {
-                if (clist[i] is AbstractCreature cr && PlayerData.TryGetValue(cr, out var props) && props.BlueFaceDuration > 10 && cr.realizedCreature is Player p && !p.isNPC && p.Submersion >= 1f)
-                {
-                    sLeaser.sprites[1].isVisible = false;
-                    break;
-                }
-            }
-        }
     }
 
     [SuppressMessage(null, "IDE0060"), MethodImpl(MethodImplOptions.NoInlining)]

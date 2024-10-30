@@ -1,6 +1,4 @@
 ﻿global using static LBMergedMods.Hooks.CreatureHooks;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using RWCustom;
 using System;
@@ -45,50 +43,6 @@ public static class CreatureHooks
         return result;
     }
 
-    internal static CreatureTemplate.Relationship On_SmallNeedleWormAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.SmallNeedleWormAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, SmallNeedleWormAI self, RelationshipTracker.DynamicRelationship dRelation)
-    {
-        var result = orig(self, dRelation);
-        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c)
-        {
-            var grs = c.grasps;
-            if (grs is not null)
-            {
-                for (var i = 0; i < grs.Length; i++)
-                {
-                    if (grs[i]?.grabbed is LimeMushroom)
-                    {
-                        result.type = CreatureTemplate.Relationship.Type.Afraid;
-                        result.intensity = 1f;
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    internal static CreatureTemplate.Relationship On_BigNeedleWormAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.BigNeedleWormAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, BigNeedleWormAI self, RelationshipTracker.DynamicRelationship dRelation)
-    {
-        var result = orig(self, dRelation);
-        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c)
-        {
-            var grs = c.grasps;
-            if (grs is not null)
-            {
-                for (var i = 0; i < grs.Length; i++)
-                {
-                    if (grs[i]?.grabbed is LimeMushroom)
-                    {
-                        result.type = CreatureTemplate.Relationship.Type.Afraid;
-                        result.intensity = 1f;
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     internal static void On_Creature_Abstractize(On.Creature.orig_Abstractize orig, Creature self)
     {
         orig(self);
@@ -104,42 +58,6 @@ public static class CreatureHooks
     }
 
     internal static bool On_CreatureTemplate_get_IsVulture(Func<CreatureTemplate, bool> orig, CreatureTemplate self) => orig(self) || self.type == CreatureTemplateType.FatFireFly;
-
-    internal static Tracker.CreatureRepresentation? On_GarbageWormAI_CreateTrackerRepresentationForCreature(On.GarbageWormAI.orig_CreateTrackerRepresentationForCreature orig, GarbageWormAI self, AbstractCreature otherCreature)
-    {
-        if (otherCreature.creatureTemplate.type == CreatureTemplateType.MiniBlackLeech)
-            return null;
-        return orig(self, otherCreature);
-    }
-
-    internal static void IL_GarbageWormAI_Update(ILContext il)
-    {
-        var c = new ILCursor(il);
-        int loc1 = 0, loc2 = 0;
-        if (c.TryGotoNext(
-            x => x.MatchLdloc(out loc1),
-            x => x.MatchLdfld<GarbageWormAI.CreatureInterest>("crit"),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchCallOrCallvirt<CreatureTemplate>("get_IsVulture"),
-            x => x.MatchBrfalse(out _),
-            x => x.MatchLdcR4(1000f),
-            x => x.MatchStloc(out loc2)))
-        {
-            var l2 = il.Body.Variables[loc2];
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc1])
-             .Emit(OpCodes.Ldloc, l2)
-             .EmitDelegate((GarbageWormAI.CreatureInterest interest, float num) =>
-             {
-                 if (interest.crit.representedCreature.creatureTemplate.type == CreatureTemplateType.FlyingBigEel)
-                     return 1000f;
-                 return num;
-             });
-            c.Emit(OpCodes.Stloc, l2);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook GarbageWormAI.Update!");
-    }
 
     internal static bool On_PathFinder_CoordinateReachableAndGetbackable(On.PathFinder.orig_CoordinateReachableAndGetbackable orig, PathFinder self, WorldCoordinate coord)
     {

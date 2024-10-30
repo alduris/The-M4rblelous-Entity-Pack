@@ -73,7 +73,7 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
             var s0 = sLeaser.sprites[0];
             s0.x = vector.x - camPos.x;
             s0.y = vector.y - camPos.y;
-            s0.alpha = (1f - Darkness * .25f) * (1f - Mathf.InverseLerp(vector.y - Size, vector.y + Size, rm.FloatWaterLevel(vector.x)) * .25f);
+            s0.alpha = (1f - Darkness * .25f) * (1f - Mathf.InverseLerp(vector.y - Size, vector.y + Size, rm.FloatWaterLevel(vector)) * .25f);
             s0.scale = Size;
             base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
         }

@@ -7,8 +7,6 @@ using UnityEngine;
 using RWCustom;
 using Mono.Cecil;
 using Random = UnityEngine.Random;
-using System.Security.Cryptography;
-using System.Linq;
 
 namespace LBMergedMods.Hooks;
 

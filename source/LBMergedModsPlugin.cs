@@ -40,7 +40,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.Player.SwallowObject += On_Player_SwallowObject;
         IL.Player.GrabUpdate += IL_Player_GrabUpdate;
         IL.PlayerGraphics.Update += IL_PlayerGraphics_Update;
-        //On.PlayerGraphics.DrawSprites += On_PlayerGraphics_DrawSprites; it should be applied later
         IL.SlugcatHand.Update += IL_SlugcatHand_Update;
         On.ArenaBehaviors.SandboxEditor.GetPerformanceEstimate += On_SandboxEditor_GetPerformanceEstimate;
         On.VultureGrub.RayTraceSky += On_VultureGrub_RayTraceSky;
