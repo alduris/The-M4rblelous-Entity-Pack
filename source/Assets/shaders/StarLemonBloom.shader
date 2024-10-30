@@ -1,31 +1,31 @@
 Shader "StarLemonBloom"
 {
-	Properties 
+	Properties
 	{
 		_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
 	}
-	
-	Category 
+
+	Category
 	{
 		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
 		ZWrite Off
-		Blend SrcAlpha OneMinusSrcAlpha 
-		Fog { Color(0, 0, 0, 0) }
+		Blend SrcAlpha OneMinusSrcAlpha
+		Fog { Color(0.0, 0.0, 0.0, 0.0) }
 		Lighting Off
 		Cull Off
 
-		BindChannels 
+		BindChannels
 		{
 			Bind "Vertex", vertex
-			Bind "texcoord", texcoord 
-			Bind "Color", color 
+			Bind "texcoord", texcoord
+			Bind "Color", color
 		}
 
 		SubShader
 		{
 			GrabPass {}
-		
-			Pass 
+
+			Pass
 			{
 				CGPROGRAM
 				#pragma target 3.0
@@ -47,13 +47,13 @@ Shader "StarLemonBloom"
 
 				struct v2f
 				{
-					float4  pos : SV_POSITION;
-				    float2  uv : TEXCOORD0;
+					float4 pos : SV_POSITION;
+				    float2 uv : TEXCOORD0;
 					float2 scrPos : TEXCOORD1;
 					float4 clr : COLOR;
 				};
 
-				v2f vert (appdata_full v)
+				v2f vert(appdata_full v)
 				{
 					v2f o;
 					o.pos = UnityObjectToClipPos(v.vertex);
@@ -63,7 +63,7 @@ Shader "StarLemonBloom"
 					return o;
 				}
 
-				half4 frag (v2f i) : SV_Target
+				half4 frag(v2f i) : SV_Target
 				{
 					if (tex2D(_MainTex, i.uv).w == 0.0)
 						return half4(0.0, 0.0, 0.0, 0.0);
@@ -81,7 +81,7 @@ Shader "StarLemonBloom"
 					float fI = 0.0;
 					float blurAmount = 0.0024;
 					float horFac = _screenSize.y / _screenSize.x;
-				    half add = 0;
+				    half add = 0.0;
 					for (int j = 0; j < 4; j++)
 					{
 						fI++;
@@ -97,7 +97,7 @@ Shader "StarLemonBloom"
 						div += 4.0 * coef;
 					}
 					 getCol /= div;
-					 getCol *= i.clr.w * lerp(1, 0.5, distance(i.uv, half2(0.5, 0.5)) * 2.0);
+					 getCol *= i.clr.w * lerp(1.0, 0.5, distance(i.uv, half2(0.5, 0.5)) * 2.0);
 					 half4 grabCol = tex2D(_GrabTexture, float2(screenPos.x, screenPos.y));
 					 grabCol.x = max(grabCol.x, getCol.x);
 					 grabCol.y = max(grabCol.y, getCol.y);
