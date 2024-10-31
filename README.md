@@ -1,7 +1,11 @@
 # The-M4rblelous-Entity-Pack
 A Rain World modded creature and item pack to use as a dependency for other mods.
 
-Credits: (SPOILERS)
+Steam workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3311812030
+
+**SPOILER SECTION**
+
+Credits:
 LB/M4rbleL1ne for almost everything in this mod.
 Wrayk for the first version of the Silver Lizard.
 Thrithralas for the first version of the Polliwog.
@@ -14,6 +18,3 @@ Tronsx for the Rubber Blossom, Gummy Anther, Mole Salamander and Blizzor concept
 Fishnoid for the Polliwog, Jelly Long Legs, Sporantula and Flying Big Eel concepts.
 Myrmice for the Hunter Seeker and Mini Leviathan concepts.
 snoodle for the Hoverfly concept.
-
-
-Steam workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3311812030
