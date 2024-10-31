@@ -14,7 +14,7 @@ public static class FlareBombHooks
             var crits = self.room.abstractRoom.creatures;
             for (var i = 0; i < crits.Count; i++)
             {
-                if (crits[i]?.realizedCreature is MiniLeech l && l!.dead && Custom.DistLess(self.firstChunk.pos, l.firstChunk.pos, self.LightIntensity * 600f))
+                if (crits[i]?.realizedCreature is MiniLeech l && !l.dead && Custom.DistLess(self.firstChunk.pos, l.firstChunk.pos, self.LightIntensity * 600f) && self.room.VisualContact(self.firstChunk.pos, l.firstChunk.pos))
                 {
                     l.airDrown = 1f;
                     l.Die();
