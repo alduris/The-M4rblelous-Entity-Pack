@@ -12,6 +12,13 @@ namespace LBMergedMods.Hooks;
 
 public static class RoomHooks
 {
+    internal static int On_AImap_ExitDistanceForCreatureAndCheckNeighbours(On.AImap.orig_ExitDistanceForCreatureAndCheckNeighbours orig, AImap self, IntVector2 pos, int creatureSpecificExitIndex, CreatureTemplate crit)
+    {
+        if (crit.PreBakedPathingIndex < 0 || crit.PreBakedPathingIndex >= self.creatureSpecificAImaps?.Length)
+            return -1;
+        return orig(self, pos, creatureSpecificExitIndex, crit);
+    }
+
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)
     {
         if (LBMergedModsPlugin.Bundle is null && self.game is RainWorldGame g)
@@ -193,6 +200,20 @@ public static class RoomHooks
         }
         else
             orig(self, placedObj);
+    }
+
+    internal static AbstractRoomNode On_World_GetNode(On.World.orig_GetNode orig, World self, WorldCoordinate c)
+    {
+        if (c.abstractNode < 0 || self.GetAbstractRoom(c.room)?.nodes is not AbstractRoomNode[] nds || c.abstractNode >= nds.Length)
+            return new(new("UnregisteredNodeType"), 0, 0, false, 0, 0);
+        return orig(self, c);
+    }
+
+    internal static int On_World_TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom(On.World.orig_TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom orig, World self, AbstractRoom room1, AbstractRoom room2)
+    {
+        if (room1?.nodes is AbstractRoomNode[] nds1 && room2?.nodes is AbstractRoomNode[] nds2 && (room1.ExitIndex(room2.index) >= nds1.Length || room2.ExitIndex(room1.index) >= nds2.Length))
+            return -1;
+        return orig(self, room1, room2);
     }
 
     [SuppressMessage(null, "IDE0060"), MethodImpl(MethodImplOptions.NoInlining)]

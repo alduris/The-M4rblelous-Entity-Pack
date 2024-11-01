@@ -62,7 +62,7 @@ sealed class TintedBeetleCritob : Critob
             DamageResistances = new() { Base = 1.1f },
             StunResistances = new() { Base = 1.1f },
             HasAI = true,
-            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.EggBug)
+            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.WhiteLizard)
         }.IntoTemplate();
         t.abstractedLaziness = 30;
         t.instantDeathDamageLimit = .9f;

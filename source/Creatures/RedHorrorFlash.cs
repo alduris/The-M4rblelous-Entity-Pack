@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
-public class RedHorrorFlash(Vector2 pos, float size) : MoreSlugcats.SingularityBomb.SparkFlash(pos, size, Color.blue)
+public class RedHorrorFlash(Vector2 pos, float size) : SingularityBomb.SparkFlash(pos, size, Color.blue)
 {
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {

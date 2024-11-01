@@ -324,6 +324,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.FlareBomb.Update += On_FlareBomb_Update;
         On.YellowAI.Pack += On_YellowAI_Pack;
         IL.ScavengersWorldAI.WorldFloodFiller.Update += IL_WorldFloodFiller_Update;
+        On.AImap.ExitDistanceForCreatureAndCheckNeighbours += On_AImap_ExitDistanceForCreatureAndCheckNeighbours;
+        On.World.GetNode += On_World_GetNode;
+        On.World.TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom += On_World_TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

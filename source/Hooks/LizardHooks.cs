@@ -747,6 +747,7 @@ public static class LizardHooks
             temp.name = "Mole Salamander";
             temp.type = CreatureTemplateType.MoleSalamander;
             temp.BlizzardWanderer = true;
+            temp.canSwim = true;
             temp.BlizzardAdapted = true;
             temp.throughSurfaceVision = 0f;
             return temp;

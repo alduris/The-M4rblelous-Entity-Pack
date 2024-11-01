@@ -68,7 +68,7 @@ sealed class SporantulaCritob : Critob
             },
             DefaultRelationship = new(CreatureTemplate.Relationship.Type.Ignores, 0f),
             HasAI = true,
-            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.SpitterSpider),
+            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.BlueLizard),
             DamageResistances = new() { Base = 2.2f },
             StunResistances = new() { Base = 1.2f },
         }.IntoTemplate();

@@ -54,7 +54,7 @@ sealed class HoverflyCritob : Critob
             DamageResistances = new() { Base = .8f },
             StunResistances = new() { Base = 1f },
             HasAI = true,
-            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.CicadaA)
+            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.Fly)
         }.IntoTemplate();
         t.abstractedLaziness = 100;
         t.canFly = true;

@@ -69,7 +69,7 @@ sealed class SurfaceSwimmerCritob : Critob
             DamageResistances = new() { Base = 1.2f, Water = 200f },
             StunResistances = new() { Base = 2f, Water = 200f },
             HasAI = true,
-            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.EggBug)
+            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.PinkLizard)
         }.IntoTemplate();
         t.abstractedLaziness = 10;
         t.instantDeathDamageLimit = float.MaxValue;
