@@ -323,6 +323,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         new Hook(typeof(SandboxRegistry).GetMethod("DoSpawn", ALL_FLAGS), On_SandboxRegistry_DoSpawn);
         On.FlareBomb.Update += On_FlareBomb_Update;
         On.YellowAI.Pack += On_YellowAI_Pack;
+        IL.ScavengersWorldAI.WorldFloodFiller.Update += IL_WorldFloodFiller_Update;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
