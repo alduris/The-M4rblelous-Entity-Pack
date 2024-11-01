@@ -1634,6 +1634,13 @@ public static class LizardHooks
         }
     }
 
+    internal static YellowAI.YellowPack On_YellowAI_Pack(On.YellowAI.orig_Pack orig, YellowAI self, Creature liz)
+    {
+        if (liz?.abstractCreature?.abstractAI?.RealAI is not LizardAI ai || ai.yellowAI?.pack is null)
+            return self.pack;
+        return orig(self, liz);
+    }
+
     internal static void IL_YellowAI_Update(ILContext il)
     {
         var c = new ILCursor(il);

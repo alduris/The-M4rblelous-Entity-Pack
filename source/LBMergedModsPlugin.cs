@@ -162,7 +162,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.DaddyLongLegs.InitiateGraphicsModule += On_DaddyLongLegs_InitiateGraphicsModule;
         On.DaddyGraphics.RenderSlits += On_DaddyGraphics_RenderSlits;
         IL.DaddyGraphics.ReactToNoise += IL_DaddyGraphics_ReactToNoise;
-        On.DaddyAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_DaddyAI_IUseARelationshipTracker_UpdateDynamicRelationship;
         On.DaddyTentacle.ctor += On_DaddyTentacle_ctor;
         On.DaddyTentacle.CollideWithCreature += On_DaddyTentacle_CollideWithCreature;
         On.DaddyLongLegs.ShortCutColor += On_DaddyLongLegs_ShortCutColor;
@@ -312,7 +311,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.MirosBirdAbstractAI.ctor += On_MirosBirdAbstractAI_ctor;
         IL.MirosBirdAbstractAI.Raid += IL_MirosBirdAbstractAI_Raid;
         On.JetFishAI.SocialEvent += On_JetFishAI_SocialEvent;
-        On.Water.DrawSprites += On_Water_DrawSprites;
         IL.Leech.Swim += IL_Leech_Swim;
         On.AbstractCreature.WantToStayInDenUntilEndOfCycle += On_AbstractCreature_WantToStayInDenUntilEndOfCycle;
         IL.ArenaBehaviors.ExitManager.Update += IL_ExitManager_Update;
@@ -324,6 +322,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.Room.PlaceQCScore += On_Room_PlaceQCScore;
         new Hook(typeof(SandboxRegistry).GetMethod("DoSpawn", ALL_FLAGS), On_SandboxRegistry_DoSpawn);
         On.FlareBomb.Update += On_FlareBomb_Update;
+        On.YellowAI.Pack += On_YellowAI_Pack;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

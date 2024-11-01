@@ -137,10 +137,12 @@ public static class MainHooks
         orig(self);
         if (!s_init)
         {
-            //heheh, later than other mods for modcat compatibility
+            //heheh, later than other mods for mod compatibility
             On.PlayerGraphics.DrawSprites += On_PlayerGraphics_DrawSprites;
             On.Expedition.ChallengeTools.GenerateCreatureScores += On_ChallengeTools_GenerateCreatureScores;
             On.Expedition.ChallengeTools.CreatureName += On_ChallengeTools_CreatureName;
+            On.Water.DrawSprites += On_Water_DrawSprites;
+            On.DaddyAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_DaddyAI_IUseARelationshipTracker_UpdateDynamicRelationship;
             if (ModManager.MSC)
             {
                 SlugFood.ThornyStrawberry = new(nameof(SlugFood.ThornyStrawberry), true);
