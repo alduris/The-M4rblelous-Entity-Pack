@@ -135,18 +135,20 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                 {
                     if (g.grabbed is null)
                     {
-                        for (var j = 0; j < room.physicalObjects.Length; j++)
+                        var physobs = room.physicalObjects;
+                        for (var j = 0; j < physobs.Length; j++)
                         {
-                            for (var k = 0; k < room.physicalObjects[j].Count; k++)
+                            var objs = physobs[j];
+                            for (var k = 0; k < objs.Count; k++)
                             {
-                                if (room.physicalObjects[j][k] is DangleFruit f && Custom.DistLess(firstChunk.pos, f.firstChunk.pos, f.firstChunk.rad * 1.5f))
+                                if (objs[k] is DangleFruit f && Custom.DistLess(firstChunk.pos, f.firstChunk.pos, f.firstChunk.rad * 1.5f))
                                     TryToGrabPrey(f);
                             }
                         }
                     }
                     else if (lastInputWithDiagonals.HasValue && !lastInputWithDiagonals.Value.pckp && g.grabbed is DangleFruit da)
                     {
-                        da.bites--;
+                        --da.bites;
                         room.PlaySound(da.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, da.firstChunk.pos, 1.25f, 1f);
                         if (da.bites < 1)
                         {
@@ -277,7 +279,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                     firstChunk.vel += Custom.DirVec(firstChunk.pos, room.MiddleOfTile(movementConnection.destinationCoord)) * Mathf.Lerp(.4f, 1.8f, AI.stuckTracker.Utility());
                     return;
                 }
-                WaitToFlyCounter++;
+                ++WaitToFlyCounter;
                 if (WaitToFlyCounter > 30)
                     TakeOff(Custom.DirVec(firstChunk.pos, room.MiddleOfTile(movementConnection.destinationCoord)));
             }
@@ -340,9 +342,12 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
         var res = Grab(prey, 0, prey.firstChunk.index, Grasp.Shareability.CanOnlyShareWithNonExclusive, 1f, true, false);
         if (HoverflyData.TryGetValue(abstractCreature, out var d))
             d.BiteWait = 1000;
-        if (AI is HoverflyAI ai)
+        if (AI is HoverflyAI ai && ai.SwooshToPos.HasValue)
+        {
+            if (!safariControlled)
+                firstChunk.vel += Custom.DirVec(ai.SwooshToPos.Value, firstChunk.pos) * 40f;
             ai.SwooshToPos = null;
-        firstChunk.vel.y += 10f;
+        }
         return res;
     }
 
