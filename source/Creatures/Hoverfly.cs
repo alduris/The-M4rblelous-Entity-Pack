@@ -141,7 +141,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                             var objs = physobs[j];
                             for (var k = 0; k < objs.Count; k++)
                             {
-                                if (objs[k] is DangleFruit f && Custom.DistLess(firstChunk.pos, f.firstChunk.pos, f.firstChunk.rad * 1.5f))
+                                if (objs[k] is DangleFruit f && Custom.DistLess(firstChunk.pos, f.firstChunk.pos, f.firstChunk.rad * 2f))
                                     TryToGrabPrey(f);
                             }
                         }
