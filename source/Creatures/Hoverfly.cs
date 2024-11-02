@@ -131,9 +131,9 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                 }
                 if (inputWithDiagonals.Value.thrw && (lastInputWithDiagonals is not Player.InputPackage p || !p.thrw))
                     LoseAllGrasps();
-                if (inputWithDiagonals.Value.pckp && grasps.Length > 0 && grasps[0] is Grasp g)
+                if (inputWithDiagonals.Value.pckp && grasps.Length > 0)
                 {
-                    if (g.grabbed is null)
+                    if (grasps[0]?.grabbed is null)
                     {
                         var physobs = room.physicalObjects;
                         for (var j = 0; j < physobs.Length; j++)
@@ -146,13 +146,13 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                             }
                         }
                     }
-                    else if (lastInputWithDiagonals.HasValue && !lastInputWithDiagonals.Value.pckp && g.grabbed is DangleFruit da)
+                    else if (lastInputWithDiagonals.HasValue && !lastInputWithDiagonals.Value.pckp && grasps[0]?.grabbed is DangleFruit da)
                     {
                         --da.bites;
                         room.PlaySound(da.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, da.firstChunk.pos, 1.25f, 1f);
                         if (da.bites < 1)
                         {
-                            g.Release();
+                            grasps[0].Release();
                             AI.FoodTracker.ForgetItem(da.abstractPhysicalObject);
                             da.Destroy();
                         }
