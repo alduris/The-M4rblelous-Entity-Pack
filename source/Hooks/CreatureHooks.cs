@@ -21,28 +21,6 @@ public static class CreatureHooks
 
     internal static bool On_BigJellyFish_ValidGrabCreature(On.MoreSlugcats.BigJellyFish.orig_ValidGrabCreature orig, BigJellyFish self, AbstractCreature abs) => abs.creatureTemplate.type != CreatureTemplateType.MiniLeviathan && abs.creatureTemplate.type != CreatureTemplateType.FlyingBigEel && abs.creatureTemplate.type != CreatureTemplateType.MiniFlyingBigEel && abs.creatureTemplate.type != CreatureTemplateType.MiniBlackLeech && orig(self, abs);
 
-    internal static CreatureTemplate.Relationship On_DropBugAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.DropBugAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, DropBugAI self, RelationshipTracker.DynamicRelationship dRelation)
-    {
-        var result = orig(self, dRelation);
-        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c)
-        {
-            var grs = c.grasps;
-            if (grs is not null)
-            {
-                for (var i = 0; i < grs.Length; i++)
-                {
-                    if (grs[i]?.grabbed is LimeMushroom)
-                    {
-                        result.type = CreatureTemplate.Relationship.Type.Afraid;
-                        result.intensity = 1f;
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     internal static void On_Creature_Abstractize(On.Creature.orig_Abstractize orig, Creature self)
     {
         orig(self);

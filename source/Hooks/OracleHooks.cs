@@ -27,6 +27,8 @@ public static class OracleHooks
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a strange edible flower filled with a blue liquid."), 0));
             else if (self.describeItem == MiscItemType.StarLemon)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a very big shiny fruit, how did you bring it here?"), 0));
+            else if (self.describeItem == MiscItemType.SporeProjectile)
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's the egg of a creature.<LINE>Although its membrane is thin, it is covered with a fungus whose spores keep predators away."), 0));
         }
     }
 
@@ -62,6 +64,8 @@ public static class OracleHooks
             return MiscItemType.MarineEye;
         if (testItem is StarLemon)
             return MiscItemType.StarLemon;
+        if (testItem is SmallPuffBall)
+            return MiscItemType.SporeProjectile;
         return orig(self, testItem);
     }
 

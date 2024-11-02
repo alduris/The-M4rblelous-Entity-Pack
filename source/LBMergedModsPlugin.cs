@@ -327,6 +327,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.AImap.ExitDistanceForCreatureAndCheckNeighbours += On_AImap_ExitDistanceForCreatureAndCheckNeighbours;
         On.World.GetNode += On_World_GetNode;
         On.World.TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom += On_World_TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom;
+        On.DeerAI.NewRoom += On_DeerAI_NewRoom;
+        On.DeerAI.TrackItem += On_DeerAI_TrackItem;
+        On.DropBugAI.IUseItemTracker_TrackItem += On_DropBugAI_IUseItemTracker_TrackItem;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

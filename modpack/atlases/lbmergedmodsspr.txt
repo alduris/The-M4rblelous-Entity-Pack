@@ -2,7 +2,7 @@
 
 "BigStationPlantFruit1.png":
 {
-	"frame": {"x":127,"y":2,"w":5,"h":13},
+	"frame": {"x":144,"y":2,"w":5,"h":13},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":5,"h":13},
@@ -10,7 +10,7 @@
 },
 "BigStationPlantFruit2.png":
 {
-	"frame": {"x":134,"y":2,"w":5,"h":13},
+	"frame": {"x":151,"y":2,"w":5,"h":13},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":5,"h":13},
@@ -394,7 +394,7 @@
 },
 "HoverflyHead1.png":
 {
-	"frame": {"x":876,"y":2,"w":19,"h":20},
+	"frame": {"x":893,"y":2,"w":19,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":19,"h":20},
@@ -402,7 +402,7 @@
 },
 "HoverflyHead2.png":
 {
-	"frame": {"x":897,"y":2,"w":19,"h":20},
+	"frame": {"x":914,"y":2,"w":19,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":19,"h":20},
@@ -410,7 +410,7 @@
 },
 "HoverflyHead3.png":
 {
-	"frame": {"x":918,"y":2,"w":19,"h":20},
+	"frame": {"x":935,"y":2,"w":19,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":19,"h":20},
@@ -418,7 +418,7 @@
 },
 "HoverflyHead4.png":
 {
-	"frame": {"x":939,"y":2,"w":19,"h":20},
+	"frame": {"x":956,"y":2,"w":19,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":19,"h":20},
@@ -426,7 +426,7 @@
 },
 "HoverflyHeadHighlight1.png":
 {
-	"frame": {"x":960,"y":2,"w":19,"h":20},
+	"frame": {"x":977,"y":2,"w":19,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":19,"h":20},
@@ -434,7 +434,7 @@
 },
 "HoverflyHeadHighlight2.png":
 {
-	"frame": {"x":981,"y":2,"w":19,"h":20},
+	"frame": {"x":998,"y":2,"w":19,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":19,"h":20},
@@ -458,7 +458,7 @@
 },
 "HoverflySmallWing1.png":
 {
-	"frame": {"x":141,"y":2,"w":16,"h":14},
+	"frame": {"x":158,"y":2,"w":16,"h":14},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":14},
@@ -466,7 +466,7 @@
 },
 "HoverflySmallWing2.png":
 {
-	"frame": {"x":159,"y":2,"w":16,"h":14},
+	"frame": {"x":176,"y":2,"w":16,"h":14},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":14},
@@ -498,7 +498,7 @@
 },
 "Icon_LBHBulb.png":
 {
-	"frame": {"x":678,"y":2,"w":18,"h":18},
+	"frame": {"x":695,"y":2,"w":18,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":18,"h":18},
@@ -514,7 +514,7 @@
 },
 "icon_MoleSalamander.png":
 {
-	"frame": {"x":573,"y":2,"w":27,"h":16},
+	"frame": {"x":590,"y":2,"w":27,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":16},
@@ -546,7 +546,7 @@
 },
 "Icon_StarLemon.png":
 {
-	"frame": {"x":831,"y":2,"w":21,"h":19},
+	"frame": {"x":848,"y":2,"w":21,"h":19},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":21,"h":19},
@@ -586,7 +586,7 @@
 },
 "Kill_Blizzor.png":
 {
-	"frame": {"x":698,"y":2,"w":39,"h":18},
+	"frame": {"x":715,"y":2,"w":39,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":39,"h":18},
@@ -610,7 +610,7 @@
 },
 "Kill_HunterSeeker.png":
 {
-	"frame": {"x":739,"y":2,"w":28,"h":18},
+	"frame": {"x":756,"y":2,"w":28,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":18},
@@ -626,7 +626,7 @@
 },
 "Kill_MiniLeviathan.png":
 {
-	"frame": {"x":769,"y":2,"w":25,"h":18},
+	"frame": {"x":786,"y":2,"w":25,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":18},
@@ -634,7 +634,7 @@
 },
 "Kill_NoodleEater.png":
 {
-	"frame": {"x":187,"y":2,"w":24,"h":15},
+	"frame": {"x":204,"y":2,"w":24,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":15},
@@ -642,7 +642,7 @@
 },
 "Kill_Polliwog.png":
 {
-	"frame": {"x":602,"y":2,"w":27,"h":16},
+	"frame": {"x":619,"y":2,"w":27,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":16},
@@ -658,7 +658,7 @@
 },
 "Kill_TintedBeetle.png":
 {
-	"frame": {"x":854,"y":2,"w":20,"h":19},
+	"frame": {"x":871,"y":2,"w":20,"h":19},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":19},
@@ -674,7 +674,7 @@
 },
 "Kill_WaterSpitter.png":
 {
-	"frame": {"x":631,"y":2,"w":27,"h":16},
+	"frame": {"x":648,"y":2,"w":27,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":16},
@@ -698,7 +698,7 @@
 },
 "M4RClosedPhysalisGrad.png":
 {
-	"frame": {"x":213,"y":2,"w":11,"h":15},
+	"frame": {"x":230,"y":2,"w":11,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":11,"h":15},
@@ -706,7 +706,7 @@
 },
 "M4RClosedPhysalisGraf.png":
 {
-	"frame": {"x":226,"y":2,"w":11,"h":15},
+	"frame": {"x":243,"y":2,"w":11,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":11,"h":15},
@@ -714,7 +714,7 @@
 },
 "M4ROpenPhysalisGrad.png":
 {
-	"frame": {"x":239,"y":2,"w":17,"h":15},
+	"frame": {"x":256,"y":2,"w":17,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":17,"h":15},
@@ -722,7 +722,7 @@
 },
 "M4ROpenPhysalisGraf.png":
 {
-	"frame": {"x":258,"y":2,"w":17,"h":15},
+	"frame": {"x":275,"y":2,"w":17,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":17,"h":15},
@@ -810,7 +810,7 @@
 },
 "RedHorrorSegment.png":
 {
-	"frame": {"x":277,"y":2,"w":18,"h":15},
+	"frame": {"x":294,"y":2,"w":18,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":18,"h":15},
@@ -842,7 +842,7 @@
 },
 "ScutigeraSegment.png":
 {
-	"frame": {"x":297,"y":2,"w":18,"h":15},
+	"frame": {"x":314,"y":2,"w":18,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":18,"h":15},
@@ -914,7 +914,7 @@
 },
 "SeedWing1.png":
 {
-	"frame": {"x":317,"y":2,"w":7,"h":15},
+	"frame": {"x":334,"y":2,"w":7,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":7,"h":15},
@@ -922,7 +922,7 @@
 },
 "SeedWing2.png":
 {
-	"frame": {"x":326,"y":2,"w":7,"h":15},
+	"frame": {"x":343,"y":2,"w":7,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":7,"h":15},
@@ -1082,7 +1082,7 @@
 },
 "Symbol_BigStationPlantFruit.png":
 {
-	"frame": {"x":177,"y":2,"w":8,"h":14},
+	"frame": {"x":194,"y":2,"w":8,"h":14},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":8,"h":14},
@@ -1098,15 +1098,23 @@
 },
 "Symbol_MarineEye.png":
 {
-	"frame": {"x":796,"y":2,"w":16,"h":18},
+	"frame": {"x":813,"y":2,"w":16,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":18},
 	"sourceSize": {"w":16,"h":18}
 },
+"Symbol_SporeProjectile.png":
+{
+	"frame": {"x":127,"y":2,"w":15,"h":12},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":12},
+	"sourceSize": {"w":15,"h":12}
+},
 "Symbol_ThornyStrawberry.png":
 {
-	"frame": {"x":814,"y":2,"w":15,"h":18},
+	"frame": {"x":831,"y":2,"w":15,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":18},
@@ -1138,7 +1146,7 @@
 },
 "ThornyStrawberry0A.png":
 {
-	"frame": {"x":335,"y":2,"w":15,"h":15},
+	"frame": {"x":352,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1146,7 +1154,7 @@
 },
 "ThornyStrawberry0ASN.png":
 {
-	"frame": {"x":352,"y":2,"w":15,"h":15},
+	"frame": {"x":369,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1154,7 +1162,7 @@
 },
 "ThornyStrawberry0ASP.png":
 {
-	"frame": {"x":369,"y":2,"w":15,"h":15},
+	"frame": {"x":386,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1162,7 +1170,7 @@
 },
 "ThornyStrawberry0B.png":
 {
-	"frame": {"x":386,"y":2,"w":15,"h":15},
+	"frame": {"x":403,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1170,7 +1178,7 @@
 },
 "ThornyStrawberry0BSN.png":
 {
-	"frame": {"x":403,"y":2,"w":15,"h":15},
+	"frame": {"x":420,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1178,7 +1186,7 @@
 },
 "ThornyStrawberry0BSP.png":
 {
-	"frame": {"x":420,"y":2,"w":15,"h":15},
+	"frame": {"x":437,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1186,7 +1194,7 @@
 },
 "ThornyStrawberry1A.png":
 {
-	"frame": {"x":437,"y":2,"w":15,"h":15},
+	"frame": {"x":454,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1194,7 +1202,7 @@
 },
 "ThornyStrawberry1ASN.png":
 {
-	"frame": {"x":454,"y":2,"w":15,"h":15},
+	"frame": {"x":471,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1202,7 +1210,7 @@
 },
 "ThornyStrawberry1B.png":
 {
-	"frame": {"x":471,"y":2,"w":15,"h":15},
+	"frame": {"x":488,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1210,7 +1218,7 @@
 },
 "ThornyStrawberry1BSN.png":
 {
-	"frame": {"x":488,"y":2,"w":15,"h":15},
+	"frame": {"x":505,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1218,7 +1226,7 @@
 },
 "ThornyStrawberry2A.png":
 {
-	"frame": {"x":505,"y":2,"w":15,"h":15},
+	"frame": {"x":522,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1226,7 +1234,7 @@
 },
 "ThornyStrawberry2ASN.png":
 {
-	"frame": {"x":522,"y":2,"w":15,"h":15},
+	"frame": {"x":539,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1234,7 +1242,7 @@
 },
 "ThornyStrawberry2B.png":
 {
-	"frame": {"x":539,"y":2,"w":15,"h":15},
+	"frame": {"x":556,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1242,7 +1250,7 @@
 },
 "ThornyStrawberry2BSN.png":
 {
-	"frame": {"x":556,"y":2,"w":15,"h":15},
+	"frame": {"x":573,"y":2,"w":15,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":15,"h":15},
@@ -1250,7 +1258,7 @@
 },
 "TintedBeetleEye.png":
 {
-	"frame": {"x":660,"y":2,"w":16,"h":16},
+	"frame": {"x":677,"y":2,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -1277,8 +1285,8 @@
 	"version": "1.0",
 	"image": "lbmergedmodsspr.png",
 	"format": "RGBA8888",
-	"size": {"w":1017,"h":1554},
+	"size": {"w":1019,"h":1554},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:9a09251e80f9abcd9e4760b444c866a5:ff88db0f123b9a6305a9201a2301f954:a765dc97ce9ed88e951e5eb642239b0f$"
+	"smartupdate": "$TexturePacker:SmartUpdate:d0f0febe0e1195e2b8e6b7d6edfd7864:a115055efbf59df70736187b7575f4fc:a765dc97ce9ed88e951e5eb642239b0f$"
 }
 }

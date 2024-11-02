@@ -69,7 +69,6 @@ public class SporantulaGraphics : BigSpiderGraphics
         Array.Resize(ref sLeaser.sprites, num);
         var spr = sLeaser.sprites[OrigNumOfSprites] = TriangleMesh.MakeLongMesh(7, false, true);
         spr.shader = sh;
-        spr.alpha = .75f;
         spr.RemoveFromContainer();
         rCam.ReturnFContainer("Midground").AddChild(spr);
         for (var j = 0; j < scls.Length; j++)

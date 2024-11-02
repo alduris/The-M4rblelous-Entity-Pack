@@ -609,7 +609,8 @@ public static class MiscItemType
         LimeMushroom = new(nameof(LimeMushroom), true),
         GummyAnther = new(nameof(GummyAnther), true),
         MarineEye = new(nameof(MarineEye), true),
-        StarLemon = new(nameof(StarLemon), true);
+        StarLemon = new(nameof(StarLemon), true),
+        SporeProjectile = new(nameof(SporeProjectile), true);
 
     public static void UnregisterValues()
     {
@@ -657,6 +658,11 @@ public static class MiscItemType
         {
             StarLemon.Unregister();
             StarLemon = null!;
+        }
+        if (SporeProjectile is not null)
+        {
+            SporeProjectile.Unregister();
+            SporeProjectile = null!;
         }
     }
 }

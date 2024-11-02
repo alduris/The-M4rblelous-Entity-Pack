@@ -30,10 +30,10 @@ public class SmallPuffBall : Rock
                 {
                     if (Custom.DistLess(dots[k], dots[l], 1.4f))
                     {
-                        var vector = Custom.DirVec(dots[k], dots[l]) * (Vector2.Distance(dots[k], dots[l]) - 2.8f);
+                        var vector = Custom.DirVec(dots[k], dots[l]) * (Vector2.Distance(dots[k], dots[l]) - 1.4f) * .5f;
                         var num = k / (k + (float)l);
-                        dots[k] += vector * num;
-                        dots[l] -= vector * (1f - num);
+                        dots[k] += vector * num * .5f;
+                        dots[l] -= vector * (1f - num) * .5f;
                     }
                 }
             }
@@ -52,9 +52,9 @@ public class SmallPuffBall : Rock
         }
         for (var n = 0; n < dots.Length; n++)
         {
-            var dot = dots[n];
-            dot.x = -1f + 2f * Mathf.InverseLerp(num2, num3, dot.x);
-            dot.y = -1f + 2f * Mathf.InverseLerp(num4, num5, dot.y);
+            ref var dot = ref dots[n];
+            dot.x = -.5f + Mathf.InverseLerp(num2, num3, dot.x);
+            dot.y = -.5f + Mathf.InverseLerp(num4, num5, dot.y);
         }
         var num6 = 0f;
         for (var num7 = 0; num7 < dots.Length; num7++)
@@ -175,7 +175,7 @@ public class SmallPuffBall : Rock
         var dotl = Dots.Length;
         var sprs = sLeaser.sprites = new FSprite[2 + dotl * 2];
         sprs[0] = new("BodyA");
-        sprs[1] = new("BodyA") { alpha = .5f };
+        sprs[1] = new("BodyA");
         for (var i = 0; i < dotl; i++)
         {
             sprs[2 + i] = new("JetFishEyeB");
@@ -196,18 +196,18 @@ public class SmallPuffBall : Rock
         var s1 = sprites[1];
         s0.x = vector.x - camPos.x;
         s0.y = vector.y - camPos.y;
-        s1.x = vector.x - camPos.x - 2.5f;
-        s1.y = vector.y - camPos.y + 2.5f;
+        s1.x = vector.x - camPos.x - 1.25f;
+        s1.y = vector.y - camPos.y + 1.25f;
         s0.rotation = degAng;
         s1.rotation = degAng;
         s0.scaleY = .6f;
         s0.scaleX = .66f;
-        s1.scaleY = .6f;
-        s1.scaleX = .66f;
+        s1.scaleY = .3f;
+        s1.scaleX = .33f;
         for (var i = 0; i < dots.Length; i++)
         {
             var dot = dots[i];
-            var vector2 = vector + Custom.RotateAroundOrigo(new Vector2(dot.x * 7f, dot.y * 8.5f), degAng);
+            var vector2 = vector + Custom.RotateAroundOrigo(new Vector2(dot.x * 4f, dot.y * 5.5f), degAng);
             var s2i = sprites[2 + i];
             s2i.x = vector2.x - camPos.x;
             s2i.y = vector2.y - camPos.y;
@@ -217,22 +217,28 @@ public class SmallPuffBall : Rock
             s2idotl.x = vector2.x - camPos.x;
             s2idotl.y = vector2.y - camPos.y;
         }
+        if (blink > 0 && mode != Mode.Thrown)
+            s0.color = (blink > 1 && Random.value < .5f) ? blinkColor : color;
+        else
+            s0.color = color;
+        s1.color = Color.white;
+        s1.alpha = .5f - rCam.currentPalette.darkness / 5f;
         if (slatedForDeletetion || room != rCam.room)
             sLeaser.CleanSpritesAndRemove();
     }
 
     public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
     {
-        this.color = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.texture.GetPixel(11, 4), .5f), palette.blackColor, palette.darkness / 3f);
+        color = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.texture.GetPixel(11, 4), .5f), palette.blackColor, palette.darkness / 2f);
         var sprs = sLeaser.sprites;
         for (var i = 0; i < 2; i++)
-            sprs[i].color = this.color;
-        SporeColor = Color.Lerp(this.color, new(.02f, .1f, .08f), .85f);
-        var color = Color.Lerp(Color.Lerp(new(.8f, 1f, .5f), palette.texture.GetPixel(11, 4), .2f), palette.blackColor, .5f + palette.darkness / 5f);
+            sprs[i].color = color;
+        SporeColor = Color.Lerp(color, new(.02f, .1f, .08f), .85f);
+        var clr = Color.Lerp(Color.Lerp(new(.8f, 1f, .5f), palette.texture.GetPixel(11, 4), .2f), palette.blackColor, .5f + palette.darkness / 5f);
         var dotl = Dots.Length;
         for (var j = 0; j < dotl; j++)
         {
-            sprs[2 + j].color = color;
+            sprs[2 + j].color = clr;
             sprs[2 + dotl + j].color = SporeColor;
         }
     }
@@ -241,11 +247,22 @@ public class SmallPuffBall : Rock
     {
         newContainer ??= rCam.ReturnFContainer("Items");
         var sprs = sLeaser.sprites;
+        var specialIndex = 2 + Dots.Length;
         for (var i = 0; i < sprs.Length; i++)
         {
-            var spr = sprs[i];
-            spr.RemoveFromContainer();
-            newContainer.AddChild(spr);
+            FSprite spr;
+            if (i == specialIndex)
+            {
+                spr = sprs[1];
+                spr.RemoveFromContainer();
+                newContainer.AddChild(spr);
+            }
+            else if (i != 1)
+            {
+                spr = sprs[i];
+                spr.RemoveFromContainer();
+                newContainer.AddChild(spr);
+            }
         }
     }
 }

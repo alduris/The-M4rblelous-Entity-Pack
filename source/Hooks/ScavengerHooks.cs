@@ -31,6 +31,19 @@ public static class ScavengerHooks
             else
                 res = st.SpikesRemoved() ? 1 : 3;
         }
+        else if (obj is SmallPuffBall pf)
+        {
+            if (self.scavenger.room is Room rm)
+            {
+                var ownedItemOnGround = rm.socialEventRecognizer.ItemOwnership(obj);
+                if (ownedItemOnGround is not null && ownedItemOnGround.offeredTo is not null && ownedItemOnGround.offeredTo != self.scavenger)
+                    return 0;
+            }
+            if (weaponFiltered && self.NeedAWeapon)
+                res = self.WeaponScore(pf, true);
+            else
+                res = 2;
+        }
         else if (obj is BlobPiece or Physalis or LimeMushroom or MarineEye or StarLemon)
         {
             if (self.scavenger.room is Room rm)
@@ -60,6 +73,8 @@ public static class ScavengerHooks
                     res = 3;
             }
         }
+        else if (obj is SmallPuffBall)
+            res = 2;
         return res;
     }
 

@@ -76,7 +76,7 @@ public static class IconHooks
         if (itemType == AbstractObjectType.ThornyStrawberry)
             return "Symbol_ThornyStrawberry";
         if (itemType == AbstractObjectType.SporeProjectile)
-            return "Symbol_PuffBall";
+            return "Symbol_SporeProjectile";
         if (itemType == AbstractObjectType.BlobPiece)
             return "Kill_WaterBlob";
         if (itemType == AbstractObjectType.LittleBalloon)

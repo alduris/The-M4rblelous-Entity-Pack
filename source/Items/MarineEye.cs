@@ -222,7 +222,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public virtual bool Edible => true;
 
-    public virtual bool AutomaticPickUp => true;
+    public virtual bool AutomaticPickUp => false;
 
     public MarineEye(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
     {
