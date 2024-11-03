@@ -153,6 +153,11 @@ public class ThornBugAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
         if (Behav == Behavior.ReturnPrey && creature.remainInDenCounter < 30 && !creature.InDen)
             creature.remainInDenCounter = 30;
         Fear = Custom.LerpAndTick(Fear, Mathf.Max(utilityComparer.GetUtilityTracker(threatTracker).SmoothedUtility(), Mathf.Pow(threatTracker.Panic, .7f)), .07f, 1f / 30f);
+        if (Bug.safariControlled)
+        {
+            Bug.RunSpeed = .8f;
+            Fear = 1f;
+        }
         if (NoiseRectionDelay > 0)
             --NoiseRectionDelay;
     }

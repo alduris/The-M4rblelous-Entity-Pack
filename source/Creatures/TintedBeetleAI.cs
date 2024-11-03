@@ -63,7 +63,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         var itms = FoodTracker.Items;
         for (var i = 0; i < itms.Count; i++)
         {
-            if (itms[i]?.ItemRep?.RepresentedItem is AbstractPhysicalObject itm && (itm.InDen || itm.realizedObject?.grabbedBy?.Count is 0))
+            if (itms[i]?.ItemRep?.RepresentedItem is AbstractPhysicalObject itm && itm.InDen)
                 FoodTracker.ForgetItem(itm);
         }
         pathFinder.walkPastPointOfNoReturn = stranded || denFinder.GetDenPosition() is not WorldCoordinate w || !pathFinder.CoordinatePossibleToGetBackFrom(w) || threatTracker.Utility() > .95f;
@@ -162,6 +162,11 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         if (Behav == Behavior.ReturnPrey && creature.remainInDenCounter < 30 && !creature.InDen)
             creature.remainInDenCounter = 30;
         Fear = Custom.LerpAndTick(Fear, Mathf.Max(utilityComparer.GetUtilityTracker(threatTracker).SmoothedUtility(), Mathf.Pow(threatTracker.Panic, .7f)), .07f, 1f / 30f);
+        if (Bug.safariControlled)
+        {
+            Bug.RunSpeed = .6f;
+            Fear = 1f;
+        }
         if (NoiseRectionDelay > 0)
             --NoiseRectionDelay;
     }
