@@ -295,6 +295,7 @@ public static class LizardHooks
             self.AddModule(self.yellowAI = new PolliwogCommunication(self));
             self.AddModule(self.lurkTracker = new(self, self.lizard));
             self.utilityComparer.AddComparedModule(self.lurkTracker, null, Mathf.Lerp(.4f, .3f, creature.personality.energy), 1f);
+            self.tracker.maxTrackedCreatures = 20;
         }
         else if (tpl == CreatureTemplateType.WaterSpitter)
             self.AddModule(self.redSpitAI = new(self));
