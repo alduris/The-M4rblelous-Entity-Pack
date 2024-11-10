@@ -1,6 +1,5 @@
 ﻿global using static LBMergedMods.Hooks.AbstractPhysicalObjectHooks;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using MoreSlugcats;
 using System;
@@ -56,6 +55,23 @@ public static class AbstractPhysicalObjectHooks
         }
     }
 
+    internal static void On_AbstractConsumable_Consume(On.AbstractConsumable.orig_Consume orig, AbstractConsumable self)
+    {
+        if (StationPlant.TryGetValue(self, out var props) && !props.AlwaysClosed && !props.AlwaysOpen)
+        {
+            if (!self.isConsumed)
+            {
+                if (props.RemainingOpenCycles > 0)
+                    --props.RemainingOpenCycles;
+                self.isConsumed = props.RemainingOpenCycles == 0;
+                if (self.world.game.session is StoryGameSession session)
+                    session.saveState.ReportConsumedItem(self.world, false, self.originRoom, self.placedObjectIndex, self.minCycles > 0 ? Random.Range(self.minCycles, self.maxCycles + 1) + props.RemainingOpenCycles * 100 : -1);
+            }
+        }
+        else
+            orig(self);
+    }
+
     internal static void IL_AbstractCreature_InitiateAI(ILContext il)
     {
         var c = new ILCursor(il);
@@ -81,55 +97,40 @@ public static class AbstractPhysicalObjectHooks
     internal static void On_AbstractCreature_ctor(On.AbstractCreature.orig_ctor orig, AbstractCreature self, World world, CreatureTemplate creatureTemplate, Creature realizedCreature, WorldCoordinate pos, EntityID ID)
     {
         orig(self, world, creatureTemplate, realizedCreature, pos, ID);
-        if (creatureTemplate.type == CreatureTemplate.Type.Fly && !Seed.TryGetValue(self, out _))
+        var tp = creatureTemplate.type;
+        if (tp == CreatureTemplate.Type.Fly && !Seed.TryGetValue(self, out _))
             Seed.Add(self, new());
-        else if (creatureTemplate.type == CreatureTemplate.Type.TubeWorm && !Big.TryGetValue(self, out _))
+        else if (tp == CreatureTemplate.Type.TubeWorm && !Big.TryGetValue(self, out _))
             Big.Add(self, new());
-        else if (creatureTemplate.type == CreatureTemplateType.Hoverfly && !HoverflyData.TryGetValue(self, out _))
+        else if (tp == CreatureTemplateType.Hoverfly && !HoverflyData.TryGetValue(self, out _))
             HoverflyData.Add(self, new());
-        else if ((creatureTemplate.type == CreatureTemplate.Type.Hazer || creatureTemplate.type == CreatureTemplate.Type.JetFish) && !Albino.TryGetValue(self, out _))
+        else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture) && !Albino.TryGetValue(self, out _))
             Albino.Add(self, new());
-    }
-
-    internal static void On_AbstractConsumable_Consume(On.AbstractConsumable.orig_Consume orig, AbstractConsumable self)
-    {
-        if (StationPlant.TryGetValue(self, out var props) && !props.AlwaysClosed && !props.AlwaysOpen)
-        {
-            if (!self.isConsumed)
-            {
-                if (props.RemainingOpenCycles > 0)
-                    --props.RemainingOpenCycles;
-                self.isConsumed = props.RemainingOpenCycles == 0;
-                if (self.world.game.session is StoryGameSession session)
-                    session.saveState.ReportConsumedItem(self.world, false, self.originRoom, self.placedObjectIndex, self.minCycles > 0 ? Random.Range(self.minCycles, self.maxCycles + 1) + props.RemainingOpenCycles * 100 : -1);
-            }
-        }
-        else
-            orig(self);
+        if (tp == CreatureTemplateType.Denture)
+            self.remainInDenCounter = 0;
     }
 
     internal static void On_AbstractCreature_IsEnteringDen(On.AbstractCreature.orig_IsEnteringDen orig, AbstractCreature self, WorldCoordinate den)
     {
-        if (self.creatureTemplate.type == CreatureTemplateType.Hoverfly)
+        var tp = self.creatureTemplate.type;
+        if ((tp == CreatureTemplateType.Hoverfly || tp == CreatureTemplateType.TintedBeetle) && self.stuckObjects is List<AbstractPhysicalObject.AbstractObjectStick> list)
         {
-            if (self.stuckObjects is List<AbstractPhysicalObject.AbstractObjectStick> list)
+            for (var num = list.Count - 1; num >= 0; num--)
             {
-                for (var num = list.Count - 1; num >= 0; num--)
+                if (list[num] is AbstractPhysicalObject.CreatureGripStick stick && stick.A == self && stick.B is AbstractPhysicalObject obj)
                 {
-                    if (num < list.Count && list[num] is AbstractPhysicalObject.CreatureGripStick stick && list[num].A == self)
-                    {
-                        if (list[num].B is AbstractPhysicalObject obj)
-                        {
-                            if (self.abstractAI?.RealAI is HoverflyAI g && g.FoodTracker is FoodItemTracker tracker)
-                                tracker.ForgetItem(obj);
-                            obj.Destroy();
-                            obj.realizedObject?.Destroy();
-                            if (self.remainInDenCounter > -1 && self.remainInDenCounter < 200 && !self.WantToStayInDenUntilEndOfCycle())
-                                self.remainInDenCounter = 200;
-                            if (self.abstractAI is not AbstractCreatureAI aai || aai.DoIwantToDropThisItemInDen(obj))
-                                self.DropCarriedObject(stick.grasp);
-                        }
-                    }
+                    var abai = self.abstractAI;
+                    var ai = abai?.RealAI;
+                    if (ai is HoverflyAI hvai)
+                        hvai.FoodTracker?.ForgetItem(obj);
+                    else if (ai is TintedBeetleAI tbai)
+                        tbai.FoodTracker?.ForgetItem(obj);
+                    obj.Destroy();
+                    obj.realizedObject?.Destroy();
+                    if (self.remainInDenCounter > -1 && self.remainInDenCounter < 200 && !self.WantToStayInDenUntilEndOfCycle())
+                        self.remainInDenCounter = 200;
+                    if (abai is null || abai.DoIwantToDropThisItemInDen(obj))
+                        self.DropCarriedObject(stick.grasp);
                 }
             }
         }
@@ -152,12 +153,15 @@ public static class AbstractPhysicalObjectHooks
                     var nm = ari.Split(':')[0];
                     if (string.Equals(nm, "seedbat", StringComparison.OrdinalIgnoreCase) && Seed.TryGetValue(self, out var props))
                         props.IsSeed = true;
-                    else if (string.Equals(nm, "bigrub", StringComparison.OrdinalIgnoreCase) && Big.TryGetValue(self, out var props2))
-                        props2.IsBig = true;
-                    else if (string.Equals(nm, "altbigrub", StringComparison.OrdinalIgnoreCase) && Big.TryGetValue(self, out var props3))
+                    else if (Big.TryGetValue(self, out var props2))
                     {
-                        props3.IsBig = true;
-                        self.superSizeMe = true;
+                        if (string.Equals(nm, "bigrub", StringComparison.OrdinalIgnoreCase))
+                            props2.IsBig = true;
+                        else if (string.Equals(nm, "altbigrub", StringComparison.OrdinalIgnoreCase))
+                        {
+                            props2.IsBig = true;
+                            self.superSizeMe = true;
+                        }
                     }
                     else if (string.Equals(nm, "albinoform", StringComparison.OrdinalIgnoreCase) && Albino.TryGetValue(self, out var props4))
                         props4.Value = true;
@@ -166,16 +170,44 @@ public static class AbstractPhysicalObjectHooks
         }
     }
 
+    internal static void IL_AbstractCreature_Update(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic"),
+            x => x.MatchCall(out _)))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((bool flag, AbstractCreature self) => flag || self.creatureTemplate.type == CreatureTemplateType.Denture);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.Update!");
+    }
+
     internal static void On_AbstractCreature_Update(On.AbstractCreature.orig_Update orig, AbstractCreature self, int time)
     {
         orig(self, time);
-        if (!self.slatedForDeletion && self.state?.dead is false && HoverflyData.TryGetValue(self, out var d))
+        if (!self.slatedForDeletion && self.state is CreatureState st && !st.dead && HoverflyData.TryGetValue(self, out var d))
         {
             if (d.CanEatRootDelay > 0)
                 --d.CanEatRootDelay;
-            if (d.BiteWait > 0 && self.realizedCreature is Creature c && c.grasps?.FirstOrDefault()?.grabbed is DangleFruit)
+            if (d.BiteWait > 0 && self.realizedCreature is Hoverfly f && f.grasps[0]?.grabbed is DangleFruit)
                 --d.BiteWait;
         }
+    }
+
+    internal static void IL_AbstractCreature_WantToStayInDenUntilEndOfCycle(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic"),
+            x => x.MatchCall(out _)))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((bool flag, AbstractCreature self) => flag || self.creatureTemplate.type == CreatureTemplateType.Denture);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.WantToStayInDenUntilEndOfCycle!");
     }
 
     internal static bool On_AbstractCreature_WantToStayInDenUntilEndOfCycle(On.AbstractCreature.orig_WantToStayInDenUntilEndOfCycle orig, AbstractCreature self)
@@ -190,27 +222,28 @@ public static class AbstractPhysicalObjectHooks
         orig(self);
         if (self.realizedObject is null)
         {
-            if (self.type == AbstractObjectType.ThornyStrawberry)
+            var type = self.type;
+            if (type == AbstractObjectType.ThornyStrawberry)
                 self.realizedObject = new ThornyStrawberry(self, self.world);
-            else if (self.type == AbstractObjectType.SporeProjectile)
+            else if (type == AbstractObjectType.SporeProjectile)
                 self.realizedObject = new SmallPuffBall(self, self.world);
-            else if (self.type == AbstractObjectType.BlobPiece)
+            else if (type == AbstractObjectType.BlobPiece)
                 self.realizedObject = new BlobPiece(self);
-            else if (self.type == AbstractObjectType.LittleBalloon)
+            else if (type == AbstractObjectType.LittleBalloon)
                 self.realizedObject = new LittleBalloon(self);
-            else if (self.type == AbstractObjectType.BouncingMelon)
+            else if (type == AbstractObjectType.BouncingMelon)
                 self.realizedObject = new BouncingMelon(self);
-            else if (self.type == AbstractObjectType.Physalis)
+            else if (type == AbstractObjectType.Physalis)
                 self.realizedObject = new Physalis(self);
-            else if (self.type == AbstractObjectType.LimeMushroom)
+            else if (type == AbstractObjectType.LimeMushroom)
                 self.realizedObject = new LimeMushroom(self);
-            else if (self.type == AbstractObjectType.GummyAnther)
+            else if (type == AbstractObjectType.GummyAnther)
                 self.realizedObject = new GummyAnther(self);
-            else if (self.type == AbstractObjectType.RubberBlossom)
+            else if (type == AbstractObjectType.RubberBlossom)
                 self.realizedObject = new RubberBlossom(self);
-            else if (self.type == AbstractObjectType.MarineEye)
+            else if (type == AbstractObjectType.MarineEye)
                 self.realizedObject = new MarineEye(self);
-            else if (self.type == AbstractObjectType.StarLemon)
+            else if (type == AbstractObjectType.StarLemon)
                 self.realizedObject = new StarLemon(self);
         }
     }

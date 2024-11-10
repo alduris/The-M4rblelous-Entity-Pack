@@ -12,7 +12,7 @@ sealed class HoverflyCritob : Critob
 {
     internal HoverflyCritob() : base(CreatureTemplateType.Hoverfly)
     {
-        Icon = new SimpleIcon("icon_Hoverfly", Color.green);
+        Icon = new SimpleIcon("Kill_Hoverfly", Color.green);
         RegisterUnlock(KillScore.Configurable(2), SandboxUnlockID.Hoverfly);
         SandboxPerformanceCost = new(.4f, .5f);
         LoadedPerformanceCost = 25f;

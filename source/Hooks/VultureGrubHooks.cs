@@ -35,21 +35,11 @@ public static class VultureGrubHooks
             c.Emit(OpCodes.Ldloc, loc2)
              .EmitDelegate((CreatureTemplate.Type[] array) =>
              {
-                 if (Array.IndexOf(array, CreatureTemplateType.FlyingBigEel) == -1)
-                 {
-                     Array.Resize(ref array, array.Length + 1);
-                     array[array.Length - 1] = CreatureTemplateType.FlyingBigEel;
-                 }
-                 if (Array.IndexOf(array, CreatureTemplateType.MiniFlyingBigEel) == -1)
-                 {
-                     Array.Resize(ref array, array.Length + 1);
-                     array[array.Length - 1] = CreatureTemplateType.MiniFlyingBigEel;
-                 }
-                 if (Array.IndexOf(array, CreatureTemplateType.FatFireFly) == -1)
-                 {
-                     Array.Resize(ref array, array.Length + 1);
-                     array[array.Length - 1] = CreatureTemplateType.FatFireFly;
-                 }
+                 var l = array.Length;
+                 Array.Resize(ref array, l + 3);
+                 array[l] = CreatureTemplateType.FlyingBigEel;
+                 array[l + 1] = CreatureTemplateType.MiniFlyingBigEel;
+                 array[l + 2] = CreatureTemplateType.FatFireFly;
                  return array;
              });
             c.Emit(OpCodes.Stloc, loc2);
@@ -58,5 +48,9 @@ public static class VultureGrubHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook VultureGrub.AttemptCallVulture (part 2)!");
     }
 
-    internal static bool On_VultureGrub_RayTraceSky(On.VultureGrub.orig_RayTraceSky orig, VultureGrub self, Vector2 testDir) => orig(self, testDir) && self.room.abstractRoom.AttractionForCreature(CreatureTemplateType.FlyingBigEel) != AbstractRoom.CreatureRoomAttraction.Forbidden && self.room.abstractRoom.AttractionForCreature(CreatureTemplateType.MiniFlyingBigEel) != AbstractRoom.CreatureRoomAttraction.Forbidden && self.room.abstractRoom.AttractionForCreature(CreatureTemplateType.FatFireFly) != AbstractRoom.CreatureRoomAttraction.Forbidden;
+    internal static bool On_VultureGrub_RayTraceSky(On.VultureGrub.orig_RayTraceSky orig, VultureGrub self, Vector2 testDir)
+    {
+        var abRm = self.room.abstractRoom;
+        return abRm.AttractionForCreature(CreatureTemplateType.FlyingBigEel) != AbstractRoom.CreatureRoomAttraction.Forbidden && abRm.AttractionForCreature(CreatureTemplateType.MiniFlyingBigEel) != AbstractRoom.CreatureRoomAttraction.Forbidden && abRm.AttractionForCreature(CreatureTemplateType.FatFireFly) != AbstractRoom.CreatureRoomAttraction.Forbidden && orig(self, testDir);
+    }
 }

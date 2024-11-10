@@ -3,6 +3,8 @@ using MonoMod.Cil;
 using UnityEngine;
 using Mono.Cecil.Cil;
 using RWCustom;
+using OverseerHolograms;
+using System;
 
 namespace LBMergedMods.Hooks;
 
@@ -70,6 +72,33 @@ public static class OverseerHooks
             }
         }
         return res;
+    }
+
+    internal static void IL_CreaturePointer_Update(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic"),
+            x => x.MatchCall(out _)))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((bool flag, OverseerHologram.CreaturePointer self) => flag && self.pointAtCreature is not Denture);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerHologram.CreaturePointer.Update!");
+    }
+
+    internal static void IL_OverseerCommunicationModule_CreatureDangerScore(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchCallOrCallvirt(typeof(Room).GetMethod("ViewedByAnyCamera", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(Vector2), typeof(float)], null))))
+        {
+            c.Emit(OpCodes.Ldarg_1)
+             .EmitDelegate((bool flag, AbstractCreature creature) => flag && (creature.realizedCreature is not Denture dt || dt.JawOpen <= .5f));
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerCommunicationModule.CreatureDangerScore!");
     }
 
     internal static float On_OverseerCommunicationModule_FoodDelicousScore(On.OverseerCommunicationModule.orig_FoodDelicousScore orig, OverseerCommunicationModule self, AbstractPhysicalObject foodObject, Player player)

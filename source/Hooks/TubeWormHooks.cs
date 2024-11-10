@@ -6,13 +6,11 @@ namespace LBMergedMods.Hooks;
 
 public static class TubeWormHooks
 {
-    public const int GRUB_DATA = 319;
-
     internal static void On_Tongue_Shoot(On.TubeWorm.Tongue.orig_Shoot orig, TubeWorm.Tongue self, Vector2 dir)
     {
         var mode = self.mode;
         orig(self, dir);
-        if (self.worm?.IsBig() is true && !self.Attached && mode == TubeWorm.Tongue.Mode.Retracted)
+        if (self.worm.IsBig() && !self.Attached && mode == TubeWorm.Tongue.Mode.Retracted)
             self.requestedRopeLength = 280f;
     }
 
@@ -145,7 +143,7 @@ public static class TubeWormHooks
     internal static void On_TubeWormGraphics_Reset(On.TubeWormGraphics.orig_Reset orig, TubeWormGraphics self)
     {
         orig(self);
-        if (self.worm is TubeWorm w && w.IsBig(out var props))
+        if (self.worm.IsBig(out var props))
             props.LastLightLife = props.LightLife;
     }
 
@@ -192,13 +190,7 @@ public static class TubeWormHooks
 
     internal static Color ChangeCol(Color col, float timeStacker, BigrubProperties props) => MaxBlack(Color.Lerp(col, props.BlackCol, (1f - (1f - props.RoomLight) * Mathf.Lerp(props.LastLightLife, props.LightLife, timeStacker)) * .6f));
 
-    internal static Color GlowCol(Color col, float dist, Color mBase, float glowAlpha)
-    {
-        var addCol = mBase * Mathf.InverseLerp(100f, 0f, dist) * .5f * glowAlpha;
-        addCol.a = 0f;
-        col += addCol;
-        return col;
-    }
+    internal static Color GlowCol(Color col, float dist, Color mBase, float glowAlpha) => col + ((mBase * Mathf.InverseLerp(100f, 0f, dist) * .5f * glowAlpha) with { a = 0f });
 
     public static bool IsBig(this TubeWorm self) => Big.TryGetValue(self.abstractCreature, out var prop) && prop.IsBig;
 

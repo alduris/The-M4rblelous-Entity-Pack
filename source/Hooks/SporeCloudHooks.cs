@@ -25,7 +25,7 @@ public static class SporeCloudHooks
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldloc, il.Body.Variables[local])
-             .EmitDelegate((SporeCloud self, int index) => self.room?.abstractRoom?.creatures?[index]?.creatureTemplate.type == CreatureTemplateType.Sporantula);
+             .EmitDelegate((SporeCloud self, int index) => self.room.abstractRoom.creatures[index].creatureTemplate.type == CreatureTemplateType.Sporantula);
             c.Emit(OpCodes.Brtrue, label);
         }
         else

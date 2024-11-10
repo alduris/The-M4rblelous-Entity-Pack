@@ -17,9 +17,9 @@ public static class IconHooks
     internal static Color On_CreatureSymbol_ColorOfCreature(On.CreatureSymbol.orig_ColorOfCreature orig, IconSymbol.IconSymbolData iconData)
     {
         var res = orig(iconData);
-        if (iconData.critType == CreatureTemplate.Type.TubeWorm && iconData.intData == GRUB_DATA)
+        if (iconData.critType == CreatureTemplate.Type.TubeWorm && iconData.intData == M4R_DATA_NUMBER)
             res = Color.green;
-        else if (iconData.critType == CreatureTemplate.Type.Hazer && iconData.intData == HAZER_DATA)
+        else if (iconData.critType == CreatureTemplate.Type.Hazer && iconData.intData == M4R_DATA_NUMBER)
             res = Color.white;
         return res;
     }
@@ -27,9 +27,9 @@ public static class IconHooks
     internal static string On_CreatureSymbol_SpriteNameOfCreature(On.CreatureSymbol.orig_SpriteNameOfCreature orig, IconSymbol.IconSymbolData iconData)
     {
         var res = orig(iconData);
-        if (iconData.critType == CreatureTemplate.Type.Fly && iconData.intData == SEED_DATA)
-            res = "icon_SeedBat";
-        else if (iconData.critType == CreatureTemplate.Type.TubeWorm && iconData.intData == GRUB_DATA)
+        if (iconData.critType == CreatureTemplate.Type.Fly && iconData.intData == M4R_DATA_NUMBER)
+            res = "Kill_SeedBat";
+        else if (iconData.critType == CreatureTemplate.Type.TubeWorm && iconData.intData == M4R_DATA_NUMBER)
             res = "Kill_Bigrub";
         return res;
     }
@@ -38,11 +38,11 @@ public static class IconHooks
     {
         var res = orig(creature);
         if (creature.creatureTemplate.type == CreatureTemplate.Type.Fly && creature.IsSeed())
-            res.intData = SEED_DATA;
+            res.intData = M4R_DATA_NUMBER;
         else if (creature.creatureTemplate.type == CreatureTemplate.Type.TubeWorm && creature.IsBig())
-            res.intData = GRUB_DATA;
+            res.intData = M4R_DATA_NUMBER;
         else if (creature.creatureTemplate.type == CreatureTemplate.Type.Hazer && Albino.TryGetValue(creature, out var props) && props.Value)
-            res.intData = HAZER_DATA;
+            res.intData = M4R_DATA_NUMBER;
         return res;
     }
 
@@ -80,13 +80,13 @@ public static class IconHooks
         if (itemType == AbstractObjectType.BlobPiece)
             return "Kill_WaterBlob";
         if (itemType == AbstractObjectType.LittleBalloon)
-            return "Icon_LBHBulb";
+            return "Symbol_LBHBulb";
         if (itemType == AbstractObjectType.BouncingMelon)
             return "Symbol_BouncingMelon";
         if (itemType == AbstractObjectType.Physalis)
-            return "Icon_Physalis";
+            return "Symbol_Physalis";
         if (itemType == AbstractObjectType.LimeMushroom)
-            return "Icon_LimeMushroom";
+            return "Symbol_LimeMushroom";
         if (itemType == AbstractObjectType.RubberBlossom)
             return "Symbol_BigStationPlant";
         if (itemType == AbstractObjectType.GummyAnther)
@@ -94,7 +94,7 @@ public static class IconHooks
         if (itemType == AbstractObjectType.MarineEye)
             return "Symbol_MarineEye";
         if (itemType == AbstractObjectType.StarLemon)
-            return "Icon_StarLemon";
+            return "Symbol_StarLemon";
         return orig(itemType, intData);
     }
 
@@ -163,13 +163,19 @@ public static class IconHooks
                  .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
                  .EmitDelegate((Map self, AbstractCreature crit) =>
                  {
+                     CreatureSymbol symbol;
                      if (Jelly.TryGetValue(crit, out var jelly) && jelly.IsJelly)
                      {
-                         var symbol = self.creatureSymbols[self.creatureSymbols.Count - 1];
+                         symbol = self.creatureSymbols[self.creatureSymbols.Count - 1];
                          var rs = 1f + jelly.IconRadBonus;
                          symbol.symbolSprite.scale *= rs;
                          symbol.shadowSprite2.scale *= rs;
                          symbol.shadowSprite1.scale *= rs;
+                     }
+                     else if (crit.realizedCreature is Denture dt && (!ModManager.MSC || !self.hud.rainWorld.safariMode))
+                     {
+                         symbol = self.creatureSymbols[self.creatureSymbols.Count - 1];
+                         symbol.shadowSprite1.alpha = symbol.shadowSprite2.alpha = symbol.symbolSprite.alpha = Mathf.Lerp(symbol.symbolSprite.alpha, 0f, dt.JawOpen);
                      }
                  });
             }

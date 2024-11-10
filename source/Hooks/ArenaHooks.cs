@@ -6,26 +6,33 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
+using UnityEngine;
+using Fisobs.Core;
+using Fisobs.Sandbox;
+using System.Linq;
 
 namespace LBMergedMods.Hooks;
 
 public static class ArenaHooks
 {
+    public const int M4R_DATA_NUMBER = 319;
+
     internal static bool On_ArenaCreatureSpawner_IsMajorCreature(On.ArenaCreatureSpawner.orig_IsMajorCreature orig, CreatureTemplate.Type type) => type == CreatureTemplateType.RedHorrorCenti || type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.FatFireFly || type == CreatureTemplateType.Blizzor || orig(type);
 
     internal static void On_ArenaGameSession_SpawnItem(On.ArenaGameSession.orig_SpawnItem orig, ArenaGameSession self, Room room, PlacedObject placedObj)
     {
         var data = (placedObj.data as PlacedObject.MultiplayerItemData)!;
-        if (data.type != MultiplayerItemType.ThornyStrawberry && data.type != MultiplayerItemType.LittleBalloon && data.type != MultiplayerItemType.BouncingMelon && data.type != MultiplayerItemType.Physalis && data.type != MultiplayerItemType.LimeMushroom && data.type != MultiplayerItemType.MarineEye && data.type != MultiplayerItemType.StarLemon)
+        var dataTp = data.type;
+        if (dataTp != MultiplayerItemType.ThornyStrawberry && dataTp != MultiplayerItemType.LittleBalloon && dataTp != MultiplayerItemType.BouncingMelon && dataTp != MultiplayerItemType.Physalis && dataTp != MultiplayerItemType.LimeMushroom && dataTp != MultiplayerItemType.MarineEye && dataTp != MultiplayerItemType.StarLemon)
             orig(self, room, placedObj);
         else if (!self.SpawnDefaultRoomItems || Random.value > data.chance)
         {
-            var tp = new AbstractPhysicalObject.AbstractObjectType(data.type.value);
+            var tp = new AbstractPhysicalObject.AbstractObjectType(dataTp.value);
             if (tp.Index < 0)
                 tp = AbstractPhysicalObject.AbstractObjectType.Spear;
             else if (self.arenaSitting.multiplayerUnlocks.ExoticItems < 1f)
             {
-                var sandboxID = new MultiplayerUnlocks.SandboxUnlockID(data.type.value);
+                var sandboxID = new MultiplayerUnlocks.SandboxUnlockID(dataTp.value);
                 if ((sandboxID.Index < 0 || !self.arenaSitting.multiplayerUnlocks.SandboxItemUnlocked(sandboxID)) && Random.value > self.arenaSitting.multiplayerUnlocks.ExoticItems)
                     tp = AbstractPhysicalObject.AbstractObjectType.Spear;
             }
@@ -38,11 +45,8 @@ public static class ArenaHooks
 
     internal static bool On_CollectToken_AvailableToPlayer(On.CollectToken.orig_AvailableToPlayer orig, CollectToken self)
     {
-        if (self.placedObj?.data is CollectToken.CollectTokenData d)
-        {
-            if (d.SandboxUnlock is MultiplayerUnlocks.SandboxUnlockID id && id.Index < 0)
-                return false;
-        }
+        if (self.placedObj?.data is CollectToken.CollectTokenData d && d.SandboxUnlock is MultiplayerUnlocks.SandboxUnlockID id && id.Index < 0)
+            return false;
         return orig(self);
     }
 
@@ -59,8 +63,9 @@ public static class ArenaHooks
             x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
             x => x.MatchCall(out _)))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc1])
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc2])
+            var vars = il.Body.Variables;
+            c.Emit(OpCodes.Ldloc, vars[loc1])
+             .Emit(OpCodes.Ldloc, vars[loc2])
              .EmitDelegate((bool flag, List<AbstractCreature> challengeKillList, int l) => flag && challengeKillList[l].creatureTemplate.type != CreatureTemplateType.MiniBlackLeech);
         }
         else
@@ -90,8 +95,9 @@ public static class ArenaHooks
             x => x.MatchBrfalse(out label))
             && label is not null)
         {
-            VariableDefinition var0 = il.Body.Variables[loc0],
-                var2 = il.Body.Variables[loc2];
+            var vars = il.Body.Variables;
+            VariableDefinition var0 = vars[loc0],
+                var2 = vars[loc2];
             c.Emit(OpCodes.Ldloc, var0)
              .Emit(OpCodes.Ldloc, var2)
              .Emit(OpCodes.Ldelem_Ref)
@@ -113,22 +119,31 @@ public static class ArenaHooks
 
     internal static MultiplayerUnlocks.SandboxUnlockID On_MultiplayerUnlocks_SandboxUnlockForSymbolData(On.MultiplayerUnlocks.orig_SandboxUnlockForSymbolData orig, IconSymbol.IconSymbolData data)
     {
-        var res = orig(data);
-        if (data.critType == CreatureTemplate.Type.Fly && data.intData == SEED_DATA)
-            res = SandboxUnlockID.SeedBat;
-        else if (data.critType == CreatureTemplate.Type.TubeWorm && data.intData == GRUB_DATA)
-            res = SandboxUnlockID.Bigrub;
-        return res;
+        if (data.intData == M4R_DATA_NUMBER)
+        {
+            var tp = data.critType;
+            if (tp == CreatureTemplate.Type.Fly)
+                return SandboxUnlockID.SeedBat;
+            else if (tp == CreatureTemplate.Type.TubeWorm)
+                return SandboxUnlockID.Bigrub;
+        }
+        return orig(data);
     }
 
     internal static IconSymbol.IconSymbolData On_MultiplayerUnlocks_SymbolDataForSandboxUnlock(On.MultiplayerUnlocks.orig_SymbolDataForSandboxUnlock orig, MultiplayerUnlocks.SandboxUnlockID unlockID)
     {
-        var res = orig(unlockID);
         if (unlockID == SandboxUnlockID.SeedBat)
-            res = new(CreatureTemplate.Type.Fly, AbstractPhysicalObject.AbstractObjectType.Creature, SEED_DATA);
+            return new(CreatureTemplate.Type.Fly, AbstractPhysicalObject.AbstractObjectType.Creature, M4R_DATA_NUMBER);
         else if (unlockID == SandboxUnlockID.Bigrub)
-            res = new(CreatureTemplate.Type.TubeWorm, AbstractPhysicalObject.AbstractObjectType.Creature, GRUB_DATA);
-        return res;
+            return new(CreatureTemplate.Type.TubeWorm, AbstractPhysicalObject.AbstractObjectType.Creature, M4R_DATA_NUMBER);
+        return orig(unlockID);
+    }
+
+    internal static SandboxEditor.PlacedIcon On_SandboxEditor_AddIcon_IconSymbolData_Vector2_EntityID_bool_bool(On.ArenaBehaviors.SandboxEditor.orig_AddIcon_IconSymbolData_Vector2_EntityID_bool_bool orig, SandboxEditor self, IconSymbol.IconSymbolData iconData, Vector2 pos, EntityID ID, bool fadeCircle, bool updatePerfEstimate)
+    {
+        if (iconData.critType == CreatureTemplateType.Denture)
+            return self.AddIcon(new SandboxEditor.InDenCreatureIcon(self, pos, iconData, ID), fadeCircle, updatePerfEstimate);
+        return orig(self, iconData, pos, ID, fadeCircle, updatePerfEstimate);
     }
 
     internal static void On_SandboxEditor_GetPerformanceEstimate(On.ArenaBehaviors.SandboxEditor.orig_GetPerformanceEstimate orig, SandboxEditor.PlacedIcon placedIcon, ref float exponentialPart, ref float linearPart)
@@ -166,7 +181,7 @@ public static class ArenaHooks
                  if (data.critType == CreatureTemplate.Type.Fly && Seed.TryGetValue(crit, out var prop))
                  {
                      prop.Born = true;
-                     prop.IsSeed = data.intData == SEED_DATA;
+                     prop.IsSeed = data.intData == M4R_DATA_NUMBER;
                  }
                  return crit;
              });
@@ -189,14 +204,55 @@ public static class ArenaHooks
                  if (placedIconData.data.critType == CreatureTemplate.Type.TubeWorm && Big.TryGetValue(crit, out var prop))
                  {
                      prop.Born = true;
-                     prop.IsBig = placedIconData.data.intData == GRUB_DATA;
+                     prop.IsBig = placedIconData.data.intData == M4R_DATA_NUMBER;
                  }
                  else if (placedIconData.data.critType == CreatureTemplate.Type.Hazer && Albino.TryGetValue(crit, out var prop2))
-                     prop2.Value = placedIconData.data.intData == HAZER_DATA;
+                     prop2.Value = placedIconData.data.intData == M4R_DATA_NUMBER;
              });
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SandboxGameSession.SpawnEntity! (part 2)");
+    }
+
+    internal static void On_SandboxRegistry_DoSpawn(Action<SandboxGameSession, SandboxEditor.PlacedIconData, EntitySaveData, ISandboxHandler> orig, SandboxGameSession session, SandboxEditor.PlacedIconData p, EntitySaveData data, ISandboxHandler handler)
+    {
+        if (p.data.critType == CreatureTemplateType.Denture)
+        {
+            var sandboxUnlock = handler.SandboxUnlocks.FirstOrDefault();
+            if (sandboxUnlock is null)
+            {
+                Debug.LogError($"The fisob \"{handler.Type}\" had no sandbox unlocks.");
+                return;
+            }
+            try
+            {
+                var world = session.game.world;
+                var abstractWorldEntity = handler.ParseFromSandbox(world, data, sandboxUnlock);
+                if (abstractWorldEntity is AbstractCreature crit)
+                {
+                    crit.pos.x = -1;
+                    crit.pos.y = -1;
+                    crit.pos.abstractNode = p.data.intData;
+                    world.GetAbstractRoom(0).entitiesInDens.Add(crit);
+                }
+                else
+                    Debug.LogError($"The sandbox unlock \"{sandboxUnlock.Type}\" didn't return a creature when being parsed in sandbox mode.");
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError($"The sandbox unlock \"{sandboxUnlock.Type}\" threw an exception when being parsed in sandbox mode.");
+                Debug.LogException(exception);
+            }
+        }
+        else
+        {
+            orig(session, p, data, handler);
+            if (p.data.critType == CreatureTemplateType.MiniBlackLeech)
+            {
+                for (var i = 1; i <= 4; i++)
+                    orig(session, p, data, handler);
+            }
+        }
     }
 
     internal static void On_SandboxSettingsInterface_DefaultKillScores(On.Menu.SandboxSettingsInterface.orig_DefaultKillScores orig, ref int[] killScores)
@@ -205,5 +261,5 @@ public static class ArenaHooks
         killScores[(int)SandboxUnlockID.Bigrub] = 2;
     }
 
-    internal static bool On_SandboxSettingsInterface_IsThisSandboxUnlockVisible(On.Menu.SandboxSettingsInterface.orig_IsThisSandboxUnlockVisible orig, MultiplayerUnlocks.SandboxUnlockID sandboxUnlockID) => orig(sandboxUnlockID) && sandboxUnlockID != SandboxUnlockID.SeedBat && sandboxUnlockID != SandboxUnlockID.Bigrub && sandboxUnlockID != SandboxUnlockID.MiniBlackLeech;
+    internal static bool On_SandboxSettingsInterface_IsThisSandboxUnlockVisible(On.Menu.SandboxSettingsInterface.orig_IsThisSandboxUnlockVisible orig, MultiplayerUnlocks.SandboxUnlockID sandboxUnlockID) => sandboxUnlockID != SandboxUnlockID.SeedBat && sandboxUnlockID != SandboxUnlockID.Bigrub && sandboxUnlockID != SandboxUnlockID.MiniBlackLeech && orig(sandboxUnlockID);
 }

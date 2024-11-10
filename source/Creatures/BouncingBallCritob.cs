@@ -13,7 +13,7 @@ sealed class BouncingBallCritob : Critob
 {
     internal BouncingBallCritob() : base(CreatureTemplateType.BouncingBall)
     {
-        Icon = new SimpleIcon("icon_BouncingBall", Color.white);
+        Icon = new SimpleIcon("Kill_BouncingBall", Color.white);
         LoadedPerformanceCost = 20f;
         SandboxPerformanceCost = new(.5f, .6f);
         RegisterUnlock(KillScore.Configurable(2), SandboxUnlockID.BouncingBall);

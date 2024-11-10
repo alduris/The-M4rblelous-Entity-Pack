@@ -1,8 +1,4 @@
 ﻿global using static LBMergedMods.Hooks.MainHooks;
-using Fisobs.Core;
-using Fisobs.Sandbox;
-using System;
-using ArenaBehaviors;
 
 namespace LBMergedMods.Hooks;
 
@@ -77,6 +73,8 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Blizzor);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.MoleSalamander))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.MoleSalamander);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Denture))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Denture);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();
@@ -166,16 +164,6 @@ public static class MainHooks
             Futile.atlasManager.UnloadAtlas("BlizzorNeck");
         LBMergedModsPlugin.Bundle?.Unload(true);
         LBMergedModsPlugin.Bundle = null;
-    }
-
-    internal static void On_SandboxRegistry_DoSpawn(Action<SandboxGameSession, SandboxEditor.PlacedIconData, EntitySaveData, ISandboxHandler> orig, SandboxGameSession session, SandboxEditor.PlacedIconData p, EntitySaveData data, ISandboxHandler handler)
-    {
-        orig(session, p, data, handler);
-        if (p.data.critType == CreatureTemplateType.MiniBlackLeech)
-        {
-            for (var i = 1; i <= 4; i++)
-                orig(session, p, data, handler);
-        }
     }
 
     internal static void On_SoundLoader_LoadSounds(On.SoundLoader.orig_LoadSounds orig, SoundLoader self)

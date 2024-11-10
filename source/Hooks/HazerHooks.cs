@@ -8,8 +8,6 @@ namespace LBMergedMods.Hooks;
 
 public static class HazerHooks
 {
-    public const int HAZER_DATA = 319;
-
     internal static void On_Hazer_Collide(On.Hazer.orig_Collide orig, Hazer self, PhysicalObject otherObject, int myChunk, int otherChunk)
     {
         if (otherObject is not HazerMom)

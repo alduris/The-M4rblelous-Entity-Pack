@@ -7,8 +7,6 @@ namespace LBMergedMods.Hooks;
 
 public static class FlyHooks
 {
-    public const int SEED_DATA = 319;
-
     internal static void On_Fly_Act(On.Fly.orig_Act orig, Fly self, bool eu)
     {
         if (self.IsSeed())

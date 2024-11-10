@@ -108,9 +108,9 @@ sealed class BlizzorCritob : Critob
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new MirosBirdAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new MirosBird(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Blizzor(acrit, acrit.world);
 
-    public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new MirosBirdAbstractAI(acrit.world, acrit);
+    public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new BlizzorAbstractAI(acrit.world, acrit);
 
     public override void LoadResources(RainWorld rainWorld) { }
 

@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using DevInterface;
 using RWCustom;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
@@ -13,7 +14,7 @@ sealed class FatFireFlyCritob : Critob
 {
     internal FatFireFlyCritob() : base(CreatureTemplateType.FatFireFly)
     {
-        Icon = new SimpleIcon("icon_FatFireFly", new(.75f, .15f, 0f));
+        Icon = new SimpleIcon("Kill_FatFireFly", new(.75f, .15f, 0f));
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new(1.1f, .65f);
         RegisterUnlock(KillScore.Configurable(16), SandboxUnlockID.FatFireFly);
@@ -121,8 +122,8 @@ sealed class FatFireFlyCritob : Critob
         fff.IgnoredBy(CreatureTemplate.Type.MirosBird);
         if (ModManager.MSC)
         {
-            fff.Ignores(MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
-            fff.IgnoredBy(MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
+            fff.Ignores(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
+            fff.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
         }
         fff.Ignores(Type);
     }

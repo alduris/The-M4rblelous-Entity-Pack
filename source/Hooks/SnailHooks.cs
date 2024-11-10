@@ -107,6 +107,7 @@ public static class SnailHooks
 
     internal static void IL_SnailAI_TileIdleScore(ILContext il)
     {
+        var vars = il.Body.Variables;
         var c = new ILCursor(il);
         MethodReference? ref1 = null;
         int loc = 0, loc2 = 0;
@@ -125,18 +126,18 @@ public static class SnailHooks
             x => x.MatchBrfalse(out _)))
         {
             ++c.Index;
-            var local = il.Body.Variables[loc];
+            var local = vars[loc];
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
              .Emit(OpCodes.Ldloc, local)
              .EmitDelegate((Tracker.CreatureRepresentation rep, SnailAI self, WorldCoordinate pos, float num) =>
              {
-                 if (rep.representedCreature?.creatureTemplate.type == CreatureTemplateType.BouncingBall && rep.representedCreature != self.creature && Custom.ManhattanDistance(pos, rep.BestGuessForPosition()) < 1)
+                 if (rep.representedCreature.creatureTemplate.type == CreatureTemplateType.BouncingBall && rep.representedCreature != self.creature && Custom.ManhattanDistance(pos, rep.BestGuessForPosition()) < 1)
                      num -= 20f;
                  return num;
              });
             c.Emit(OpCodes.Stloc, local)
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc2]);
+             .Emit(OpCodes.Ldloc, vars[loc2]);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SnailAI.TileIdleScore! (part 1)");
@@ -149,7 +150,7 @@ public static class SnailHooks
             x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
             x => x.MatchCall(out _)))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc2])
+            c.Emit(OpCodes.Ldloc, vars[loc2])
              .EmitDelegate((bool flag, Tracker.CreatureRepresentation rep) => flag || rep.representedCreature.creatureTemplate.type == CreatureTemplateType.MiniBlackLeech);
         }
         else

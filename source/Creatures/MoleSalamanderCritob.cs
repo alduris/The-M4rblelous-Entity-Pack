@@ -11,7 +11,7 @@ sealed class MoleSalamanderCritob : Critob
 {
     internal MoleSalamanderCritob() : base(CreatureTemplateType.MoleSalamander)
     {
-        Icon = new SimpleIcon("icon_MoleSalamander", new(.368627459f, .368627459f, 37f / 85f));
+        Icon = new SimpleIcon("Kill_MoleSalamander", new(.368627459f, .368627459f, 37f / 85f));
         SandboxPerformanceCost = new(.5f, .5f);
         LoadedPerformanceCost = 50f;
         RegisterUnlock(KillScore.Configurable(7), SandboxUnlockID.MoleSalamander);

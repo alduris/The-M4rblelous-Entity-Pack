@@ -16,7 +16,7 @@ sealed class RedHorrorCritob : Critob
         Icon = new SimpleIcon("Kill_Centiwing", new(46f / 51f, .05490196f, .05490196f));
         RegisterUnlock(KillScore.Configurable(27), SandboxUnlockID.RedHorrorCenti);
         SandboxPerformanceCost = new(1f, .7f);
-        ShelterDanger = ShelterDanger.Hostile;
+        ShelterDanger = ShelterDanger.TooLarge;
     }
 
     public override int ExpeditionScore() => 27;

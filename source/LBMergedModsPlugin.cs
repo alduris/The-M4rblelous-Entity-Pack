@@ -18,7 +18,7 @@ using Fisobs.Sandbox;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.0"), BepInDependency("io.github.dual.fisobs")]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.1"), BepInDependency("io.github.dual.fisobs")]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -119,7 +119,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         new Hook(typeof(CreatureTemplate).GetMethod("get_IsVulture", ALL_FLAGS), On_CreatureTemplate_get_IsVulture);
         IL.VultureGrub.AttemptCallVulture += IL_VultureGrub_AttemptCallVulture;
         On.MirosBirdAI.DoIWantToBiteCreature += On_MirosBirdAI_DoIWantToBiteCreature;
-        On.VultureAI.DoIWantToBiteCreature += On_VultureAI_DoIWantToBiteCreature;
+        On.VultureAI.DoIWantToBiteCreature += Hooks.VultureHooks.On_VultureAI_DoIWantToBiteCreature;
         On.Lizard.DamageAttackClosestChunk += On_Lizard_DamageAttackClosestChunk;
         On.Scavenger.MeleeGetFree += On_Scavenger_MeleeGetFree;
         IL.ShortcutHandler.FlyingCreatureArrivedInRealizedRoom += IL_ShortcutHandler_FlyingCreatureArrivedInRealizedRoom;
@@ -301,14 +301,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardGraphics.CreatureSpotted += On_LizardGraphics_CreatureSpotted;
         On.LizardCosmetics.LongHeadScales.ctor += On_LongHeadScales_ctor;
         On.ArtificialIntelligence.VisualScore += On_ArtificialIntelligence_VisualScore;
-        On.MirosBird.ctor += On_MirosBird_ctor;
         On.MirosBird.BirdLeg.RunMode += On_BirdLeg_RunMode;
         On.MirosBird.Act += On_MirosBird_Act;
-        On.Creature.Blind += On_Creature_Blind;
-        On.MirosBirdGraphics.ctor += On_MirosBirdGraphics_ctor;
-        On.MirosBirdGraphics.InitiateSprites += On_MirosBirdGraphics_InitiateSprites;
-        On.MirosBirdGraphics.ApplyPalette += On_MirosBirdGraphics_ApplyPalette;
-        On.MirosBirdAbstractAI.ctor += On_MirosBirdAbstractAI_ctor;
         IL.MirosBirdAbstractAI.Raid += IL_MirosBirdAbstractAI_Raid;
         On.JetFishAI.SocialEvent += On_JetFishAI_SocialEvent;
         IL.Leech.Swim += IL_Leech_Swim;
@@ -330,6 +324,12 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.DeerAI.NewRoom += On_DeerAI_NewRoom;
         On.DeerAI.TrackItem += On_DeerAI_TrackItem;
         On.DropBugAI.IUseItemTracker_TrackItem += On_DropBugAI_IUseItemTracker_TrackItem;
+        On.ArenaBehaviors.SandboxEditor.AddIcon_IconSymbolData_Vector2_EntityID_bool_bool += On_SandboxEditor_AddIcon_IconSymbolData_Vector2_EntityID_bool_bool;
+        IL.AbstractCreature.WantToStayInDenUntilEndOfCycle += IL_AbstractCreature_WantToStayInDenUntilEndOfCycle;
+        IL.AbstractCreature.Update += IL_AbstractCreature_Update;
+        On.SporePlant.SporePlantInterested += On_SporePlant_SporePlantInterested;
+        IL.OverseerHolograms.OverseerHologram.CreaturePointer.Update += IL_CreaturePointer_Update;
+        IL.OverseerCommunicationModule.CreatureDangerScore += IL_OverseerCommunicationModule_CreatureDangerScore;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -351,7 +351,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new SporantulaCritob(),
                         new MiniLeviathanCritob(),
                         new MiniFlyingBigEelCritob(),
-                        new FlyingBigEelCritob());
+                        new FlyingBigEelCritob(),
+                        new DentureCritob());
     }
 
     public void OnDisable()
