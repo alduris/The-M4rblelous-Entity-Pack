@@ -2,6 +2,7 @@
 using RWCustom;
 using System;
 using UnityEngine;
+using static System.Net.WebRequestMethods;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
@@ -116,7 +117,7 @@ public class Denture : Creature
                 {
                     SuckedIntoShortcut = Mathf.Lerp(SuckedIntoShortcut, 1f, .1f);
                     enteringShortCut = ShortCutPos;
-                    rm.PlaySound(SoundID.Leviathan_Crush_Non_Organic_Object, firstChunk.pos, .72f, 1.2f);
+                    rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, firstChunk.pos, 1.2f, 1.02f);
                 }
             }
             else if (cs && ((!safari && TastyChunkInRange(rm) && CreatureEaten == 0 && !CreatureMissed) || (safari && !CreatureMissed && inputWithDiagonals?.pckp == true)))
@@ -214,6 +215,7 @@ public class Denture : Creature
         }
         if (CreatureEaten > 0)
         {
+            rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, fcp, 1.2f, 1.02f);
             rm.PlaySound(playerCrush ? SoundID.Leviathan_Crush_Player : SoundID.Leviathan_Crush_NPC, fcp, .82f, 1.2f);
             for (var i = 0; i < 10; i++)
             {
@@ -226,7 +228,7 @@ public class Denture : Creature
         else
         {
             CreatureMissed = true;
-            rm.PlaySound(SoundID.Leviathan_Crush_Non_Organic_Object, fcp, .72f, 1.2f);
+            rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, fcp, 1.2f, 1.02f);
         }
     }
 

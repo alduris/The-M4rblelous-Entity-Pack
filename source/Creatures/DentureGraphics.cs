@@ -84,8 +84,8 @@ public class DentureGraphics : GraphicsModule
             body3.SetPosition(tweakedPos - ow.OutDir * 1.8f - perp);
             var open = Mathf.Lerp(ow.LastJawOpen, ow.JawOpen, timeStacker);
             var angleDir = ow.GraphicsAngleDir();
-            jaw1.rotation = Mathf.Lerp(0f, -84f, open) + angleDir;
-            jaw2.rotation = Mathf.Lerp(0f, 84f, open) + angleDir;
+            jaw1.rotation = Mathf.Lerp(0f, -80f, open) + angleDir;
+            jaw2.rotation = Mathf.Lerp(0f, 80f, open) + angleDir;
             var sucked = Mathf.Lerp(ow.LastSuckedIntoShortcut, ow.SuckedIntoShortcut, timeStacker) * .75f;
             var baseScale = ow.JawRad / 150f;
             jaw1.scaleY = jaw2.scaleY = baseScale * (1f - sucked) * (1f + (1f - open) * .1f);
