@@ -2,7 +2,6 @@
 using RWCustom;
 using System;
 using UnityEngine;
-using static System.Net.WebRequestMethods;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
@@ -14,7 +13,7 @@ public class Denture : Creature
     public float LastSuckedIntoShortcut, SuckedIntoShortcut, LastJawOpen, JawOpen;
     public IntVector2 ShortCutPos;
     public Vector2 RootPos, OutDir = Vector2.up;
-    public bool CreatureMissed;
+    public bool CreatureMissed, CanEat = true;
 
     public override float VisibilityBonus => -JawOpen * .8f;
 
@@ -51,12 +50,14 @@ public class Denture : Creature
         OutDir = room.ShorcutEntranceHoleDirection(ShortCutPos).ToVector2();
         RootPos = room.MiddleOfTile(nodeCoord) + OutDir * 25f;
         JawOpen = 1f;
+        CanEat = true;
     }
 
     public override void SpitOutOfShortCut(IntVector2 pos, Room newRoom, bool spitOutAllSticks)
     {
         base.SpitOutOfShortCut(pos, newRoom, spitOutAllSticks);
         JawOpen = 0f;
+        CanEat = safariControlled;
         SuckedIntoShortcut = 1f;
     }
 
@@ -120,7 +121,7 @@ public class Denture : Creature
                     rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, firstChunk.pos, 1.2f, 1.02f);
                 }
             }
-            else if (cs && ((!safari && TastyChunkInRange(rm) && CreatureEaten == 0 && !CreatureMissed) || (safari && !CreatureMissed && inputWithDiagonals?.pckp == true)))
+            else if (cs && CanEat && ((!safari && TastyChunkInRange(rm) && CreatureEaten == 0 && !CreatureMissed) || (safari && !CreatureMissed && inputWithDiagonals?.pckp == true)))
             {
                 JawOpen = Math.Max(JawOpen * (JawOpen - .2f), 0f);
                 if (graphicsModule is DentureGraphics gr)
@@ -147,7 +148,10 @@ public class Denture : Creature
             {
                 JawOpen = Mathf.Lerp(JawOpen, 1f, .1f);
                 if (JawOpen >= .95f)
+                {
+                    CanEat = true;
                     CreatureMissed = false;
+                }
             }
         }
     }
