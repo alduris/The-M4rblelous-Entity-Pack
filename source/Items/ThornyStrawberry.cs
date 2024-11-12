@@ -267,7 +267,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
             }
             data.SpikesRemoved = true;
             if (room is Room rm)
-                rm.AddObject(new ExplosionSpikes(room, fc.pos, 6, 2.2f, 4.25f, 5f, 32.5f, YellowCol with { a = .7f }));
+                rm.AddObject(new ExplosionSpikes(room, fc.pos, 6, 2.5f, 4.5f, 6f, 35f, YellowCol with { a = .7f }));
         }
         else if (result.chunk is BodyChunk ch)
         {
@@ -278,7 +278,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
             (obj as IHaveAppendages)!.ApplyForceOnAppendage(result.onAppendagePos, fc.vel * fc.mass);
         vibrate = 20;
         ChangeMode(Mode.Free);
-        fc.vel = fc.vel * -.5f + Custom.DegToVec(Random.value * 360f) * Mathf.Lerp(.1f, .4f, Random.value) * fc.vel.magnitude;
+        fc.vel = fc.vel * -.1f + Custom.DegToVec(Random.value * 360f) * Mathf.Lerp(.1f, .4f, Random.value) * fc.vel.magnitude * .2f;
         room.PlaySound(SoundID.Rock_Hit_Creature, fc);
         SetRandomSpin();
         return true;
@@ -324,7 +324,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
             if (room is Room rm)
             {
                 rm.PlaySound(SoundID.Rock_Hit_Creature, fc);
-                rm.AddObject(new ExplosionSpikes(room, fc.pos, 6, 2.2f, 4.25f, 5f, 32.5f, YellowCol with { a = .5f }));
+                rm.AddObject(new ExplosionSpikes(room, fc.pos, 6, 2.5f, 4.5f, 6f, 35f, YellowCol with { a = .7f }));
                 SetRandomSpin();
             }
         }
@@ -365,6 +365,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
             sprs[1].color = color;
             sprs[3].color = Color2;
         }
+        sprs[3].alpha = spk ? 1f : .5f;
         if (slatedForDeletetion || room != rCam.room)
             sLeaser.CleanSpritesAndRemove();
     }
