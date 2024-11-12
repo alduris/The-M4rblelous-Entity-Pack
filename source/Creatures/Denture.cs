@@ -13,7 +13,7 @@ public class Denture : Creature
     public float LastSuckedIntoShortcut, SuckedIntoShortcut, LastJawOpen, JawOpen;
     public IntVector2 ShortCutPos;
     public Vector2 RootPos, OutDir = Vector2.up;
-    public bool CreatureMissed, CanEat = true;
+    public bool CreatureMissed, CanEat = true, CanReactToNoise = true;
 
     public override float VisibilityBonus => -JawOpen * .8f;
 
@@ -51,6 +51,7 @@ public class Denture : Creature
         RootPos = room.MiddleOfTile(nodeCoord) + OutDir * 25f;
         JawOpen = 1f;
         CanEat = true;
+        CanReactToNoise = true;
     }
 
     public override void SpitOutOfShortCut(IntVector2 pos, Room newRoom, bool spitOutAllSticks)
@@ -58,6 +59,7 @@ public class Denture : Creature
         base.SpitOutOfShortCut(pos, newRoom, spitOutAllSticks);
         JawOpen = 0f;
         CanEat = safariControlled;
+        CanReactToNoise = false;
         SuckedIntoShortcut = 1f;
     }
 
@@ -111,8 +113,9 @@ public class Denture : Creature
         {
             var safari = safariControlled;
             var stayInDenNotDead = abstractCreature.WantToStayInDenUntilEndOfCycle() && !dead;
-            if (cs && !safari && (NoiseReaction > 0 || stayInDenNotDead))
+            if (cs && !safari && ((CanReactToNoise && NoiseReaction > 0) || stayInDenNotDead))
             {
+                CanReactToNoise = false;
                 JawOpen = Math.Max(JawOpen * (JawOpen - (stayInDenNotDead ? .2f : .08f)), 0f);
                 if (stayInDenNotDead && JawOpen < .05f)
                 {
@@ -149,6 +152,7 @@ public class Denture : Creature
                 JawOpen = Mathf.Lerp(JawOpen, 1f, .1f);
                 if (JawOpen >= .95f)
                 {
+                    CanReactToNoise = true;
                     CanEat = true;
                     CreatureMissed = false;
                 }

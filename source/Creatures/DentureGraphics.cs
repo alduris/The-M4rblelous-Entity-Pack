@@ -91,7 +91,7 @@ public class DentureGraphics : GraphicsModule
             jaw1.scaleY = jaw2.scaleY = baseScale * (1f - sucked) * (1f + (1f - open) * .1f);
             jaw1.scaleX = baseScale * (1f - sucked);
             jaw2.scaleX = -baseScale * (1f - sucked);
-            body.scale = baseScale * (1f - sucked) * 1.9f;
+            body.scale = baseScale * (1f - sucked) * 2.1f;
             body2.scale = body3.scale = baseScale * (1f - sucked) * 1.9f * (1f + (1f - open) * 3f);
             if (MoveToFront)
             {
