@@ -330,6 +330,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.SporePlant.SporePlantInterested += On_SporePlant_SporePlantInterested;
         IL.OverseerHolograms.OverseerHologram.CreaturePointer.Update += IL_CreaturePointer_Update;
         IL.OverseerCommunicationModule.CreatureDangerScore += IL_OverseerCommunicationModule_CreatureDangerScore;
+        On.ThreatDetermination.ThreatOfCreature += On_ThreatDetermination_ThreatOfCreature;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

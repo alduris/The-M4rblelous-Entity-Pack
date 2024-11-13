@@ -58,5 +58,12 @@ public static class CreatureHooks
         return res;
     }
 
+    internal static float On_ThreatDetermination_ThreatOfCreature(On.ThreatDetermination.orig_ThreatOfCreature orig, ThreatDetermination self, Creature creature, Player player)
+    {
+        if ((creature is Sporantula spore && (spore.dead || (spore.AI is SporantulaAI sporeAI && !sporeAI.DoIWantToKill(player.abstractCreature)))) || (creature is Centipede centi && centi.Scutigera() && (centi.dead || (centi.AI is CentipedeAI centiAI && !centiAI.DoIWantToShockCreature(player.abstractCreature)))))
+            return 0f;
+        return orig(self, creature, player);
+    }
+
     public static void FoodItemSpotted(this ArtificialIntelligence self, bool firstSpot, FoodItemRepresentation item) => OnFoodItemSpotted?.Invoke(self, firstSpot, item);
 }
