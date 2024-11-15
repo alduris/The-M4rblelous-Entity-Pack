@@ -73,7 +73,9 @@ public static class CreatureTemplateType
             HazerMom,
             TintedBeetle,
             MiniBlackLeech,
-            Denture];
+            Denture,
+            Blizzor,
+            MoleSalamander];
     }
 
     public static void UnregisterValues()
