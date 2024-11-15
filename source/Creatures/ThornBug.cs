@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using RWCustom;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
@@ -14,7 +15,7 @@ public class ThornBug : InsectoidCreature
     public IntVector2 SpecialMoveDestination;
     public Vector2 AntennaDir, TravelDir, AwayFromTerrainDir;
     [AllowNull] public ThornBugAI AI;
-    public int FootingCounter, OutOfWaterFooting, SpecialMoveCounter;
+    public int FootingCounter, OutOfWaterFooting, SpecialMoveCounter, StunCounter;
     public float RunSpeed, RunCycle, Hue;
     public float NoJumps;
     public float AntennaAttention, Shake;
@@ -157,7 +158,7 @@ public class ThornBug : InsectoidCreature
             for (var num3 = 0; num3 < bs.Length; num3++)
             {
                 var b = bs[num3];
-                b.vel *= .75f;
+                b.vel *= .765f;
                 b.vel.y += gravity;
             }
         }
@@ -229,7 +230,7 @@ public class ThornBug : InsectoidCreature
             }
             else
             {
-                b0.vel *= .75f;
+                b0.vel *= .765f;
                 FootingCounter = 0;
                 Run(movementConnection);
                 OutOfWaterFooting = 0;
@@ -516,25 +517,19 @@ public class ThornBug : InsectoidCreature
     public override bool Grab(PhysicalObject obj, int graspUsed, int chunkGrabbed, Grasp.Shareability shareability, float dominance, bool overrideEquallyDominant, bool pacifying)
     {
         var res = base.Grab(obj, graspUsed, chunkGrabbed, shareability, dominance, overrideEquallyDominant, pacifying);
-        if (res && obj is Creature cr)
+        if (res && obj is Creature cr && room is Room rm)
         {
             var b0 = bodyChunks[0];
-            cr.Violence(b0, Custom.DirVec(b0.pos, cr.bodyChunks[chunkGrabbed].pos) * 10f, cr.bodyChunks[chunkGrabbed], null, DamageType.Stab, .5f, 0f);
-            if (cr is Player p)
-            {
-                if (p.SlugCatClass != MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear && p.SlugCatClass != MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Gourmand)
-                    p.Regurgitate();
-            }
-            cr.Stun(10);
-            cr.LoseAllGrasps();
-            room.AddObject(new CreatureSpasmer(cr.bodyChunks[chunkGrabbed].owner as Creature, false, 54));
-            room.AddObject(new CreatureSpasmer(this, true, 164));
+            var crCh = cr.bodyChunks[chunkGrabbed];
+            cr.Violence(b0, Custom.DirVec(b0.pos, crCh.pos) * 10f, crCh, null, DamageType.Stab, .5f, 0f);
+            rm.AddObject(new CreatureSpasmer(cr, false, 54));
+            rm.AddObject(new CreatureSpasmer(this, true, 164));
             b0.vel += Custom.RNV() * 5f;
-            room.PlaySound(SoundID.Spear_Stick_In_Creature, b0);
-            if (room.BeingViewed)
+            rm.PlaySound(SoundID.Spear_Stick_In_Creature, b0);
+            if (rm.BeingViewed)
             {
                 for (var j = 0; j < 8; j++)
-                    room.AddObject(new WaterDrip(cr.bodyChunks[chunkGrabbed].pos, -b0.vel * Random.value * .5f + Custom.DegToVec(360f * Random.value) * b0.vel.magnitude * Random.value * .5f, false));
+                    rm.AddObject(new WaterDrip(crCh.pos, -b0.vel * Random.value * .5f + Custom.DegToVec(360f * Random.value) * b0.vel.magnitude * Random.value * .5f, false));
             }
         }
         return res;
@@ -545,6 +540,12 @@ public class ThornBug : InsectoidCreature
         if (type == DamageType.Explosion)
             damage *= 5f;
         base.Violence(source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
+    }
+
+    public override void ReleaseGrasp(int grasp)
+    {
+        base.ReleaseGrasp(grasp);
+        StunCounter = 0;
     }
 
     public virtual void CarryObject(bool eu)
@@ -569,6 +570,26 @@ public class ThornBug : InsectoidCreature
         {
             for (var i = 0; i < 2; i++)
                 g.grabbed.PushOutOf(bs[i].pos, bs[i].rad, g.chunkGrabbed);
+            if (g.grabbed is Creature cr && !cr.dead)
+            {
+                if (StunCounter < 60)
+                    ++StunCounter;
+                else if (StunCounter == 60)
+                {
+                    if (cr is Player p)
+                    {
+                        if (p.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Spear && p.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Gourmand)
+                            p.Regurgitate();
+                    }
+                    cr.Stun(10);
+                    cr.LoseAllGrasps();
+                    b0.vel += Custom.RNV();
+                    rm.PlaySound(SoundID.Spear_Stick_In_Creature, b0, false, .5f, 1f);
+                }
+                ++StunCounter;
+            }
+            else
+                StunCounter = 0;
         }
     }
 }
