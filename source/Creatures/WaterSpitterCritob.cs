@@ -14,10 +14,10 @@ sealed class WaterSpitterCritob : Critob
         Icon = new SimpleIcon("Kill_WaterSpitter", Color.white);
         LoadedPerformanceCost = 50f;
         SandboxPerformanceCost = new(.5f, .5f);
-        RegisterUnlock(KillScore.Configurable(8), SandboxUnlockID.WaterSpitter);
+        RegisterUnlock(KillScore.Configurable(9), SandboxUnlockID.WaterSpitter);
     }
 
-    public override int ExpeditionScore() => 8;
+    public override int ExpeditionScore() => 9;
 
     public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.Salamander;
 

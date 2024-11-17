@@ -14,10 +14,10 @@ sealed class SilverLizardCritob : Critob
         Icon = new SimpleIcon("Kill_Standard_Lizard", new(.654f, .811f, .858f));
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new(.5f, .5f);
-        RegisterUnlock(KillScore.Configurable(6), SandboxUnlockID.SilverLizard);
+        RegisterUnlock(KillScore.Configurable(12), SandboxUnlockID.SilverLizard);
     }
 
-    public override int ExpeditionScore() => 6;
+    public override int ExpeditionScore() => 12;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => Color.white;
 

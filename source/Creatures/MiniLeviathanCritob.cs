@@ -17,7 +17,7 @@ sealed class MiniLeviathanCritob : Critob
     {
         Icon = new SimpleIcon("Kill_MiniLeviathan", s_col);
         ShelterDanger = ShelterDanger.TooLarge;
-        RegisterUnlock(KillScore.Configurable(6), SandboxUnlockID.MiniLeviathan);
+        RegisterUnlock(KillScore.Configurable(10), SandboxUnlockID.MiniLeviathan);
         SandboxPerformanceCost = new(.5f, .5f);
         LoadedPerformanceCost = 50f;
     }
@@ -30,7 +30,7 @@ sealed class MiniLeviathanCritob : Critob
 
     public override void TileIsAllowed(AImap map, IntVector2 tilePos, ref bool? allow) => allow = map.getTerrainProximity(tilePos) > 1;
 
-    public override int ExpeditionScore() => 6;
+    public override int ExpeditionScore() => 10;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => s_col;
 

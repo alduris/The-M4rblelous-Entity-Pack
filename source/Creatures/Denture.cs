@@ -1,4 +1,5 @@
-﻿using Noise;
+﻿using MoreSlugcats;
+using Noise;
 using RWCustom;
 using System;
 using UnityEngine;
@@ -112,7 +113,7 @@ public class Denture : Creature
         else
         {
             var safari = safariControlled;
-            var stayInDenNotDead = abstractCreature.WantToStayInDenUntilEndOfCycle() && !dead;
+            var stayInDenNotDead = abstractCreature.WantToStayInDenUntilEndOfCycle() && !abstractCreature.ignoreCycle && !dead;
             if (cs && !safari && ((CanReactToNoise && NoiseReaction > 0) || stayInDenNotDead))
             {
                 CanReactToNoise = false;
@@ -212,13 +213,18 @@ public class Denture : Creature
         {
             if (crits[i]?.realizedCreature is Creature c && WantsToEat(c) && BiggestCreatureChunk(c) is BodyChunk ch && DistLess(ch.pos, fcp, rd))
             {
-                c.Die();
-                c.Destroy();
+                if (c is TintedBeetle t)
+                    t.Explode(rm);
+                else
+                {
+                    c.Die();
+                    c.Destroy();
+                    if (c is Player)
+                        playerCrush = true;
+                    else if (c is ThornBug or Sporantula or Hazer or HazerMom || (c is BigSpider spider && spider.Template.type == MoreSlugcatsEnums.CreatureTemplateType.MotherSpider))
+                        badFood = true;
+                }
                 CreatureEaten = 8;
-                if (c is Player)
-                    playerCrush = true;
-                else if (c is ThornBug or Sporantula)
-                    badFood = true;
             }
         }
         if (CreatureEaten > 0)

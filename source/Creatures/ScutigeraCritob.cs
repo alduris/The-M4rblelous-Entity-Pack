@@ -15,12 +15,12 @@ sealed class ScutigeraCritob : Critob
     internal ScutigeraCritob() : base(CreatureTemplateType.Scutigera)
     {
         Icon = new SimpleIcon("Kill_Scutigera", Custom.HSL2RGB(Mathf.Lerp(.1527777777777778f, .1861111111111111f, .5f), Mathf.Lerp(.294f, .339f, .5f), .5f));
-        RegisterUnlock(KillScore.Configurable(7), SandboxUnlockID.Scutigera);
+        RegisterUnlock(KillScore.Configurable(13), SandboxUnlockID.Scutigera);
         SandboxPerformanceCost = new(.8f, .5f);
         ShelterDanger = ShelterDanger.Hostile;
     }
 
-    public override int ExpeditionScore() => 7;
+    public override int ExpeditionScore() => 13;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => Custom.HSL2RGB(Mathf.Lerp(.1527777777777778f, .1861111111111111f, .5f), Mathf.Lerp(.294f, .339f, .5f), .5f);
 

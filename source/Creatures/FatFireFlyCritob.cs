@@ -17,10 +17,10 @@ sealed class FatFireFlyCritob : Critob
         Icon = new SimpleIcon("Kill_FatFireFly", new(.75f, .15f, 0f));
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new(1.1f, .65f);
-        RegisterUnlock(KillScore.Configurable(16), SandboxUnlockID.FatFireFly);
+        RegisterUnlock(KillScore.Configurable(25), SandboxUnlockID.FatFireFly);
     }
 
-    public override int ExpeditionScore() => 16;
+    public override int ExpeditionScore() => 25;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => new(.75f, .15f, 0f);
 

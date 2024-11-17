@@ -17,7 +17,7 @@ sealed class MiniFlyingBigEelCritob : Critob
         ShelterDanger = ShelterDanger.TooLarge;
         SandboxPerformanceCost = new(.5f, .5f);
         LoadedPerformanceCost = 50f;
-        RegisterUnlock(KillScore.Configurable(6), SandboxUnlockID.MiniFlyingBigEel, SandboxUnlockID.FlyingBigEel);
+        RegisterUnlock(KillScore.Configurable(10), SandboxUnlockID.MiniFlyingBigEel, SandboxUnlockID.FlyingBigEel);
     }
 
     public override IEnumerable<RoomAttractivenessPanel.Category> DevtoolsRoomAttraction() =>
@@ -28,7 +28,7 @@ sealed class MiniFlyingBigEelCritob : Critob
 
     public override void TileIsAllowed(AImap map, IntVector2 tilePos, ref bool? allow) => allow = map.getTerrainProximity(tilePos) > 1;
 
-    public override int ExpeditionScore() => 6;
+    public override int ExpeditionScore() => 10;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => RainWorld.GoldRGB + new Color(.2f, .2f, .2f);
 

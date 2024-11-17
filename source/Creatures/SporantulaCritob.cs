@@ -13,7 +13,7 @@ sealed class SporantulaCritob : Critob
     internal SporantulaCritob() : base(CreatureTemplateType.Sporantula)
     {
         Icon = new SimpleIcon("Kill_BigSpider", new(.9f, 1f, .8f));
-        RegisterUnlock(KillScore.Configurable(6), SandboxUnlockID.Sporantula);
+        RegisterUnlock(KillScore.Configurable(9), SandboxUnlockID.Sporantula);
         ShelterDanger = ShelterDanger.Hostile;
         SandboxPerformanceCost = new(.55f, .65f);
         LoadedPerformanceCost = 50f;
@@ -33,7 +33,7 @@ sealed class SporantulaCritob : Critob
 
     public override IEnumerable<string> WorldFileAliases() => ["sporantula"];
 
-    public override int ExpeditionScore() => 6;
+    public override int ExpeditionScore() => 9;
 
     public override CreatureTemplate CreateTemplate()
     {

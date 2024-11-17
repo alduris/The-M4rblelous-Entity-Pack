@@ -13,13 +13,13 @@ sealed class ThornBugCritob : Critob
     internal ThornBugCritob() : base(CreatureTemplateType.ThornBug)
     {
         Icon = new SimpleIcon("Kill_ThornBug", ThornBug.BugCol);
-        RegisterUnlock(KillScore.Configurable(4), SandboxUnlockID.ThornBug);
+        RegisterUnlock(KillScore.Configurable(6), SandboxUnlockID.ThornBug);
         SandboxPerformanceCost = new(.3f, .4f);
     }
 
     public override IEnumerable<RoomAttractivenessPanel.Category> DevtoolsRoomAttraction() => [RoomAttractivenessPanel.Category.LikesInside];
 
-    public override int ExpeditionScore() => 4;
+    public override int ExpeditionScore() => 6;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => ThornBug.BugCol;
 
