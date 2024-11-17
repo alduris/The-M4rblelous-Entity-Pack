@@ -2,6 +2,7 @@
 using Noise;
 using RWCustom;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -145,7 +146,7 @@ public class Denture : Creature
                     SuckedIntoShortcut = Mathf.Lerp(SuckedIntoShortcut, 1f, .1f);
                     enteringShortCut = ShortCutPos;
                     if (!dead)
-                        abstractCreature.remainInDenCounter = 160;
+                        abstractCreature.remainInDenCounter = 160 + Random.Range(0, 21);
                 }
             }
             else
@@ -213,6 +214,11 @@ public class Denture : Creature
         {
             if (crits[i]?.realizedCreature is Creature c && WantsToEat(c) && BiggestCreatureChunk(c) is BodyChunk ch && DistLess(ch.pos, fcp, rd))
             {
+                if (c.grabbedBy is List<Grasp> grabs)
+                {
+                    for (var r = 0; r < grabs.Count; r++)
+                        grabs[r]?.grabber?.Stun(10);
+                }
                 if (c is TintedBeetle t)
                     t.Explode(rm);
                 else
