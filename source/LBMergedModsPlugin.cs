@@ -331,6 +331,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.OverseerHolograms.OverseerHologram.CreaturePointer.Update += IL_CreaturePointer_Update;
         IL.OverseerCommunicationModule.CreatureDangerScore += IL_OverseerCommunicationModule_CreatureDangerScore;
         On.ThreatDetermination.ThreatOfCreature += On_ThreatDetermination_ThreatOfCreature;
+        On.AbstractCreature.IsVoided += On_AbstractCreature_IsVoided;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

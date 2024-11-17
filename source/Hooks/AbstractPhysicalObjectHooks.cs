@@ -137,6 +137,13 @@ public static class AbstractPhysicalObjectHooks
         orig(self, den);
     }
 
+    internal static bool On_AbstractCreature_IsVoided(On.AbstractCreature.orig_IsVoided orig, AbstractCreature self)
+    {
+        var res = orig(self);
+        var tp = self.creatureTemplate.type;
+        return res || (self.voidCreature && (tp == CreatureTemplate.Type.RedLizard || tp == CreatureTemplate.Type.RedCentipede || tp == CreatureTemplate.Type.CyanLizard || tp == CreatureTemplate.Type.BigSpider || tp == CreatureTemplate.Type.DaddyLongLegs || tp == CreatureTemplate.Type.BrotherLongLegs || (ModManager.MSC && tp == MoreSlugcatsEnums.CreatureTemplateType.TerrorLongLegs) || tp == CreatureTemplate.Type.BigEel));
+    }
+
     internal static void On_AbstractCreature_setCustomFlags(On.AbstractCreature.orig_setCustomFlags orig, AbstractCreature self)
     {
         orig(self);

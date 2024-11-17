@@ -57,7 +57,7 @@ public class FatFireFly : Vulture
 
     public override void Collide(PhysicalObject otherObject, int myChunk, int otherChunk)
     {
-        if (!dead && otherObject is Creature c and not FatFireFly and not MirosBird and not BigEel and not JetFish && c.Template.type != MoreSlugcatsEnums.CreatureTemplateType.MirosVulture)
+        if (!dead && otherObject is Creature c and not FatFireFly and not MirosBird and not BigEel and not JetFish && (!ModManager.MSC || c.Template.type != MoreSlugcatsEnums.CreatureTemplateType.MirosVulture))
             c.Stun(25);
         base.Collide(otherObject, myChunk, otherChunk);
         if (!Snapping || myChunk != 4 || grasps[0] is not null)

@@ -578,7 +578,7 @@ public class ThornBug : InsectoidCreature
                 {
                     if (cr is Player p)
                     {
-                        if (p.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Spear && p.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Gourmand)
+                        if (!ModManager.MSC || (p.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Spear && p.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Gourmand))
                             p.Regurgitate();
                     }
                     cr.Stun(10);

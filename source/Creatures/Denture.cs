@@ -221,7 +221,7 @@ public class Denture : Creature
                     c.Destroy();
                     if (c is Player)
                         playerCrush = true;
-                    else if (c is ThornBug or Sporantula or Hazer or HazerMom || (c is BigSpider spider && spider.Template.type == MoreSlugcatsEnums.CreatureTemplateType.MotherSpider))
+                    else if (c is ThornBug or Sporantula or Hazer or HazerMom || (ModManager.MSC && c is BigSpider spider && spider.Template.type == MoreSlugcatsEnums.CreatureTemplateType.MotherSpider))
                         badFood = true;
                 }
                 CreatureEaten = 8;
