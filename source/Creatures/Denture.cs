@@ -144,7 +144,7 @@ public class Denture : Creature
                     SuckedIntoShortcut = Mathf.Lerp(SuckedIntoShortcut, 1f, .1f);
                     enteringShortCut = ShortCutPos;
                     if (!dead)
-                        abstractCreature.remainInDenCounter = 145;
+                        abstractCreature.remainInDenCounter = 160;
                 }
             }
             else
