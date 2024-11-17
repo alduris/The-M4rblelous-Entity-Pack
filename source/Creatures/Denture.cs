@@ -217,7 +217,7 @@ public class Denture : Creature
                 if (c.grabbedBy is List<Grasp> grabs)
                 {
                     for (var r = 0; r < grabs.Count; r++)
-                        grabs[r]?.grabber?.Stun(10);
+                        grabs[r]?.grabber?.Stun(20);
                 }
                 if (c is TintedBeetle t)
                     t.Explode(rm);
