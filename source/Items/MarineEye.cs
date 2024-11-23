@@ -111,7 +111,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
                 if (Fruit is MarineEye fruit2)
                 {
                     fruit2.SetRotation = -Custom.DirVec(lastSeg[0], fruit2.firstChunk.pos);
-                    if (ReleaseCounter != 1 && Custom.DistLess(fruit2.firstChunk.pos, StuckPos, StalkLength * 1.39999997615814f + 10f) && fruit2.grabbedBy.Count <= 0 && !fruit2.slatedForDeletetion && fruit2.room == room && room.VisualContact(StuckPos + new Vector2(0f, 10f), fruit2.firstChunk.pos))
+                    if (ReleaseCounter != 1 && Custom.DistLess(fruit2.firstChunk.pos, StuckPos, StalkLength * 1.39999997615814f + 10f) && fruit2.grabbedBy.Count == 0 && !fruit2.slatedForDeletetion && fruit2.room == room && room.VisualContact(StuckPos + new Vector2(0f, 10f), fruit2.firstChunk.pos))
                         return;
                     fruit2.AbstrCons.Consume();
                     Fruit = null;
@@ -301,6 +301,8 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
         if (weapon is Spear s && s.IsNeedle && s.Spear_NeedleCanFeed() && s.thrownBy is Player p)
         {
             p.ObjectEaten(this);
+            p.AddFood(1);
+            AbstrCons.Consume();
             if (PlayerData.TryGetValue(p.abstractCreature, out var props))
                 props.BlueFaceDuration = 5000;
             room?.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk.pos);

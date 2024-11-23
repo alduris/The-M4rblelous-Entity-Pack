@@ -27,6 +27,8 @@ public static class MainHooks
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.MarineEye);
                 if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.StarLemon))
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.StarLemon);
+                if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.DendriticNeuron))
+                    MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.DendriticNeuron);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.NoodleEater))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.NoodleEater);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SilverLizard))
@@ -84,6 +86,8 @@ public static class MainHooks
                 MultiplayerItemType.UnregisterValues();
                 SlugFood.UnregisterValues();
                 NewSoundID.UnregisterValues();
+                DevEffectsCategories.UnregisterValues();
+                DevObjectCategories.UnregisterValues();
                 break;
             }
         }
@@ -110,6 +114,8 @@ public static class MainHooks
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.MarineEye);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.StarLemon))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.StarLemon);
+        if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.DendriticNeuron))
+            MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.DendriticNeuron);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SeedBat))
             MultiplayerUnlocks.CreatureUnlockList.Add(SandboxUnlockID.SeedBat);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Bigrub))
@@ -136,6 +142,7 @@ public static class MainHooks
                 SlugFood.GummyAnther = new(nameof(SlugFood.GummyAnther), true);
                 SlugFood.MarineEye = new(nameof(SlugFood.MarineEye), true);
                 SlugFood.StarLemon = new(nameof(SlugFood.StarLemon), true);
+                SlugFood.DendriticNeuron = new(nameof(SlugFood.DendriticNeuron), true);
                 ResizeGourmandCombos();
                 InitGourmandCombos();
                 On.MoreSlugcats.GourmandCombos.InitCraftingLibrary += On_GourmandCombos_InitCraftingLibrary;
@@ -144,6 +151,7 @@ public static class MainHooks
                 On.MoreSlugcats.SlugNPCAI.WantsToEatThis += On_SlugNPCAI_WantsToEatThis;
                 On.MoreSlugcats.BigJellyFish.ValidGrabCreature += On_BigJellyFish_ValidGrabCreature;
                 On.MoreSlugcats.StowawayBugAI.WantToEat += On_StowawayBugAI_WantToEat;
+                IL.MoreSlugcats.InspectorAI.IUseARelationshipTracker_UpdateDynamicRelationship += IL_InspectorAI_IUseARelationshipTracker_UpdateDynamicRelationship;
             }
             s_init = true;
         }
@@ -153,6 +161,8 @@ public static class MainHooks
         _ = AbstractObjectType.ThornyStrawberry;
         _ = SandboxUnlockID.ThornyStrawberry;
         _ = RoomEffectType.SeedBats;
+        _ = DevObjectCategories.M4rblelousEntities;
+        _ = DevEffectsCategories.M4rblelousEntities;
     }
 
     internal static void On_RainWorld_UnloadResources(On.RainWorld.orig_UnloadResources orig, RainWorld self)

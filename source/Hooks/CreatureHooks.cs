@@ -4,6 +4,9 @@ using RWCustom;
 using System;
 using MoreSlugcats;
 using UnityEngine;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+using System.Linq;
 
 namespace LBMergedMods.Hooks;
 
@@ -26,6 +29,42 @@ public static class CreatureHooks
         orig(self);
         if (self is BigSpider && SporeMemory.TryGetValue(self.abstractCreature, out var mem))
             mem.Clear();
+    }
+
+    internal static void IL_InspectorAI_IUseARelationshipTracker_UpdateDynamicRelationship(ILContext il)
+    {
+        var c = new ILCursor(il);
+        ILLabel? label = null;
+        int loc1 = 0, loc2 = 0;
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdloc(out loc1),
+            x => x.MatchCallOrCallvirt<Creature>("get_grasps"),
+            x => x.MatchLdloc(out loc2),
+            x => x.MatchLdelemRef(),
+            x => x.MatchBrfalse(out label))
+            && label is not null)
+        {
+            var vars = il.Body.Variables;
+            var curRelVar = vars.First(x => x.VariableType.Name.Contains("Relationship"));
+            c.Emit(OpCodes.Ldarg_0)
+             .Emit(OpCodes.Ldarg_1)
+             .Emit(OpCodes.Ldloc, curRelVar)
+             .Emit(OpCodes.Ldloc, vars[loc1])
+             .Emit(OpCodes.Ldloc, vars[loc2])
+             .EmitDelegate((InspectorAI self, RelationshipTracker.DynamicRelationship dRelation, CreatureTemplate.Relationship currentRelationship, Creature realizedCreature, int i) =>
+             {
+                 if (realizedCreature.grasps[i].grabbed is DendriticSwarmer swarmer && swarmer.Bites < 5)
+                 {
+                     currentRelationship.type = CreatureTemplate.Relationship.Type.Eats;
+                     currentRelationship.intensity = 1f;
+                     self.preyTracker.AddPrey(dRelation.trackerRep);
+                 }
+                 return currentRelationship;
+             });
+            c.Emit(OpCodes.Stloc, curRelVar);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook InspectorAI.IUseARelationshipTracker.UpdateDynamicRelationship!");
     }
 
     internal static bool On_CreatureTemplate_get_IsVulture(Func<CreatureTemplate, bool> orig, CreatureTemplate self) => self.type == CreatureTemplateType.FatFireFly || orig(self);

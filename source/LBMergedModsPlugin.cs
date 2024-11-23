@@ -332,6 +332,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.OverseerCommunicationModule.CreatureDangerScore += IL_OverseerCommunicationModule_CreatureDangerScore;
         On.ThreatDetermination.ThreatOfCreature += On_ThreatDetermination_ThreatOfCreature;
         On.AbstractCreature.IsVoided += On_AbstractCreature_IsVoided;
+        On.DevInterface.RoomSettingsPage.DevEffectGetCategoryFromEffectType += On_RoomSettingsPage_DevEffectGetCategoryFromEffectType;
+        On.LightSource.InitiateSprites += On_LightSource_InitiateSprites;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

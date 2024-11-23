@@ -3,6 +3,7 @@ using UnityEngine;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using HUD;
+using Fisobs.Core;
 
 namespace LBMergedMods.Hooks;
 
@@ -68,6 +69,8 @@ public static class IconHooks
             return MarineCol;
         if (itemType == AbstractObjectType.StarLemon)
             return new(1f, 210f / 255f, 0f);
+        if (itemType == AbstractObjectType.DendriticNeuron)
+            return Ext.MenuGrey;
         return orig(itemType, intData);
     }
 
@@ -95,6 +98,8 @@ public static class IconHooks
             return "Symbol_MarineEye";
         if (itemType == AbstractObjectType.StarLemon)
             return "Symbol_StarLemon";
+        if (itemType == AbstractObjectType.DendriticNeuron)
+            return "Symbol_DendriticNeuron";
         return orig(itemType, intData);
     }
 

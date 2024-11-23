@@ -1,8 +1,37 @@
 ﻿global using LBMergedMods.Enums;
+using DevInterface;
 using MoreSlugcats;
 using System.Collections.Generic;
 
 namespace LBMergedMods.Enums;
+
+public static class DevObjectCategories
+{
+    public static ObjectsPage.DevObjectCategories M4rblelousEntities = new(nameof(M4rblelousEntities), true);
+
+    public static void UnregisterValues()
+    {
+        if (M4rblelousEntities is not null)
+        {
+            M4rblelousEntities.Unregister();
+            M4rblelousEntities = null!;
+        }
+    }
+}
+
+public static class DevEffectsCategories
+{
+    public static RoomSettingsPage.DevEffectsCategories M4rblelousEntities = new(nameof(M4rblelousEntities), true);
+
+    public static void UnregisterValues()
+    {
+        if (M4rblelousEntities is not null)
+        {
+            M4rblelousEntities.Unregister();
+            M4rblelousEntities = null!;
+        }
+    }
+}
 
 public static class RoomEffectType
 {
@@ -231,7 +260,8 @@ public static class SandboxUnlockID
         MarineEye = new(nameof(MarineEye), true),
         MiniBlackLeech = new(nameof(MiniBlackLeech), true),
         StarLemon = new(nameof(StarLemon), true),
-        Denture = new(nameof(Denture), true);
+        Denture = new(nameof(Denture), true),
+        DendriticNeuron = new(nameof(DendriticNeuron), true);
 
     public static void UnregisterValues()
     {
@@ -395,6 +425,11 @@ public static class SandboxUnlockID
             Denture.Unregister();
             Denture = null!;
         }
+        if (DendriticNeuron is not null)
+        {
+            DendriticNeuron.Unregister();
+            DendriticNeuron = null!;
+        }
     }
 }
 
@@ -413,7 +448,8 @@ public static class PlacedObjectType
         LimeMushroom = new(nameof(LimeMushroom), true),
         RubberBlossom = new(nameof(RubberBlossom), true),
         MarineEye = new(nameof(MarineEye), true),
-        StarLemon = new(nameof(StarLemon), true);
+        StarLemon = new(nameof(StarLemon), true),
+        DendriticNeuron = new(nameof(DendriticNeuron), true);
 
     public static void UnregisterValues()
     {
@@ -487,6 +523,11 @@ public static class PlacedObjectType
             StarLemon.Unregister();
             StarLemon = null!;
         }
+        if (DendriticNeuron is not null)
+        {
+            DendriticNeuron.Unregister();
+            DendriticNeuron = null!;
+        }
     }
 }
 
@@ -502,7 +543,8 @@ public static class AbstractObjectType
         RubberBlossom = new(nameof(RubberBlossom), true),
         GummyAnther = new(nameof(GummyAnther), true),
         MarineEye = new(nameof(MarineEye), true),
-        StarLemon = new(nameof(StarLemon), true);
+        StarLemon = new(nameof(StarLemon), true),
+        DendriticNeuron = new(nameof(DendriticNeuron), true);
 
     public static void UnregisterValues()
     {
@@ -560,6 +602,11 @@ public static class AbstractObjectType
         {
             StarLemon.Unregister();
             StarLemon = null!;
+        }
+        if (DendriticNeuron is not null)
+        {
+            DendriticNeuron.Unregister();
+            DendriticNeuron = null!;
         }
     }
 }
@@ -625,7 +672,8 @@ public static class MiscItemType
         GummyAnther = new(nameof(GummyAnther), true),
         MarineEye = new(nameof(MarineEye), true),
         StarLemon = new(nameof(StarLemon), true),
-        SporeProjectile = new(nameof(SporeProjectile), true);
+        SporeProjectile = new(nameof(SporeProjectile), true),
+        DendriticNeuron = new(nameof(DendriticNeuron), true);
 
     public static void UnregisterValues()
     {
@@ -679,12 +727,17 @@ public static class MiscItemType
             SporeProjectile.Unregister();
             SporeProjectile = null!;
         }
+        if (DendriticNeuron is not null)
+        {
+            DendriticNeuron.Unregister();
+            DendriticNeuron = null!;
+        }
     }
 }
 
 public static class SlugFood
 {
-    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon;
+    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron;
 
     public static void UnregisterValues()
     {
@@ -722,6 +775,11 @@ public static class SlugFood
         {
             StarLemon.Unregister();
             StarLemon = null;
+        }
+        if (DendriticNeuron is not null)
+        {
+            DendriticNeuron.Unregister();
+            DendriticNeuron = null;
         }
     }
 }

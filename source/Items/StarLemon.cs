@@ -276,8 +276,8 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
         {
             lh.stayAlive = true;
             lh.setPos = fc.pos;
-            lh.setRad = 280f;
-            lh.setAlpha = (6 - Bites) / 6f * .6f + .4f;
+            lh.setRad = 200f;
+            lh.setAlpha = (Bites / 6f * .6f + .4f) * .25f;
             lh.color = YellowCol;
             if (lh.slatedForDeletetion || LightDarkness == 0f)
                 Light = null;

@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using RWCustom;
 using System.Collections.Generic;
+using CoralBrain;
 
 namespace LBMergedMods.Hooks;
 
@@ -17,6 +18,13 @@ public static class RoomHooks
         if (crit.PreBakedPathingIndex < 0 || crit.PreBakedPathingIndex >= self.creatureSpecificAImaps?.Length)
             return -1;
         return orig(self, pos, creatureSpecificExitIndex, crit);
+    }
+
+    internal static void On_LightSource_InitiateSprites(On.LightSource.orig_InitiateSprites orig, LightSource self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
+    {
+        orig(self, sLeaser, rCam);
+        if (self.tiedToObject is StarLemon)
+            sLeaser.sprites[0].shader = Custom.rainWorld.Shaders["FlatLightBehindTerrain"];
     }
 
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)
@@ -73,6 +81,23 @@ public static class RoomHooks
                         self.abstractRoom.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MarineEye, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), self.abstractRoom.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.StarLemon && (game.session is not StoryGameSession session15 || !session15.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, i)))
                         self.abstractRoom.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), self.abstractRoom.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.DendriticNeuron && (game.session is not StoryGameSession session16 || !session16.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, i)))
+                    {
+                        var flag = true;
+                        var uads = self.updateList;
+                        for (var t = 0; t < uads.Count; t++)
+                        {
+                            if (uads[t] is CoralNeuronSystem)
+                            {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag)
+                            self.AddObject(new CoralNeuronSystem());
+                        self.abstractRoom.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DendriticNeuron, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), self.abstractRoom.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        self.waitToEnterAfterFullyLoaded = Math.Max(self.waitToEnterAfterFullyLoaded, 80);
+                    }
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.RubberBlossom)
                     {
                         AbstractConsumable plant;

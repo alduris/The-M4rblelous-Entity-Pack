@@ -1,4 +1,5 @@
 ﻿global using static LBMergedMods.Hooks.OracleHooks;
+using UnityEngine;
 
 namespace LBMergedMods.Hooks;
 
@@ -29,6 +30,15 @@ public static class OracleHooks
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a very big shiny fruit, how did you bring it here?"), 0));
             else if (self.describeItem == MiscItemType.SporeProjectile)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's the egg of a creature.<LINE>Although its membrane is thin, it is covered with a fungus whose spores keep predators away."), 0));
+            else if (self.describeItem == MiscItemType.DendriticNeuron)
+            {
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("What have you brought me this time?"), 0));
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Ah..."), 0));
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Thank you small creature."), 0));
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("I am sincerely grateful for this, however in my current predicament<LINE>I lack the processing strata required to interface with this type of neuron."), 0));
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Their morphology, in addition to being more imposing,<LINE>uses vastly more complex signaling than the ones you see before me."), 0));
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Although, the gesture is appreciated..."), 0));
+            }
         }
     }
 
@@ -66,6 +76,8 @@ public static class OracleHooks
             return MiscItemType.StarLemon;
         if (testItem is SmallPuffBall)
             return MiscItemType.SporeProjectile;
+        if (testItem is DendriticSwarmer)
+            return MiscItemType.DendriticNeuron;
         return orig(self, testItem);
     }
 

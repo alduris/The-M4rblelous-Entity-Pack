@@ -48,28 +48,37 @@ public static class SlugNPCHooks
             if (Mathf.Abs(num) > .85f && self.FunStuff)
                 self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
         }
+        else if (food is DendriticSwarmer)
+        {
+            var num = self.foodPreference[SlugNPCAI.Food.Neuron.index];
+            if (Mathf.Abs(num) > .4f)
+                self.foodReaction += (int)(num * 120f);
+            if (Mathf.Abs(num) > .85f && self.FunStuff)
+                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
+        }
         else
             orig(self, food);
     }
 
     internal static SlugNPCAI.Food On_SlugNPCAI_GetFoodType(On.MoreSlugcats.SlugNPCAI.orig_GetFoodType orig, SlugNPCAI self, PhysicalObject food)
     {
-        var res = orig(self, food);
         if (food is ThornyStrawberry)
-            res = SlugFood.ThornyStrawberry!;
-        else if (food is BlobPiece)
-            res = SlugFood.BlobPiece!;
-        else if (food is LittleBalloon)
-            res = SlugFood.LittleBalloon!;
-        else if (food is Physalis)
-            res = SlugFood.Physalis!;
-        else if (food is GummyAnther)
-            res = SlugFood.GummyAnther!;
-        else if (food is MarineEye)
-            res = SlugFood.MarineEye!;
-        else if (food is StarLemon)
-            res = SlugFood.StarLemon!;
-        return res;
+            return SlugFood.ThornyStrawberry!;
+        if (food is BlobPiece)
+            return SlugFood.BlobPiece!;
+        if (food is LittleBalloon)
+            return SlugFood.LittleBalloon!;
+        if (food is Physalis)
+            return SlugFood.Physalis!;
+        if (food is GummyAnther)
+            return SlugFood.GummyAnther!;
+        if (food is MarineEye)
+            return SlugFood.MarineEye!;
+        if (food is StarLemon)
+            return SlugFood.StarLemon!;
+        if (food is DendriticSwarmer)
+            return SlugFood.DendriticNeuron!;
+        return orig(self, food);
     }
 
     internal static bool On_SlugNPCAI_WantsToEatThis(On.MoreSlugcats.SlugNPCAI.orig_WantsToEatThis orig, SlugNPCAI self, PhysicalObject obj) => (obj is BouncingMelon && !self.IsFull) || orig(self, obj);
