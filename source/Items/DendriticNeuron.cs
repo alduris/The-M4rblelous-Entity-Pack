@@ -40,6 +40,7 @@ public class DendriticSwarmer : PhysicalObject, IDrawable, IPlayerEdible, IOwnPr
     public List<Vector2> StuckList;
     public MovementMode Mode = MovementMode.Swarm;
     public CreatureTemplate FlyTemplate;
+    public ProjectedCircle? Circle;
     public Mycelium[] Mycelia;
     public float[] MyceliaDisplace;
     public Vector2 TravelDirection, MyColor;
@@ -113,13 +114,41 @@ public class DendriticSwarmer : PhysicalObject, IDrawable, IPlayerEdible, IOwnPr
         var mycelia = Mycelia;
         for (var l = 0; l < mycelia.Length; l++)
             mycelia[l].Reset(fc.pos);
+        if (placeRoom.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SuperStructureProjector) > 0f)
+        {
+            if (Circle is null)
+                placeRoom.AddObject(Circle = new(placeRoom, this, 0, 0f));
+            else if (Circle.room != placeRoom)
+            {
+                Circle.Destroy();
+                placeRoom.AddObject(Circle = new(placeRoom, this, 0, 0f));
+            }
+        }
+        else if (Circle is not null)
+        {
+            Circle.Destroy();
+            Circle = null;
+        }
     }
 
     public override void NewRoom(Room newRoom)
     {
         base.NewRoom(newRoom);
         if (newRoom.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SuperStructureProjector) > 0f)
-            newRoom.AddObject(new ProjectedCircle(newRoom, this, 0, 0f));
+        {
+            if (Circle is null)
+                newRoom.AddObject(Circle = new(newRoom, this, 0, 0f));
+            else if (Circle.room != newRoom)
+            {
+                Circle.Destroy();
+                newRoom.AddObject(Circle = new(newRoom, this, 0, 0f));
+            }
+        }
+        else if (Circle is not null)
+        {
+            Circle.Destroy();
+            Circle = null;
+        }
         System = null;
         var mycelia = Mycelia;
         for (var l = 0; l < mycelia.Length; l++)
@@ -466,6 +495,11 @@ public class DendriticSwarmer : PhysicalObject, IDrawable, IPlayerEdible, IOwnPr
     public override void Destroy()
     {
         base.Destroy();
+        if (Circle is not null)
+        {
+            Circle.Destroy();
+            Circle = null;
+        }
         var mycelia = Mycelia;
         for (var n = 0; n < mycelia.Length; n++)
             mycelia[n].Dispose();
