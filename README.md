@@ -14,6 +14,7 @@ Requires fisobs: https://github.com/Dual-Iron/fisobs/releases
 - snoodle for Hoverfly sounds and sprites.
 - the one who screams I guess for the first version of the Water Blob and the Blob Piece.
 - Alduris for the first implementation of Vulture Grubs' calls to Flying Big Eels.
+- Myrmice, sequoia and Xim for the Dendritic Neuron moon dialogue.
 
 **Credits for concepts:**
 - Tronsx for the Rubber Blossom, Gummy Anther, Mole Salamander and Blizzor concepts.
