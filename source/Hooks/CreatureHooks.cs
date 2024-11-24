@@ -99,7 +99,7 @@ public static class CreatureHooks
 
     internal static float On_ThreatDetermination_ThreatOfCreature(On.ThreatDetermination.orig_ThreatOfCreature orig, ThreatDetermination self, Creature creature, Player player)
     {
-        if ((creature is Sporantula spore && (spore.dead || (spore.AI is SporantulaAI sporeAI && !sporeAI.DoIWantToKill(player.abstractCreature)))) || (creature is Centipede centi && centi.Scutigera() && (centi.dead || (centi.AI is CentipedeAI centiAI && !centiAI.DoIWantToShockCreature(player.abstractCreature)))))
+        if ((creature is Sporantula spore && (spore.dead || (spore.AI is SporantulaAI sporeAI && !sporeAI.DoIWantToKill(player.abstractCreature)))) || (creature is Scutigera centi && (centi.dead || (centi.AI is ScutigeraAI centiAI && !centiAI.DoIWantToShockCreature(player.abstractCreature)))))
             return 0f;
         return orig(self, creature, player);
     }

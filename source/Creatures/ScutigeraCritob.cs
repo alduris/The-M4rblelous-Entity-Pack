@@ -125,9 +125,9 @@ sealed class ScutigeraCritob : Critob
         scut.Ignores(Type);
     }
 
-    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new CentipedeAI(acrit, acrit.world);
+    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new ScutigeraAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Centipede(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Scutigera(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new Centipede.CentipedeState(acrit);
 

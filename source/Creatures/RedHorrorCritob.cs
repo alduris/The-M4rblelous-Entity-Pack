@@ -91,9 +91,9 @@ sealed class RedHorrorCritob : Critob
         rhc.Ignores(Type);
     }
 
-    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new CentipedeAI(acrit, acrit.world);
+    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new RedHorrorAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Centipede(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new RedHorror(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new Centipede.CentipedeState(acrit);
 
