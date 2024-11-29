@@ -105,32 +105,31 @@ public static class IconHooks
 
     internal static void IL_Map_Draw(ILContext il)
     {
+        var vars = il.Body.Variables;
         var c = new ILCursor(il);
-        var loc = 0;
         var label = il.DefineLabel();
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("WhiteLizard"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrfalse(out _)))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_WhiteLizard,
+            s_MatchCall_Any,
+            s_MatchBrfalse_Any))
         {
             label.Target = c.Next;
             c.Index -= 5;
-            var l = il.Body.Variables[loc];
+            var l = vars[s_loc1];
             c.EmitDelegate((AbstractCreature crit) => crit.creatureTemplate.type == CreatureTemplateType.HunterSeeker);
             c.Emit(OpCodes.Brtrue, label)
              .Emit(OpCodes.Ldloc, l);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook HUD.Map.Draw! (part 1)");
-        loc = 0;
         if (c.TryGotoNext(
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Overseer")))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Overseer))
         {
             ++c.Index;
             c.Emit(OpCodes.Ldarg_0)
@@ -160,12 +159,12 @@ public static class IconHooks
                      symbol.symbolSprite.scale = symbol.shadowSprite2.scale = symbol.shadowSprite1.scale = 1f + jelly.IconRadBonus;
                  }
              });
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc]);
+            c.Emit(OpCodes.Ldloc, vars[s_loc1]);
             if (c.TryGotoNext(MoveType.After,
-                x => x.MatchCallOrCallvirt<IconSymbol>("Draw")))
+                s_MatchCallOrCallvirt_IconSymbol_Draw))
             {
                 c.Emit(OpCodes.Ldarg_0)
-                 .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+                 .Emit(OpCodes.Ldloc, vars[s_loc1])
                  .EmitDelegate((Map self, AbstractCreature crit) =>
                  {
                      CreatureSymbol symbol;

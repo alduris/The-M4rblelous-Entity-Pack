@@ -76,8 +76,8 @@ public static class AbstractPhysicalObjectHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Slugcat"),
-            x => x.MatchCall(out _)))
+            s_MatchLdsfld_CreatureTemplate_Type_Slugcat,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, AbstractCreature self) => flag || CreatureTemplateType.s_M4RCreatureList.Contains(self.creatureTemplate.type));
@@ -181,8 +181,8 @@ public static class AbstractPhysicalObjectHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic"),
-            x => x.MatchCall(out _)))
+            s_MatchLdsfld_CreatureTemplate_Type_PoleMimic,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, AbstractCreature self) => flag || self.creatureTemplate.type == CreatureTemplateType.Denture);
@@ -207,8 +207,8 @@ public static class AbstractPhysicalObjectHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic"),
-            x => x.MatchCall(out _)))
+            s_MatchLdsfld_CreatureTemplate_Type_PoleMimic,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, AbstractCreature self) => flag || self.creatureTemplate.type == CreatureTemplateType.Denture);
@@ -253,7 +253,7 @@ public static class AbstractPhysicalObjectHooks
             else if (type == AbstractObjectType.StarLemon)
                 self.realizedObject = new StarLemon(self);
             else if (type == AbstractObjectType.DendriticNeuron)
-                self.realizedObject = new DendriticSwarmer(self);
+                self.realizedObject = new DendriticNeuron(self);
         }
     }
 

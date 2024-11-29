@@ -10,29 +10,29 @@ public static class VultureGrubHooks
 {
     internal static void IL_VultureGrub_AttemptCallVulture(ILContext il)
     {
+        var vars = il.Body.Variables;
         var c = new ILCursor(il);
-        var loc1 = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc1),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Vulture"),
-            x => x.MatchCallOrCallvirt<AbstractRoom>("AttractionForCreature"),
-            x => x.MatchLdsfld<AbstractRoom.CreatureRoomAttraction>("Forbidden"),
-            x => x.MatchCallOrCallvirt(out _)))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdsfld_CreatureTemplate_Type_Vulture,
+            s_MatchCallOrCallvirt_AbstractRoom_AttractionForCreature,
+            s_MatchLdsfld_AbstractRoom_CreatureRoomAttraction_Forbidden,
+            s_MatchCallOrCallvirt_Any))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc1])
+            c.Emit(OpCodes.Ldloc, vars[s_loc1])
              .EmitDelegate((bool flag, AbstractRoom rm) => flag && rm.AttractionForCreature(CreatureTemplateType.FlyingBigEel) == AbstractRoom.CreatureRoomAttraction.Forbidden && rm.AttractionForCreature(CreatureTemplateType.MiniFlyingBigEel) == AbstractRoom.CreatureRoomAttraction.Forbidden && rm.AttractionForCreature(CreatureTemplateType.FatFireFly) == AbstractRoom.CreatureRoomAttraction.Forbidden);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook VultureGrub.AttemptCallVulture (part 1)!");
-        var loc2 = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchStloc(out loc2),
-            x => x.MatchBr(out _))
+            s_MatchStloc_OutLoc1,
+            s_MatchBr_Any)
         && c.TryGotoNext(MoveType.After,
-            x => x.MatchLdcI4(0),
-            x => x.MatchStloc(out _)))
+            s_MatchLdcI4_0,
+            s_MatchStloc_Any))
         {
-            c.Emit(OpCodes.Ldloc, loc2)
+            VariableDefinition l;
+            c.Emit(OpCodes.Ldloc, l = vars[s_loc1])
              .EmitDelegate((CreatureTemplate.Type[] array) =>
              {
                  var l = array.Length;
@@ -42,7 +42,7 @@ public static class VultureGrubHooks
                  array[l + 2] = CreatureTemplateType.FatFireFly;
                  return array;
              });
-            c.Emit(OpCodes.Stloc, loc2);
+            c.Emit(OpCodes.Stloc, l);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook VultureGrub.AttemptCallVulture (part 2)!");

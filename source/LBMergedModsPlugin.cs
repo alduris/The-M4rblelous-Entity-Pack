@@ -227,11 +227,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardVoice.ctor += On_LizardVoice_ctor;
         On.LizardTongue.ctor += On_LizardTongue_ctor;
         new Hook(typeof(LizardBreedParams).GetMethod("get_WallClimber", ALL_FLAGS), On_LizardBreedParams_get_WallClimber);
-        On.LizardGraphics.Update += On_LizardGraphics_Update;
         On.LizardGraphics.DynamicBodyColor += On_LizardGraphics_DynamicBodyColor;
         On.LizardGraphics.HeadColor += On_LizardGraphics_HeadColor;
         On.LizardGraphics.WhiteFlicker += On_LizardGraphics_WhiteFlicker;
-        On.LizardGraphics.InitiateSprites += On_LizardGraphics_InitiateSprites;
         On.LizardAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_LizardAI_IUseARelationshipTracker_UpdateDynamicRelationship;
         On.LizardGraphics.DrawSprites += On_LizardGraphics_DrawSprites;
         On.Lizard.HitHeadShield += On_Lizard_HitHeadShield;
@@ -365,5 +363,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         OnResultAction = null;
         OnFoodItemSpotted = null;
         s_logger = null;
+        InternalMatch.Dispose();
     }
 }

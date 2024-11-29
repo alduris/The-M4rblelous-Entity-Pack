@@ -1,5 +1,4 @@
 ﻿global using static LBMergedMods.Hooks.OracleHooks;
-using UnityEngine;
 
 namespace LBMergedMods.Hooks;
 
@@ -10,27 +9,28 @@ public static class OracleHooks
         orig(self);
         if (self.id == Conversation.ID.Moon_Misc_Item)
         {
-            if (self.describeItem == MiscItemType.ThornyStrawberry)
+            var item = self.describeItem;
+            if (item == MiscItemType.ThornyStrawberry)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a delicious fruit but remove the thorns before eating it."), 0));
-            else if (self.describeItem == MiscItemType.BlobPiece)
+            else if (item == MiscItemType.BlobPiece)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a glob of something gelatinous... It's making my skin tingle."), 0));
-            else if (self.describeItem == MiscItemType.LittleBalloon)
+            else if (item == MiscItemType.LittleBalloon)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's an unstable plant. Be careful when you throw it!"), 0));
-            else if (self.describeItem == MiscItemType.BouncingMelon)
+            else if (item == MiscItemType.BouncingMelon)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a large green fruit.<LINE>It's not very nutritious but it could have other effects."), 0));
-            else if (self.describeItem == MiscItemType.Physalis)
+            else if (item == MiscItemType.Physalis)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a tasty little fruit. Do not confuse it with a pearl!"), 0));
-            else if (self.describeItem == MiscItemType.LimeMushroom)
+            else if (item == MiscItemType.LimeMushroom)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a poisonous mushroom, don't eat it! It even scares away some creatures."), 0));
-            else if (self.describeItem == MiscItemType.GummyAnther)
+            else if (item == MiscItemType.GummyAnther)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a plant anther. You can eat it safely!"), 0));
-            else if (self.describeItem == MiscItemType.MarineEye)
+            else if (item == MiscItemType.MarineEye)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a strange edible flower filled with a blue liquid."), 0));
-            else if (self.describeItem == MiscItemType.StarLemon)
+            else if (item == MiscItemType.StarLemon)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a very big shiny fruit, how did you bring it here?"), 0));
-            else if (self.describeItem == MiscItemType.SporeProjectile)
+            else if (item == MiscItemType.SporeProjectile)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's the egg of a creature.<LINE>Although its membrane is thin, it is covered with a fungus whose spores keep predators away."), 0));
-            else if (self.describeItem == MiscItemType.DendriticNeuron)
+            else if (item == MiscItemType.DendriticNeuron)
             {
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("What have you brought me this time?"), 0));
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Ah..."), 0));
@@ -76,7 +76,7 @@ public static class OracleHooks
             return MiscItemType.StarLemon;
         if (testItem is SmallPuffBall)
             return MiscItemType.SporeProjectile;
-        if (testItem is DendriticSwarmer)
+        if (testItem is DendriticNeuron)
             return MiscItemType.DendriticNeuron;
         return orig(self, testItem);
     }

@@ -2,7 +2,6 @@
 using MonoMod.Cil;
 using System.Collections.Generic;
 using Mono.Cecil.Cil;
-using System;
 
 namespace LBMergedMods.Hooks;
 
@@ -81,39 +80,35 @@ public static class ScavengerHooks
     internal static void IL_ScavengerAI_IUseARelationshipTracker_UpdateDynamicRelationship(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<RelationshipTracker.DynamicRelationship>("trackerRep"),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdarg_1,
+            s_MatchLdfld_RelationshipTracker_DynamicRelationship_trackerRep,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_PoleMimic,
+            s_MatchCall_Any,
+            s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_1)
              .EmitDelegate((RelationshipTracker.DynamicRelationship dRelation) => dRelation.trackerRep?.representedCreature?.creatureTemplate.type is CreatureTemplate.Type tp && (tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Scutigera || tp == CreatureTemplateType.RedHorrorCenti || tp == CreatureTemplateType.Sporantula));
-            c.Emit(OpCodes.Brtrue, label);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ScavengerAI.IUseARelationshipTracker.UpdateDynamicRelationship! (part 1)");
-        ILLabel? label2 = null;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<RelationshipTracker.DynamicRelationship>("trackerRep"),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("MirosBird"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrtrue(out label2))
-        && label2 is not null)
+            s_MatchLdarg_1,
+            s_MatchLdfld_RelationshipTracker_DynamicRelationship_trackerRep,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_MirosBird,
+            s_MatchCall_Any,
+            s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_1)
              .EmitDelegate((RelationshipTracker.DynamicRelationship dRelation) => dRelation.trackerRep?.representedCreature?.creatureTemplate.type == CreatureTemplateType.Blizzor);
-            c.Emit(OpCodes.Brtrue, label2);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ScavengerAI.IUseARelationshipTracker.UpdateDynamicRelationship! (part 2)");
@@ -122,78 +117,73 @@ public static class ScavengerHooks
     internal static void IL_WorldFloodFiller_Update(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
-        var loc = 0;
+        var vars = il.Body.Variables;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<ScavengersWorldAI.WorldFloodFiller>("world"),
-            x => x.MatchLdloc(out loc),
-            x => x.MatchCallOrCallvirt(typeof(World).GetMethod("GetAbstractRoom", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(WorldCoordinate)], null)),
-            x => x.MatchLdfld<AbstractRoom>("connections"),
-            x => x.MatchLdloc(loc),
-            x => x.MatchLdfld<WorldCoordinate>("abstractNode"),
-            x => x.MatchLdelemI4(),
-            x => x.MatchLdcI4(-1),
-            x => x.MatchBle(out label))
-        && label is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_ScavengersWorldAI_WorldFloodFiller_world,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_World_GetAbstractRoom_WorldCoordinate,
+            s_MatchLdfld_AbstractRoom_connections,
+            s_MatchLdloc_InLoc1,
+            s_MatchLdfld_WorldCoordinate_abstractNode,
+            s_MatchLdelemI4,
+            s_MatchLdcI4_M1,
+            s_MatchBle_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_0)
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+             .Emit(OpCodes.Ldloc, vars[s_loc1])
              .EmitDelegate((ScavengersWorldAI.WorldFloodFiller self, WorldCoordinate worldCoordinate) => worldCoordinate.abstractNode >= 0 && worldCoordinate.abstractNode < self.world.GetAbstractRoom(worldCoordinate).connections.Length);
-            c.Emit(OpCodes.Brfalse, label);
+            c.Emit(OpCodes.Brfalse, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ScavengerWorldAI.WorldFloodFiller.Update! (part 1)");
-        var loc2 = 0;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<ScavengersWorldAI.WorldFloodFiller>("nodesMatrix"),
-            x => x.MatchLdloc(out loc2),
-            x => x.MatchLdfld<WorldCoordinate>("room"),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<ScavengersWorldAI.WorldFloodFiller>("world"),
-            x => x.MatchCallOrCallvirt<World>("get_firstRoomIndex"),
-            x => x.MatchSub(),
-            x => x.MatchLdelemRef(),
-            x => x.MatchLdloc(loc2),
-            x => x.MatchLdfld<WorldCoordinate>("abstractNode"),
-            x => x.MatchLdelemU1(),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_ScavengersWorldAI_WorldFloodFiller_nodesMatrix,
+            s_MatchLdloc_OutLoc2,
+            s_MatchLdfld_WorldCoordinate_room,
+            s_MatchLdarg_0,
+            s_MatchLdfld_ScavengersWorldAI_WorldFloodFiller_world,
+            s_MatchCallOrCallvirt_World_get_firstRoomIndex,
+            s_MatchSub,
+            s_MatchLdelemRef,
+            s_MatchLdloc_InLoc2,
+            s_MatchLdfld_WorldCoordinate_abstractNode,
+            s_MatchLdelemU1,
+            s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_0)
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc2])
+             .Emit(OpCodes.Ldloc, vars[s_loc2])
              .EmitDelegate((ScavengersWorldAI.WorldFloodFiller self, WorldCoordinate item) =>
              {
                  var index = item.room - self.world.firstRoomIndex;
                  return index >= 0 && index < self.nodesMatrix.Length && index < self.roomsMatrix.Length && item.abstractNode >= 0 && item.abstractNode < self.nodesMatrix[index].Length;
              });
-            c.Emit(OpCodes.Brfalse, label);
+            c.Emit(OpCodes.Brfalse, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ScavengerWorldAI.WorldFloodFiller.Update! (part 2)");
         if (c.TryGotoNext(
-            x => x.MatchLdfld<ScavengersWorldAI.WorldFloodFiller>("nodesMatrix"),
-            x => x.MatchLdloc(loc),
-            x => x.MatchLdfld<WorldCoordinate>("room"),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<ScavengersWorldAI.WorldFloodFiller>("world"),
-            x => x.MatchCallOrCallvirt<World>("get_firstRoomIndex"),
-            x => x.MatchSub(),
-            x => x.MatchLdelemRef(),
-            x => x.MatchLdloc(out loc2),
-            x => x.MatchLdelemU1(),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdfld_ScavengersWorldAI_WorldFloodFiller_nodesMatrix,
+            s_MatchLdloc_InLoc1,
+            s_MatchLdfld_WorldCoordinate_room,
+            s_MatchLdarg_0,
+            s_MatchLdfld_ScavengersWorldAI_WorldFloodFiller_world,
+            s_MatchCallOrCallvirt_World_get_firstRoomIndex,
+            s_MatchSub,
+            s_MatchLdelemRef,
+            s_MatchLdloc_OutLoc2,
+            s_MatchLdelemU1,
+            s_MatchBrtrue_OutLabel))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc])
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc2])
+            c.Emit(OpCodes.Ldloc, vars[s_loc1])
+             .Emit(OpCodes.Ldloc, vars[s_loc2])
              .EmitDelegate((ScavengersWorldAI.WorldFloodFiller self, WorldCoordinate worldCoordinate, int i) =>
              {
                  var index = worldCoordinate.room - self.world.firstRoomIndex;
                  return index >= 0 && index < self.nodesMatrix.Length && index < self.roomsMatrix.Length && i < self.nodesMatrix[index].Length;
              });
-            c.Emit(OpCodes.Brfalse, label)
+            c.Emit(OpCodes.Brfalse, s_label)
              .Emit(OpCodes.Ldarg_0);
         }
         else

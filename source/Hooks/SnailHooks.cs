@@ -1,5 +1,4 @@
 ﻿global using static LBMergedMods.Hooks.SnailHooks;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RWCustom;
@@ -12,18 +11,15 @@ public static class SnailHooks
 {
     internal static void IL_Snail_Click(ILContext il)
     {
-        var loc = 0;
         var c = new ILCursor(il);
-        ILLabel? beq = null;
         if (c.TryGotoNext(
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdarg(0),
-            x => x.MatchBeq(out beq))
-        && beq is not null)
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdarg_0,
+            s_MatchBeq_OutLabel))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+            c.Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
              .EmitDelegate((PhysicalObject self) => self is Lizard l && (l.IsPolliwog() || l.IsWaterSpitter()));
-            c.Emit(OpCodes.Brtrue, beq);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Snail.Click!");
@@ -95,8 +91,8 @@ public static class SnailHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
-            x => x.MatchCall(out _)))
+            s_MatchLdsfld_CreatureTemplate_Type_Leech,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_1)
              .EmitDelegate((bool flag, AbstractCreature crit) => flag || crit.creatureTemplate.type == CreatureTemplateType.MiniBlackLeech);
@@ -109,24 +105,22 @@ public static class SnailHooks
     {
         var vars = il.Body.Variables;
         var c = new ILCursor(il);
-        MethodReference? ref1 = null;
-        int loc = 0, loc2 = 0;
         if (c.TryGotoNext(
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdcR4(1000f),
-            x => x.MatchSub(),
-            x => x.MatchStloc(loc))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdcR4_1000,
+            s_MatchSub,
+            s_MatchStloc_InLoc1)
          && c.TryGotoNext(
-            x => x.MatchLdloc(out loc2),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Snail"),
-            x => x.MatchCall(out ref1),
-            x => x.MatchBrfalse(out _)))
+            s_MatchLdloc_OutLoc2,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Snail,
+            s_MatchCall_Any,
+            s_MatchBrfalse_Any))
         {
             ++c.Index;
-            var local = vars[loc];
+            var local = vars[s_loc1];
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
              .Emit(OpCodes.Ldloc, local)
@@ -137,20 +131,20 @@ public static class SnailHooks
                  return num;
              });
             c.Emit(OpCodes.Stloc, local)
-             .Emit(OpCodes.Ldloc, vars[loc2]);
+             .Emit(OpCodes.Ldloc, vars[s_loc2]);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SnailAI.TileIdleScore! (part 1)");
         c.Index = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(loc2),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
-            x => x.MatchCall(out _)))
+            s_MatchLdloc_InLoc2,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Leech,
+            s_MatchCall_Any))
         {
-            c.Emit(OpCodes.Ldloc, vars[loc2])
+            c.Emit(OpCodes.Ldloc, vars[s_loc2])
              .EmitDelegate((bool flag, Tracker.CreatureRepresentation rep) => flag || rep.representedCreature.creatureTemplate.type == CreatureTemplateType.MiniBlackLeech);
         }
         else

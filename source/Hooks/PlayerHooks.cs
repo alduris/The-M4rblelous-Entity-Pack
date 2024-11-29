@@ -32,7 +32,7 @@ public static class PlayerHooks
 
     internal static Player.ObjectGrabability On_Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
     {
-        if (obj is ThornyStrawberry or BlobPiece or BouncingMelon or LittleBalloon or TintedBeetle or Physalis or LimeMushroom or GummyAnther or MarineEye or SmallPuffBall or DendriticSwarmer)
+        if (obj is ThornyStrawberry or BlobPiece or BouncingMelon or LittleBalloon or TintedBeetle or Physalis or LimeMushroom or GummyAnther or MarineEye or SmallPuffBall or DendriticNeuron)
             return Player.ObjectGrabability.OneHand;
         if (obj is RubberBlossom)
             return Player.ObjectGrabability.CantGrab;
@@ -51,66 +51,96 @@ public static class PlayerHooks
         }
     }
 
+    //marche pas pour marine eye et lime mush
+
     internal static void IL_Player_GrabUpdate(ILContext il)
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchIsinst<IPlayerEdible>()))
+            s_MatchIsinst_IPlayerEdible))
             c.EmitDelegate((IPlayerEdible obj) => obj is BouncingMelon ? null : obj);
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 1)");
-        var loc = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdcI4(-1),
-            x => x.MatchBeq(out _))
-         && c.TryGotoNext(MoveType.After,
-            x => x.MatchCallOrCallvirt<Player>("get_CanPutSpearToBack")))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdcI4_M1,
+            s_MatchBeq_Any)
+         && c.TryGotoNext(
+            s_MatchCallOrCallvirt_Creature_get_grasps,
+            s_MatchLdloc_InLoc1,
+            s_MatchLdelemRef,
+            s_MatchLdfld_Creature_Grasp_grabbed,
+            s_MatchIsinst_KarmaFlower,
+            s_MatchBrtrue_OutLabel))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc])
-             .Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((bool flag, int num6, Player self) => flag || (num6 >= 0 && self.grasps[num6]?.grabbed is BouncingMelon));
+            var loc1 = il.Body.Variables[s_loc1];
+            c.Emit(OpCodes.Ldloc, loc1)
+             .EmitDelegate((Player self, int num6) => self.grasps[num6].grabbed is MarineEye or LimeMushroom);
+            c.Emit(OpCodes.Brtrue, s_label)
+             .Emit(OpCodes.Ldarg_0);
+            if (c.TryGotoNext(MoveType.After,
+                s_MatchCallOrCallvirt_Player_get_CanPutSpearToBack))
+            {
+                c.Emit(OpCodes.Ldloc, loc1)
+                 .Emit(OpCodes.Ldarg_0)
+                 .EmitDelegate((bool flag, int num6, Player self) => flag || (num6 >= 0 && self.grasps[num6]?.grabbed is BouncingMelon));
+            }
+            else
+                LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 3)");
+            if (c.TryGotoNext(
+                s_MatchCallOrCallvirt_Creature_get_grasps,
+                s_MatchLdloc_InLoc1,
+                s_MatchLdelemRef,
+                s_MatchLdfld_Creature_Grasp_grabbed,
+                s_MatchIsinst_KarmaFlower,
+                s_MatchBrtrue_OutLabel))
+            {
+                c.Emit(OpCodes.Ldloc, loc1)
+                 .EmitDelegate((Player self, int num6) => self.grasps[num6].grabbed is MarineEye or LimeMushroom);
+                c.Emit(OpCodes.Brtrue, s_label)
+                 .Emit(OpCodes.Ldarg_0);
+                if (c.TryGotoNext(MoveType.After,
+                    s_MatchLdfld_Player_objectInStomach))
+                {
+                    c.Emit(OpCodes.Ldarg_0)
+                     .EmitDelegate((AbstractPhysicalObject objectInStomach, Player self) =>
+                     {
+                         var grs = self.grasps;
+                         for (var i = 0; i < grs.Length; i++)
+                         {
+                             if (grs[i]?.grabbed is BouncingMelon mel)
+                                 return null;
+                         }
+                         return objectInStomach;
+                     });
+                    if (c.TryGotoNext(MoveType.After,
+                        s_MatchLdfld_Player_objectInStomach)
+                     && c.TryGotoNext(MoveType.After,
+                        s_MatchLdfld_Player_objectInStomach))
+                    {
+                        c.Emit(OpCodes.Ldarg_0)
+                         .EmitDelegate((AbstractPhysicalObject objectInStomach, Player self) =>
+                         {
+                             var grs = self.grasps;
+                             for (var i = 0; i < grs.Length; i++)
+                             {
+                                 if (grs[i]?.grabbed is BouncingMelon mel)
+                                     return null;
+                             }
+                             return objectInStomach;
+                         });
+                    }
+                    else
+                        LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 6)");
+                }
+                else
+                    LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 5)");
+            }
+            else
+                LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 4)");
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 2)");
-        if (c.TryGotoNext(MoveType.After,
-           x => x.MatchLdfld<Player>("objectInStomach"))
-         && c.TryGotoNext(MoveType.After,
-           x => x.MatchLdfld<Player>("objectInStomach")))
-        {
-            c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((AbstractPhysicalObject objectInStomach, Player self) =>
-             {
-                 var grs = self.grasps;
-                 for (var i = 0; i < grs.Length; i++)
-                 {
-                     if (grs[i]?.grabbed is BouncingMelon mel)
-                         return null;
-                 }
-                 return objectInStomach;
-             });
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 3)");
-        if (c.TryGotoNext(MoveType.After,
-           x => x.MatchLdfld<Player>("objectInStomach"))
-         && c.TryGotoNext(MoveType.After,
-           x => x.MatchLdfld<Player>("objectInStomach")))
-        {
-            c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((AbstractPhysicalObject objectInStomach, Player self) =>
-             {
-                 var grs = self.grasps;
-                 for (var i = 0; i < grs.Length; i++)
-                 {
-                     if (grs[i]?.grabbed is BouncingMelon mel)
-                         return null;
-                 }
-                 return objectInStomach;
-             });
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.GrabUpdate! (part 4)");
     }
 
     internal static bool On_Player_GraspsCanBeCrafted(On.Player.orig_GraspsCanBeCrafted orig, Player self)
@@ -154,7 +184,7 @@ public static class PlayerHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdcR4(60f)))
+            s_MatchLdcR4_60))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((float val, Player self) => PlayerData.TryGetValue(self.abstractCreature, out var props) ? val + props.BounceEffectDuration / 10f : val);
@@ -274,11 +304,11 @@ public static class PlayerHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdfld<Player>("swallowAndRegurgitateCounter"))
+            s_MatchLdfld_Player_swallowAndRegurgitateCounter)
          && c.TryGotoNext(MoveType.After,
-            x => x.MatchLdfld<Player>("swallowAndRegurgitateCounter"))
+            s_MatchLdfld_Player_swallowAndRegurgitateCounter)
          && c.TryGotoNext(MoveType.After,
-            x => x.MatchLdfld<Player>("swallowAndRegurgitateCounter")))
+            s_MatchLdfld_Player_swallowAndRegurgitateCounter))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((int swallowAndRegurgitateCounter, PlayerGraphics self) =>
@@ -310,7 +340,7 @@ public static class PlayerHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdfld<Player>("objectInStomach")))
+            s_MatchLdfld_Player_objectInStomach))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((AbstractPhysicalObject objectInStomach, SlugcatHand self) =>
@@ -333,7 +363,7 @@ public static class PlayerHooks
         var res = orig(slugcatIndex, eatenobject);
         if (eatenobject is Fly b && b.IsSeed() && slugcatIndex != SlugcatStats.Name.Red && (!ModManager.MSC || (slugcatIndex != MoreSlugcatsEnums.SlugcatStatsName.Spear && slugcatIndex != MoreSlugcatsEnums.SlugcatStatsName.Saint && slugcatIndex != MoreSlugcatsEnums.SlugcatStatsName.Artificer)))
             res += 2;
-        else if (eatenobject is BouncingMelon or GummyAnther or DendriticSwarmer && slugcatIndex != SlugcatStats.Name.Red && (!ModManager.MSC || (slugcatIndex != MoreSlugcatsEnums.SlugcatStatsName.Spear && slugcatIndex != MoreSlugcatsEnums.SlugcatStatsName.Artificer)))
+        else if (eatenobject is BouncingMelon or GummyAnther or DendriticNeuron && slugcatIndex != SlugcatStats.Name.Red && (!ModManager.MSC || (slugcatIndex != MoreSlugcatsEnums.SlugcatStatsName.Spear && slugcatIndex != MoreSlugcatsEnums.SlugcatStatsName.Artificer)))
             res += 2;
         return res;
     }

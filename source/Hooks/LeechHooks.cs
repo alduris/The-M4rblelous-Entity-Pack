@@ -9,30 +9,28 @@ public static class LeechHooks
 {
     internal static void IL_Leech_Swim(ILContext il)
     {
-        MethodReference? ref1 = null;
+        var vars = il.Body.Variables;
         var label = il.DefineLabel();
         var c = new ILCursor(il);
-        var loc = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<Leech>("school"),
-            x => x.MatchLdfld<Leech.LeechSchool>("prey"),
-            x => x.MatchLdloc(out loc),
-            x => x.MatchCallOrCallvirt(out ref1),
-            x => x.MatchLdfld<Leech.LeechSchool.LeechPrey>("creature"),
-            x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Snail"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrfalse(out _))
-        && ref1 is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_Leech_school,
+            s_MatchLdfld_Leech_LeechSchool_prey,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_OutRef,
+            s_MatchLdfld_Leech_LeechSchool_LeechPrey_creature,
+            s_MatchCallOrCallvirt_Creature_get_Template,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Snail,
+            s_MatchCall_Any,
+            s_MatchBrfalse_Any))
         {
             label.Target = c.Next;
             c.Index -= 10;
             c.Emit<Leech>(OpCodes.Ldfld, "school")
              .Emit<Leech.LeechSchool>(OpCodes.Ldfld, "prey")
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
-             .Emit(OpCodes.Callvirt, ref1)
+             .Emit(OpCodes.Ldloc, vars[s_loc1])
+             .Emit(OpCodes.Callvirt, s_ref)
              .Emit<Leech.LeechSchool.LeechPrey>(OpCodes.Ldfld, "creature")
              .Emit(OpCodes.Isinst, il.Import(typeof(BouncingBall)))
              .Emit(OpCodes.Brtrue, label)
@@ -40,16 +38,15 @@ public static class LeechHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Leech.Swim! (part 1)");
-        loc = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc),
-            x => x.MatchCallOrCallvirt<Creature>("get_abstractCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
-            x => x.MatchCall(out _)))
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_Creature_get_abstractCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Leech,
+            s_MatchCall_Any))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+            c.Emit(OpCodes.Ldloc, vars[s_loc1])
              .EmitDelegate((bool flag, Creature realizedCreature) => flag && realizedCreature is not MiniLeech);
         }
         else

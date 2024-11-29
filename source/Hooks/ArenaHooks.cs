@@ -1,5 +1,4 @@
 ﻿global using static LBMergedMods.Hooks.ArenaHooks;
-using System.Reflection;
 using System;
 using ArenaBehaviors;
 using Mono.Cecil.Cil;
@@ -53,19 +52,18 @@ public static class ArenaHooks
     internal static void IL_ExitManager_Update(ILContext il)
     {
         var c = new ILCursor(il);
-        int loc1 = 0, loc2 = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc1),
-            x => x.MatchLdloc(out loc2),
-            x => x.MatchCallOrCallvirt(out _),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Leech"),
-            x => x.MatchCall(out _)))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdloc_OutLoc2,
+            s_MatchCallOrCallvirt_Any,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Leech,
+            s_MatchCall_Any))
         {
             var vars = il.Body.Variables;
-            c.Emit(OpCodes.Ldloc, vars[loc1])
-             .Emit(OpCodes.Ldloc, vars[loc2])
+            c.Emit(OpCodes.Ldloc, vars[s_loc1])
+             .Emit(OpCodes.Ldloc, vars[s_loc2])
              .EmitDelegate((bool flag, List<AbstractCreature> challengeKillList, int l) => flag && challengeKillList[l].creatureTemplate.type != CreatureTemplateType.MiniBlackLeech);
         }
         else
@@ -74,30 +72,26 @@ public static class ArenaHooks
 
     internal static void IL_MultiplayerMenu_ctor(ILContext il)
     {
-        int loc0 = 0, loc2 = 0;
-        ILLabel? label = null;
-        MethodInfo? Substring = null;
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc0),
-            x => x.MatchLdloc(out loc2),
-            x => x.MatchLdelemRef(),
-            x => x.MatchLdloc(loc0),
-            x => x.MatchLdloc(loc2),
-            x => x.MatchLdelemRef(),
-            x => x.MatchCallOrCallvirt<string>("get_Length"),
-            x => x.MatchLdcI4(4),
-            x => x.MatchSub(),
-            x => x.MatchLdcI4(4),
-            x => x.MatchCallOrCallvirt(Substring = typeof(string).GetMethod(nameof(string.Substring), [typeof(int), typeof(int)])),
-            x => x.MatchLdstr(".txt"),
-            x => x.MatchCall(typeof(string).GetMethod("op_Equality", [typeof(string), typeof(string)])),
-            x => x.MatchBrfalse(out label))
-            && label is not null)
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdloc_OutLoc2,
+            s_MatchLdelemRef,
+            s_MatchLdloc_InLoc1,
+            s_MatchLdloc_InLoc2,
+            s_MatchLdelemRef,
+            s_MatchCallOrCallvirt_string_get_Length,
+            s_MatchLdcI4_4,
+            s_MatchSub,
+            s_MatchLdcI4_4,
+            s_MatchCallOrCallvirt_string_Substring_int_int,
+            s_MatchLdstr__txt,
+            s_MatchCall_string_op_Equality_string_string,
+            s_MatchBrfalse_OutLabel))
         {
             var vars = il.Body.Variables;
-            VariableDefinition var0 = vars[loc0],
-                var2 = vars[loc2];
+            VariableDefinition var0 = vars[s_loc1],
+                var2 = vars[s_loc2];
             c.Emit(OpCodes.Ldloc, var0)
              .Emit(OpCodes.Ldloc, var2)
              .Emit(OpCodes.Ldelem_Ref)
@@ -108,10 +102,10 @@ public static class ArenaHooks
              .Emit(OpCodes.Ldc_I4, 18)
              .Emit(OpCodes.Sub)
              .Emit(OpCodes.Ldc_I4, 18)
-             .Emit(OpCodes.Callvirt, il.Import(Substring))
+             .Emit(OpCodes.Callvirt, il.Import(s_string_Substring_int_int))
              .Emit(OpCodes.Ldstr, "_jellylonglegs.txt")
              .Emit(OpCodes.Call, il.Import(typeof(string).GetMethod("op_Inequality", [typeof(string), typeof(string)])))
-             .Emit(OpCodes.Brfalse, label);
+             .Emit(OpCodes.Brfalse, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Menu.MultiplayerMenu.ctor!");
@@ -157,25 +151,25 @@ public static class ArenaHooks
     internal static void IL_SandboxGameSession_SpawnEntity(ILContext il)
     {
         var c = new ILCursor(il);
-        var loc = 0;
+        var vars = il.Body.Variables;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<GameSession>("game"),
-            x => x.MatchCallOrCallvirt<RainWorldGame>("get_world"),
-            x => x.MatchLdcI4(0),
-            x => x.MatchCallOrCallvirt(typeof(World).GetMethod("GetAbstractRoom", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(int)], null)),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<GameSession>("game"),
-            x => x.MatchCallOrCallvirt<RainWorldGame>("get_world"),
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdfld<IconSymbol.IconSymbolData>("critType"),
-            x => x.MatchCall(typeof(StaticWorld).GetMethod("GetCreatureTemplate", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(CreatureTemplate.Type)], null)),
-            x => x.MatchLdnull(),
-            x => x.MatchLdloc(out _),
-            x => x.MatchLdloc(out _),
-            x => x.MatchNewobj<AbstractCreature>()))
+            s_MatchLdarg_0,
+            s_MatchLdfld_GameSession_game,
+            s_MatchCallOrCallvirt_RainWorldGame_get_world,
+            s_MatchLdcI4_0,
+            s_MatchCallOrCallvirt_World_GetAbstractRoom_int,
+            s_MatchLdarg_0,
+            s_MatchLdfld_GameSession_game,
+            s_MatchCallOrCallvirt_RainWorldGame_get_world,
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_IconSymbol_IconSymbolData_critType,
+            s_MatchCall_StaticWorld_GetCreatureTemplate_CreatureTemplate_Type,
+            s_MatchLdnull,
+            s_MatchLdloc_Any,
+            s_MatchLdloc_Any,
+            s_MatchNewobj_AbstractCreature))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+            c.Emit(OpCodes.Ldloc, vars[s_loc1])
              .EmitDelegate((AbstractCreature crit, IconSymbol.IconSymbolData data) =>
              {
                  if (data.critType == CreatureTemplate.Type.Fly && Seed.TryGetValue(crit, out var prop))
@@ -189,15 +183,14 @@ public static class ArenaHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SandboxGameSession.SpawnEntity! (part 1)");
         c.Index = 0;
-        loc = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc),
-            x => x.MatchCallOrCallvirt<AbstractRoom>("AddEntity"))
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_AbstractRoom_AddEntity)
         && c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(loc),
-            x => x.MatchCallOrCallvirt<AbstractRoom>("AddEntity")))
+            s_MatchLdloc_InLoc1,
+            s_MatchCallOrCallvirt_AbstractRoom_AddEntity))
         {
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+            c.Emit(OpCodes.Ldloc, vars[s_loc1])
              .Emit(OpCodes.Ldarg_1)
              .EmitDelegate((AbstractCreature crit, SandboxEditor.PlacedIconData placedIconData) =>
              {

@@ -16,19 +16,19 @@ public static class GarbageWormHooks
     internal static void IL_GarbageWormAI_Update(ILContext il)
     {
         var c = new ILCursor(il);
-        int loc1 = 0, loc2 = 0;
+        var vars = il.Body.Variables;
         if (c.TryGotoNext(
-            x => x.MatchLdloc(out loc1),
-            x => x.MatchLdfld<GarbageWormAI.CreatureInterest>("crit"),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchCallOrCallvirt<CreatureTemplate>("get_IsVulture"),
-            x => x.MatchBrfalse(out _),
-            x => x.MatchLdcR4(1000f),
-            x => x.MatchStloc(out loc2)))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_GarbageWormAI_CreatureInterest_crit,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchCallOrCallvirt_CreatureTemplate_get_IsVulture,
+            s_MatchBrfalse_Any,
+            s_MatchLdcR4_1000,
+            s_MatchStloc_OutLoc2))
         {
-            var l2 = il.Body.Variables[loc2];
-            c.Emit(OpCodes.Ldloc, il.Body.Variables[loc1])
+            var l2 = vars[s_loc2];
+            c.Emit(OpCodes.Ldloc, vars[s_loc1])
              .Emit(OpCodes.Ldloc, l2)
              .EmitDelegate((GarbageWormAI.CreatureInterest interest, float num) =>
              {

@@ -18,15 +18,15 @@ public static class CentipedeHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<AbstractCreature>("state"),
-            x => x.MatchLdcR4(2.3f),
-            x => x.MatchLdcR4(7f),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<Centipede>("size"),
-            x => x.MatchCall<Mathf>("Lerp"),
-            x => x.MatchCall<Mathf>("RoundToInt"),
-            x => x.MatchStfld<CreatureState>("meatLeft")))
+            s_MatchLdarg_1,
+            s_MatchLdfld_AbstractCreature_state,
+            s_MatchLdcR4_2_3,
+            s_MatchLdcR4_7,
+            s_MatchLdarg_0,
+            s_MatchLdfld_Centipede_size,
+            s_MatchCall_Mathf_Lerp,
+            s_MatchCall_Mathf_RoundToInt,
+            s_MatchStfld_CreatureState_meatLeft))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
@@ -54,12 +54,12 @@ public static class CentipedeHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchCallOrCallvirt<HealthState>("get_ClampedHealth"),
-            x => x.MatchMul(),
-            x => x.MatchCall<Mathf>("Lerp"),
-            x => x.MatchCall<Vector2>("op_Multiply"),
-            x => x.MatchLdarg(0),
-            x => x.MatchCallOrCallvirt<Centipede>("get_Red")))
+            s_MatchCallOrCallvirt_HealthState_get_ClampedHealth,
+            s_MatchMul,
+            s_MatchCall_Mathf_Lerp,
+            s_MatchCall_Vector2_op_Multiply,
+            s_MatchLdarg_0,
+            s_MatchCallOrCallvirt_Centipede_get_Red))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, Centipede self) => flag || self is Scutigera);
@@ -74,10 +74,10 @@ public static class CentipedeHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdcR4(.7f),
-            x => x.MatchLdcR4(.7f),
-            x => x.MatchLdcR4(1f),
-            x => x.MatchNewobj<Color>()))
+            s_MatchLdcR4_0_7,
+            s_MatchLdcR4_0_7,
+            s_MatchLdcR4_1,
+            s_MatchNewobj_Color))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Color color, Centipede self) => self is Scutigera ? new(color.r, color.b, color.g) : color);
@@ -85,13 +85,13 @@ public static class CentipedeHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Centipede.Shock! (part 1)");
         if (!c.TryGotoNext(MoveType.After,
-            x => x.MatchStfld<CentipedeAI>("annoyingCollisions")))
+            s_MatchStfld_CentipedeAI_annoyingCollisions))
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Centipede.Shock! (from 1 to 2)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdcR4(.7f),
-            x => x.MatchLdcR4(.7f),
-            x => x.MatchLdcR4(1f),
-            x => x.MatchNewobj<Color>()))
+            s_MatchLdcR4_0_7,
+            s_MatchLdcR4_0_7,
+            s_MatchLdcR4_1,
+            s_MatchNewobj_Color))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Color color, Centipede self) => self is Scutigera ? new(color.r, color.b, color.g) : color);
@@ -119,7 +119,7 @@ public static class CentipedeHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchNewobj<CentipedeShell>()))
+            s_MatchNewobj_CentipedeShell))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((CentipedeShell shell, Centipede self) => self is Scutigera ? new ScutigeraShell(shell.pos, shell.vel, shell.hue, shell.saturation, shell.scaleX, shell.scaleY) : (self is RedHorror ? new RedHorrorShell(shell.pos, shell.vel, shell.hue, shell.saturation, shell.scaleX, shell.scaleY) : shell));
@@ -127,7 +127,7 @@ public static class CentipedeHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Centipede.Violence! (part 1)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchCall<Creature>("Violence")))
+            s_MatchCall_Creature_Violence))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Centipede self) =>
@@ -202,7 +202,7 @@ public static class CentipedeHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchStfld<NoiseTracker>("hearingSkill")))
+            s_MatchStfld_NoiseTracker_hearingSkill))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((CentipedeAI self) =>
@@ -214,14 +214,14 @@ public static class CentipedeHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook CentipedeAI.Update! (part 1)");
         if (!c.TryGotoNext(MoveType.After,
-            x => x.MatchLdcR4(.1f),
-            x => x.MatchCall<Mathf>("Lerp"),
-            x => x.MatchStfld<CentipedeAI>("excitement")))
+            s_MatchLdcR4_0_1,
+            s_MatchCall_Mathf_Lerp,
+            s_MatchStfld_CentipedeAI_excitement))
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook CentipedeAI.Update! (from 1 to 2)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<CentipedeAI>("centipede"),
-            x => x.MatchCallOrCallvirt<Centipede>("get_Centiwing")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_CentipedeAI_centipede,
+            s_MatchCallOrCallvirt_Centipede_get_Centiwing))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, CentipedeAI self) => flag || self is ScutigeraAI);
@@ -307,11 +307,11 @@ public static class CentipedeHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchLdarg(1),
-            x => x.MatchLdarg(2),
-            x => x.MatchLdnull(),
-            x => x.MatchCallOrCallvirt<GraphicsModule>("AddToContainer")))
+            s_MatchLdarg_0,
+            s_MatchLdarg_1,
+            s_MatchLdarg_2,
+            s_MatchLdnull,
+            s_MatchCallOrCallvirt_GraphicsModule_AddToContainer))
         {
             ++c.Index;
             c.Emit(OpCodes.Ldarg_1)
@@ -358,14 +358,13 @@ public static class CentipedeHooks
     internal static void IL_CentipedeGraphics_Update(ILContext il)
     {
         var c = new ILCursor(il);
-        var loc = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<CentipedeGraphics>("lightSource"),
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdloc(loc),
-            x => x.MatchLdcR4(1f),
-            x => x.MatchNewobj<Color>()))
+            s_MatchLdarg_0,
+            s_MatchLdfld_CentipedeGraphics_lightSource,
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdloc_InLoc1,
+            s_MatchLdcR4_1,
+            s_MatchNewobj_Color))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Color color, CentipedeGraphics self) => self is ScutigeraGraphics ? new(color.r, color.b, color.g) : color);

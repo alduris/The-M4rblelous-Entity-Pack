@@ -18,9 +18,9 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdcI4(20),
-            x => x.MatchNewarr<BodyChunk>()))
+            s_MatchLdarg_0,
+            s_MatchLdcI4_20,
+            s_MatchNewarr_BodyChunk))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((BodyChunk[] ar, BigEel self) => self.Template.type == CreatureTemplateType.FlyingBigEel ? new BodyChunk[10] : ar);
@@ -120,8 +120,8 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdsfld<AbstractRoomNode.Type>("SeaExit")))
+            s_MatchLdarg_0,
+            s_MatchLdsfld_AbstractRoomNode_Type_SeaExit))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((AbstractRoomNode.Type nodeType, BigEel self) => self.Template.type == CreatureTemplateType.FlyingBigEel || self.Template.type == CreatureTemplateType.MiniFlyingBigEel ? AbstractRoomNode.Type.SkyExit : nodeType);
@@ -176,9 +176,9 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<UpdatableAndDeletable>("room"),
-            x => x.MatchLdsfld<SoundID>("Leviathan_Bite")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_UpdatableAndDeletable_room,
+            s_MatchLdsfld_SoundID_Leviathan_Bite))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((SoundID ID, BigEel self) => self.Template.type == CreatureTemplateType.FlyingBigEel || self.Template.type == CreatureTemplateType.MiniFlyingBigEel ? NewSoundID.Flying_Leviathan_Bite : ID);
@@ -209,10 +209,10 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("world"),
-            x => x.MatchLdfld<World>("seaAccessNodes"),
-            x => x.MatchLdlen()))
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_world,
+            s_MatchLdfld_World_seaAccessNodes,
+            s_MatchLdlen))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((int length, BigEelAbstractAI self) => self.parent is AbstractCreature cr && (cr.creatureTemplate.type == CreatureTemplateType.FlyingBigEel || cr.creatureTemplate.type == CreatureTemplateType.MiniFlyingBigEel) ? self.world.skyAccessNodes.Length : length);
@@ -225,17 +225,17 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("world"),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("world"),
-            x => x.MatchCallOrCallvirt<World>("get_firstRoomIndex"),
-            x => x.MatchCallOrCallvirt(typeof(World).GetMethod("GetAbstractRoom", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(int)], null)),
-            x => x.MatchLdfld<AbstractRoom>("nodes"),
-            x => x.MatchLdloc(out _),
-            x => x.MatchLdelema<AbstractRoomNode>(),
-            x => x.MatchLdfld<AbstractRoomNode>("type"),
-            x => x.MatchLdsfld<AbstractRoomNode.Type>("SeaExit")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_world,
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_world,
+            s_MatchCallOrCallvirt_World_get_firstRoomIndex,
+            s_MatchCallOrCallvirt_World_GetAbstractRoom_int,
+            s_MatchLdfld_AbstractRoom_nodes,
+            s_MatchLdloc_Any,
+            s_MatchLdelema_AbstractRoomNode,
+            s_MatchLdfld_AbstractRoomNode_type,
+            s_MatchLdsfld_AbstractRoomNode_Type_SeaExit))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((AbstractRoomNode.Type nodeType, BigEelAbstractAI self) => self.parent is AbstractCreature cr && (cr.creatureTemplate.type == CreatureTemplateType.FlyingBigEel || cr.creatureTemplate.type == CreatureTemplateType.MiniFlyingBigEel) ? AbstractRoomNode.Type.SkyExit : nodeType);
@@ -243,17 +243,17 @@ public static class BigEelHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigEelAbstractAI.AddRandomCheckRoom (part 1)!");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("world"),
-            x => x.MatchLdfld<World>("seaAccessNodes"),
-            x => x.MatchLdcI4(0),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("world"),
-            x => x.MatchLdfld<World>("seaAccessNodes"),
-            x => x.MatchLdlen(),
-            x => x.MatchConvI4(),
-            x => x.MatchCall(typeof(Random).GetMethod("Range", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(int), typeof(int)], null)),
-            x => x.MatchLdelemAny<WorldCoordinate>()))
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_world,
+            s_MatchLdfld_World_seaAccessNodes,
+            s_MatchLdcI4_0,
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_world,
+            s_MatchLdfld_World_seaAccessNodes,
+            s_MatchLdlen,
+            s_MatchConvI4,
+            s_MatchCall_Random_Range_int_int,
+            s_MatchLdelemAny_WorldCoordinate))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((WorldCoordinate coord, BigEelAbstractAI self) => self.parent is AbstractCreature cr && (cr.creatureTemplate.type == CreatureTemplateType.FlyingBigEel || cr.creatureTemplate.type == CreatureTemplateType.MiniFlyingBigEel) ? self.world.skyAccessNodes[Random.Range(0, self.world.skyAccessNodes.Length)] : coord);
@@ -266,14 +266,14 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("BigEel")))
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_BigEel))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((CreatureTemplate.Type type, BigEelAbstractAI self) => self.parent?.creatureTemplate.type == CreatureTemplateType.FlyingBigEel ? CreatureTemplateType.FlyingBigEel : type);
             if (c.TryGotoNext(MoveType.After,
-                x => x.OpCode == OpCodes.Call && x.Operand is MethodReference r && r.Name.Contains("op_Equality")))
+                s_MatchCall_op_Equality_Any))
             {
                 c.Emit(OpCodes.Ldarg_0)
                  .EmitDelegate((bool flag, BigEelAbstractAI self) => (self.parent is not AbstractCreature cr || (cr.creatureTemplate.type != CreatureTemplateType.MiniFlyingBigEel && cr.creatureTemplate.type != CreatureTemplateType.MiniLeviathan)) && flag);
@@ -284,12 +284,12 @@ public static class BigEelHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigEelAbstractAI.AddRoomClusterToCheckList! (part 1)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out _),
-            x => x.MatchLdfld<AbstractRoom>("nodes"),
-            x => x.MatchLdloc(out _),
-            x => x.MatchLdelema<AbstractRoomNode>(),
-            x => x.MatchLdfld<AbstractRoomNode>("type"),
-            x => x.MatchLdsfld<AbstractRoomNode.Type>("SeaExit")))
+            s_MatchLdloc_Any,
+            s_MatchLdfld_AbstractRoom_nodes,
+            s_MatchLdloc_Any,
+            s_MatchLdelema_AbstractRoomNode,
+            s_MatchLdfld_AbstractRoomNode_type,
+            s_MatchLdsfld_AbstractRoomNode_Type_SeaExit))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((AbstractRoomNode.Type nodeType, BigEelAbstractAI self) => self.parent is AbstractCreature cr && (cr.creatureTemplate.type == CreatureTemplateType.FlyingBigEel || cr.creatureTemplate.type == CreatureTemplateType.MiniFlyingBigEel) ? AbstractRoomNode.Type.SkyExit : nodeType);
@@ -396,9 +396,9 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdcI4(60),
-            x => x.MatchNewarr<TailSegment>()))
+            s_MatchLdarg_0,
+            s_MatchLdcI4_60,
+            s_MatchNewarr_TailSegment))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((TailSegment[] ar, BigEelGraphics self) => self.eel?.Template.type == CreatureTemplateType.FlyingBigEel ? new TailSegment[45] : ar);
@@ -492,7 +492,7 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<RainWorld>("ShadPropLeviathanColorA")))
+            s_MatchLdsfld_RainWorld_ShadPropLeviathanColorA))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((int i, BigEelGraphics g) =>
@@ -516,7 +516,7 @@ public static class BigEelHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigEelGraphics.ApplyPalette (part 1)!");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<RainWorld>("ShadPropLeviathanColorB")))
+            s_MatchLdsfld_RainWorld_ShadPropLeviathanColorB))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((int i, BigEelGraphics g) =>
@@ -540,7 +540,7 @@ public static class BigEelHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigEelGraphics.ApplyPalette (part 2)!");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<RainWorld>("ShadPropLeviathanColorHead")))
+            s_MatchLdsfld_RainWorld_ShadPropLeviathanColorHead))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((int i, BigEelGraphics g) =>
@@ -774,13 +774,13 @@ public static class BigEelHooks
                  snd.volume = 0f;
          });
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<BigEelGraphics>("eel"),
-            x => x.MatchLdfld<BigEel>("swimSpeed"),
-            x => x.MatchCall<Mathf>("Lerp"),
-            x => x.MatchDiv(),
-            x => x.MatchSub(),
-            x => x.MatchStfld<BigEelGraphics>("tailSwim")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_BigEelGraphics_eel,
+            s_MatchLdfld_BigEel_swimSpeed,
+            s_MatchCall_Mathf_Lerp,
+            s_MatchDiv,
+            s_MatchSub,
+            s_MatchStfld_BigEelGraphics_tailSwim))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((BigEelGraphics self) =>
@@ -829,8 +829,8 @@ public static class BigEelHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdfld<RoomBorderExit>("type"),
-            x => x.MatchLdsfld<AbstractRoomNode.Type>("SeaExit")))
+            s_MatchLdfld_RoomBorderExit_type,
+            s_MatchLdsfld_AbstractRoomNode_Type_SeaExit))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((AbstractRoomNode.Type nodeType, BigEelPather self) => self.creature is AbstractCreature cr && (cr.creatureTemplate.type == CreatureTemplateType.FlyingBigEel || cr.creatureTemplate.type == CreatureTemplateType.MiniFlyingBigEel) ? AbstractRoomNode.Type.SkyExit : nodeType);
@@ -838,9 +838,9 @@ public static class BigEelHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigEelPather.FollowPath (part 1)!");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<PathFinder>("world"),
-            x => x.MatchLdfld<World>("seaAccessNodes")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_PathFinder_world,
+            s_MatchLdfld_World_seaAccessNodes))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((WorldCoordinate[] accessNodes, BigEelPather self) => self.creature is AbstractCreature cr && (cr.creatureTemplate.type == CreatureTemplateType.FlyingBigEel || cr.creatureTemplate.type == CreatureTemplateType.MiniFlyingBigEel) ? self.world.skyAccessNodes : accessNodes);

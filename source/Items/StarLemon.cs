@@ -206,7 +206,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
     }
 
     public Stalk? MyStalk;
-    public LightSource? Light;
+    public LightSource? Light, FlatLight;
     public float Darkness, LastDarkness, LightDarkness;
     public int Bites = 6;
     public Color YellowCol;
@@ -276,20 +276,40 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
         {
             lh.stayAlive = true;
             lh.setPos = fc.pos;
-            lh.setRad = 200f;
-            lh.setAlpha = (Bites / 6f * .6f + .4f) * .25f;
+            lh.setRad = 280f;
+            lh.setAlpha = Bites / 6f * .6f + .4f;
             lh.color = YellowCol;
             if (lh.slatedForDeletetion || LightDarkness == 0f)
                 Light = null;
         }
         else if (LightDarkness > 0f)
             room.AddObject(Light = new(fc.pos, false, YellowCol, this) { requireUpKeep = true });
+        if (FlatLight is LightSource lh2)
+        {
+            lh2.stayAlive = true;
+            lh2.setPos = fc.pos;
+            lh2.setRad = 35f;
+            lh2.setAlpha = .25f;
+            lh2.color = YellowCol;
+            if (lh2.slatedForDeletetion || LightDarkness == 0f)
+                FlatLight = null;
+        }
+        else if (LightDarkness > 0f)
+            room.AddObject(FlatLight = new(fc.pos, false, YellowCol, this) { flat = true, requireUpKeep = true });
     }
 
     public override void Destroy()
     {
-        Light?.Destroy();
-        Light = null;
+        if (Light is not null)
+        {
+            Light.Destroy();
+            Light = null;
+        }
+        if (FlatLight is not null)
+        {
+            FlatLight.Destroy();
+            FlatLight = null;
+        }
         base.Destroy();
     }
 

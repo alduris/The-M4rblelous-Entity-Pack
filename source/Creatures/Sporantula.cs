@@ -13,11 +13,7 @@ public class Sporantula : BigSpider
             SporeMemory.Add(abstractCreature, []);
     }
 
-    public override void InitiateGraphicsModule()
-    {
-        if (graphicsModule is not SporantulaGraphics)
-            graphicsModule = new SporantulaGraphics(this);
-    }
+    public override void InitiateGraphicsModule() => graphicsModule ??= new SporantulaGraphics(this);
 
     public override void Die()
     {

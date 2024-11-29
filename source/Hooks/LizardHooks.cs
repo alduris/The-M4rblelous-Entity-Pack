@@ -79,14 +79,6 @@ public static class LizardHooks
             self.effectColor = Custom.HSL2RGB(Custom.WrappedRandomVariation(.58f, .08f, .6f), .3f, Custom.ClampedRandomVariation(.8f, .15f, .1f));
             Random.state = state;
         }
-        else if (tpl == CreatureTemplateType.NoodleEater)
-        {
-            state = Random.state;
-            Random.InitState(abstractCreature.ID.RandomSeed);
-            self.effectColor = abstractCreature.superSizeMe ? Custom.HSL2RGB(Custom.WrappedRandomVariation(86f / 360f, .05f, .6f), Custom.WrappedRandomVariation(.95f, .05f, .1f), Custom.ClampedRandomVariation(.5f, .05f, .1f)) : Custom.HSL2RGB(Custom.WrappedRandomVariation(.8333f, .05f, .6f), Custom.WrappedRandomVariation(.9f, .05f, .1f), Custom.ClampedRandomVariation(.7f, .05f, .1f));
-            Random.state = state;
-            self.tongue ??= new(self);
-        }
         else if (tpl == CreatureTemplateType.Polliwog)
         {
             state = Random.state;
@@ -121,20 +113,18 @@ public static class LizardHooks
     internal static void IL_Lizard_Act(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchCallOrCallvirt<Creature>("get_abstractCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("CyanLizard"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrfalse(out label))
-        && label is not null)
+            s_MatchLdarg_0,
+            s_MatchCallOrCallvirt_Creature_get_abstractCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_CyanLizard,
+            s_MatchCall_Any,
+            s_MatchBrfalse_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Lizard self) => self.Template.type != CreatureTemplateType.HunterSeeker);
-            c.Emit(OpCodes.Brfalse, label);
+            c.Emit(OpCodes.Brfalse, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.Act!");
@@ -143,14 +133,12 @@ public static class LizardHooks
     internal static void IL_Lizard_ActAnimation(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<Lizard>("animation"),
-            x => x.MatchLdsfld<Lizard.Animation>("Spit"),
-            x => x.MatchCall(typeof(ExtEnum<Lizard.Animation>).GetMethod("op_Equality")),
-            x => x.MatchBrfalse(out label))
-        && label is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_Lizard_animation,
+            s_MatchLdsfld_Lizard_Animation_Spit,
+            s_MatchCall_Any,
+            s_MatchBrfalse_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Lizard self) =>
@@ -162,7 +150,7 @@ public static class LizardHooks
                  }
                  return false;
              });
-            c.Emit(OpCodes.Brtrue, label);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.ActAnimation!");
@@ -180,13 +168,13 @@ public static class LizardHooks
         var c = new ILCursor(il);
         var label = il.DefineLabel();
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchCallOrCallvirt<Creature>("get_abstractCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("YellowLizard"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrfalse(out _)))
+            s_MatchLdarg_0,
+            s_MatchCallOrCallvirt_Creature_get_abstractCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_YellowLizard,
+            s_MatchCall_Any,
+            s_MatchBrfalse_Any))
         {
             label.Target = c.Next;
             c.Index -= 7;
@@ -198,7 +186,7 @@ public static class LizardHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.EnterAnimation!");
     }
 
-    internal static bool On_Lizard_HitHeadShield(On.Lizard.orig_HitHeadShield orig, Lizard self, Vector2 direction) => self.Template.type != CreatureTemplateType.NoodleEater && orig(self, direction);
+    internal static bool On_Lizard_HitHeadShield(On.Lizard.orig_HitHeadShield orig, Lizard self, Vector2 direction) => self is not NoodleEater && orig(self, direction);
 
     internal static Color On_Lizard_ShortCutColor(On.Lizard.orig_ShortCutColor orig, Lizard self) => self.Template.type == CreatureTemplateType.MoleSalamander && self.graphicsModule is LizardGraphics { blackSalamander: true } ? Color.Lerp(Color.black, Color.gray, .5f) : orig(self);
 
@@ -214,12 +202,11 @@ public static class LizardHooks
     internal static void IL_Lizard_SwimBehavior(ILContext il)
     {
         var c = new ILCursor(il);
-        var loc = 0;
         if (c.TryGotoNext(
-            x => x.MatchLdcI4(1),
-            x => x.MatchStloc(out loc)))
+            s_MatchLdcI4_1,
+            s_MatchStloc_OutLoc1))
         {
-            var l = il.Body.Variables[loc];
+            var l = il.Body.Variables[s_loc1];
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldloc, l)
              .EmitDelegate((Lizard self, bool flag) => !self.IsWaterSpitter() && !self.IsPolliwog() && !self.IsMoleSala() && flag);
@@ -227,28 +214,26 @@ public static class LizardHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior! (part 1)");
-        ILLabel? label = null;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Salamander"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdarg_0,
+            s_MatchCallOrCallvirt_Creature_get_Template,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
+            s_MatchCall_Any,
+            s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Lizard self) => self.IsPolliwog() || self.IsWaterSpitter() || self.IsMoleSala());
-            c.Emit(OpCodes.Brtrue, label);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior! (part 2)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<ModManager>("MMF"))
+            s_MatchLdsfld_ModManager_MMF)
          && c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<ModManager>("MMF"))
+            s_MatchLdsfld_ModManager_MMF)
          && c.TryGotoNext(MoveType.After,
-            x => x.MatchCallOrCallvirt(typeof(Room).GetMethod("MiddleOfTile", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(Vector2)], null))))
+            s_MatchCallOrCallvirt_Room_MiddleOfTile_Vector2))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((Vector2 removedVal, Lizard self) => self.room.MiddleOfTile(self.followingConnection.destinationCoord));
@@ -256,7 +241,7 @@ public static class LizardHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior! (part 3)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchRet()))
+            s_MatchRet))
         {
             c.Prev.OpCode = OpCodes.Ldarg_0;
             c.EmitDelegate((Lizard self) =>
@@ -403,23 +388,21 @@ public static class LizardHooks
     internal static void IL_LizardAI_IUseARelationshipTracker_UpdateDynamicRelationship(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<RelationshipTracker.DynamicRelationship>("state"),
-            x => x.MatchIsinst<LizardAI.LizardTrackState>(),
-            x => x.MatchLdfld<LizardAI.LizardTrackState>("vultureMask"),
-            x => x.MatchLdcI4(0),
-            x => x.MatchBle(out label))
-        && label is not null)
+            s_MatchLdarg_1,
+            s_MatchLdfld_RelationshipTracker_DynamicRelationship_state,
+            s_MatchIsinst_LizardAI_LizardTrackState,
+            s_MatchLdfld_LizardAI_LizardTrackState_vultureMask,
+            s_MatchLdcI4_0,
+            s_MatchBle_OutLabel))
         {
             c.Next.OpCode = OpCodes.Ldarg_0;
-            c.Index++;
+            ++c.Index;
             c.Emit<ArtificialIntelligence>(OpCodes.Ldfld, "creature")
              .Emit<AbstractCreature>(OpCodes.Ldfld, "creatureTemplate")
              .Emit<CreatureTemplate>(OpCodes.Ldfld, "type")
              .Emit(OpCodes.Ldsfld, il.Import(typeof(CreatureTemplateType).GetField("MoleSalamander")))
-             .Emit(OpCodes.Beq, label)
+             .Emit(OpCodes.Beq, s_label)
              .Emit(OpCodes.Ldarg_1);
         }
         else
@@ -565,7 +548,7 @@ public static class LizardHooks
             breedParams.jawOpenMoveJawsApart = 15f;
             breedParams.tailColorationExponent = 1.4f;
             breedParams.tailLengthFactor = 1.1f;
-            breedParams.standardColor = NoodleEaterCritob.NEatColor;
+            breedParams.standardColor = NoodleEater.NEatColor;
             breedParams.limbSpeed = 9f;
             breedParams.limbSize *= .7f;
             breedParams.limbQuickness = .9f;
@@ -759,18 +742,19 @@ public static class LizardHooks
     internal static void On_LizardBubble_ctor(On.LizardBubble.orig_ctor orig, LizardBubble self, LizardGraphics lizardGraphics, float intensity, float stickiness, float extraSpeed)
     {
         orig(self, lizardGraphics, intensity, stickiness, extraSpeed);
-        if (lizardGraphics.lizard?.Template.type == CreatureTemplateType.NoodleEater)
+        if (lizardGraphics is NoodleEaterGraphics)
             self.lifeTime /= 2;
     }
 
     internal static void On_LizardBubble_DrawSprites(On.LizardBubble.orig_DrawSprites orig, LizardBubble self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
         orig(self, sLeaser, rCam, timeStacker, camPos);
-        if (!self.slatedForDeletetion && self.room == rCam.room && self.lizardGraphics?.lizard?.Template.type == CreatureTemplateType.NoodleEater)
+        if (!self.slatedForDeletetion && self.room == rCam.room && self.lizardGraphics is NoodleEaterGraphics gr)
         {
-            sLeaser.sprites[0].color = self.lizardGraphics.effectColor;
-            if (self.lizardGraphics.lizard.dead)
-                sLeaser.sprites[0].isVisible = false;
+            var s0 = sLeaser.sprites[0];
+            s0.color = gr.effectColor;
+            if (gr.lizard?.dead is true)
+                s0.isVisible = false;
         }
     }
 
@@ -818,16 +802,6 @@ public static class LizardHooks
                 spriteIndex = self.AddCosmetic(spriteIndex, new LongHeadScales(self, spriteIndex));
             if (Random.value < .3f)
                 self.AddCosmetic(spriteIndex, new TailGeckoScales(self, spriteIndex));
-            Random.state = state;
-        }
-        else if (tpl == CreatureTemplateType.NoodleEater)
-        {
-            state = Random.state;
-            Random.InitState(self.lizard.abstractCreature.ID.RandomSeed);
-            self.overrideHeadGraphic = -1;
-            self.bodyLength *= .75f;
-            self.iVars.fatness = .65f + Random.value * .1f;
-            self.iVars.tailColor = 4f;
             Random.state = state;
         }
         else if (tpl == CreatureTemplateType.Polliwog)
@@ -897,7 +871,7 @@ public static class LizardHooks
 
     internal static int On_LizardGraphics_AddCosmetic(On.LizardGraphics.orig_AddCosmetic orig, LizardGraphics self, int spriteIndex, Template cosmetic)
     {
-        if (self.lizard?.Template.type == CreatureTemplateType.NoodleEater)
+        if (self is NoodleEaterGraphics)
             return spriteIndex;
         return orig(self, spriteIndex, cosmetic);
     }
@@ -962,23 +936,7 @@ public static class LizardHooks
         {
             var sprites = sLeaser.sprites;
             var tpl = liz.Template.type;
-            if (tpl == CreatureTemplateType.NoodleEater)
-            {
-                var eye = sprites[self.SpriteHeadStart + 4];
-                eye.element = Futile.atlasManager.GetElementWithName((liz.Consious ? "NoodleEaterEye" : "NoodleEaterEyeDead") + (3 - (int)(Mathf.Abs(Mathf.Lerp(self.lastHeadDepthRotation, self.headDepthRotation, timeStacker)) * 3.9f)).ToString());
-                eye.color = liz.Consious ? self.effectColor : rCam.currentPalette.blackColor;
-                var num8 = self.SpriteLimbsColorStart - self.SpriteLimbsStart;
-                for (var l = self.SpriteLimbsStart; l < self.SpriteLimbsEnd; l++)
-                    sprites[l + num8].color = self.palette.blackColor;
-                if (liz.tongue is LizardTongue t && t.Out)
-                {
-                    sprites[self.SpriteTongueStart + 1].color = self.effectColor;
-                    var verts = (sprites[self.SpriteTongueStart] as TriangleMesh)!.verticeColors;
-                    for (var num18 = 0; num18 < verts.Length; num18++)
-                        verts[num18] = self.effectColor;
-                }
-            }
-            else if (tpl == CreatureTemplateType.Polliwog)
+            if (tpl == CreatureTemplateType.Polliwog)
             {
                 for (int num8 = self.SpriteLimbsColorStart - self.SpriteLimbsStart, l = self.SpriteLimbsStart + 2; l < self.SpriteLimbsEnd; l++)
                 {
@@ -1023,7 +981,7 @@ public static class LizardHooks
     internal static Color On_LizardGraphics_DynamicBodyColor(On.LizardGraphics.orig_DynamicBodyColor orig, LizardGraphics self, float f)
     {
         var tpl = self.lizard.Template.type;
-        if (tpl == CreatureTemplateType.NoodleEater)
+        if (self is NoodleEaterGraphics)
             return self.palette.blackColor;
         if (tpl == CreatureTemplateType.HunterSeeker)
             return Color.Lerp(Color.white, self.whiteCamoColor, self.whiteCamoColorAmount);
@@ -1044,7 +1002,7 @@ public static class LizardHooks
 
     internal static Color On_LizardGraphics_HeadColor(On.LizardGraphics.orig_HeadColor orig, LizardGraphics self, float timeStacker)
     {
-        if (self.lizard.Template.type == CreatureTemplateType.NoodleEater)
+        if (self is NoodleEaterGraphics)
             return self.palette.blackColor;
         var color = orig(self, timeStacker);
         if (self.lizard.AI?.yellowAI is PolliwogCommunication c && c.PackLeader)
@@ -1055,29 +1013,6 @@ public static class LizardHooks
             color = Color.Lerp(color, new(1f, .007843137254902f, .3529411764705882f), flicker);
         }
         return color;
-    }
-
-    internal static void On_LizardGraphics_InitiateSprites(On.LizardGraphics.orig_InitiateSprites orig, LizardGraphics self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
-    {
-        orig(self, sLeaser, rCam);
-        if (self.lizard?.Template.type == CreatureTemplateType.NoodleEater && self.tongue is GenericBodyPart[] t)
-        {
-            var tg = sLeaser.sprites[self.SpriteTongueStart];
-            tg.isVisible = false;
-            var cont = tg.container;
-            var tlm1 = t.Length - 1;
-            var array = new TriangleMesh.Triangle[tlm1 * 4 + 1];
-            for (var n = 0; n < tlm1; n++)
-            {
-                var num = n * 4;
-                for (var num2 = 0; num2 < 4; num2++)
-                    array[num + num2] = new(num + num2, num + num2 + 1, num + num2 + 2);
-            }
-            array[tlm1 * 4] = new(tlm1 * 4, tlm1 * 4 + 1, tlm1 * 4 + 2);
-            cont.AddChild(sLeaser.sprites[self.SpriteTongueStart] = new TriangleMesh("Futile_White", array, true));
-            sLeaser.sprites[self.SpriteTongueStart].MoveBehindOtherNode(tg);
-            tg.RemoveFromContainer();
-        }
     }
 
     internal static void IL_LizardGraphics_Update(ILContext il)
@@ -1096,20 +1031,18 @@ public static class LizardHooks
          });
         for (var i = 1; i <= 2; i++)
         {
-            ILLabel? label = null;
             if (c.TryGotoNext(
-                x => x.MatchLdarg(0),
-                x => x.MatchLdfld<LizardGraphics>("lizard"),
-                x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-                x => x.MatchLdfld<CreatureTemplate>("type"),
-                x => x.MatchLdsfld<CreatureTemplate.Type>("Salamander"),
-                x => x.MatchCall(out _),
-                x => x.MatchBrtrue(out label))
-            && label is not null)
+                s_MatchLdarg_0,
+                s_MatchLdfld_LizardGraphics_lizard,
+                s_MatchCallOrCallvirt_Creature_get_Template,
+                s_MatchLdfld_CreatureTemplate_type,
+                s_MatchLdsfld_CreatureTemplate_Type_Salamander,
+                s_MatchCall_Any,
+                s_MatchBrtrue_OutLabel))
             {
                 c.Emit(OpCodes.Ldarg_0)
                  .EmitDelegate((LizardGraphics self) => self.lizard is Lizard l && (l.IsPolliwog() || l.IsMoleSala()));
-                c.Emit(OpCodes.Brtrue, label);
+                c.Emit(OpCodes.Brtrue, s_label);
                 c.Index += 7; // arbitrary num
             }
             else
@@ -1117,13 +1050,13 @@ public static class LizardHooks
         }
         var label2 = il.DefineLabel();
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<LizardGraphics>("lizard"),
-            x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Salamander"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrfalse(out _))
+            s_MatchLdarg_0,
+            s_MatchLdfld_LizardGraphics_lizard,
+            s_MatchCallOrCallvirt_Creature_get_Template,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
+            s_MatchCall_Any,
+            s_MatchBrfalse_Any)
         && label2 is not null)
         {
             label2.Target = c.Next;
@@ -1139,13 +1072,13 @@ public static class LizardHooks
         {
             var label = il.DefineLabel();
             if (c.TryGotoNext(MoveType.After,
-                x => x.MatchLdarg(0),
-                x => x.MatchLdfld<LizardGraphics>("lizard"),
-                x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-                x => x.MatchLdfld<CreatureTemplate>("type"),
-                x => x.MatchLdsfld<CreatureTemplate.Type>("WhiteLizard"),
-                x => x.MatchCall(out _),
-                x => x.MatchBrfalse(out _)))
+                s_MatchLdarg_0,
+                s_MatchLdfld_LizardGraphics_lizard,
+                s_MatchCallOrCallvirt_Creature_get_Template,
+                s_MatchLdfld_CreatureTemplate_type,
+                s_MatchLdsfld_CreatureTemplate_Type_WhiteLizard,
+                s_MatchCall_Any,
+                s_MatchBrfalse_Any))
             {
                 label.Target = c.Next;
                 c.Index -= 6;
@@ -1172,40 +1105,21 @@ public static class LizardHooks
         c.Emit(OpCodes.Ret);
     }
 
-    internal static void On_LizardGraphics_Update(On.LizardGraphics.orig_Update orig, LizardGraphics self)
-    {
-        orig(self);
-        if (self.lizard is Lizard l && l.Template.type == CreatureTemplateType.NoodleEater)
-        {
-            if (!l.Consious)
-            {
-                l.bubble = 0;
-                l.bubbleIntensity = 0f;
-            }
-            else
-                l.bubbleIntensity /= 2f;
-            if (self.lightSource is LightSource ls)
-                ls.setAlpha = 0f;
-        }
-    }
-
     internal static void IL_LizardGraphics_UpdateTailSegment(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<LizardGraphics>("lizard"),
-            x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Salamander"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_LizardGraphics_lizard,
+            s_MatchCallOrCallvirt_Creature_get_Template,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
+            s_MatchCall_Any,
+            s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((LizardGraphics self) => self.lizard is Lizard l && (l.IsPolliwog() || l.IsMoleSala()));
-            c.Emit(OpCodes.Brtrue, label);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook LizardGraphics.UpdateTailSegment!");
@@ -1213,7 +1127,7 @@ public static class LizardHooks
 
     internal static void On_LizardGraphics_WhiteFlicker(On.LizardGraphics.orig_WhiteFlicker orig, LizardGraphics self, int fl)
     {
-        if (self.lizard.Template.type == CreatureTemplateType.NoodleEater)
+        if (self is NoodleEaterGraphics)
             self.whiteFlicker = 0;
         else
             orig(self, fl);
@@ -1224,15 +1138,14 @@ public static class LizardHooks
     internal static void On_LizardLimb_ctor(On.LizardLimb.orig_ctor orig, LizardLimb self, GraphicsModule owner, BodyChunk connectionChunk, int num, float rad, float sfFric, float aFric, float huntSpeed, float quickness, LizardLimb otherLimbInPair)
     {
         orig(self, owner, connectionChunk, num, rad, sfFric, aFric, huntSpeed, quickness, otherLimbInPair);
-        if (owner is LizardGraphics l && l.lizard is Lizard liz)
+        if (owner is LizardGraphics l)
         {
-            var tpl = liz.Template.type;
-            if (tpl == CreatureTemplateType.NoodleEater)
+            if (l is NoodleEaterGraphics)
             {
                 self.grabSound = SoundID.Lizard_BlueWhite_Foot_Grab;
                 self.releaseSeound = SoundID.Lizard_BlueWhite_Foot_Grab;
             }
-            else if (tpl == CreatureTemplateType.SilverLizard)
+            else if (l.lizard?.Template.type == CreatureTemplateType.SilverLizard)
             {
                 self.grabSound = SoundID.Lizard_Green_Foot_Grab;
                 self.releaseSeound = SoundID.Lizard_Green_Foot_Release;
@@ -1298,12 +1211,12 @@ public static class LizardHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchCallOrCallvirt<LizardAI.LizardSpitTracker>("get_lizardAI"),
-            x => x.MatchCallOrCallvirt<LizardAI>("get_lizard"),
-            x => x.MatchLdflda<Creature>("lastInputWithDiagonals"),
-            x => x.MatchCallOrCallvirt(out _),
-            x => x.MatchLdfld<Player.InputPackage>("thrw")))
+            s_MatchLdarg_0,
+             s_MatchCallOrCallvirt_LizardAI_LizardSpitTracker_get_lizardAI,
+            s_MatchCallOrCallvirt_LizardAI_get_lizard,
+            s_MatchLdflda_Creature_lastInputWithDiagonals,
+            s_MatchCallOrCallvirt_Any,
+            s_MatchLdfld_Player_InputPackage_thrw))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, LizardAI.LizardSpitTracker self) => flag && self.lizardAI?.lizard?.Template.type != CreatureTemplateType.WaterSpitter);
@@ -1316,7 +1229,7 @@ public static class LizardHooks
     {
         orig(self, lizard);
         var tpl = lizard.Template.type;
-        if (tpl == CreatureTemplateType.NoodleEater)
+        if (lizard is NoodleEater)
         {
             self.range = 400f;
             self.elasticRange = 0f;
@@ -1378,7 +1291,7 @@ public static class LizardHooks
     internal static void On_LizardVoice_ctor(On.LizardVoice.orig_ctor orig, LizardVoice self, Lizard lizard)
     {
         orig(self, lizard);
-        if (lizard.Template.type == CreatureTemplateType.NoodleEater)
+        if (lizard is NoodleEater)
             self.myPitch *= 1.5f;
     }
 
@@ -1412,7 +1325,7 @@ public static class LizardHooks
                 else
                     res = list[Random.Range(0, list.Count)];
             }
-            else if (tpl == CreatureTemplateType.NoodleEater)
+            else if (l is NoodleEater)
             {
                 soundID = SoundID.Lizard_Voice_Blue_A;
                 if (soundID.Index != -1 && l.abstractCreature.world.game.soundLoader.workingTriggers[soundID.Index])
@@ -1498,13 +1411,13 @@ public static class LizardHooks
         var c = new ILCursor(il);
         ILLabel? label = il.DefineLabel();
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<LizardAI.LurkTracker>("lizard"),
-            x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("WhiteLizard"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrfalse(out _)))
+            s_MatchLdarg_0,
+            s_MatchLdfld_LizardAI_LurkTracker_lizard,
+            s_MatchCallOrCallvirt_Creature_get_Template,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_WhiteLizard,
+            s_MatchCall_Any,
+            s_MatchBrfalse_Any))
         {
             label.Target = c.Next;
             c.Index -= 6;
@@ -1514,20 +1427,18 @@ public static class LizardHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook LizardAI.LurkTracker.LurkPosScore! (part 1)");
-        label = null;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<LizardAI.LurkTracker>("lizard"),
-            x => x.MatchCallOrCallvirt<Creature>("get_Template"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Salamander"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_LizardAI_LurkTracker_lizard,
+            s_MatchCallOrCallvirt_Creature_get_Template,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
+            s_MatchCall_Any,
+            s_MatchBrtrue_OutLabel))
         {
             ++c.Index;
             c.EmitDelegate((LizardAI.LurkTracker self) => self.lizard is Lizard l && (l.IsPolliwog() || l.IsMoleSala()));
-            c.Emit(OpCodes.Brtrue, label)
+            c.Emit(OpCodes.Brtrue, s_label)
              .Emit(OpCodes.Ldarg_0);
         }
         else
@@ -1647,11 +1558,11 @@ public static class LizardHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<YellowAI>("lizard"),
-            x => x.MatchLdflda<Creature>("inputWithDiagonals"),
-            x => x.MatchCallOrCallvirt(out _),
-            x => x.MatchLdfld<Player.InputPackage>("jmp")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_YellowAI_lizard,
+            s_MatchLdflda_Creature_inputWithDiagonals,
+            s_MatchCallOrCallvirt_Any,
+            s_MatchLdfld_Player_InputPackage_jmp))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, YellowAI self) => self is PolliwogCommunication && self.lizard is Lizard l ? l.inputWithDiagonals!.Value.thrw && self.pack?.members.Count > 1 : flag);
@@ -1659,8 +1570,8 @@ public static class LizardHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook YellowAI.Update! (part 1)");
         if (c.TryGotoNext(MoveType.After,
-           x => x.MatchCall<Mathf>("Max"),
-           x => x.MatchStfld<YellowAI>("commFlicker")))
+           s_MatchCall_Mathf_Max,
+           s_MatchStfld_YellowAI_commFlicker))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((YellowAI self) =>
@@ -1679,7 +1590,7 @@ public static class LizardHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook YellowAI.Update! (part 2)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<CreatureTemplate.Type>("YellowLizard")))
+            s_MatchLdsfld_CreatureTemplate_Type_YellowLizard))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((CreatureTemplate.Type type, YellowAI self) => self is PolliwogCommunication ? CreatureTemplateType.Polliwog : type);

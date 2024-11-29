@@ -9,7 +9,7 @@ using MoreSlugcats;
 
 namespace LBMergedMods.Items;
 
-public class DendriticSwarmer : PhysicalObject, IDrawable, IPlayerEdible, IOwnProjectedCircles, IOwnMycelia
+public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnProjectedCircles, IOwnMycelia
 {
     public sealed class MovementMode(string value, bool register = false) : ExtEnum<MovementMode>(value, register)
     {
@@ -52,7 +52,7 @@ public class DendriticSwarmer : PhysicalObject, IDrawable, IPlayerEdible, IOwnPr
 
     public virtual AbstractConsumable AbstrCons => (abstractPhysicalObject as AbstractConsumable)!;
 
-    public virtual bool Edible => grabbedBy.Count == 0 || grabbedBy[0].grabber is not Player p || p.FoodInStomach != p.MaxFoodInStomach;
+    public virtual bool Edible => grabbedBy.Count == 0 || grabbedBy[0].grabber is not Player p || p.FoodInStomach < p.MaxFoodInStomach;
 
     public virtual int BitesLeft => Bites;
 
@@ -62,7 +62,7 @@ public class DendriticSwarmer : PhysicalObject, IDrawable, IPlayerEdible, IOwnPr
 
     public virtual Room OwnerRoom => room;
 
-    public DendriticSwarmer(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
+    public DendriticNeuron(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
     {
         var state = Random.state;
         collisionLayer = 1;

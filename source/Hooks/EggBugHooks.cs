@@ -13,7 +13,7 @@ public static class EggBugHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdcR4(.3f)))
+            s_MatchLdcR4_0_3))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((float num, EggBug self) => self is SurfaceSwimmer ? 10f : num);

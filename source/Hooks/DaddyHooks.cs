@@ -25,7 +25,7 @@ public static class DaddyHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchNewobj<DaddyBubble>()))
+            s_MatchNewobj_DaddyBubble))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_2)
@@ -44,7 +44,7 @@ public static class DaddyHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook DaddyGraphics.ReactToNoise! (part 1)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchNewobj<DaddyRipple>()))
+            s_MatchNewobj_DaddyRipple))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((DaddyRipple ripple, DaddyGraphics self) =>
@@ -90,7 +90,7 @@ public static class DaddyHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchNewarr<BodyChunk>()))
+            s_MatchNewarr_BodyChunk))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
@@ -109,7 +109,7 @@ public static class DaddyHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook DaddyLongLegs.ctor! (part 1)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchNewobj<BodyChunk>()))
+            s_MatchNewobj_BodyChunk))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
@@ -134,7 +134,7 @@ public static class DaddyHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook DaddyLongLegs.ctor! (part 2)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchNewarr<PhysicalObject.BodyChunkConnection>()))
+            s_MatchNewarr_PhysicalObject_BodyChunkConnection))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)

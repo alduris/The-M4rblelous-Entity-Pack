@@ -4,7 +4,6 @@ using UnityEngine;
 using Mono.Cecil.Cil;
 using RWCustom;
 using OverseerHolograms;
-using System;
 
 namespace LBMergedMods.Hooks;
 
@@ -26,19 +25,17 @@ public static class OverseerHooks
     internal static void IL_OverseerAbstractAI_HowInterestingIsCreature(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("BlackLizard"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdarg_1,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_BlackLizard,
+            s_MatchCall_Any,
+            s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_1)
              .EmitDelegate((AbstractCreature testCrit) => testCrit.creatureTemplate.type == CreatureTemplateType.SilverLizard || testCrit.creatureTemplate.type == CreatureTemplateType.Polliwog || testCrit.creatureTemplate.type == CreatureTemplateType.WaterSpitter || testCrit.creatureTemplate.type == CreatureTemplateType.HunterSeeker || testCrit.creatureTemplate.type == CreatureTemplateType.MoleSalamander);
-            c.Emit(OpCodes.Brtrue, label);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerAbstractAI.HowInterestingIsCreature!");
@@ -78,8 +75,8 @@ public static class OverseerHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic"),
-            x => x.MatchCall(out _)))
+            s_MatchLdsfld_CreatureTemplate_Type_PoleMimic,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool flag, OverseerHologram.CreaturePointer self) => flag && self.pointAtCreature is not Denture);
@@ -92,7 +89,7 @@ public static class OverseerHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchCallOrCallvirt(typeof(Room).GetMethod("ViewedByAnyCamera", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(Vector2), typeof(float)], null))))
+            s_MatchCallOrCallvirt_Room_ViewedByAnyCamera_Vector2_float))
         {
             c.Emit(OpCodes.Ldarg_1)
              .EmitDelegate((bool flag, AbstractCreature creature) => flag && (creature.realizedCreature is not Denture dt || dt.JawOpen <= .5f));
@@ -132,10 +129,10 @@ public static class OverseerHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<AbstractPhysicalObject>("type"),
-            x => x.MatchLdsfld<AbstractPhysicalObject.AbstractObjectType>("JellyFish"),
-            x => x.MatchCall(out _)))
+            s_MatchLdarg_1,
+            s_MatchLdfld_AbstractPhysicalObject_type,
+            s_MatchLdsfld_AbstractPhysicalObject_AbstractObjectType_JellyFish,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_1)
              .EmitDelegate((bool flag, AbstractPhysicalObject foodObject) => flag && foodObject.type != AbstractObjectType.GummyAnther);

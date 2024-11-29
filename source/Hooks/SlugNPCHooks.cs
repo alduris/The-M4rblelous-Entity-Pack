@@ -48,7 +48,7 @@ public static class SlugNPCHooks
             if (Mathf.Abs(num) > .85f && self.FunStuff)
                 self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
         }
-        else if (food is DendriticSwarmer)
+        else if (food is DendriticNeuron)
         {
             var num = self.foodPreference[SlugNPCAI.Food.Neuron.index];
             if (Mathf.Abs(num) > .4f)
@@ -76,7 +76,7 @@ public static class SlugNPCHooks
             return SlugFood.MarineEye!;
         if (food is StarLemon)
             return SlugFood.StarLemon!;
-        if (food is DendriticSwarmer)
+        if (food is DendriticNeuron)
             return SlugFood.DendriticNeuron!;
         return orig(self, food);
     }

@@ -101,19 +101,27 @@ public static class FlyHooks
     {
         Array.Resize(ref sLeaser.sprites, sLeaser.sprites.Length + 2);
         var f1 = Futile.atlasManager.GetElementWithName("SeedWing1");
+        var sprs = sLeaser.sprites;
         for (var i = 0; i < 3; i++)
         {
-            var s = sLeaser.sprites[i];
+            var s = sprs[i];
             s.element = f1;
             s.anchorY = 0;
         }
-        var s3 = sLeaser.sprites[3];
+        var s3 = sprs[3];
         s3.element = Futile.atlasManager.GetElementWithName("SeedWing2");
         s3.anchorY = 0;
-        prop.Ext1 = Array.FindIndex(sLeaser.sprites, x => x is null);
+        for (var i = 0; i < sprs.Length; i++)
+        {
+            if (sprs[i] is null)
+            {
+                prop.Ext1 = i;
+                break;
+            }
+        }
         prop.Ext2 = prop.Ext1 + 1;
         var cont = rCam.ReturnFContainer("Midground");
-        cont.AddChild(sLeaser.sprites[prop.Ext1] = new("SeedWing2") { anchorY = 0 });
-        cont.AddChild(sLeaser.sprites[prop.Ext2] = new("SeedWing2") { anchorY = 0 });
+        cont.AddChild(sprs[prop.Ext1] = new("SeedWing2") { anchorY = 0 });
+        cont.AddChild(sprs[prop.Ext2] = new("SeedWing2") { anchorY = 0 });
     }
 }

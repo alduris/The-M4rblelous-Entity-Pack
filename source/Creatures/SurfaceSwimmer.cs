@@ -25,11 +25,7 @@ public class SurfaceSwimmer : EggBug
         base.Die();
     }
 
-    public override void InitiateGraphicsModule()
-    {
-        if (graphicsModule is not SurfaceSwimmerGraphics)
-            graphicsModule = new SurfaceSwimmerGraphics(this);
-    }
+    public override void InitiateGraphicsModule() => graphicsModule ??= new SurfaceSwimmerGraphics(this);
 
     public override Color ShortCutColor() => BugCol;
 

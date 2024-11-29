@@ -19,7 +19,7 @@ public static class BigSpiderHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdfld<BigSpider>("spitter")))
+            s_MatchLdfld_BigSpider_spitter))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool spitter, BigSpider self) => spitter && self is not Sporantula);
@@ -31,17 +31,15 @@ public static class BigSpiderHooks
     internal static void IL_BigSpider_Collide(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(1),
-            x => x.MatchIsinst<BigSpider>(),
-            x => x.MatchBrfalse(out label))
-        && label is not null)
+            s_MatchLdarg_1,
+            s_MatchIsinst_BigSpider,
+            s_MatchBrfalse_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
              .EmitDelegate((BigSpider self, PhysicalObject otherObject) => self is Sporantula && otherObject is BigSpider b && b is not Sporantula);
-            c.Emit(OpCodes.Brtrue, label);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpider.Collide!");
@@ -85,8 +83,8 @@ public static class BigSpiderHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<BigSpider>("spitter")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_BigSpider_spitter))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool spitter, BigSpider self) => self is not Sporantula && spitter);
@@ -94,7 +92,7 @@ public static class BigSpiderHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpider.FlyingWeapon! (part 1)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdcR4(.3f)))
+            s_MatchLdcR4_0_3))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((float stam, BigSpider self) => self is Sporantula ? stam * .25f : stam);
@@ -119,18 +117,17 @@ public static class BigSpiderHooks
     internal static void IL_BigSpider_Spit(ILContext il)
     {
         var c = new ILCursor(il);
-        var loc = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdcR4(2),
-            x => x.MatchCall<Vector2>("op_Multiply"),
-            x => x.MatchCall<Vector2>("op_Addition"),
-            x => x.MatchStfld<BodyChunk>("vel")))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdcR4_2,
+            s_MatchCall_Vector2_op_Multiply,
+            s_MatchCall_Vector2_op_Addition,
+            s_MatchStfld_BodyChunk_vel))
         {
             var label = il.DefineLabel();
             label.Target = il.Instrs[il.Instrs.Count - 1];
             c.Emit(OpCodes.Ldarg_0)
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+             .Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
              .EmitDelegate((BigSpider self, Vector2 aimDir) =>
              {
                  if (self is Sporantula)
@@ -166,12 +163,12 @@ public static class BigSpiderHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<BigSpider>("jumpStamina"),
-            x => x.MatchLdcR4(1f),
-            x => x.MatchBneUn(out _),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<BigSpider>("spitter")))
+            s_MatchLdarg_0,
+            s_MatchLdfld_BigSpider_jumpStamina,
+            s_MatchLdcR4_1,
+            s_MatchBneUn_Any,
+            s_MatchLdarg_0,
+            s_MatchLdfld_BigSpider_spitter))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool spitter, BigSpider self) => self is not Sporantula && spitter);
@@ -192,13 +189,12 @@ public static class BigSpiderHooks
     internal static void IL_BigSpiderAI_Update(ILContext il)
     {
         var c = new ILCursor(il);
-        int loc = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("BigSpider")))
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_BigSpider))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((CreatureTemplate.Type type, BigSpiderAI self) => self is SporantulaAI ? CreatureTemplateType.Sporantula : type);
@@ -206,11 +202,11 @@ public static class BigSpiderHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpiderAI.Update! (part 1)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(loc),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("SpitterSpider")))
+            s_MatchLdloc_InLoc1,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_SpitterSpider))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((CreatureTemplate.Type type, BigSpiderAI self) => self is SporantulaAI ? CreatureTemplateType.Sporantula : type);
@@ -218,10 +214,10 @@ public static class BigSpiderHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpiderAI.Update! (part 2)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchStfld<NoiseTracker>("hearingSkill"),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<BigSpiderAI>("bug"),
-            x => x.MatchLdfld<BigSpider>("spitter")))
+            s_MatchStfld_NoiseTracker_hearingSkill,
+            s_MatchLdarg_0,
+            s_MatchLdfld_BigSpiderAI_bug,
+            s_MatchLdfld_BigSpider_spitter))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((bool spitter, BigSpiderAI self) => self is not SporantulaAI && spitter);
@@ -229,10 +225,10 @@ public static class BigSpiderHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpiderAI.Update! (part 3)");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<BigSpiderAI>("bug"),
-            x => x.MatchLdfld<BigSpider>("spitter"),
-            x => x.MatchBrfalse(out _)))
+            s_MatchLdarg_0,
+            s_MatchLdfld_BigSpiderAI_bug,
+            s_MatchLdfld_BigSpider_spitter,
+            s_MatchBrfalse_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((BigSpiderAI self) =>
@@ -263,19 +259,18 @@ public static class BigSpiderHooks
     internal static void IL_BigSpiderAI_IUseARelationshipTracker_UpdateDynamicRelationship(ILContext il)
     {
         var c = new ILCursor(il);
-        var stloc1 = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<RelationshipTracker.DynamicRelationship>("trackerRep"),
-            x => x.MatchLdfld<Tracker.CreatureRepresentation>("representedCreature"),
-            x => x.MatchCallOrCallvirt<ArtificialIntelligence>("StaticRelationship"),
-            x => x.MatchStloc(out stloc1)))
+            s_MatchLdarg_0,
+            s_MatchLdarg_1,
+            s_MatchLdfld_RelationshipTracker_DynamicRelationship_trackerRep,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchCallOrCallvirt_ArtificialIntelligence_StaticRelationship,
+            s_MatchStloc_OutLoc1))
         {
             VariableDefinition l;
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
-             .Emit(OpCodes.Ldloc, l = il.Body.Variables[stloc1])
+             .Emit(OpCodes.Ldloc, l = il.Body.Variables[s_loc1])
              .EmitDelegate((BigSpiderAI self, RelationshipTracker.DynamicRelationship dRelation, CreatureTemplate.Relationship result) =>
              {
                  if (self.bug is BigSpider b && dRelation.trackerRep?.representedCreature?.creatureTemplate?.type is CreatureTemplate.Type tp && (tp == CreatureTemplateType.Scutigera || tp == CreatureTemplateType.RedHorrorCenti) && dRelation.state is BigSpiderAI.SpiderTrackState st && st.consious && st.totalMass > b.TotalMass * 2f)
@@ -350,7 +345,7 @@ public static class BigSpiderHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdsfld<CreatureTemplate.Type>("SpitterSpider")))
+            s_MatchLdsfld_CreatureTemplate_Type_SpitterSpider))
         {
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((CreatureTemplate.Type type, BigSpiderAI.SpiderSpitModule self) => self.AI is SporantulaAI ? CreatureTemplateType.Sporantula : type);

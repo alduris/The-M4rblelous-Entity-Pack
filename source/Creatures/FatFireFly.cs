@@ -30,11 +30,7 @@ public class FatFireFly : Vulture
         abstractCreature.HypothermiaImmune = true;
     }
 
-    public override void InitiateGraphicsModule()
-    {
-        if (graphicsModule is not FatFireFlyGraphics)
-            graphicsModule = new FatFireFlyGraphics(this);
-    }
+    public override void InitiateGraphicsModule() => graphicsModule ??= new FatFireFlyGraphics(this);
 
     public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos onAppendagePos, DamageType type, float damage, float stunBonus)
     {

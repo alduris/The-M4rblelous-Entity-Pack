@@ -42,20 +42,19 @@ public static class DevtoolsHooks
         ILLabel? label = null;
         var c = new ILCursor(il);
         if (c.TryGotoNext(
-            x => x.MatchLdarg(0),
-            x => x.MatchLdcI4(1),
-            x => x.MatchLdarg(0)))
+            s_MatchLdarg_0,
+            s_MatchLdcI4_1,
+            s_MatchLdarg_0))
         {
             label = c.MarkLabel();
             c.Index = 0;
-            var loc = 0;
             if (c.TryGotoNext(MoveType.After,
-                x => x.MatchLdcI4(1),
-                x => x.MatchAdd(),
-                x => x.MatchStloc(out loc)))
+                s_MatchLdcI4_1,
+                s_MatchAdd,
+                s_MatchStloc_OutLoc1))
             {
                 c.Emit(OpCodes.Ldarg_0)
-                 .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
+                 .Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
                  .EmitDelegate((ObjectsPage self, int num3) => num3 >= self.placedObjectTypes.Length);
                 c.Emit(OpCodes.Brtrue, label);
             }

@@ -1,9 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.MirosHooks;
-using static System.Reflection.BindingFlags;
 using UnityEngine;
 using MonoMod.Cil;
 using Mono.Cecil;
-using System;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
@@ -38,28 +36,25 @@ public static class MirosHooks
     internal static void IL_MirosBirdAbstractAI_Raid(ILContext il)
     {
         var c = new ILCursor(il);
-        var abstractRoom = typeof(World).GetMethod("GetAbstractRoom", Static | Public | Instance | NonPublic, Type.DefaultBinder, [typeof(int)], null);
-        MethodReference? meth = null;
-        int loc = 0, loc2 = 0, loc3 = 0, loc4 = 0;
+        var vars = il.Body.Variables;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("parent"),
-            x => x.MatchCallOrCallvirt<AbstractWorldEntity>("get_Room"),
-            x => x.MatchLdfld<AbstractRoom>("creatures"),
-            x => x.MatchLdloc(out loc),
-            x => x.MatchCallOrCallvirt(out meth),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("MirosBird"),
-            x => x.MatchCall(out _))
-        && meth is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_parent,
+            s_MatchCallOrCallvirt_AbstractWorldEntity_get_Room,
+            s_MatchLdfld_AbstractRoom_creatures,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_OutRef,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_MirosBird,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit<AbstractCreatureAI>(OpCodes.Ldfld, "parent")
              .Emit<AbstractWorldEntity>(OpCodes.Callvirt, "get_Room")
              .Emit<AbstractRoom>(OpCodes.Ldfld, "creatures")
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc])
-             .Emit(OpCodes.Callvirt, meth)
+             .Emit(OpCodes.Ldloc, vars[s_loc1])
+             .Emit(OpCodes.Callvirt, s_ref)
              .Emit<AbstractCreature>(OpCodes.Ldfld, "creatureTemplate")
              .Emit<CreatureTemplate>(OpCodes.Ldfld, "type")
              .EmitDelegate((bool flag, CreatureTemplate.Type tp) => flag || tp == CreatureTemplateType.Blizzor);
@@ -67,24 +62,23 @@ public static class MirosHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook MirosBirdAbstractAI.Raid (part 1)!");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("parent"),
-            x => x.MatchLdfld<AbstractWorldEntity>("world"),
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("parent"),
-            x => x.MatchLdfld<AbstractWorldEntity>("world"),
-            x => x.MatchCallOrCallvirt<World>("get_firstRoomIndex"),
-            x => x.MatchLdloc(out loc2),
-            x => x.MatchAdd(),
-            x => x.MatchCallOrCallvirt(abstractRoom),
-            x => x.MatchLdfld<AbstractRoom>("creatures"),
-            x => x.MatchLdloc(out loc3),
-            x => x.MatchCallOrCallvirt(out meth),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("MirosBird"),
-            x => x.MatchCall(out _))
-        && meth is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_parent,
+            s_MatchLdfld_AbstractWorldEntity_world,
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_parent,
+            s_MatchLdfld_AbstractWorldEntity_world,
+            s_MatchCallOrCallvirt_World_get_firstRoomIndex,
+            s_MatchLdloc_OutLoc1,
+            s_MatchAdd,
+            s_MatchCallOrCallvirt_World_GetAbstractRoom_int,
+            s_MatchLdfld_AbstractRoom_creatures,
+            s_MatchLdloc_OutLoc2,
+            s_MatchCallOrCallvirt_OutRef,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_MirosBird,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit<AbstractCreatureAI>(OpCodes.Ldfld, "parent")
@@ -93,12 +87,12 @@ public static class MirosHooks
              .Emit<AbstractCreatureAI>(OpCodes.Ldfld, "parent")
              .Emit<AbstractWorldEntity>(OpCodes.Ldfld, "world")
              .Emit<World>(OpCodes.Callvirt, "get_firstRoomIndex")
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc2])
+             .Emit(OpCodes.Ldloc, vars[s_loc1])
              .Emit(OpCodes.Add)
-             .Emit(OpCodes.Callvirt, abstractRoom)
+             .Emit(OpCodes.Callvirt, il.Import(s_World_GetAbstractRoom_int))
              .Emit<AbstractRoom>(OpCodes.Ldfld, "creatures")
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc3])
-             .Emit(OpCodes.Callvirt, meth)
+             .Emit(OpCodes.Ldloc, vars[s_loc2])
+             .Emit(OpCodes.Callvirt, s_ref)
              .Emit<AbstractCreature>(OpCodes.Ldfld, "creatureTemplate")
              .Emit<CreatureTemplate>(OpCodes.Ldfld, "type")
              .EmitDelegate((bool flag, CreatureTemplate.Type tp) => flag || tp == CreatureTemplateType.Blizzor);
@@ -106,24 +100,23 @@ public static class MirosHooks
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook MirosBirdAbstractAI.Raid (part 2)!");
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<AbstractCreatureAI>("parent"),
-            x => x.MatchCallOrCallvirt<AbstractWorldEntity>("get_Room"),
-            x => x.MatchLdfld<AbstractRoom>("creatures"),
-            x => x.MatchLdloc(out loc4),
-            x => x.MatchCallOrCallvirt(out meth),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("MirosBird"),
-            x => x.MatchCall(out _))
-        && meth is not null)
+            s_MatchLdarg_0,
+            s_MatchLdfld_AbstractCreatureAI_parent,
+            s_MatchCallOrCallvirt_AbstractWorldEntity_get_Room,
+            s_MatchLdfld_AbstractRoom_creatures,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_OutRef,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_MirosBird,
+            s_MatchCall_Any))
         {
             c.Emit(OpCodes.Ldarg_0)
              .Emit<AbstractCreatureAI>(OpCodes.Ldfld, "parent")
              .Emit<AbstractWorldEntity>(OpCodes.Callvirt, "get_Room")
              .Emit<AbstractRoom>(OpCodes.Ldfld, "creatures")
-             .Emit(OpCodes.Ldloc, il.Body.Variables[loc4])
-             .Emit(OpCodes.Callvirt, meth)
+             .Emit(OpCodes.Ldloc, vars[s_loc1])
+             .Emit(OpCodes.Callvirt, s_ref)
              .Emit<AbstractCreature>(OpCodes.Ldfld, "creatureTemplate")
              .Emit<CreatureTemplate>(OpCodes.Ldfld, "type")
              .EmitDelegate((bool flag, CreatureTemplate.Type tp) => flag || tp == CreatureTemplateType.Blizzor);

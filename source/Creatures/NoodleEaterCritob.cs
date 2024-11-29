@@ -4,17 +4,14 @@ using Fisobs.Sandbox;
 using UnityEngine;
 using System.Collections.Generic;
 using DevInterface;
-using RWCustom;
 
 namespace LBMergedMods.Creatures;
 
 sealed class NoodleEaterCritob : Critob
 {
-    public static Color NEatColor = Custom.HSL2RGB(.8333f, .9f, .7f);
-
     internal NoodleEaterCritob() : base(CreatureTemplateType.NoodleEater)
     {
-        Icon = new SimpleIcon("Kill_NoodleEater", NEatColor);
+        Icon = new SimpleIcon("Kill_NoodleEater", NoodleEater.NEatColor);
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new(.5f, .5f);
         RegisterUnlock(KillScore.Configurable(3), SandboxUnlockID.NoodleEater);
@@ -22,7 +19,7 @@ sealed class NoodleEaterCritob : Critob
 
     public override int ExpeditionScore() => 3;
 
-    public override Color DevtoolsMapColor(AbstractCreature acrit) => NEatColor;
+    public override Color DevtoolsMapColor(AbstractCreature acrit) => NoodleEater.NEatColor;
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "Nea";
 
@@ -79,7 +76,7 @@ sealed class NoodleEaterCritob : Critob
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new LizardAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Lizard(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new NoodleEater(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new LizardState(acrit);
 

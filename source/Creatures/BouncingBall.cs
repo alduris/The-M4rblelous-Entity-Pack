@@ -35,11 +35,7 @@ public class BouncingBall : Snail
         Destroy();
     }
 
-    public override void InitiateGraphicsModule()
-    {
-        if (graphicsModule is not BouncingBallGraphics)
-            graphicsModule = new BouncingBallGraphics(this);
-    }
+    public override void InitiateGraphicsModule() => graphicsModule ??= new BouncingBallGraphics(this);
 
     public virtual bool NarrowSpace()
     {

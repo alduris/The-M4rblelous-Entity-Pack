@@ -26,21 +26,19 @@ public static class ShortcutHooks
     internal static void IL_ShortcutHandler_FlyingCreatureArrivedInRealizedRoom(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdarg(1),
-            x => x.MatchLdfld<ShortcutHandler.Vessel>("creature"),
-            x => x.MatchCallOrCallvirt<Creature>("get_abstractCreature"),
-            x => x.MatchLdfld<AbstractCreature>("creatureTemplate"),
-            x => x.MatchLdfld<CreatureTemplate>("type"),
-            x => x.MatchLdsfld<CreatureTemplate.Type>("Vulture"),
-            x => x.MatchCall(out _),
-            x => x.MatchBrtrue(out label))
-        && label is not null)
+            s_MatchLdarg_1,
+            s_MatchLdfld_ShortcutHandler_Vessel_creature,
+            s_MatchCallOrCallvirt_Creature_get_abstractCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Vulture,
+            s_MatchCall_Any,
+            s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_1)
              .EmitDelegate((ShortcutHandler.BorderVessel self) => self.creature is FatFireFly);
-            c.Emit(OpCodes.Brtrue, label);
+            c.Emit(OpCodes.Brtrue, s_label);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ShortcutHandler.FlyingCreatureArrivedInRealizedRoom!");

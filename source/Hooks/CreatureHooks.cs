@@ -6,7 +6,6 @@ using MoreSlugcats;
 using UnityEngine;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
-using System.Linq;
 
 namespace LBMergedMods.Hooks;
 
@@ -34,26 +33,37 @@ public static class CreatureHooks
     internal static void IL_InspectorAI_IUseARelationshipTracker_UpdateDynamicRelationship(ILContext il)
     {
         var c = new ILCursor(il);
-        ILLabel? label = null;
-        int loc1 = 0, loc2 = 0;
         if (c.TryGotoNext(MoveType.After,
-            x => x.MatchLdloc(out loc1),
-            x => x.MatchCallOrCallvirt<Creature>("get_grasps"),
-            x => x.MatchLdloc(out loc2),
-            x => x.MatchLdelemRef(),
-            x => x.MatchBrfalse(out label))
-            && label is not null)
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_Creature_get_grasps,
+            s_MatchLdloc_OutLoc2,
+            s_MatchLdelemRef,
+            s_MatchBrfalse_Any))
         {
             var vars = il.Body.Variables;
-            var curRelVar = vars.First(x => x.VariableType.Name.Contains("Relationship"));
+            VariableDefinition? curRelVar = null;
+            for (var i = 0; i < vars.Count; i++)
+            {
+                var vari = vars[i];
+                if (vari.VariableType.Name.Contains("Relationship"))
+                {
+                    curRelVar = vari;
+                    break;
+                }
+            }
+            if (curRelVar is null)
+            {
+                LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook InspectorAI.IUseARelationshipTracker.UpdateDynamicRelationship!");
+                return;
+            }
             c.Emit(OpCodes.Ldarg_0)
              .Emit(OpCodes.Ldarg_1)
              .Emit(OpCodes.Ldloc, curRelVar)
-             .Emit(OpCodes.Ldloc, vars[loc1])
-             .Emit(OpCodes.Ldloc, vars[loc2])
+             .Emit(OpCodes.Ldloc, vars[s_loc1])
+             .Emit(OpCodes.Ldloc, vars[s_loc2])
              .EmitDelegate((InspectorAI self, RelationshipTracker.DynamicRelationship dRelation, CreatureTemplate.Relationship currentRelationship, Creature realizedCreature, int i) =>
              {
-                 if (realizedCreature.grasps[i].grabbed is DendriticSwarmer swarmer && swarmer.Bites < 5)
+                 if (realizedCreature.grasps[i].grabbed is DendriticNeuron swarmer && swarmer.Bites < 5)
                  {
                      currentRelationship.type = CreatureTemplate.Relationship.Type.Eats;
                      currentRelationship.intensity = 1f;

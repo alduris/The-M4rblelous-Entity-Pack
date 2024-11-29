@@ -23,7 +23,7 @@ public static class RoomHooks
     internal static void On_LightSource_InitiateSprites(On.LightSource.orig_InitiateSprites orig, LightSource self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
         orig(self, sLeaser, rCam);
-        if (self.tiedToObject is StarLemon)
+        if (self.tiedToObject is StarLemon && self.flat)
             sLeaser.sprites[0].shader = Custom.rainWorld.Shaders["FlatLightBehindTerrain"];
     }
 
