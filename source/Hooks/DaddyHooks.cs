@@ -8,11 +8,14 @@ using System.IO;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Noise;
+using System.Collections.Generic;
 
 namespace LBMergedMods.Hooks;
 
 public static class DaddyHooks
 {
+    public static Dictionary<string, Color> JLLRooms = [];
+
     internal static CreatureTemplate.Relationship On_DaddyAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.DaddyAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, DaddyAI self, RelationshipTracker.DynamicRelationship dRelation)
     {
         var rel = orig(self, dRelation);
@@ -168,39 +171,55 @@ public static class DaddyHooks
     [SuppressMessage(null, "IDE0060"), MethodImpl(MethodImplOptions.NoInlining)]
     public static void JellyColor(this DaddyLongLegs self, AbstractCreature crit, World world)
     {
-        var f1 = AssetManager.ResolveFilePath("levels/" + crit.Room.name + "_jellylonglegs.txt");
-        if (!File.Exists(f1))
+        var nm = crit.Room.name;
+        if (JLLRooms.TryGetValue(nm, out var col) && col.r >= 0f)
         {
-            if (self.world?.region?.name is string s)
+            if (col.g < 0f)
             {
-                f1 = AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + crit.Room.name + "_jellylonglegs.txt");
+                var f1 = AssetManager.ResolveFilePath("levels/" + nm + "_jellylonglegs.txt");
                 if (!File.Exists(f1))
-                    f1 = null;
+                {
+                    if (self.world?.region?.name is string s)
+                    {
+                        f1 = AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_jellylonglegs.txt");
+                        if (!File.Exists(f1))
+                            f1 = null;
+                    }
+                    else
+                        f1 = null;
+                }
+                if (f1 is not null)
+                {
+                    var colorParams = File.ReadAllText(f1).Replace(" ", string.Empty).Split(',');
+                    if (colorParams.Length >= 3)
+                    {
+                        float.TryParse(colorParams[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var r);
+                        float.TryParse(colorParams[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var g);
+                        float.TryParse(colorParams[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var b);
+                        JLLRooms[nm] = self.eyeColor = self.effectColor = new(r, g, b);
+                        return;
+                    }
+                }
+                JLLRooms[nm] = new(0f, 0f, -1f);
+                self.eyeColor = self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.MSC && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
             }
+            else if (col.b < 0f)
+                self.eyeColor = self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.MSC && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
             else
-                f1 = null;
+                self.eyeColor = self.effectColor = col;
         }
-        if (f1 is not null)
-        {
-            var colorParams = File.ReadAllText(f1).Replace(" ", string.Empty).Split(',');
-            if (colorParams.Length >= 3)
-            {
-                float.TryParse(colorParams[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var r);
-                float.TryParse(colorParams[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var g);
-                float.TryParse(colorParams[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var b);
-                self.eyeColor = self.effectColor = new(r, g, b);
-                return;
-            }
-        }
-        self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.MSC && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
-        self.eyeColor = self.effectColor;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static bool JellyRooms(this AbstractRoom self)
     {
-        return self.name is "reef" or "cavity" or "pump" ||
-            File.Exists(AssetManager.ResolveFilePath("levels/" + self.name + "_jellylonglegs.txt")) ||
-            (self.world?.region?.name is string s && (s == "RF" || File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + self.name + "_jellylonglegs.txt"))));
+        var nm = self.name;
+        if (JLLRooms.TryGetValue(nm, out var col))
+            return col.r >= 0f;
+        var res = nm is "reef" or "cavity" or "pump" ||
+            File.Exists(AssetManager.ResolveFilePath("levels/" + nm + "_jellylonglegs.txt")) ||
+            (self.world?.region?.name is string s && (s == "RF" || File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_jellylonglegs.txt"))));
+        JLLRooms.Add(self.name, new(res ? 0f : -1f, -1f, 0f));
+        return res;
     }
 }

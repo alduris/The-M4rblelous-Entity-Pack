@@ -99,7 +99,7 @@ public static class AbstractPhysicalObjectHooks
         orig(self, world, creatureTemplate, realizedCreature, pos, ID);
         var tp = creatureTemplate.type;
         if (tp == CreatureTemplate.Type.Fly && !Seed.TryGetValue(self, out _))
-            Seed.Add(self, new());
+            Seed.Add(self, new() { IsSeed = self.Room is AbstractRoom rm && rm.SeedBatRooms() });
         else if (tp == CreatureTemplate.Type.TubeWorm && !Big.TryGetValue(self, out _))
             Big.Add(self, new());
         else if (tp == CreatureTemplateType.Hoverfly && !HoverflyData.TryGetValue(self, out _))

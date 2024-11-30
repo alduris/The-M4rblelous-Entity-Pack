@@ -1,12 +1,17 @@
 ﻿global using static LBMergedMods.Hooks.FlyHooks;
 using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.IO;
 
 namespace LBMergedMods.Hooks;
 
 public static class FlyHooks
 {
+    public static Dictionary<string, bool> SeedRooms = [];
+
     internal static void On_Fly_Act(On.Fly.orig_Act orig, Fly self, bool eu)
     {
         if (self.IsSeed())
@@ -123,5 +128,17 @@ public static class FlyHooks
         var cont = rCam.ReturnFContainer("Midground");
         cont.AddChild(sprs[prop.Ext1] = new("SeedWing2") { anchorY = 0 });
         cont.AddChild(sprs[prop.Ext2] = new("SeedWing2") { anchorY = 0 });
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static bool SeedBatRooms(this AbstractRoom self)
+    {
+        var nm = self.name;
+        if (SeedRooms.TryGetValue(nm, out var flag))
+            return flag;
+        var res = File.Exists(AssetManager.ResolveFilePath("levels/" + nm + "_seedbats.txt")) ||
+            (self.world?.region?.name is string s && File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_seedbats.txt")));
+        SeedRooms.Add(self.name, res);
+        return res;
     }
 }

@@ -363,6 +363,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         OnResultAction = null;
         OnFoodItemSpotted = null;
         s_logger = null;
+        JLLRooms = null!;
+        SeedRooms = null!;
         InternalMatch.Dispose();
     }
 }

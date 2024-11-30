@@ -89,6 +89,8 @@ public static class ArenaHooks
             s_MatchCall_string_op_Equality_string_string,
             s_MatchBrfalse_OutLabel))
         {
+            var stringIneq = il.Import(typeof(string).GetMethod("op_Inequality", [typeof(string), typeof(string)]));
+            var substring = il.Import(s_string_Substring_int_int);
             var vars = il.Body.Variables;
             VariableDefinition var0 = vars[s_loc1],
                 var2 = vars[s_loc2];
@@ -102,9 +104,23 @@ public static class ArenaHooks
              .Emit(OpCodes.Ldc_I4, 18)
              .Emit(OpCodes.Sub)
              .Emit(OpCodes.Ldc_I4, 18)
-             .Emit(OpCodes.Callvirt, il.Import(s_string_Substring_int_int))
+             .Emit(OpCodes.Callvirt, substring)
              .Emit(OpCodes.Ldstr, "_jellylonglegs.txt")
-             .Emit(OpCodes.Call, il.Import(typeof(string).GetMethod("op_Inequality", [typeof(string), typeof(string)])))
+             .Emit(OpCodes.Call, stringIneq)
+             .Emit(OpCodes.Brfalse, s_label)
+             .Emit(OpCodes.Ldloc, var0)
+             .Emit(OpCodes.Ldloc, var2)
+             .Emit(OpCodes.Ldelem_Ref)
+             .Emit(OpCodes.Ldloc, var0)
+             .Emit(OpCodes.Ldloc, var2)
+             .Emit(OpCodes.Ldelem_Ref)
+             .Emit<string>(OpCodes.Callvirt, "get_Length")
+             .Emit(OpCodes.Ldc_I4, 18)
+             .Emit(OpCodes.Sub)
+             .Emit(OpCodes.Ldc_I4, 18)
+             .Emit(OpCodes.Callvirt, substring)
+             .Emit(OpCodes.Ldstr, "_seedbats.txt")
+             .Emit(OpCodes.Call, stringIneq)
              .Emit(OpCodes.Brfalse, s_label);
         }
         else
@@ -175,7 +191,8 @@ public static class ArenaHooks
                  if (data.critType == CreatureTemplate.Type.Fly && Seed.TryGetValue(crit, out var prop))
                  {
                      prop.Born = true;
-                     prop.IsSeed = data.intData == M4R_DATA_NUMBER;
+                     if (data.intData == M4R_DATA_NUMBER)
+                        prop.IsSeed = true;
                  }
                  return crit;
              });
@@ -197,10 +214,11 @@ public static class ArenaHooks
                  if (placedIconData.data.critType == CreatureTemplate.Type.TubeWorm && Big.TryGetValue(crit, out var prop))
                  {
                      prop.Born = true;
-                     prop.IsBig = placedIconData.data.intData == M4R_DATA_NUMBER;
+                     if (placedIconData.data.intData == M4R_DATA_NUMBER)
+                        prop.IsBig = true;
                  }
-                 else if (placedIconData.data.critType == CreatureTemplate.Type.Hazer && Albino.TryGetValue(crit, out var prop2))
-                     prop2.Value = placedIconData.data.intData == M4R_DATA_NUMBER;
+                 else if (placedIconData.data.critType == CreatureTemplate.Type.Hazer && Albino.TryGetValue(crit, out var prop2) && placedIconData.data.intData == M4R_DATA_NUMBER)
+                     prop2.Value = true;
              });
         }
         else
