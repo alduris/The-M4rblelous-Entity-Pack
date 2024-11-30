@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using RWCustom;
 using System.Collections.Generic;
 using CoralBrain;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
 
@@ -25,6 +27,16 @@ public static class RoomHooks
         orig(self, sLeaser, rCam);
         if (self.tiedToObject is StarLemon && self.flat)
             sLeaser.sprites[0].shader = Custom.rainWorld.Shaders["FlatLightBehindTerrain"];
+    }
+
+    internal static void IL_MeltLights_Update(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchIsinst_Fly))
+            c.EmitDelegate((Fly fly) => (fly?.room?.world?.region?.name == "NP" && fly.IsSeed()) ? null : fly);
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook MeltLights.Update!");
     }
 
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)

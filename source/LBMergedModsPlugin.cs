@@ -323,6 +323,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.AbstractCreature.IsVoided += On_AbstractCreature_IsVoided;
         On.DevInterface.RoomSettingsPage.DevEffectGetCategoryFromEffectType += On_RoomSettingsPage_DevEffectGetCategoryFromEffectType;
         On.LightSource.InitiateSprites += On_LightSource_InitiateSprites;
+        IL.MeltLights.Update += IL_MeltLights_Update;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

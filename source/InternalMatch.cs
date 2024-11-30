@@ -75,6 +75,7 @@ static class InternalMatch
         s_MatchConvI4 = MatchConvI4,
         s_MatchDiv = MatchDiv,
         s_MatchIsinst_BigSpider = MatchIsinst_BigSpider,
+        s_MatchIsinst_Fly = MatchIsinst_Fly,
         s_MatchIsinst_InsectoidCreature = MatchIsinst_InsectoidCreature,
         s_MatchIsinst_IPlayerEdible = MatchIsinst_IPlayerEdible,
         s_MatchIsinst_LizardAI_LizardTrackState = MatchIsinst_LizardAI_LizardTrackState,
@@ -270,6 +271,7 @@ static class InternalMatch
         s_MatchConvI4 = null!;
         s_MatchDiv = null!;
         s_MatchIsinst_BigSpider = null!;
+        s_MatchIsinst_Fly = null!;
         s_MatchIsinst_InsectoidCreature = null!;
         s_MatchIsinst_IPlayerEdible = null!;
         s_MatchIsinst_LizardAI_LizardTrackState = null!;
@@ -504,6 +506,8 @@ static class InternalMatch
     internal static bool MatchDiv(Instruction x) => x.MatchDiv();
 
     internal static bool MatchIsinst_BigSpider(Instruction x) => x.MatchIsinst<BigSpider>();
+
+    internal static bool MatchIsinst_Fly(Instruction x) => x.MatchIsinst<Fly>();
 
     internal static bool MatchIsinst_InsectoidCreature(Instruction x) => x.MatchIsinst<InsectoidCreature>();
 
