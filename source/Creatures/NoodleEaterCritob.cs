@@ -23,7 +23,7 @@ sealed class NoodleEaterCritob : Critob
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "Nea";
 
-    public override IEnumerable<string> WorldFileAliases() => ["noodleeater"];
+    public override IEnumerable<string> WorldFileAliases() => ["noodleeater", "noodle eater"];
 
     public override IEnumerable<RoomAttractivenessPanel.Category> DevtoolsRoomAttraction() =>
     [

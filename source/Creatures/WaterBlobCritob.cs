@@ -30,7 +30,7 @@ sealed class WaterBlobCritob : Critob
         RoomAttractivenessPanel.Category.Swimming
     ];
 
-    public override IEnumerable<string> WorldFileAliases() => ["waterblob", "blob"];
+    public override IEnumerable<string> WorldFileAliases() => ["waterblob", "blob", "water blob"];
 
     public override CreatureTemplate CreateTemplate()
     {

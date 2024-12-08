@@ -208,6 +208,7 @@ sealed class DentureCritob : Critob
         dt.IgnoredBy(CreatureTemplateType.SilverLizard);
         dt.IgnoredBy(CreatureTemplateType.Scutigera);
         dt.IgnoredBy(CreatureTemplateType.RedHorrorCenti);
+        dt.IgnoredBy(CreatureTemplateType.CommonEel);
         dt.Ignores(Type);
     }
 

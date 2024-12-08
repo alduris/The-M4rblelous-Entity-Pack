@@ -34,7 +34,7 @@ public static class OverseerHooks
             s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_1)
-             .EmitDelegate((AbstractCreature testCrit) => testCrit.creatureTemplate.type == CreatureTemplateType.SilverLizard || testCrit.creatureTemplate.type == CreatureTemplateType.Polliwog || testCrit.creatureTemplate.type == CreatureTemplateType.WaterSpitter || testCrit.creatureTemplate.type == CreatureTemplateType.HunterSeeker || testCrit.creatureTemplate.type == CreatureTemplateType.MoleSalamander);
+             .EmitDelegate((AbstractCreature testCrit) => testCrit.creatureTemplate.type == CreatureTemplateType.SilverLizard || testCrit.creatureTemplate.type == CreatureTemplateType.Polliwog || testCrit.creatureTemplate.type == CreatureTemplateType.WaterSpitter || testCrit.creatureTemplate.type == CreatureTemplateType.HunterSeeker || testCrit.creatureTemplate.type == CreatureTemplateType.MoleSalamander || testCrit.creatureTemplate.type == CreatureTemplateType.CommonEel);
             c.Emit(OpCodes.Brtrue, s_label);
         }
         else

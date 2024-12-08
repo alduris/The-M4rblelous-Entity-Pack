@@ -23,7 +23,7 @@ sealed class SilverLizardCritob : Critob
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "SvL";
 
-    public override IEnumerable<string> WorldFileAliases() => ["silverlizard"];
+    public override IEnumerable<string> WorldFileAliases() => ["silverlizard", "silver lizard"];
 
     public override IEnumerable<RoomAttractivenessPanel.Category> DevtoolsRoomAttraction() =>
     [
@@ -68,7 +68,7 @@ sealed class SilverLizardCritob : Critob
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new LizardAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Lizard(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new SilverLizard(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new LizardState(acrit);
 

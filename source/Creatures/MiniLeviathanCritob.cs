@@ -11,11 +11,9 @@ namespace LBMergedMods.Creatures;
 
 sealed class MiniLeviathanCritob : Critob
 {
-    internal static Color s_col = Menu.Menu.MenuRGB(Menu.Menu.MenuColors.MediumGrey);
-
     internal MiniLeviathanCritob() : base(CreatureTemplateType.MiniLeviathan)
     {
-        Icon = new SimpleIcon("Kill_MiniLeviathan", s_col);
+        Icon = new SimpleIcon("Kill_MiniLeviathan", MiniLeviathan.LeviColor);
         ShelterDanger = ShelterDanger.TooLarge;
         RegisterUnlock(KillScore.Configurable(10), SandboxUnlockID.MiniLeviathan);
         SandboxPerformanceCost = new(.5f, .5f);
@@ -32,11 +30,11 @@ sealed class MiniLeviathanCritob : Critob
 
     public override int ExpeditionScore() => 10;
 
-    public override Color DevtoolsMapColor(AbstractCreature acrit) => s_col;
+    public override Color DevtoolsMapColor(AbstractCreature acrit) => MiniLeviathan.LeviColor;
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "mlev";
 
-    public override IEnumerable<string> WorldFileAliases() => ["minileviathan"];
+    public override IEnumerable<string> WorldFileAliases() => ["minileviathan", "mini leviathan"];
 
     public override CreatureTemplate CreateTemplate()
     {
@@ -64,7 +62,7 @@ sealed class MiniLeviathanCritob : Critob
         t.visualRadius = 450f;
         t.throughSurfaceVision = .45f;
         t.meatPoints = 6;
-        t.shortcutColor = s_col;
+        t.shortcutColor = MiniLeviathan.LeviColor;
         t.abstractedLaziness = 10;
         return t;
     }
@@ -106,9 +104,9 @@ sealed class MiniLeviathanCritob : Critob
         l.IgnoredBy(CreatureTemplate.Type.Leech);
     }
 
-    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new BigEelAI(acrit, acrit.world);
+    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new MiniLeviathanAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new BigEel(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new MiniLeviathan(acrit, acrit.world);
 
     public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new BigEelAbstractAI(acrit.world, acrit);
 

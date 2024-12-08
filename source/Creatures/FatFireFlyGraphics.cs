@@ -32,7 +32,7 @@ public class FatFireFlyGraphics : VultureGraphics
             }
         }
         var state = Random.state;
-        Random.InitState(ow.abstractCreature.ID.RandomSeed);
+        Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
         if (ow.abstractCreature.superSizeMe)
         {
             ColorB = new(Mathf.Lerp(.5278f, .5972f, Random.value), Mathf.Lerp(.65f, .7f, 1f - Random.value * Random.value), Mathf.Lerp(.35f, .4f, Random.value * Random.value));

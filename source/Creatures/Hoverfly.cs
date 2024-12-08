@@ -44,7 +44,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
     public virtual void GenerateIVars()
     {
         var state = Random.state;
-        Random.InitState(abstractCreature.ID.RandomSeed);
+        Random.InitState(abstractPhysicalObject.ID.RandomSeed);
         IVars = new(Random.value / 5f, Random.value / 5f, Random.value, Random.value / 5f, Random.value / 5f, Random.Range(1, 4), Color.Lerp(new(0f, 251f / 255f, 1f), new(0f, 1f, 55f / 255f), Random.value));
         Random.state = state;
     }

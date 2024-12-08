@@ -18,7 +18,7 @@ using Fisobs.Sandbox;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.2"), BepInDependency("io.github.dual.fisobs")]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.3"), BepInDependency("io.github.dual.fisobs")]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -50,8 +50,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.BigEelPather.FollowPath += IL_BigEelPather_FollowPath;
         IL.BigEelGraphics.ctor += IL_BigEelGraphics_ctor;
         IL.BigEelGraphics.Update += IL_BigEelGraphics_Update;
-        On.BigEelGraphics.Reset += On_BigEelGraphics_Reset;
-        On.BigEelGraphics.ApplyPalette += On_BigEelGraphics_ApplyPalette;
         IL.BigEelAbstractAI.AbstractBehavior += IL_BigEelAbstractAI_AbstractBehavior;
         IL.BigEelAbstractAI.AddRandomCheckRoom += IL_BigEelAbstractAI_AddRandomCheckRoom;
         IL.BigEelAI.IUseARelationshipTracker_UpdateDynamicRelationship += IL_BigEelAI_IUseARelationshipTracker_UpdateDynamicRelationship;
@@ -65,20 +63,16 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardGraphics.GenerateIvars += On_LizardGraphics_GenerateIvars;
         new Hook(typeof(LizardGraphics).GetMethod("get_HeadColor1", ALL_FLAGS), On_LizardGraphics_get_HeadColor1);
         new Hook(typeof(LizardGraphics).GetMethod("get_HeadColor2", ALL_FLAGS), On_LizardGraphics_get_HeadColor2);
-        On.LizardGraphics.ApplyPalette += On_LizardGraphics_ApplyPalette;
         On.LizardGraphics.BodyColor += On_LizardGraphics_BodyColor;
         On.LizardCosmetics.SpineSpikes.DrawSprites += On_SpineSpikes_DrawSprites;
         On.LizardCosmetics.TailFin.DrawSprites += On_TailFin_DrawSprites;
         On.LizardCosmetics.WingScales.DrawSprites += On_WingScales_DrawSprites;
         IL.LizardCosmetics.TailGeckoScales.DrawSprites += IL_TailGeckoScales_DrawSprites;
-        new Hook(typeof(Lizard).GetMethod("get_VisibilityBonus", ALL_FLAGS), On_Lizard_get_VisibilityBonus);
         new Hook(typeof(LizardJumpModule).GetMethod("get_canChainJump", ALL_FLAGS), On_LizardJumpModule_get_canChainJump);
-        On.Lizard.SpearStick += On_Lizard_SpearStick;
         IL.Lizard.Act += IL_Lizard_Act;
         On.JetFishAI.WantToEatObject += On_JetFishAI_WantToEatObject;
         On.PlayerSessionRecord.AddEat += On_PlayerSessionRecord_AddEat;
         new Hook(typeof(LizardGraphics).GetMethod("get_effectColor", ALL_FLAGS), On_LizardGraphics_get_effectColor);
-        On.LizardAI.Update += On_LizardAI_Update;
         On.LizardCosmetics.Whiskers.ctor += On_Whiskers_ctor;
         On.LizardCosmetics.Whiskers.AnchorPoint += On_Whiskers_AnchorPoint;
         On.ShortcutGraphics.ShortCutColor += On_ShortcutGraphics_ShortCutColor;
@@ -119,29 +113,20 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         new Hook(typeof(CreatureTemplate).GetMethod("get_IsVulture", ALL_FLAGS), On_CreatureTemplate_get_IsVulture);
         IL.VultureGrub.AttemptCallVulture += IL_VultureGrub_AttemptCallVulture;
         On.MirosBirdAI.DoIWantToBiteCreature += On_MirosBirdAI_DoIWantToBiteCreature;
-        On.VultureAI.DoIWantToBiteCreature += Hooks.VultureHooks.On_VultureAI_DoIWantToBiteCreature;
+        On.VultureAI.DoIWantToBiteCreature += On_VultureAI_DoIWantToBiteCreature;
         On.Lizard.DamageAttackClosestChunk += On_Lizard_DamageAttackClosestChunk;
         On.Scavenger.MeleeGetFree += On_Scavenger_MeleeGetFree;
         IL.ShortcutHandler.FlyingCreatureArrivedInRealizedRoom += IL_ShortcutHandler_FlyingCreatureArrivedInRealizedRoom;
         On.AbstractCreature.Update += On_AbstractCreature_Update;
         On.AbstractCreature.IsEnteringDen += On_AbstractCreature_IsEnteringDen;
         IL.BigEelAbstractAI.AddRoomClusterToCheckList += IL_BigEelAbstractAI_AddRoomClusterToCheckList;
-        On.BigEelAI.ctor += On_BigEelAI_ctor;
-        On.BigEelAI.Update += On_BigEelAI_Update;
         IL.BigEelGraphics.ApplyPalette += IL_BigEelGraphics_ApplyPalette;
-        On.BigEel.ctor += On_BigEel_ctor;
-        On.BigEelGraphics.ctor += On_BigEelGraphics_ctor;
-        On.BigEelGraphics.Update += On_BigEelGraphics_Update;
-        On.BigEelGraphics.InitiateSprites += On_BigEelGraphics_InitiateSprites;
-        On.BigEelGraphics.DrawSprites += On_BigEelGraphics_DrawSprites;
         On.BigEelAI.WantToChargeJaw += On_BigEelAI_WantToChargeJaw;
         On.BigEel.InBiteArea += On_BigEel_InBiteArea;
-        On.BigEel.ShortCutColor += On_BigEel_ShortCutColor;
         On.BigEel.Crush += On_BigEel_Crush;
         On.YellowAI.YellowPack.RemoveLizard_int += On_YellowPack_RemoveLizard_int;
         On.YellowAI.YellowPack.RemoveLizard_AbstractCreature += On_YellowPack_RemoveLizard_AbstractCreature;
         On.YellowAI.YellowPack.FindLeader += On_YellowPack_FindLeader;
-        On.LizardAI.NewRoom += On_LizardAI_NewRoom;
         IL.YellowAI.Update += IL_YellowAI_Update;
         IL.Snail.Click += IL_Snail_Click;
         On.LizardCosmetics.AxolotlGills.DrawSprites += On_AxolotlGills_DrawSprites;
@@ -149,10 +134,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.LizardAI.LurkTracker.LurkPosScore += IL_LurkTracker_LurkPosScore;
         On.LizardAI.ComfortableIdlePosition += On_LizardAI_ComfortableIdlePosition;
         On.LizardAI.IdleSpotScore += On_LizardAI_IdleSpotScore;
-        On.LizardAI.TravelPreference += On_LizardAI_TravelPreference;
-        On.Lizard.Update += On_Lizard_Update;
         IL.Lizard.SwimBehavior += IL_Lizard_SwimBehavior;
-        On.LizardAI.ctor += On_LizardAI_ctor;
         On.LizardPather.HeuristicForCell += On_LizardPather_HeuristicForCell;
         IL.Lizard.EnterAnimation += IL_Lizard_EnterAnimation;
         IL.LizardGraphics.UpdateTailSegment += IL_LizardGraphics_UpdateTailSegment;
@@ -228,10 +210,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardTongue.ctor += On_LizardTongue_ctor;
         new Hook(typeof(LizardBreedParams).GetMethod("get_WallClimber", ALL_FLAGS), On_LizardBreedParams_get_WallClimber);
         On.LizardGraphics.DynamicBodyColor += On_LizardGraphics_DynamicBodyColor;
-        On.LizardGraphics.HeadColor += On_LizardGraphics_HeadColor;
+        On.LizardGraphics.HeadColor += Hooks.LizardHooks.On_LizardGraphics_HeadColor;
         On.LizardGraphics.WhiteFlicker += On_LizardGraphics_WhiteFlicker;
         On.LizardAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_LizardAI_IUseARelationshipTracker_UpdateDynamicRelationship;
-        On.LizardGraphics.DrawSprites += On_LizardGraphics_DrawSprites;
         On.Lizard.HitHeadShield += On_Lizard_HitHeadShield;
         On.LizardBubble.ctor += On_LizardBubble_ctor;
         On.LizardBubble.DrawSprites += On_LizardBubble_DrawSprites;
@@ -242,8 +223,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardLimb.ctor += On_LizardLimb_ctor;
         On.LizardVoice.GetMyVoiceTrigger += On_LizardVoice_GetMyVoiceTrigger;
         On.LizardBreeds.BreedTemplate_Type_CreatureTemplate_CreatureTemplate_CreatureTemplate_CreatureTemplate += On_LizardBreeds_BreedTemplate_Type_CreatureTemplate_CreatureTemplate_CreatureTemplate_CreatureTemplate;
-        On.Lizard.ctor += On_Lizard_ctor;
-        On.LizardGraphics.ctor += On_LizardGraphics_ctor;
         On.AbstractConsumable.ctor += On_AbstractConsumable_ctor;
         On.AbstractConsumable.IsTypeConsumable += On_AbstractConsumable_IsTypeConsumable;
         On.SaveState.SetCustomData_AbstractPhysicalObject_string += On_SaveState_SetCustomData_AbstractPhysicalObject_string;
@@ -284,12 +263,10 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.DropBugAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_DropBugAI_IUseARelationshipTracker_UpdateDynamicRelationship;
         On.AbstractConsumable.Consume += On_AbstractConsumable_Consume;
         IL.OverseerCommunicationModule.FoodDelicousScore += IL_OverseerCommunicationModule_FoodDelicousScore;
-        On.Lizard.ShortCutColor += On_Lizard_ShortCutColor;
         On.LizardAI.ReactToNoise += On_LizardAI_ReactToNoise;
         IL.LizardAI.IUseARelationshipTracker_UpdateDynamicRelationship += IL_LizardAI_IUseARelationshipTracker_UpdateDynamicRelationship;
         On.LizardGraphics.CreatureSpotted += On_LizardGraphics_CreatureSpotted;
         On.LizardCosmetics.LongHeadScales.ctor += On_LongHeadScales_ctor;
-        On.ArtificialIntelligence.VisualScore += On_ArtificialIntelligence_VisualScore;
         On.MirosBird.BirdLeg.RunMode += On_BirdLeg_RunMode;
         On.MirosBird.Act += On_MirosBird_Act;
         IL.MirosBirdAbstractAI.Raid += IL_MirosBirdAbstractAI_Raid;
@@ -324,10 +301,15 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.DevInterface.RoomSettingsPage.DevEffectGetCategoryFromEffectType += On_RoomSettingsPage_DevEffectGetCategoryFromEffectType;
         On.LightSource.InitiateSprites += On_LightSource_InitiateSprites;
         IL.MeltLights.Update += IL_MeltLights_Update;
+        On.LizardAI.GiftRecieved += On_LizardAI_GiftRecieved;
+        On.LizardAI.UnpleasantFallRisk += On_LizardAI_UnpleasantFallRisk;
+        On.LizardAI.FallRisk += On_LizardAI_FallRisk;
+        On.LizardAI.LikeOfPlayer += On_LizardAI_LikeOfPlayer;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
                         new MiniLeechCritob(),
+                        new CommonEelCritob(),
                         new NoodleEaterCritob(),
                         new PolliwogCritob(),
                         new WaterSpitterCritob(),

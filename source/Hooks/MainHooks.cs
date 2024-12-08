@@ -77,6 +77,8 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.MoleSalamander);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Denture))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Denture);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.CommonEel))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.CommonEel);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();

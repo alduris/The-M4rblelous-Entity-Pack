@@ -26,7 +26,7 @@ sealed class FatFireFlyCritob : Critob
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "FFF";
 
-    public override IEnumerable<string> WorldFileAliases() => ["fatfirefly"];
+    public override IEnumerable<string> WorldFileAliases() => ["fatfirefly", "fat fire fly", "fat firefly", "fatfire fly"];
 
     public override void TileIsAllowed(AImap map, IntVector2 tilePos, ref bool? allow) => allow = map.getTerrainProximity(tilePos) > 1;
 

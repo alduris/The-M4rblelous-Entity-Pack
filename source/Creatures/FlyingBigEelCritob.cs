@@ -34,7 +34,7 @@ sealed class FlyingBigEelCritob : Critob
 
     public override void TileIsAllowed(AImap map, IntVector2 tilePos, ref bool? allow) => allow = map.getTerrainProximity(tilePos) > 4;
 
-    public override IEnumerable<string> WorldFileAliases() => ["flyingleviathan", "flyinglev", "flyingbigeel"];
+    public override IEnumerable<string> WorldFileAliases() => ["flyingleviathan", "flyinglev", "flyingbigeel", "flying leviathan", "flying lev", "flying big eel", "flying bigeel", "flyingbig eel"];
 
     public override CreatureTemplate CreateTemplate()
     {
@@ -111,7 +111,7 @@ sealed class FlyingBigEelCritob : Critob
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new BigEelAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new BigEel(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new FlyingBigEel(acrit, acrit.world);
 
     public override AbstractCreatureAI CreateAbstractAI(AbstractCreature acrit) => new BigEelAbstractAI(acrit.world, acrit);
 

@@ -35,7 +35,7 @@ sealed class RedHorrorCritob : Critob
             canEatMeat = crit.dead;
     }
 
-    public override IEnumerable<string> WorldFileAliases() => ["redhorrorcenti", "redhorror", "redhorrorcentipede"];
+    public override IEnumerable<string> WorldFileAliases() => ["redhorrorcenti", "redhorror", "redhorrorcentipede", "red horror centi", "red horror", "red horror centipede", "red horrorcenti", "red horrorcentipede", "redhorror centi", "redhorror centipede"];
 
     public override CreatureTemplate CreateTemplate()
     {

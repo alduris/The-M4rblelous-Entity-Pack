@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using RWCustom;
 using System;
 using MoreSlugcats;
-using UnityEngine;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
@@ -13,13 +12,6 @@ public static class CreatureHooks
 {
     public static Action<ArtificialIntelligence, bool, FoodItemRepresentation>? OnFoodItemSpotted;
     public static Action<ArtificialIntelligence, AbstractPhysicalObject, FoodItemRepresentation>? OnResultAction;
-
-    internal static float On_ArtificialIntelligence_VisualScore(On.ArtificialIntelligence.orig_VisualScore orig, ArtificialIntelligence self, Vector2 lookAtPoint, float bonus)
-    {
-        if (self.creature?.realizedCreature is Lizard l && l.Template.type == CreatureTemplateType.MoleSalamander && l.room is Room rm /*&& rm.water*/ && rm.GetTile(lookAtPoint).DeepWater && rm.GetTile(l.VisionPoint).DeepWater && Custom.DistLess(l.VisionPoint, lookAtPoint, 8000f * bonus))
-            return 1f;
-        return orig(self, lookAtPoint, bonus);
-    }
 
     internal static bool On_BigJellyFish_ValidGrabCreature(On.MoreSlugcats.BigJellyFish.orig_ValidGrabCreature orig, BigJellyFish self, AbstractCreature abs) => abs.creatureTemplate.type != CreatureTemplateType.MiniLeviathan && abs.creatureTemplate.type != CreatureTemplateType.FlyingBigEel && abs.creatureTemplate.type != CreatureTemplateType.MiniFlyingBigEel && abs.creatureTemplate.type != CreatureTemplateType.MiniBlackLeech && abs.creatureTemplate.type != CreatureTemplateType.Denture && orig(self, abs);
 
@@ -82,7 +74,7 @@ public static class CreatureHooks
     internal static bool On_PathFinder_CoordinateReachableAndGetbackable(On.PathFinder.orig_CoordinateReachableAndGetbackable orig, PathFinder self, WorldCoordinate coord)
     {
         var res = orig(self, coord);
-        if (coord.TileDefined && self.creature.realizedCreature is BigEel be && (be.Template.type == CreatureTemplateType.FlyingBigEel || be.Template.type == CreatureTemplateType.MiniFlyingBigEel) && be.antiStrandingZones is List<PlacedObject> list && list.Count > 0 && be.room is Room rm)
+        if (coord.TileDefined && self.creature.realizedCreature is BigEel be && be is FlyingBigEel or MiniFlyingBigEel && be.antiStrandingZones is List<PlacedObject> list && list.Count > 0 && be.room is Room rm)
         {
             for (var j = 0; j < list.Count; j++)
             {

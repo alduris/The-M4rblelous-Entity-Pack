@@ -14,9 +14,9 @@ public static class ShortcutHooks
     internal static Color On_ShortcutGraphics_ShortCutColor(On.ShortcutGraphics.orig_ShortCutColor orig, ShortcutGraphics self, Creature crit, IntVector2 pos)
     {
         var color = orig(self, crit, pos);
-        if (crit.Template.type == CreatureTemplateType.WaterSpitter && self.room is Room rm)
+        if (crit is WaterSpitter)
         {
-            if (((!ModManager.MMF || !MMF.cfgShowUnderwaterShortcuts.Value) && rm.water && pos.y < rm.DefaultWaterLevel(pos) && rm.GetTile(pos).Terrain != Room.Tile.TerrainType.ShortcutEntrance && (self.DisplayLayer(pos.x, pos.y) > 0 || rm.waterInFrontOfTerrain)) || (ModManager.MMF && color.grayscale < .15f))
+            if (((!ModManager.MMF || !MMF.cfgShowUnderwaterShortcuts.Value) && self.room is Room rm && rm.water && pos.y < rm.DefaultWaterLevel(pos) && rm.GetTile(pos).Terrain != Room.Tile.TerrainType.ShortcutEntrance && (self.DisplayLayer(pos.x, pos.y) > 0 || rm.waterInFrontOfTerrain)) || (ModManager.MMF && color.grayscale < .15f))
                 return color;
             color = Color.Lerp(self.palette.waterSurfaceColor1, Color.white, .1f);
         }

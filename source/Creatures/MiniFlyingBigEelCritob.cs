@@ -34,7 +34,7 @@ sealed class MiniFlyingBigEelCritob : Critob
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "SFlEel";
 
-    public override IEnumerable<string> WorldFileAliases() => ["miniflyingleviathan", "miniflyinglev", "miniflyingbigeel"];
+    public override IEnumerable<string> WorldFileAliases() => ["miniflyingleviathan", "miniflyinglev", "miniflyingbigeel", "mini flying leviathan", "mini flying lev", "mini flying big eel", "miniflying leviathan", "miniflying lev", "miniflying big eel", "mini flyingleviathan", "mini flyinglev", "mini flyingbig eel", "miniflyingbig eel", "mini flyingbigeel", "mini flying bigeel", "miniflying bigeel"];
 
     public override CreatureTemplate CreateTemplate()
     {
@@ -121,13 +121,13 @@ sealed class MiniFlyingBigEelCritob : Critob
         l.Ignores(Type);
     }
 
-    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new BigEelAI(acrit, acrit.world);
+    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new MiniFlyingBigEelAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new BigEel(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new MiniFlyingBigEel(acrit, acrit.world);
 
     public override AbstractCreatureAI CreateAbstractAI(AbstractCreature acrit) => new BigEelAbstractAI(acrit.world, acrit);
 
     public override void LoadResources(RainWorld rainWorld) { }
 
-    public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.BigEel;
+    public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.Centiwing;
 }

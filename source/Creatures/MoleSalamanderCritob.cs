@@ -33,7 +33,7 @@ sealed class MoleSalamanderCritob : Critob
 
     public override void GraspParalyzesPlayer(Creature.Grasp grasp, ref bool paralyzing) => paralyzing = true;
 
-    public override IEnumerable<string> WorldFileAliases() => ["molesalamander"];
+    public override IEnumerable<string> WorldFileAliases() => ["molesalamander", "mole salamander"];
 
     public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), null, null, null);
 
@@ -74,9 +74,9 @@ sealed class MoleSalamanderCritob : Critob
         m.Ignores(CreatureTemplate.Type.Leech);
     }
 
-    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new LizardAI(acrit, acrit.world);
+    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new MoleSalamanderAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Lizard(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new MoleSalamander(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new LizardState(acrit);
 

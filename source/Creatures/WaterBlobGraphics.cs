@@ -18,7 +18,7 @@ public class WaterBlobGraphics : GraphicsModule
         if (ow is WaterBlob b)
         {
             var state = Random.state;
-            Random.InitState(b.abstractCreature.ID.RandomSeed);
+            Random.InitState(b.abstractPhysicalObject.ID.RandomSeed);
             EyeSize = Random.Range(.6f, 1.4f);
             Random.state = state;
         }

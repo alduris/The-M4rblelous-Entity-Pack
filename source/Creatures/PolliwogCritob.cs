@@ -54,9 +54,9 @@ sealed class PolliwogCritob : Critob
 
     public override IEnumerable<string> WorldFileAliases() => ["polliwog"];
 
-    public override ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit) => new LizardAI(acrit, acrit.world);
+    public override ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit) => new PolliwogAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Lizard(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Polliwog(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new LizardState(acrit);
 

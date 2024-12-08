@@ -41,11 +41,11 @@ sealed class HunterSeekerCritob : Critob
         p.Rivals(CreatureTemplate.Type.WhiteLizard, .5f);
     }
 
-    public override IEnumerable<string> WorldFileAliases() => ["seeker", "hunterseeker"];
+    public override IEnumerable<string> WorldFileAliases() => ["seeker", "hunterseeker", "hunter seeker"];
 
-    public override ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit) => new LizardAI(acrit, acrit.world);
+    public override ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit) => new HunterSeekerAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Lizard(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new HunterSeeker(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new LizardState(acrit);
 

@@ -18,7 +18,7 @@ public static class SnailHooks
             s_MatchBeq_OutLabel))
         {
             c.Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
-             .EmitDelegate((PhysicalObject self) => self is Lizard l && (l.IsPolliwog() || l.IsWaterSpitter()));
+             .EmitDelegate((PhysicalObject obj) => obj is Polliwog or WaterSpitter);
             c.Emit(OpCodes.Brtrue, s_label);
         }
         else

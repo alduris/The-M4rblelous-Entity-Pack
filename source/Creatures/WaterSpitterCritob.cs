@@ -94,11 +94,11 @@ sealed class WaterSpitterCritob : Critob
         w.FearedBy(CreatureTemplate.Type.Slugcat, .9f);
     }
 
-    public override IEnumerable<string> WorldFileAliases() => ["waterspitter"];
+    public override IEnumerable<string> WorldFileAliases() => ["waterspitter", "water spitter"];
 
-    public override ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit) => new LizardAI(acrit, acrit.world);
+    public override ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit) => new WaterSpitterAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Lizard(acrit, acrit.world);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new WaterSpitter(acrit, acrit.world);
 
     public override CreatureState CreateState(AbstractCreature acrit) => new LizardState(acrit);
 

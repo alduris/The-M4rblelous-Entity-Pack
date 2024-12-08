@@ -34,7 +34,7 @@ sealed class SurfaceSwimmerCritob : Critob
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "surf";
 
-    public override IEnumerable<string> WorldFileAliases() => ["surfacewalker", "surfaceswimmer"];
+    public override IEnumerable<string> WorldFileAliases() => ["surfacewalker", "surfaceswimmer", "surface walker", "surface swimmer"];
 
     public override CreatureTemplate CreateTemplate()
     {

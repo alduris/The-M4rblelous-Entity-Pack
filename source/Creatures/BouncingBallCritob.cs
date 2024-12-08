@@ -70,7 +70,7 @@ sealed class BouncingBallCritob : Critob
         b.Fears(CreatureTemplate.Type.DaddyLongLegs, 1f);
     }
 
-    public override IEnumerable<string> WorldFileAliases() => ["bouncingball", "bob"];
+    public override IEnumerable<string> WorldFileAliases() => ["bouncingball", "bouncing ball", "bob"];
 
     public override void ConnectionIsAllowed(AImap map, MovementConnection connection, ref bool? allow) => allow = !(connection.type == DropToFloor && !map.room.GetTile(connection.DestTile).DeepWater);
 

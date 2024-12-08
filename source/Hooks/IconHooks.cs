@@ -145,6 +145,8 @@ public static class IconHooks
                      self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(18f / 85f, .7921569f, 33f / 85f);
                  else if (crit.creatureTemplate.type == CreatureTemplateType.TintedBeetle && crit.superSizeMe)
                      self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(80f / 255f, 167f / 255f, 233f / 255f);
+                 else if (crit.creatureTemplate.type == CreatureTemplateType.CommonEel && crit.superSizeMe)
+                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(0f, 72f / 255f, 1f);
                  else if (Big.TryGetValue(crit, out var props) && props.IsBig && crit.superSizeMe)
                      self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(1f, .65f, .05f);
                  else if (Albino.TryGetValue(crit, out var props2) && props2.Value && crit.superSizeMe)

@@ -97,7 +97,7 @@ sealed class MiniLeechCritob : Critob
         l.Ignores(Type);
     }
 
-    public override IEnumerable<string> WorldFileAliases() => ["miniblackleech", "mini black leech"];
+    public override IEnumerable<string> WorldFileAliases() => ["miniblackleech", "mini black leech", "mini blackleech", "miniblack leech"];
 
     public override Creature CreateRealizedCreature(AbstractCreature acrit) => new MiniLeech(acrit, acrit.world);
 

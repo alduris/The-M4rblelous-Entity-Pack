@@ -15,6 +15,7 @@ static class InternalMatch
     internal static ILLabel? s_label;
     internal static MethodReference? s_ref;
     internal static MethodInfo
+        s_Math_Max_int_int = typeof(Math).GetMethod("Max", [typeof(int), typeof(int)]),
         s_Random_Range_int_int = typeof(Random).GetMethod("Range", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(int), typeof(int)], null),
         s_Room_MiddleOfTile_Vector2 = typeof(Room).GetMethod("MiddleOfTile", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(Vector2)], null),
         s_Room_ViewedByAnyCamera_Vector2_float = typeof(Room).GetMethod("ViewedByAnyCamera", LBMergedModsPlugin.ALL_FLAGS, Type.DefaultBinder, [typeof(Vector2), typeof(float)], null),
@@ -35,6 +36,7 @@ static class InternalMatch
         s_MatchBrtrue_OutLabel = MatchBrtrue_OutLabel,
         s_MatchCall_Any = MatchCall_Any,
         s_MatchCall_Creature_Violence = MatchCall_Creature_Violence,
+        s_MatchCall_Math_Max_int_int = MatchCall_Math_Max_int_int,
         s_MatchCall_Mathf_Lerp = MatchCall_Mathf_Lerp,
         s_MatchCall_Mathf_Max = MatchCall_Mathf_Max,
         s_MatchCall_Mathf_RoundToInt = MatchCall_Mathf_RoundToInt,
@@ -200,6 +202,7 @@ static class InternalMatch
         s_MatchStfld_CentipedeAI_annoyingCollisions = MatchStfld_CentipedeAI_annoyingCollisions,
         s_MatchStfld_CentipedeAI_excitement = MatchStfld_CentipedeAI_excitement,
         s_MatchStfld_CreatureState_meatLeft = MatchStfld_CreatureState_meatLeft,
+        s_MatchStfld_LizardAI_LizardTrackState_vultureMask = MatchStfld_LizardAI_LizardTrackState_vultureMask,
         s_MatchStfld_NoiseTracker_hearingSkill = MatchStfld_NoiseTracker_hearingSkill,
         s_MatchStfld_YellowAI_commFlicker = MatchStfld_YellowAI_commFlicker,
         s_MatchStloc_Any = MatchStloc_Any,
@@ -212,6 +215,7 @@ static class InternalMatch
     {
         s_label = null;
         s_ref = null;
+        s_Math_Max_int_int = null!;
         s_Random_Range_int_int = null!;
         s_Room_MiddleOfTile_Vector2 = null!;
         s_Room_ViewedByAnyCamera_Vector2_float = null!;
@@ -231,6 +235,7 @@ static class InternalMatch
         s_MatchBrtrue_OutLabel = null!;
         s_MatchCall_Any = null!;
         s_MatchCall_Creature_Violence = null!;
+        s_MatchCall_Math_Max_int_int = null!;
         s_MatchCall_Mathf_Lerp = null!;
         s_MatchCall_Mathf_Max = null!;
         s_MatchCall_Mathf_RoundToInt = null!;
@@ -396,6 +401,7 @@ static class InternalMatch
         s_MatchStfld_CentipedeAI_annoyingCollisions = null!;
         s_MatchStfld_CentipedeAI_excitement = null!;
         s_MatchStfld_CreatureState_meatLeft = null!;
+        s_MatchStfld_LizardAI_LizardTrackState_vultureMask = null!;
         s_MatchStfld_NoiseTracker_hearingSkill = null!;
         s_MatchStfld_YellowAI_commFlicker = null!;
         s_MatchStloc_Any = null!;
@@ -426,6 +432,8 @@ static class InternalMatch
     internal static bool MatchCall_Any(Instruction x) => x.MatchCall(out _);
 
     internal static bool MatchCall_Creature_Violence(Instruction x) => x.MatchCall<Creature>("Violence");
+
+    internal static bool MatchCall_Math_Max_int_int(Instruction x) => x.MatchCall(s_Math_Max_int_int);
 
     internal static bool MatchCall_Mathf_Lerp(Instruction x) => x.MatchCall<Mathf>("Lerp");
 
@@ -756,6 +764,8 @@ static class InternalMatch
     internal static bool MatchStfld_CentipedeAI_excitement(Instruction x) => x.MatchStfld<CentipedeAI>("excitement");
 
     internal static bool MatchStfld_CreatureState_meatLeft(Instruction x) => x.MatchStfld<CreatureState>("meatLeft");
+
+    internal static bool MatchStfld_LizardAI_LizardTrackState_vultureMask(Instruction x) => x.MatchStfld<LizardAI.LizardTrackState>("vultureMask");
 
     internal static bool MatchStfld_NoiseTracker_hearingSkill(Instruction x) => x.MatchStfld<NoiseTracker>("hearingSkill");
 

@@ -25,7 +25,7 @@ sealed class ThornBugCritob : Critob
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "thbug";
 
-    public override IEnumerable<string> WorldFileAliases() => ["thornbug"];
+    public override IEnumerable<string> WorldFileAliases() => ["thornbug", "thorn bug"];
 
     public override CreatureTemplate CreateTemplate()
     {
