@@ -97,6 +97,8 @@ public static class AbstractPhysicalObjectHooks
     internal static void On_AbstractCreature_ctor(On.AbstractCreature.orig_ctor orig, AbstractCreature self, World world, CreatureTemplate creatureTemplate, Creature realizedCreature, WorldCoordinate pos, EntityID ID)
     {
         orig(self, world, creatureTemplate, realizedCreature, pos, ID);
+        if (world is null)
+            return;
         var tp = creatureTemplate.type;
         if (tp == CreatureTemplate.Type.Fly && !Seed.TryGetValue(self, out _))
             Seed.Add(self, new() { IsSeed = self.Room is AbstractRoom rm && rm.SeedBatRooms() });
