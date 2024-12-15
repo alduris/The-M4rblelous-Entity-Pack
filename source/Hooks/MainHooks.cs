@@ -1,4 +1,5 @@
 ﻿global using static LBMergedMods.Hooks.MainHooks;
+using UnityEngine;
 
 namespace LBMergedMods.Hooks;
 
@@ -79,6 +80,8 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Denture);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.CommonEel))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.CommonEel);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.DivingBeetle))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.DivingBeetle);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();
@@ -102,6 +105,14 @@ public static class MainHooks
             Futile.atlasManager.LoadAtlas("atlases/lbmergedmodsspr");
         if (!Futile.atlasManager.DoesContainAtlas("BlizzorNeck"))
             Futile.atlasManager.ActuallyLoadAtlasOrImage("BlizzorNeck", "atlases/BlizzorNeck" + Futile.resourceSuffix, string.Empty);
+        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_fur"))
+            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_fur", "atlases/wwdvb_fur" + Futile.resourceSuffix, string.Empty);
+        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_lh"))
+            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_lh", "atlases/wwdvb_lh" + Futile.resourceSuffix, string.Empty);
+        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_wingw"))
+            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw", "atlases/wwdvb_wingw" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
+        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_wingw2"))
+            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw2", "atlases/wwdvb_wingw2" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.LittleBalloon))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.LittleBalloon);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.ThornyStrawberry))
@@ -174,6 +185,16 @@ public static class MainHooks
             Futile.atlasManager.UnloadAtlas("lbmergedmodsspr");
         if (Futile.atlasManager.DoesContainAtlas("BlizzorNeck"))
             Futile.atlasManager.UnloadAtlas("BlizzorNeck");
+        if (Futile.atlasManager.DoesContainAtlas("wwdvb_wingw2"))
+            Futile.atlasManager.UnloadAtlas("wwdvb_wingw2");
+        if (Futile.atlasManager.DoesContainAtlas("wwdvb_wingw"))
+            Futile.atlasManager.UnloadAtlas("wwdvb_wingw");
+        if (Futile.atlasManager.DoesContainAtlas("wwdvb_lh"))
+            Futile.atlasManager.UnloadAtlas("wwdvb_lh");
+        if (Futile.atlasManager.DoesContainAtlas("wwdvb_fur"))
+            Futile.atlasManager.UnloadAtlas("wwdvb_fur");
+        if (Futile.atlasManager.DoesContainAtlas("wwdvb_spr"))
+            Futile.atlasManager.UnloadAtlas("wwdvb_spr");
         LBMergedModsPlugin.Bundle?.Unload(true);
         LBMergedModsPlugin.Bundle = null;
     }

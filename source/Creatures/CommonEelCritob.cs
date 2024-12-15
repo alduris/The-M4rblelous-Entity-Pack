@@ -15,7 +15,7 @@ sealed class CommonEelCritob : Critob
         Icon = new SimpleIcon("Kill_CommonEel", CommonEel.EelCol);
         SandboxPerformanceCost = new(.5f, .5f);
         LoadedPerformanceCost = 50f;
-        RegisterUnlock(KillScore.Configurable(7), SandboxUnlockID.CommonEel);
+        RegisterUnlock(KillScore.Configurable(12), SandboxUnlockID.CommonEel);
     }
 
     public override int ExpeditionScore() => 7;

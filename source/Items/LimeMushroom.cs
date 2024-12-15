@@ -92,7 +92,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
         for (var i = 0; i < crits.Count; i++)
         {
             var cr = crits[i];
-            if (cr.realizedCreature is Creature c && c.Consious && c.mainBodyChunk is BodyChunk ch && Custom.DistLess(ch.pos, fc.pos, 70f) && (c is ThornBug or DropBug or TintedBeetle or NeedleWorm or SurfaceSwimmer or EggBug || c.Template.type.value.Contains("Mosquito")))
+            if (cr.realizedCreature is Creature c && c.Consious && c.mainBodyChunk is BodyChunk ch && Custom.DistLess(ch.pos, fc.pos, 70f) && (c is ThornBug or DropBug or TintedBeetle or NeedleWorm or SurfaceSwimmer or EggBug or DivingBeetle || c.Template.type.value.Contains("Mosquito")))
                 c.mainBodyChunk.vel += Custom.DirVec(fc.pos, ch.pos) * 6f;
         }
         LastDarkness = Darkness;

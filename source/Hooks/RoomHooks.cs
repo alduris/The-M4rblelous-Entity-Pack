@@ -9,7 +9,6 @@ using RWCustom;
 using System.Collections.Generic;
 using CoralBrain;
 using MonoMod.Cil;
-using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
 
@@ -46,13 +45,16 @@ public static class RoomHooks
             try
             {
                 LBMergedModsPlugin.Bundle = AssetBundle.LoadFromFile(AssetManager.ResolveFilePath("assetbundles" + Path.DirectorySeparatorChar + "lbmodpack_shaders"));
-                g.rainWorld.Shaders["MiniLeviEelBody"] = FShader.CreateShader("MiniLeviEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "MiniLeviEelBody.shader"));
-                g.rainWorld.Shaders["MiniLeviEelFin"] = FShader.CreateShader("MiniLeviEelFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "MiniLeviEelFin.shader"));
-                g.rainWorld.Shaders["AMiniLeviEelBody"] = FShader.CreateShader("AMiniLeviEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "AMiniLeviEelBody.shader"));
-                g.rainWorld.Shaders["AMiniLeviEelFin"] = FShader.CreateShader("AMiniLeviEelFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "AMiniLeviEelFin.shader"));
-                g.rainWorld.Shaders["GRJEelBody"] = FShader.CreateShader("GRJEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "GRJEelBody.shader"));
-                g.rainWorld.Shaders["GRJMiniEelBody"] = FShader.CreateShader("GRJMiniEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "GRJMiniEelBody.shader"));
-                g.rainWorld.Shaders["StarLemonBloom"] = FShader.CreateShader("StarLemonBloom", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "StarLemonBloom.shader"));
+                var shaders = g.rainWorld.Shaders;
+                shaders["MiniLeviEelBody"] = FShader.CreateShader("MiniLeviEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "MiniLeviEelBody.shader"));
+                shaders["MiniLeviEelFin"] = FShader.CreateShader("MiniLeviEelFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "MiniLeviEelFin.shader"));
+                shaders["AMiniLeviEelBody"] = FShader.CreateShader("AMiniLeviEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "AMiniLeviEelBody.shader"));
+                shaders["AMiniLeviEelFin"] = FShader.CreateShader("AMiniLeviEelFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "AMiniLeviEelFin.shader"));
+                shaders["GRJEelBody"] = FShader.CreateShader("GRJEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "GRJEelBody.shader"));
+                shaders["GRJMiniEelBody"] = FShader.CreateShader("GRJMiniEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "GRJMiniEelBody.shader"));
+                shaders["StarLemonBloom"] = FShader.CreateShader("StarLemonBloom", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "StarLemonBloom.shader"));
+                shaders["DivingBeetleFin"] = FShader.CreateShader("DivingBeetleFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DivingBeetleFin.shader"));
+                shaders["DivingBeetleFin2"] = FShader.CreateShader("DivingBeetleFin2", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DivingBeetleFin2.shader"));
                 _MiniLeviColorA = Shader.PropertyToID("_MiniLeviColorA");
                 _MiniLeviColorB = Shader.PropertyToID("_MiniLeviColorB");
                 _MiniLeviColorHead = Shader.PropertyToID("_MiniLeviColorHead");

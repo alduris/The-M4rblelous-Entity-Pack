@@ -79,7 +79,8 @@ public static class CreatureTemplateType
         MoleSalamander = new(nameof(MoleSalamander), true),
         MiniBlackLeech = new(nameof(MiniBlackLeech), true),
         Denture = new(nameof(Denture), true),
-        CommonEel = new(nameof(CommonEel), true);
+        CommonEel = new(nameof(CommonEel), true),
+        DivingBeetle = new(nameof(DivingBeetle), true);
 
     static CreatureTemplateType()
     {
@@ -106,7 +107,8 @@ public static class CreatureTemplateType
             Denture,
             Blizzor,
             MoleSalamander,
-            CommonEel];
+            CommonEel,
+            DivingBeetle];
     }
 
     public static void UnregisterValues()
@@ -231,6 +233,11 @@ public static class CreatureTemplateType
             CommonEel.Unregister();
             CommonEel = null!;
         }
+        if (DivingBeetle is not null)
+        {
+            DivingBeetle.Unregister();
+            DivingBeetle = null!;
+        }
     }
 }
 
@@ -269,7 +276,8 @@ public static class SandboxUnlockID
         StarLemon = new(nameof(StarLemon), true),
         Denture = new(nameof(Denture), true),
         DendriticNeuron = new(nameof(DendriticNeuron), true),
-        CommonEel = new(nameof(CommonEel), true);
+        CommonEel = new(nameof(CommonEel), true),
+        DivingBeetle = new(nameof(DivingBeetle), true);
 
     public static void UnregisterValues()
     {
@@ -442,6 +450,11 @@ public static class SandboxUnlockID
         {
             CommonEel.Unregister();
             CommonEel = null!;
+        }
+        if (DivingBeetle is not null)
+        {
+            DivingBeetle.Unregister();
+            DivingBeetle = null!;
         }
     }
 }
