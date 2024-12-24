@@ -82,6 +82,10 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.CommonEel);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.DivingBeetle))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.DivingBeetle);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Killerpillar))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Killerpillar);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Glowpillar))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Glowpillar);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();

@@ -80,7 +80,9 @@ public static class CreatureTemplateType
         MiniBlackLeech = new(nameof(MiniBlackLeech), true),
         Denture = new(nameof(Denture), true),
         CommonEel = new(nameof(CommonEel), true),
-        DivingBeetle = new(nameof(DivingBeetle), true);
+        DivingBeetle = new(nameof(DivingBeetle), true),
+        Killerpillar = new(nameof(Killerpillar), true),
+        Glowpillar = new(nameof(Glowpillar), true);
 
     static CreatureTemplateType()
     {
@@ -108,7 +110,9 @@ public static class CreatureTemplateType
             Blizzor,
             MoleSalamander,
             CommonEel,
-            DivingBeetle];
+            DivingBeetle,
+            Killerpillar,
+            Glowpillar];
     }
 
     public static void UnregisterValues()
@@ -238,6 +242,16 @@ public static class CreatureTemplateType
             DivingBeetle.Unregister();
             DivingBeetle = null!;
         }
+        if (Killerpillar is not null)
+        {
+            Killerpillar.Unregister();
+            Killerpillar = null!;
+        }
+        if (Glowpillar is not null)
+        {
+            Glowpillar.Unregister();
+            Glowpillar = null!;
+        }
     }
 }
 
@@ -277,7 +291,9 @@ public static class SandboxUnlockID
         Denture = new(nameof(Denture), true),
         DendriticNeuron = new(nameof(DendriticNeuron), true),
         CommonEel = new(nameof(CommonEel), true),
-        DivingBeetle = new(nameof(DivingBeetle), true);
+        DivingBeetle = new(nameof(DivingBeetle), true),
+        Killerpillar = new(nameof(Killerpillar), true),
+        Glowpillar = new(nameof(Glowpillar), true);
 
     public static void UnregisterValues()
     {
@@ -455,6 +471,16 @@ public static class SandboxUnlockID
         {
             DivingBeetle.Unregister();
             DivingBeetle = null!;
+        }
+        if (Killerpillar is not null)
+        {
+            Killerpillar.Unregister();
+            Killerpillar = null!;
+        }
+        if (Glowpillar is not null)
+        {
+            Glowpillar.Unregister();
+            Glowpillar = null!;
         }
     }
 }

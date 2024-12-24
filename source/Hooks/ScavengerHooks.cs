@@ -91,7 +91,7 @@ public static class ScavengerHooks
             s_MatchBrtrue_OutLabel))
         {
             c.Emit(OpCodes.Ldarg_1)
-             .EmitDelegate((RelationshipTracker.DynamicRelationship dRelation) => dRelation.trackerRep?.representedCreature?.creatureTemplate.type is CreatureTemplate.Type tp && (tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Scutigera || tp == CreatureTemplateType.RedHorrorCenti || tp == CreatureTemplateType.Sporantula || tp == CreatureTemplateType.DivingBeetle));
+             .EmitDelegate((RelationshipTracker.DynamicRelationship dRelation) => dRelation.trackerRep?.representedCreature?.creatureTemplate.type is CreatureTemplate.Type tp && (tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Scutigera || tp == CreatureTemplateType.RedHorrorCenti || tp == CreatureTemplateType.Sporantula || tp == CreatureTemplateType.DivingBeetle || tp == CreatureTemplateType.Killerpillar || tp == CreatureTemplateType.Glowpillar));
             c.Emit(OpCodes.Brtrue, s_label);
         }
         else

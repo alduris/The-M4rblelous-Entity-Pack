@@ -273,7 +273,7 @@ public static class BigSpiderHooks
              .Emit(OpCodes.Ldloc, l = il.Body.Variables[s_loc1])
              .EmitDelegate((BigSpiderAI self, RelationshipTracker.DynamicRelationship dRelation, CreatureTemplate.Relationship result) =>
              {
-                 if (self.bug is BigSpider b && dRelation.trackerRep?.representedCreature?.creatureTemplate?.type is CreatureTemplate.Type tp && (tp == CreatureTemplateType.Scutigera || tp == CreatureTemplateType.RedHorrorCenti) && dRelation.state is BigSpiderAI.SpiderTrackState st && st.consious && st.totalMass > b.TotalMass * 2f)
+                 if (self.bug is BigSpider b && dRelation.trackerRep?.representedCreature?.creatureTemplate?.type is CreatureTemplate.Type tp && (tp == CreatureTemplateType.Scutigera || tp == CreatureTemplateType.RedHorrorCenti || tp == CreatureTemplateType.Killerpillar || tp == CreatureTemplateType.Glowpillar) && dRelation.state is BigSpiderAI.SpiderTrackState st && st.consious && st.totalMass > b.TotalMass * 2f)
                      result = new(CreatureTemplate.Relationship.Type.Afraid, Mathf.InverseLerp(b.TotalMass, b.TotalMass * 7f, st.totalMass));
                  return result;
              });

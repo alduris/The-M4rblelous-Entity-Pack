@@ -18,7 +18,7 @@ using Fisobs.Sandbox;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.4"), BepInDependency("io.github.dual.fisobs")]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.5"), BepInDependency("io.github.dual.fisobs")]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -326,6 +326,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new ScutigeraCritob(),
                         new RedHorrorCritob(),
                         new SporantulaCritob(),
+                        new KillerpillarCritob(),
+                        new GlowpillarCritob(),
                         new MiniLeviathanCritob(),
                         new MiniFlyingBigEelCritob(),
                         new FlyingBigEelCritob(),

@@ -44,7 +44,7 @@ public static class PlayerHooks
     internal static void On_Player_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp)
     {
         orig(self, grasp);
-        if (grasp.grabber is ThornBug or DivingBeetle)
+        if (grasp.grabber is ThornBug or DivingBeetle or Caterpillar)
         {
             self.dangerGraspTime = 0;
             self.dangerGrasp = grasp;
