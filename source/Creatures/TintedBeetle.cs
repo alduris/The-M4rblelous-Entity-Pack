@@ -45,6 +45,7 @@ public class TintedBeetle : InsectoidCreature
         collisionLayer = 1;
         waterFriction = .96f;
         buoyancy = .95f;
+        abstractCreature.lavaImmune = true;
         var state = Random.state;
         Random.InitState(abstractCreature.ID.RandomSeed);
         Hue = abstractCreature.superSizeMe ? Mathf.Lerp(188f / 360f, 200f / 360f, Custom.ClampedRandomVariation(.5f, .5f, 2f)) : Mathf.Lerp(-.04f, .04f, Custom.ClampedRandomVariation(.5f, .5f, 2f));
