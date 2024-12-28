@@ -343,6 +343,7 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
         }
         TravelDirection.Normalize();
         var fisobs = rm.physicalObjects;
+        var ps = firstChunk.pos;
         for (var i = 0; i < fisobs.Length; i++)
         {
             if (fisobs[i] is List<PhysicalObject> list)
@@ -352,12 +353,15 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
                     if (list[j] is SSOracleSwarmer swarmer)
                     {
                         var sfc = swarmer.firstChunk;
-                        sfc.vel += Custom.DirVec(sfc.pos, fc.pos) * .08f;
-                        var myc = Mycelia[Random.Range(0, Mycelia.Length)];
-                        if (Custom.DistLess(swarmer.firstChunk.pos, myc.Tip, 8f) && Random.value <= .35f)
+                        if (Custom.DistLess(sfc.pos, ps, 80f))
                         {
-                            swarmer.mode = SSOracleSwarmer.MovementMode.SuckleMycelia;
-                            swarmer.suckleMyc = myc;
+                            var myc = Mycelia[Random.Range(0, Mycelia.Length)];
+                            sfc.vel += Custom.DirVec(sfc.pos, fc.pos) * .08f;
+                            if (Custom.DistLess(sfc.pos, myc.Tip, 8f) && Random.value <= .35f)
+                            {
+                                swarmer.mode = SSOracleSwarmer.MovementMode.SuckleMycelia;
+                                swarmer.suckleMyc = myc;
+                            }
                         }
                     }
                 }
