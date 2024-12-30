@@ -102,12 +102,12 @@ public static class OverseerHooks
     {
         if (foodObject?.realizedObject is PhysicalObject obj && (obj is ThornyStrawberry or BouncingMelon or LittleBalloon or Physalis or MarineEye or StarLemon) && !foodObject.slatedForDeletion && foodObject.Room == player.abstractCreature.Room)
         {
-            var num = Mathf.InverseLerp(1100f, 400f, Vector2.Distance(obj.FirstChunk().pos, player.DangerPos));
+            var num = Mathf.InverseLerp(1100f, 400f, Vector2.Distance(obj.firstChunk.pos, player.DangerPos));
             if (num == 0f)
                 return 0f;
             if (self.GuideState.itemTypes.Contains(foodObject.type))
             {
-                if (num <= .2f || !self.room.ViewedByAnyCamera(obj.FirstChunk().pos, 0f))
+                if (num <= .2f || !self.room.ViewedByAnyCamera(obj.firstChunk.pos, 0f))
                     return 0f;
                 num = .3f;
             }

@@ -75,8 +75,10 @@ public class TintedBeetle : InsectoidCreature
     {
         base.Stun(st);
         if (st > 4 && Random.value < .5f)
-            LoseAllGrasps();
+            ReleaseGrasp(0);
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 
     public override void Update(bool eu)
     {
@@ -247,7 +249,7 @@ public class TintedBeetle : InsectoidCreature
         {
             ++FootingCounter;
             if (safariControlled && inputWithDiagonals.HasValue && inputWithDiagonals.Value.thrw)
-                LoseAllGrasps();
+                ReleaseGrasp(0);
             Act();
         }
         else
@@ -621,7 +623,7 @@ public class TintedBeetle : InsectoidCreature
         var g = grasps[0];
         if (g.grabbed is not FirecrackerPlant grabbed || grabbed.room is not Room rm || room is not Room rmm || rm.abstractRoom.index != rmm.abstractRoom.index)
         {
-            LoseAllGrasps();
+            ReleaseGrasp(0);
             return;
         }
         var bs = bodyChunks;
@@ -630,7 +632,7 @@ public class TintedBeetle : InsectoidCreature
         var vector2 = grabbed.bodyChunks[g.chunkGrabbed].vel - b0.vel;
         grabbed.bodyChunks[g.chunkGrabbed].vel = b0.vel;
         if (!enteringShortCut.HasValue && (vector2.magnitude * grabbed.bodyChunks[g.chunkGrabbed].mass > 40f || !Custom.DistLess(vector, grabbed.bodyChunks[g.chunkGrabbed].pos, 70f + grabbed.bodyChunks[g.chunkGrabbed].rad)))
-            LoseAllGrasps();
+            ReleaseGrasp(0);
         else
             grabbed.bodyChunks[g.chunkGrabbed].MoveFromOutsideMyUpdate(eu, vector);
         if (g is not null)

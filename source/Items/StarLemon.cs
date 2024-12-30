@@ -22,7 +22,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
         {
             Fruit = fruit;
             YellowCol = fruit.YellowCol;
-            fruit.FirstChunk().HardSetPosition(fruitPos);
+            fruit.firstChunk.HardSetPosition(fruitPos);
             StuckPos.x = fruitPos.x;
             RopeLength = -1f;
             var fpos = room.GetTilePosition(fruitPos);
@@ -82,7 +82,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
                 --ReleaseCounter;
             if (Fruit is StarLemon fruit)
             {
-                var fpos = fruit.FirstChunk().pos;
+                var fpos = fruit.firstChunk.pos;
                 fruit.SetRotation = Custom.DirVec(fpos, segs[segs.Length - 1][0]) + StartRot;
                 if (!Custom.DistLess(fpos, StuckPos, RopeLength * 1.8f + 10f) || fruit.slatedForDeletetion || fruit.Bites < 6 || fruit.room != room || ReleaseCounter == 1)
                 {
@@ -123,9 +123,9 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
                         segm1[0] -= vector2;
                         segm1[2] -= vector2;
                     }
-                    if (num == l - 1 && Fruit is StarLemon fruit && !Custom.DistLess(segm1[0], fruit.FirstChunk().pos, crad))
+                    if (num == l - 1 && Fruit is StarLemon fruit && !Custom.DistLess(segm1[0], fruit.firstChunk.pos, crad))
                     {
-                        var fc = fruit.FirstChunk();
+                        var fc = fruit.firstChunk;
                         Vector2 vector3 = Custom.DirVec(seg[0], fc.pos) * (Vector2.Distance(seg[0], fc.pos) - crad);
                         seg[0] += vector3 * .75f;
                         seg[2] += vector3 * .75f;
@@ -161,7 +161,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
                     num3 = Custom.LerpMap(num2, 0f, .5f, 1f, 0f) + Mathf.Lerp(1f, .5f, Mathf.Sin(Mathf.Pow(num2, 3.5f) * Mathf.PI)) * 4f;
                 Vector2 vector2;
                 if (i == l && Fruit is StarLemon fruit)
-                    vector2 = Vector2.Lerp(fruit.FirstChunk().lastPos, fruit.FirstChunk().pos, timeStacker);
+                    vector2 = Vector2.Lerp(fruit.firstChunk.lastPos, fruit.firstChunk.pos, timeStacker);
                 else
                     vector2 = Vector2.Lerp(seg[1], seg[0], timeStacker);
                 Vector2 normalized = (vector - vector2).normalized,
@@ -245,7 +245,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
     public override void Update(bool eu)
     {
         base.Update(eu);
-        var fc = FirstChunk();
+        var fc = firstChunk;
         if (room.game.devToolsActive && Input.GetKey("b"))
             fc.vel += Custom.DirVec(fc.pos, Futile.mousePosition) * 3f;
         var crits = room.abstractRoom.creatures;
@@ -412,8 +412,8 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
         --Bites;
-        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, FirstChunk().pos);
-        FirstChunk().MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
+        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk.pos);
+        firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
             if (grasp.grabber is Player p)

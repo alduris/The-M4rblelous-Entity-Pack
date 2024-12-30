@@ -92,4 +92,6 @@ public class Sporantula : BigSpider
         rm.AddObject(new SporePuffVisionObscurer(ps));
         rm.PlaySound(SoundID.Puffball_Eplode, ps);
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

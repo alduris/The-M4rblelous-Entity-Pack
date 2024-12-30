@@ -14,4 +14,6 @@ public class SilverLizard : Lizard
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new SilverLizardGraphics(this);
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

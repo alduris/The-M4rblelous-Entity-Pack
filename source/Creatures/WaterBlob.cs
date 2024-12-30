@@ -489,4 +489,6 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
             room?.PlaySound(SoundID.Swollen_Water_Nut_Terrain_Impact, firstChunk);
         }
     }
+
+    public override void LoseAllGrasps() { }
 }

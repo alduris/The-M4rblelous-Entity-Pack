@@ -25,4 +25,6 @@ public class MoleSalamander : Lizard
     }
 
     public override Color ShortCutColor() => graphicsModule is MoleSalamanderGraphics { blackSalamander: true } ? Color.Lerp(Color.black, Color.gray, .5f) : base.ShortCutColor();
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

@@ -24,4 +24,6 @@ public class Blizzor : MirosBird
         base.Blind(blnd);
         blind = 0;
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

@@ -17,4 +17,6 @@ public class NoodleEater : Lizard
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new NoodleEaterGraphics(this);
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

@@ -517,4 +517,6 @@ public class Caterpillar : InsectoidCreature
             room?.PlaySound(SoundID.Drop_Bug_Voice, firstChunk.pos, 1f, .7f);
         base.Die();
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

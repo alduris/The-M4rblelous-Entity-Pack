@@ -89,4 +89,6 @@ public class BouncingBall : Snail
                 velY = 0f;
         }
     }
+
+    public override void LoseAllGrasps() { }
 }

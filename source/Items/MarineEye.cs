@@ -266,7 +266,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
             fc.vel.x *= .8f;
         }
         var crits = room.abstractRoom.creatures;
-        if (Submersion > .5f && crits.Count > 0 && grabbedBy.Count == 0)
+        if (fc.submersion > .5f && crits.Count > 0 && grabbedBy.Count == 0)
         {
             var abstractCreature = crits[Random.Range(0, crits.Count)];
             if (abstractCreature.creatureTemplate.type == CreatureTemplate.Type.JetFish && abstractCreature.realizedCreature is JetFish j && !abstractCreature.realizedCreature.dead && j.AI.goToFood is null && j.AI.WantToEatObject(this))

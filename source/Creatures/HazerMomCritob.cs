@@ -56,7 +56,7 @@ sealed class HazerMomCritob : Critob
 		t.deliciousness = .5f;
 		t.abstractedLaziness = 100;
 		t.BlizzardAdapted = true;
-		t.lungCapacity = float.MaxValue;
+		t.lungCapacity = float.PositiveInfinity;
 		t.shortcutColor = Color.white;
 		t.meatPoints = 3;
         return t;

@@ -25,4 +25,6 @@ public class FlyingBigEel : BigEel
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new FlyingBigEelGraphics(this);
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

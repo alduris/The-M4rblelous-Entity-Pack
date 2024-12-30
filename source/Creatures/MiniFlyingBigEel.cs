@@ -39,4 +39,6 @@ public class MiniFlyingBigEel : BigEel
     public override Color ShortCutColor() => Template.shortcutColor;
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new MiniFlyingBigEelGraphics(this);
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

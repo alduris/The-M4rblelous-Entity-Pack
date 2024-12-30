@@ -16,7 +16,14 @@ public class MiniLeviathanAI : BigEelAI
     public override void Update()
     {
         base.Update();
-        if (hungerDelay > 5)
-            hungerDelay -= 5;
+        if (eel?.room?.IsPositionInsideBoundries(creature.pos.Tile) is true)
+        {
+            if (hungerDelay > 0)
+                --hungerDelay;
+            if (hungerDelay > 0)
+                --hungerDelay;
+            if (hungerDelay > 0)
+                --hungerDelay;
+        }
     }
 }

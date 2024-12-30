@@ -80,6 +80,7 @@ sealed class WaterBlobCritob : Critob
     public override void EstablishRelationships()
     {
         var b = new Relationships(Type);
+        b.Ignores(CreatureTemplate.Type.Overseer);
         b.Fears(CreatureTemplate.Type.Slugcat, 1f);
         b.Fears(CreatureTemplate.Type.Scavenger, .9f);
         b.Fears(CreatureTemplate.Type.LizardTemplate, .8f);

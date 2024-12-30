@@ -40,4 +40,6 @@ public class SurfaceSwimmer : EggBug
                 chs[i].vel.x *= 1.02f;
         }
     }
+
+    public override void LoseAllGrasps() { }
 }

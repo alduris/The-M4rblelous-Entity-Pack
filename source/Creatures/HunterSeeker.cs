@@ -22,4 +22,6 @@ public class HunterSeeker : Lizard
             jumpModule.gasLeakSpear = s;
         return res;
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

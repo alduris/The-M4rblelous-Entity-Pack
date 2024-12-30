@@ -41,6 +41,13 @@ public static class BigEelHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigEel.AccessSwimSpace!");
     }
 
+    internal static void On_BigEel_Act(On.BigEel.orig_Act orig, BigEel self, bool eu)
+    {
+        if (self is MiniLeviathan or MiniFlyingBigEel && self.jawCharge > 0f && self.jawChargeFatigue <= 0f && (self.jawCharge > .3f || (self.jawChargeFatigue < 1f && self.AI?.WantToChargeJaw() is true)))
+            self.jawCharge += 1f / 140f;
+        orig(self, eu);
+    }
+
     internal static void On_BigEel_Crush(On.BigEel.orig_Crush orig, BigEel self, PhysicalObject obj)
     {
         orig(self, obj);
@@ -75,7 +82,7 @@ public static class BigEelHooks
         {
             var mbcPos = self.mainBodyChunk.pos;
             var vector = Custom.DirVec(self.bodyChunks[1].pos, mbcPos);
-            if (!Custom.DistLess(mbcPos + vector * 60f, pos, 14f + margin))
+            if (!Custom.DistLess(mbcPos + vector * 45f, pos, 14f + margin))
                 return false;
             Vector2 pos2 = mbcPos, vector2 = Custom.PerpendicularVector(vector);
             if (Mathf.Abs(Custom.DistanceToLine(pos, pos2 + 60f * vector - vector2, pos2 + 60f * vector + vector2)) > 30f + margin)

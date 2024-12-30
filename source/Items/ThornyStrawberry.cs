@@ -20,7 +20,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
         public Stalk(ThornyStrawberry fruit, Room room, Vector2 fruitPos)
         {
             Fruit = fruit;
-            fruit.FirstChunk().HardSetPosition(fruitPos);
+            fruit.firstChunk.HardSetPosition(fruitPos);
             StuckPos.x = fruitPos.x;
             RopeLength = -1f;
             var fpos = room.GetTilePosition(fruitPos);
@@ -79,7 +79,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
                 --ReleaseCounter;
             if (Fruit is ThornyStrawberry fruit)
             {
-                var fpos = fruit.FirstChunk().pos;
+                var fpos = fruit.firstChunk.pos;
                 fruit.setRotation = Custom.DirVec(fpos, segs[segs.Length - 1][0]);
                 if (!Custom.DistLess(fpos, StuckPos, RopeLength * 1.4f + 10f) || fruit.slatedForDeletetion || fruit.Bites < 3 || fruit.room != room || ReleaseCounter == 1)
                 {
@@ -120,9 +120,9 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
                         segm1[0] -= vector2;
                         segm1[2] -= vector2;
                     }
-                    if (num == l - 1 && Fruit is ThornyStrawberry fruit && !Custom.DistLess(segm1[0], fruit.FirstChunk().pos, crad))
+                    if (num == l - 1 && Fruit is ThornyStrawberry fruit && !Custom.DistLess(segm1[0], fruit.firstChunk.pos, crad))
                     {
-                        var fc = fruit.FirstChunk();
+                        var fc = fruit.firstChunk;
                         Vector2 vector3 = Custom.DirVec(seg[0], fc.pos) * (Vector2.Distance(seg[0], fc.pos) - crad);
                         seg[0] += vector3 * .75f;
                         seg[2] += vector3 * .75f;
@@ -158,7 +158,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
                     num3 = Custom.LerpMap(num2, 0f, .5f, 1f, 0f) + Mathf.Lerp(1f, .5f, Mathf.Sin(Mathf.Pow(num2, 3.5f) * Mathf.PI)) * 2f;
                 Vector2 vector2;
                 if (i == l && Fruit is ThornyStrawberry fruit)
-                    vector2 = Vector2.Lerp(fruit.FirstChunk().lastPos, fruit.FirstChunk().pos, timeStacker);
+                    vector2 = Vector2.Lerp(fruit.firstChunk.lastPos, fruit.firstChunk.pos, timeStacker);
                 else
                     vector2 = Vector2.Lerp(seg[1], seg[0], timeStacker);
                 Vector2 normalized = (vector - vector2).normalized,
@@ -232,7 +232,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
     public override void Update(bool eu)
     {
         base.Update(eu);
-        var fc = FirstChunk();
+        var fc = firstChunk;
         if (room?.game is RainWorldGame g && g.devToolsActive && Input.GetKey("b"))
             fc.vel += Custom.DirVec(fc.pos, Futile.mousePosition) * 3f;
         if (fc.ContactPoint.y != 0 || fc.submersion > .5f)
@@ -249,7 +249,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
             return false;
         if (thrownBy is Scavenger scav && scav.AI is ScavengerAI AI)
             AI.HitAnObjectWithWeapon(this, obj);
-        var fc = FirstChunk();
+        var fc = firstChunk;
         if (obj is Creature c)
         {
             var stunBonus = 45f;
@@ -289,17 +289,17 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
         placeRoom.AddObject(this);
         if (ModManager.MMF && placeRoom.game.GetArenaGameSession is ArenaGameSession arena && (MMF.cfgSandboxItemStems.Value || arena.chMeta is not null) && arena.counter < 10)
         {
-            FirstChunk().HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
-            placeRoom.AddObject(MyStalk = new(this, placeRoom, FirstChunk().pos));
+            firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
+            placeRoom.AddObject(MyStalk = new(this, placeRoom, firstChunk.pos));
         }
         else if (!AbstrCons.isConsumed && AbstrCons.placedObjectIndex >= 0 && AbstrCons.placedObjectIndex < placeRoom.roomSettings.placedObjects.Count)
         {
-            FirstChunk().HardSetPosition(placeRoom.roomSettings.placedObjects[AbstrCons.placedObjectIndex].pos);
-            placeRoom.AddObject(MyStalk = new(this, placeRoom, FirstChunk().pos));
+            firstChunk.HardSetPosition(placeRoom.roomSettings.placedObjects[AbstrCons.placedObjectIndex].pos);
+            placeRoom.AddObject(MyStalk = new(this, placeRoom, firstChunk.pos));
         }
         else
         {
-            FirstChunk().HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
+            firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
             rotation = Custom.RNV();
             lastRotation = rotation;
         }
@@ -319,7 +319,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
         base.HitByExplosion(hitFac, explosion, hitChunk);
         if (!SpikesRemoved(out var data))
         {
-            var fc = FirstChunk();
+            var fc = firstChunk;
             data.SpikesRemoved = true;
             if (room is Room rm)
             {
@@ -339,7 +339,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
-        Vector2 pos = Vector2.Lerp(FirstChunk().lastPos, FirstChunk().pos, timeStacker),
+        Vector2 pos = Vector2.Lerp(firstChunk.lastPos, firstChunk.pos, timeStacker),
             v = Vector3.Slerp(lastRotation, rotation, timeStacker);
         LastDarkness = Darkness;
         Darkness = rCam.room.Darkness(pos) * (1f - rCam.room.LightSourceExposure(pos));
@@ -392,11 +392,11 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
         --Bites;
-        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, FirstChunk().pos);
-        FirstChunk().MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
+        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk.pos);
+        firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
-            ((Player)grasp.grabber).ObjectEaten(this);
+            (grasp.grabber as Player)?.ObjectEaten(this);
             grasp.Release();
             Destroy();
         }

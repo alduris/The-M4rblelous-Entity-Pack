@@ -305,6 +305,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardAI.UnpleasantFallRisk += On_LizardAI_UnpleasantFallRisk;
         On.LizardAI.FallRisk += On_LizardAI_FallRisk;
         On.LizardAI.LikeOfPlayer += On_LizardAI_LikeOfPlayer;
+        On.BigEel.Act += On_BigEel_Act;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

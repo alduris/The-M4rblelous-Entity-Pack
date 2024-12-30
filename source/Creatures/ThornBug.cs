@@ -62,7 +62,7 @@ public class ThornBug : InsectoidCreature
     {
         base.Stun(st);
         if (st > 4 && Random.value < .5f)
-            LoseAllGrasps();
+            ReleaseGrasp(0);
     }
 
     public override void Update(bool eu)
@@ -146,7 +146,7 @@ public class ThornBug : InsectoidCreature
         {
             ++FootingCounter;
             if (safariControlled && inputWithDiagonals.HasValue && inputWithDiagonals.Value.thrw)
-                LoseAllGrasps();
+                ReleaseGrasp(0);
             Act();
         }
         else
@@ -548,12 +548,14 @@ public class ThornBug : InsectoidCreature
         StunCounter = 0;
     }
 
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
+
     public virtual void CarryObject(bool eu)
     {
         var g = grasps[0];
         if (g.grabbed.room is not Room rm || room is not Room rmm || rm.abstractRoom.index != rmm.abstractRoom.index || Random.value < .025f && (g.grabbed is not Creature c || AI.DynamicRelationship(c.abstractCreature).type != CreatureTemplate.Relationship.Type.Eats))
         {
-            LoseAllGrasps();
+            ReleaseGrasp(0);
             return;
         }
         var bs = bodyChunks;
@@ -563,7 +565,7 @@ public class ThornBug : InsectoidCreature
         var vector2 = grabbed.bodyChunks[g.chunkGrabbed].vel - b0.vel;
         grabbed.bodyChunks[g.chunkGrabbed].vel = b0.vel;
         if (!enteringShortCut.HasValue && (vector2.magnitude * grabbed.bodyChunks[g.chunkGrabbed].mass > 30f || !Custom.DistLess(vector, grabbed.bodyChunks[g.chunkGrabbed].pos, 70f + grabbed.bodyChunks[g.chunkGrabbed].rad)))
-            LoseAllGrasps();
+            ReleaseGrasp(0);
         else
             grabbed.bodyChunks[g.chunkGrabbed].MoveFromOutsideMyUpdate(eu, vector);
         if (g is not null)

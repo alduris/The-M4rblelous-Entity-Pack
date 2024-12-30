@@ -5,6 +5,7 @@ using Fisobs.Sandbox;
 using static PathCost.Legality;
 using UnityEngine;
 using DevInterface;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
@@ -78,7 +79,6 @@ sealed class DivingBeetleCritob : Critob
         t.BlizzardWanderer = true;
         t.waterRelationship = CreatureTemplate.WaterRelationship.WaterOnly;
         t.abstractedLaziness = 200;
-        t.AI = true;
         t.requireAImap = true;
         t.bodySize = 1.2f;
         t.stowFoodInDen = true;
@@ -89,32 +89,76 @@ sealed class DivingBeetleCritob : Critob
         t.throwAction = "Release";
         t.usesNPCTransportation = true;
         t.lungCapacity = float.PositiveInfinity;
-        t.relationships = (CreatureTemplate.Relationship[])StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.DropBug).relationships.Clone();
         return t;
     }
 
     public override void EstablishRelationships()
     {
         var dvb = new Relationships(Type);
+        dvb.FearedBy(CreatureTemplate.Type.LanternMouse, .7f);
+        dvb.Eats(CreatureTemplate.Type.LanternMouse, .7f);
+        dvb.FearedBy(CreatureTemplate.Type.CicadaA, .5f);
+        dvb.Eats(CreatureTemplate.Type.CicadaA, .5f);
+        dvb.EatenBy(CreatureTemplate.Type.DaddyLongLegs, .1f);
+        dvb.Fears(CreatureTemplate.Type.DaddyLongLegs, .5f);
+        dvb.FearedBy(CreatureTemplate.Type.Slugcat, .5f);
+        dvb.Eats(CreatureTemplate.Type.Slugcat, .5f);
+        dvb.FearedBy(CreatureTemplate.Type.Scavenger, .55f);
+        dvb.Eats(CreatureTemplate.Type.Scavenger, .55f);
+        dvb.IgnoredBy(CreatureTemplate.Type.BigSpider);
+        dvb.Ignores(CreatureTemplate.Type.BigSpider);
+        dvb.Fears(CreatureTemplate.Type.TentaclePlant, .6f);
+        dvb.EatenBy(CreatureTemplate.Type.TentaclePlant, .6f);
+        dvb.Fears(CreatureTemplate.Type.PoleMimic, .3f);
+        dvb.EatenBy(CreatureTemplate.Type.PoleMimic, .3f);
+        dvb.Eats(CreatureTemplate.Type.SmallNeedleWorm, .15f);
+        dvb.FearedBy(CreatureTemplate.Type.SmallNeedleWorm, .6f);
+        dvb.Eats(CreatureTemplate.Type.SmallCentipede, .1f);
+        dvb.FearedBy(CreatureTemplate.Type.SmallCentipede, .55f);
+        dvb.Fears(CreatureTemplate.Type.RedCentipede, .8f);
+        dvb.EatenBy(CreatureTemplate.Type.RedCentipede, .8f);
+        dvb.Ignores(CreatureTemplate.Type.Leech);
         dvb.IgnoredBy(CreatureTemplate.Type.Leech);
+        dvb.Ignores(CreatureTemplate.Type.JetFish);
         dvb.IgnoredBy(CreatureTemplate.Type.JetFish);
         dvb.Ignores(Type);
+        dvb.Ignores(CreatureTemplate.Type.Vulture);
+        dvb.IgnoredBy(CreatureTemplate.Type.Vulture);
+        dvb.Ignores(CreatureTemplateType.FatFireFly);
+        dvb.IgnoredBy(CreatureTemplateType.FatFireFly);
         dvb.Ignores(CreatureTemplate.Type.Deer);
         dvb.IgnoredBy(CreatureTemplate.Type.Deer);
-        dvb.Ignores(CreatureTemplate.Type.Leech);
-        dvb.Ignores(CreatureTemplate.Type.JetFish);
         dvb.Ignores(CreatureTemplate.Type.Hazer);
         dvb.IgnoredBy(CreatureTemplate.Type.Hazer);
+        dvb.Ignores(CreatureTemplateType.HazerMom);
+        dvb.IgnoredBy(CreatureTemplateType.HazerMom);
         dvb.Ignores(CreatureTemplate.Type.GarbageWorm);
         dvb.IgnoredBy(CreatureTemplate.Type.GarbageWorm);
         dvb.IgnoredBy(CreatureTemplate.Type.DropBug);
         dvb.Ignores(CreatureTemplate.Type.DropBug);
         dvb.Eats(CreatureTemplate.Type.LizardTemplate, .5f);
+        dvb.FearedBy(CreatureTemplate.Type.LizardTemplate, .5f);
+        dvb.Ignores(CreatureTemplate.Type.CyanLizard);
+        dvb.IgnoredBy(CreatureTemplate.Type.CyanLizard);
         dvb.Fears(CreatureTemplate.Type.RedLizard, .5f);
+        dvb.EatenBy(CreatureTemplate.Type.RedLizard, .5f);
         dvb.Fears(CreatureTemplate.Type.GreenLizard, .25f);
+        dvb.EatenBy(CreatureTemplate.Type.GreenLizard, .25f);
         dvb.Fears(CreatureTemplate.Type.MirosBird, .8f);
-        dvb.EatenBy(CreatureTemplate.Type.MirosBird, .85f);
+        dvb.EatenBy(CreatureTemplate.Type.MirosBird, .8f);
         dvb.Fears(CreatureTemplate.Type.BigEel, 1f);
+        dvb.EatenBy(CreatureTemplate.Type.BigEel, 1f);
+        dvb.FearedBy(CreatureTemplate.Type.EggBug, 1f);
+        dvb.Ignores(CreatureTemplate.Type.Overseer);
+        if (ModManager.MSC)
+        {
+            dvb.Fears(MoreSlugcatsEnums.CreatureTemplateType.StowawayBug, .9f);
+            dvb.Fears(MoreSlugcatsEnums.CreatureTemplateType.BigJelly, .2f);
+            dvb.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, .5f);
+            dvb.EatenBy(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, .4f);
+            dvb.Fears(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, 1f);
+            dvb.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
+        }
     }
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new DivingBeetleAI(acrit, acrit.world);

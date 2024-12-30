@@ -87,7 +87,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
         }
         if (Consious)
         {
-            if (Submersion > .5f)
+            if (firstChunk.submersion > .5f)
                 firstChunk.vel.y += .5f;
             else
                 Act();
@@ -130,7 +130,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                     movementConnection = new(type, room.GetWorldCoordinate(firstChunk.pos), room.GetWorldCoordinate(firstChunk.pos + new Vector2(inputWithDiagonals.Value.x, inputWithDiagonals.Value.y) * 40f), 2);
                 }
                 if (inputWithDiagonals.Value.thrw && (lastInputWithDiagonals is not Player.InputPackage p || !p.thrw))
-                    LoseAllGrasps();
+                    ReleaseGrasp(0);
                 if (inputWithDiagonals.Value.pckp && grasps.Length > 0)
                 {
                     if (grasps[0]?.grabbed is null)
@@ -295,13 +295,13 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
     {
         if (grasps[0].grabbed is not DangleFruit d)
         {
-            LoseAllGrasps();
+            ReleaseGrasp(0);
             return;
         }
         var num = Vector2.Distance(firstChunk.pos, d.firstChunk.pos);
         if (num > 50f)
         {
-            LoseAllGrasps();
+            ReleaseGrasp(0);
             return;
         }
         var vector = Custom.DirVec(firstChunk.pos, d.firstChunk.pos);
@@ -440,7 +440,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
     public override void Stun(int st)
     {
         Flying = false;
-        LoseAllGrasps();
+        ReleaseGrasp(0);
         base.Stun(st);
     }
 
@@ -495,4 +495,6 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
             }
         }
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

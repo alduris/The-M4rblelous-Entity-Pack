@@ -95,6 +95,7 @@ sealed class KillerpillarCritob : Critob
     public override void EstablishRelationships()
     {
         var ctp = new Relationships(Type);
+        ctp.Ignores(CreatureTemplate.Type.Overseer);
         ctp.Eats(CreatureTemplate.Type.Slugcat, .8f);
         ctp.Eats(CreatureTemplate.Type.LanternMouse, 1f);
         ctp.Fears(CreatureTemplate.Type.LizardTemplate, 1f);

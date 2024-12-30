@@ -209,7 +209,7 @@ public class LittleBalloon : Rock, IPlayerEdible
         LastPlop = Plop;
         if (Plop > 0f && Plop < 1f)
             Plop = Mathf.Min(1f, Plop + .1f);
-        if (Submersion > 0f/* || flag*/)
+        if (ch.submersion > 0f)
             PopHard();
     }
 
@@ -386,7 +386,7 @@ public class LittleBalloon : Rock, IPlayerEdible
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
-            ((Player)grasp.grabber).ObjectEaten(this);
+            (grasp.grabber as Player)?.ObjectEaten(this);
             PopHard();
         }
         PropSpeed += Mathf.Lerp(-1f, 1f, Random.value) * 7f;

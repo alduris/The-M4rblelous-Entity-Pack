@@ -77,4 +77,6 @@ public class FatFireFly : Vulture
         }
         return res;
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

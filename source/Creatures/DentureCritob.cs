@@ -71,7 +71,8 @@ sealed class DentureCritob : Critob
 	public override void EstablishRelationships()
 	{
 		var dt = new Relationships(Type);
-		dt.Eats(CreatureTemplate.Type.Slugcat, 1f);
+        dt.Ignores(CreatureTemplate.Type.Overseer);
+        dt.Eats(CreatureTemplate.Type.Slugcat, 1f);
         dt.Eats(CreatureTemplate.Type.LanternMouse, 1f);
         dt.Eats(CreatureTemplate.Type.BlueLizard, 1f);
         dt.Eats(CreatureTemplate.Type.Fly, 1f);

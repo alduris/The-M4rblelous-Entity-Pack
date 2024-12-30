@@ -19,7 +19,7 @@ public class MiniLeech : Leech
         base.Update(eu);
         if (room is null || enteringShortCut.HasValue)
             return;
-        if (Consious && Submersion >= .5f)
+        if (Consious && firstChunk.submersion >= .5f)
         {
             if (grasps[0] is null)
             {
@@ -81,4 +81,6 @@ public class MiniLeech : Leech
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new MiniLeechGraphics(this);
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

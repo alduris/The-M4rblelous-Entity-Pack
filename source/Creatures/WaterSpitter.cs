@@ -56,7 +56,7 @@ public class WaterSpitter : Lizard
                         if (ctr)
                         {
                             EnterAnimation(Animation.Standard, true);
-                            LoseAllGrasps();
+                            ReleaseGrasp(0);
                         }
                         rm.PlaySound(SoundID.Splashing_Water_Into_Terrain, vector3, 1.6f, 1.2f);
                         rm.AddObject(new LizardWaterSpit(vector3, vector4 * 28f, this));
@@ -71,4 +71,6 @@ public class WaterSpitter : Lizard
             }
         }
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

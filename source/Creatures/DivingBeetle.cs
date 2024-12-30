@@ -191,7 +191,7 @@ public class DivingBeetle : InsectoidCreature
     {
         if (grasps[0].grabbed is not Creature cr || Random.value < .025f && AI.DynamicRelationship(cr.abstractCreature).type != CreatureTemplate.Relationship.Type.Eats && !safariControlled)
         {
-            LoseAllGrasps();
+            ReleaseGrasp(0);
             return;
         }
         var chs = bodyChunks;
@@ -213,7 +213,7 @@ public class DivingBeetle : InsectoidCreature
             vector3 = chGrabbed.vel - chs[0].vel;
         chGrabbed.vel = chs[0].vel;
         if (!enteringShortCut.HasValue && (vector3.magnitude * chGrabbed.mass > 30f || !Custom.DistLess(vector2, chGrabbed.pos, 70f + chGrabbed.rad)))
-            LoseAllGrasps();
+            ReleaseGrasp(0);
         else
             chGrabbed.MoveFromOutsideMyUpdate(eu, vector2);
         if (grasps[0] is Grasp g)
@@ -243,7 +243,7 @@ public class DivingBeetle : InsectoidCreature
                     chs[2].vel.y -= .25f;
                 }
                 if (p.thrw && lastInputWithDiagonals?.thrw is false or null)
-                    LoseAllGrasps();
+                    ReleaseGrasp(0);
                 ++chs[2].vel.y;
                 if (p.x == 0 && p.y == 0)
                 {
@@ -363,7 +363,7 @@ public class DivingBeetle : InsectoidCreature
                         if (inputWithDiagonals.Value.AnyDirectionalInput && (Footing || chs[0].submersion != 0f))
                             movementConnection = new(type, room.GetWorldCoordinate(chs[0].pos), room.GetWorldCoordinate(chs[0].pos + new Vector2(inputWithDiagonals.Value.x, inputWithDiagonals.Value.y) * 40f), 2);
                         if (inputWithDiagonals.Value.thrw && lastInputWithDiagonals?.thrw is false or null)
-                            LoseAllGrasps();
+                            ReleaseGrasp(0);
                         if (inputWithDiagonals.Value.y < 0)
                             GoThroughFloors = true;
                         else
@@ -391,7 +391,7 @@ public class DivingBeetle : InsectoidCreature
     {
         base.Stun(st);
         if (st > 4 && Random.value < .5f)
-            LoseAllGrasps();
+            ReleaseGrasp(0);
     }
 
     public virtual void Run(MovementConnection followingConnection)
@@ -584,7 +584,7 @@ public class DivingBeetle : InsectoidCreature
     public override void Die()
     {
         base.Die();
-        LoseAllGrasps();
+        ReleaseGrasp(0);
     }
 
     public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos hitAppendage, DamageType type, float damage, float stunBonus)
@@ -611,4 +611,6 @@ public class DivingBeetle : InsectoidCreature
         }
         graphicsModule?.Reset();
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

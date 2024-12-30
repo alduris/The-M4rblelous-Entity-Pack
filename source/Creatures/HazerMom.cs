@@ -304,4 +304,6 @@ public class HazerMom : Creature
         }
         graphicsModule?.Reset();
     }
+
+    public override void LoseAllGrasps() { }
 }

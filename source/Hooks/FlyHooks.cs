@@ -18,7 +18,7 @@ public static class FlyHooks
         {
             if (self.movMode == Fly.MovementMode.Hang)
             {
-                self.LoseAllGrasps();
+                self.ReleaseGrasp(0);
                 self.movMode = Fly.MovementMode.BatFlight;
             }
             else if (self.movMode == Fly.MovementMode.SwarmFlight)

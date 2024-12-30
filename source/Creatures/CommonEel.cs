@@ -51,4 +51,6 @@ public class CommonEel : Lizard
         if (AirInLungs <= 0f)
             Die();
     }
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

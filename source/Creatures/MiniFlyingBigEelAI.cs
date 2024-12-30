@@ -18,9 +18,18 @@ public class MiniFlyingBigEelAI : BigEelAI
     public override void Update()
     {
         base.Update();
-        if (hungerDelay > 5)
-            hungerDelay -= 5;
-        if (Random.value > .00001f && behavior == Behavior.Idle && eel?.room is Room rm)
+        if (eel?.room is not Room rm)
+            return;
+        if (rm.IsPositionInsideBoundries(creature.pos.Tile))
+        {
+            if (hungerDelay > 0)
+                --hungerDelay;
+            if (hungerDelay > 0)
+                --hungerDelay;
+            if (hungerDelay > 0)
+                --hungerDelay;
+        }
+        if (Random.value > .00001f && behavior == Behavior.Idle)
         {
             var newDest = new WorldCoordinate(rm.abstractRoom.index, Random.Range(0, rm.TileWidth), Random.Range(0, rm.TileHeight), -1);
             if (pathFinder.CoordinateReachableAndGetbackable(newDest))

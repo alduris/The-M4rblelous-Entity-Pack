@@ -38,4 +38,6 @@ public class MiniLeviathan : BigEel
     public override Color ShortCutColor() => LeviColor;
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new MiniLeviathanGraphics(this);
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

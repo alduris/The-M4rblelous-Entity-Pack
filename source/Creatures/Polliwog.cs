@@ -27,4 +27,6 @@ public class Polliwog : Lizard
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new PolliwogGraphics(this);
+
+    public override void LoseAllGrasps() => ReleaseGrasp(0);
 }

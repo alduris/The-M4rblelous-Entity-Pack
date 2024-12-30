@@ -54,9 +54,11 @@ public class BlobPiece : PlayerCarryableItem, IPlayerEdible, IDrawable
         base.Update(eu);
         if (room is not Room rm)
             return;
-        if (rm.game.devToolsActive && Input.GetKey("b")) firstChunk.vel += Custom.DirVec(firstChunk.pos, Input.mousePosition) * 3f;
-        if (firstChunk.ContactPoint.y < 0)
-            firstChunk.vel.x *= .8f;
+        var fch = firstChunk;
+        if (rm.game.devToolsActive && Input.GetKey("b"))
+            fch.vel += Custom.DirVec(fch.pos, Input.mousePosition) * 3f;
+        if (fch.ContactPoint.y < 0)
+            fch.vel.x *= .8f;
         LastProp = Prop;
         Prop += PropSpeed;
         PropSpeed *= .85f;
@@ -64,14 +66,14 @@ public class BlobPiece : PlayerCarryableItem, IPlayerEdible, IDrawable
         Prop = Mathf.Clamp(Prop, -15f, 15f);
         if (grabbedBy?.Count == 0)
         {
-            Prop += (firstChunk.lastPos.x - firstChunk.pos.x) / 15f;
-            Prop -= (firstChunk.lastPos.y - firstChunk.pos.y) / 15f;
+            Prop += (fch.lastPos.x - fch.pos.x) / 15f;
+            Prop -= (fch.lastPos.y - fch.pos.y) / 15f;
         }
         LastPlop = Plop;
         if (Plop > 0f && Plop < 1f)
             Plop = Mathf.Min(1f, Plop + .1f);
         var crits = rm.abstractRoom.creatures;
-        if (Submersion > .5f && crits.Count > 0 && grabbedBy?.Count == 0)
+        if (fch.submersion > .5f && crits.Count > 0 && grabbedBy?.Count == 0)
         {
             var abstractCreature = crits[Random.Range(0, crits.Count)];
             if (abstractCreature.realizedCreature is JetFish c && !c.dead && c.AI is JetFishAI ai && ai.goToFood is null && ai.WantToEatObject(this))
@@ -157,7 +159,7 @@ public class BlobPiece : PlayerCarryableItem, IPlayerEdible, IDrawable
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
-            (grasp.grabber as Player)!.ObjectEaten(this);
+            (grasp.grabber as Player)?.ObjectEaten(this);
             grasp.Release();
             Destroy();
         }
