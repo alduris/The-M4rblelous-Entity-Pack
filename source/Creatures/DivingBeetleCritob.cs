@@ -26,7 +26,7 @@ sealed class DivingBeetleCritob : Critob
         RoomAttractivenessPanel.Category.Swimming
     ];
 
-    public override int ExpeditionScore() => 4;
+    public override int ExpeditionScore() => 6;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => Color.Lerp(DivingBeetleGraphics.BugCol, Color.white, .2f);
 
