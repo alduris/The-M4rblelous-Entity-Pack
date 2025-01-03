@@ -10,5 +10,5 @@ public sealed class BigrubProperties
     public Color BlackCol, ReducedAsRGB;
     public HSLColor NewCol;
     public float LastLightLife, LightLife, RoomLight;
-    public bool IsBig, Born, InitGraphics;
+    public bool IsBig, NormalLook, Born, InitGraphics;
 }

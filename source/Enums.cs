@@ -5,6 +5,20 @@ using System.Collections.Generic;
 
 namespace LBMergedMods.Enums;
 
+public static class CommunityID
+{
+    public static CreatureCommunities.CommunityID TintedBeetles = new(nameof(TintedBeetles), true);
+
+    public static void UnregisterValues()
+    {
+        if (TintedBeetles is not null)
+        {
+            TintedBeetles.Unregister();
+            TintedBeetles = null!;
+        }
+    }
+}
+
 public static class DevObjectCategories
 {
     public static ObjectsPage.DevObjectCategories M4rblelousEntities = new(nameof(M4rblelousEntities), true);
@@ -501,7 +515,8 @@ public static class PlacedObjectType
         RubberBlossom = new(nameof(RubberBlossom), true),
         MarineEye = new(nameof(MarineEye), true),
         StarLemon = new(nameof(StarLemon), true),
-        DendriticNeuron = new(nameof(DendriticNeuron), true);
+        DendriticNeuron = new(nameof(DendriticNeuron), true),
+        MiniFruitBranch = new(nameof(MiniFruitBranch), true);
 
     public static void UnregisterValues()
     {
@@ -580,6 +595,11 @@ public static class PlacedObjectType
             DendriticNeuron.Unregister();
             DendriticNeuron = null!;
         }
+        if (MiniFruitBranch is not null)
+        {
+            MiniFruitBranch.Unregister();
+            MiniFruitBranch = null!;
+        }
     }
 }
 
@@ -596,7 +616,8 @@ public static class AbstractObjectType
         GummyAnther = new(nameof(GummyAnther), true),
         MarineEye = new(nameof(MarineEye), true),
         StarLemon = new(nameof(StarLemon), true),
-        DendriticNeuron = new(nameof(DendriticNeuron), true);
+        DendriticNeuron = new(nameof(DendriticNeuron), true),
+        MiniBlueFruit = new(nameof(MiniBlueFruit), true);
 
     public static void UnregisterValues()
     {
@@ -659,6 +680,11 @@ public static class AbstractObjectType
         {
             DendriticNeuron.Unregister();
             DendriticNeuron = null!;
+        }
+        if (MiniBlueFruit is not null)
+        {
+            MiniBlueFruit.Unregister();
+            MiniBlueFruit = null!;
         }
     }
 }
@@ -725,7 +751,8 @@ public static class MiscItemType
         MarineEye = new(nameof(MarineEye), true),
         StarLemon = new(nameof(StarLemon), true),
         SporeProjectile = new(nameof(SporeProjectile), true),
-        DendriticNeuron = new(nameof(DendriticNeuron), true);
+        DendriticNeuron = new(nameof(DendriticNeuron), true),
+        MiniBlueFruit = new(nameof(MiniBlueFruit), true);
 
     public static void UnregisterValues()
     {
@@ -784,12 +811,17 @@ public static class MiscItemType
             DendriticNeuron.Unregister();
             DendriticNeuron = null!;
         }
+        if (MiniBlueFruit is not null)
+        {
+            MiniBlueFruit.Unregister();
+            MiniBlueFruit = null!;
+        }
     }
 }
 
 public static class SlugFood
 {
-    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron;
+    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron, MiniBlueFruit;
 
     public static void UnregisterValues()
     {
@@ -832,6 +864,11 @@ public static class SlugFood
         {
             DendriticNeuron.Unregister();
             DendriticNeuron = null;
+        }
+        if (MiniBlueFruit is not null)
+        {
+            MiniBlueFruit.Unregister();
+            MiniBlueFruit = null;
         }
     }
 }

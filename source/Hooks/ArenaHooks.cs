@@ -14,7 +14,7 @@ namespace LBMergedMods.Hooks;
 
 public static class ArenaHooks
 {
-    public const int M4R_DATA_NUMBER = 319;
+    public const int M4R_DATA_NUMBER = 319, M4R_DATA_NUMBER2 = 320, M4R_DATA_NUMBER3 = 321;
 
     internal static bool On_ArenaCreatureSpawner_IsMajorCreature(On.ArenaCreatureSpawner.orig_IsMajorCreature orig, CreatureTemplate.Type type) => type == CreatureTemplateType.RedHorrorCenti || type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.FatFireFly || type == CreatureTemplateType.Blizzor || orig(type);
 
@@ -129,14 +129,17 @@ public static class ArenaHooks
 
     internal static MultiplayerUnlocks.SandboxUnlockID On_MultiplayerUnlocks_SandboxUnlockForSymbolData(On.MultiplayerUnlocks.orig_SandboxUnlockForSymbolData orig, IconSymbol.IconSymbolData data)
     {
-        if (data.intData == M4R_DATA_NUMBER)
+        var intData = data.intData;
+        var tp = data.critType;
+        if (intData == M4R_DATA_NUMBER)
         {
-            var tp = data.critType;
             if (tp == CreatureTemplate.Type.Fly)
                 return SandboxUnlockID.SeedBat;
             else if (tp == CreatureTemplate.Type.TubeWorm)
                 return SandboxUnlockID.Bigrub;
         }
+        else if (intData is M4R_DATA_NUMBER2 or M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
+            return SandboxUnlockID.Bigrub;
         return orig(data);
     }
 
@@ -214,8 +217,19 @@ public static class ArenaHooks
                  if (placedIconData.data.critType == CreatureTemplate.Type.TubeWorm && Big.TryGetValue(crit, out var prop))
                  {
                      prop.Born = true;
+                     var data = placedIconData.data.intData;
                      if (placedIconData.data.intData == M4R_DATA_NUMBER)
                         prop.IsBig = true;
+                     else if (placedIconData.data.intData == M4R_DATA_NUMBER2)
+                     {
+                         prop.IsBig = true;
+                         crit.superSizeMe = true;
+                     }
+                     else if (placedIconData.data.intData == M4R_DATA_NUMBER3)
+                     {
+                         prop.IsBig = true;
+                         prop.NormalLook = true;
+                     }
                  }
                  else if (placedIconData.data.critType == CreatureTemplate.Type.Hazer && Albino.TryGetValue(crit, out var prop2) && placedIconData.data.intData == M4R_DATA_NUMBER)
                      prop2.Value = true;
@@ -227,7 +241,8 @@ public static class ArenaHooks
 
     internal static void On_SandboxRegistry_DoSpawn(Action<SandboxGameSession, SandboxEditor.PlacedIconData, EntitySaveData, ISandboxHandler> orig, SandboxGameSession session, SandboxEditor.PlacedIconData p, EntitySaveData data, ISandboxHandler handler)
     {
-        if (p.data.critType == CreatureTemplateType.Denture)
+        var tp = p.data.critType;
+        if (tp == CreatureTemplateType.Denture)
         {
             var sandboxUnlock = handler.SandboxUnlocks.FirstOrDefault();
             if (sandboxUnlock is null)
@@ -258,7 +273,7 @@ public static class ArenaHooks
         else
         {
             orig(session, p, data, handler);
-            if (p.data.critType == CreatureTemplateType.MiniBlackLeech)
+            if (tp == CreatureTemplateType.MiniBlackLeech)
             {
                 for (var i = 1; i <= 4; i++)
                     orig(session, p, data, handler);

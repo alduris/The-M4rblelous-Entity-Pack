@@ -601,7 +601,7 @@ public class TintedBeetle : InsectoidCreature
     public override bool Grab(PhysicalObject obj, int graspUsed, int chunkGrabbed, Grasp.Shareability shareability, float dominance, bool overrideEquallyDominant, bool pacifying)
     {
         var res = base.Grab(obj, graspUsed, chunkGrabbed, shareability, dominance, overrideEquallyDominant, pacifying);
-        room.PlaySound(SoundID.Spear_Stick_In_Creature, firstChunk, false, .3f, 1f);
+        room.PlaySound(SoundID.Mouse_Squeak, firstChunk, false, 1f, .8f);
         return res;
     }
 

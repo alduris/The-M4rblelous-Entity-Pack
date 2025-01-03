@@ -8,7 +8,7 @@ public static class SlugNPCHooks
 {
     internal static void On_SlugNPCAI_AteFood(On.MoreSlugcats.SlugNPCAI.orig_AteFood orig, SlugNPCAI self, PhysicalObject food)
     {
-        if (food is ThornyStrawberry or GummyAnther)
+        if (food is ThornyStrawberry or GummyAnther or MiniFruit)
         {
             var num = self.foodPreference[SlugNPCAI.Food.DangleFruit.index];
             if (Mathf.Abs(num) > .4f)
@@ -78,6 +78,8 @@ public static class SlugNPCHooks
             return SlugFood.StarLemon!;
         if (food is DendriticNeuron)
             return SlugFood.DendriticNeuron!;
+        if (food is MiniFruit)
+            return SlugFood.MiniBlueFruit!;
         return orig(self, food);
     }
 

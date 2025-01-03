@@ -31,7 +31,7 @@ public static class DropBugHooks
         var res = orig(self, obj);
         if (self.bug.safariControlled || self.creature.world.game.SeededRandom(obj.ID.RandomSeed + 5) <= self.creature.personality.dominance)
         {
-            if (obj.type == AbstractObjectType.Physalis || obj.type == AbstractObjectType.BouncingMelon || obj.type == AbstractObjectType.BlobPiece || obj.type == AbstractObjectType.MarineEye || obj.type == AbstractObjectType.LimeMushroom || obj.type == AbstractObjectType.SporeProjectile || obj.type == AbstractObjectType.ThornyStrawberry || obj.type == AbstractObjectType.LittleBalloon)
+            if (obj.type == AbstractObjectType.Physalis || obj.type == AbstractObjectType.BouncingMelon || obj.type == AbstractObjectType.BlobPiece || obj.type == AbstractObjectType.MarineEye || obj.type == AbstractObjectType.LimeMushroom || obj.type == AbstractObjectType.SporeProjectile || obj.type == AbstractObjectType.ThornyStrawberry || obj.type == AbstractObjectType.LittleBalloon || obj.type == AbstractObjectType.MiniBlueFruit)
                 res = true;
         }
         return res;

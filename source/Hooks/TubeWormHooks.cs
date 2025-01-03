@@ -54,7 +54,7 @@ public static class TubeWormHooks
 
     internal static void On_TubeWormGraphics_ApplyPalette(On.TubeWormGraphics.orig_ApplyPalette orig, TubeWormGraphics self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
     {
-        if (self.worm is TubeWorm w && w.IsBig(out var props))
+        if (self.worm is TubeWorm w && w.IsBig(out var props) && !props.NormalLook)
             props.BlackCol = palette.blackColor;
         else
             orig(self, sLeaser, rCam, palette);
@@ -66,32 +66,29 @@ public static class TubeWormHooks
         if (!self.culled && !self.dispose && self.worm is TubeWorm w && w.IsBig(out var props))
         {
             var sprs = sLeaser.sprites;
-            ref readonly RoomPalette palette = ref rCam.currentPalette;
-            var glowIntensity = (1f - props.RoomLight) * Mathf.Lerp(props.LastLightLife, props.LightLife, timeStacker);
-            var centerPos = (w.bodyChunks[0].pos + w.bodyChunks[1].pos) * .5f;
-            Color colBase = ChangeCol(self.color, timeStacker, props),
-                colRedu = ChangeCol(props.ReducedAsRGB, timeStacker, props);
-            sprs[0].color = colBase;
-            sprs[1].color = colRedu;
-            for (var i = 3; i < 5; i++)
-            {
-                var spr = sprs[i];
-                spr.color = GlowCol(Color.Lerp(palette.fogColor, Custom.HSL2RGB(.95f, 1f, .865f), .5f), Vector2.Distance(spr.GetPosition() + camPos, centerPos), colBase, glowIntensity);
-            }
             var tm = (sprs[2] as TriangleMesh)!;
-            var colors = tm.verticeColors;
-            float num;
-            for (var i = 0; i < colors.Length; i++)
+            if (!props.NormalLook)
             {
-                num = Mathf.Clamp01(Mathf.Sin(i / (colors.Length - 1f) * Mathf.PI));
-                colors[i] = GlowCol(Color.Lerp(palette.fogColor, Custom.HSL2RGB(Mathf.Lerp(.95f, 1f, num), 1f, Mathf.Lerp(.75f, .9f, Mathf.Pow(num, .15f))), .5f), Vector2.Distance(tm.vertices[i] + camPos, centerPos), colBase, glowIntensity);
+                ref readonly RoomPalette palette = ref rCam.currentPalette;
+                var glowIntensity = (1f - props.RoomLight) * Mathf.Lerp(props.LastLightLife, props.LightLife, timeStacker);
+                var centerPos = (w.bodyChunks[0].pos + w.bodyChunks[1].pos) * .5f;
+                Color colBase = ChangeCol(self.color, timeStacker, props),
+                    colRedu = ChangeCol(props.ReducedAsRGB, timeStacker, props);
+                sprs[0].color = colBase;
+                sprs[1].color = colRedu;
+                for (var i = 3; i < 5; i++)
+                {
+                    var spr = sprs[i];
+                    spr.color = GlowCol(Color.Lerp(palette.fogColor, Custom.HSL2RGB(.95f, 1f, .865f), .5f), Vector2.Distance(spr.GetPosition() + camPos, centerPos), colBase, glowIntensity);
+                }
+                var colors = tm.verticeColors;
+                for (var i = 0; i < colors.Length; i++)
+                {
+                    var num = Mathf.Clamp01(Mathf.Sin(i / (colors.Length - 1f) * Mathf.PI));
+                    colors[i] = GlowCol(Color.Lerp(palette.fogColor, Custom.HSL2RGB(Mathf.Lerp(.95f, 1f, num), 1f, Mathf.Lerp(.75f, .9f, Mathf.Pow(num, .15f))), .5f), Vector2.Distance(tm.vertices[i] + camPos, centerPos), colBase, glowIntensity);
+                }
             }
-            num = Mathf.Lerp(w.lastWalk, w.walkCycle, timeStacker);
-            if (num < 0f)
-                num += Mathf.Round(num + 1f);
-            num -= Mathf.Floor(num);
             var bp = self.bodyParts;
-            sprs[0].alpha = num;
             Vector2 vector = Vector2.Lerp(bp[0].lastPos, bp[0].pos, timeStacker);
             vector += Custom.DirVec(Vector2.Lerp(bp[1].lastPos, bp[1].pos, timeStacker), vector) * 10f;
             for (var i = 0; i < bp.Length; i++)
@@ -143,7 +140,7 @@ public static class TubeWormHooks
     internal static void On_TubeWormGraphics_Reset(On.TubeWormGraphics.orig_Reset orig, TubeWormGraphics self)
     {
         orig(self);
-        if (self.worm.IsBig(out var props))
+        if (self.worm.IsBig(out var props) && !props.NormalLook)
             props.LastLightLife = props.LightLife;
     }
 
@@ -155,16 +152,19 @@ public static class TubeWormHooks
             var baseNewCol = props.NewCol;
             if (!props.InitGraphics)
             {
-                props.LightLife = w.dead ? 0f : 1f;
-                props.NewCol = new(w.abstractCreature.superSizeMe ? Custom.WrappedRandomVariation(.11f, .025f, .6f) : Custom.WrappedRandomVariation(.32f, .1f, .6f), 1f, Custom.ClampedRandomVariation(.5f, .15f, .1f));
-                var rdHSL = baseNewCol;
-                rdHSL.lightness *= .21f;
-                rdHSL.saturation = Mathf.Clamp01(rdHSL.saturation * .21f);
-                props.ReducedAsRGB = rdHSL.rgb;
-                props.LastLightLife = props.LightLife;
+                if (!props.NormalLook)
+                {
+                    props.LightLife = w.dead ? 0f : 1f;
+                    props.NewCol = new(w.abstractCreature.superSizeMe ? Custom.WrappedRandomVariation(.11f, .025f, .6f) : Custom.WrappedRandomVariation(.32f, .1f, .6f), 1f, Custom.ClampedRandomVariation(.5f, .15f, .1f));
+                    var rdHSL = baseNewCol;
+                    rdHSL.lightness *= .21f;
+                    rdHSL.saturation = Mathf.Clamp01(rdHSL.saturation * .21f);
+                    props.ReducedAsRGB = rdHSL.rgb;
+                    props.LastLightLife = props.LightLife;
+                }
                 props.InitGraphics = true;
             }
-            else
+            else if (!props.NormalLook)
             {
                 self.color = baseNewCol.rgb;
                 props.LastLightLife = props.LightLife;
@@ -197,6 +197,8 @@ public static class TubeWormHooks
     public static bool IsBig(this TubeWorm self, out BigrubProperties prop) => Big.TryGetValue(self.abstractCreature, out prop) && prop.IsBig;
 
     public static bool IsBig(this AbstractCreature self) => Big.TryGetValue(self, out var prop) && prop.IsBig;
+
+    public static bool IsBig(this AbstractCreature self, out BigrubProperties prop) => Big.TryGetValue(self, out prop) && prop.IsBig;
 
     internal static Color MaxBlack(Color a) => new(a.r >= .02f ? a.r : .02f, a.g >= .02f ? a.g : .02f, a.b >= .02f ? a.b : .02f);
 }

@@ -97,6 +97,7 @@ public static class MainHooks
                 NewSoundID.UnregisterValues();
                 DevEffectsCategories.UnregisterValues();
                 DevObjectCategories.UnregisterValues();
+                CommunityID.UnregisterValues();
                 break;
             }
         }
@@ -150,6 +151,9 @@ public static class MainHooks
             On.Expedition.ChallengeTools.CreatureName += On_ChallengeTools_CreatureName;
             On.Water.DrawSprites += On_Water_DrawSprites;
             On.DaddyAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_DaddyAI_IUseARelationshipTracker_UpdateDynamicRelationship;
+            On.CreatureSymbol.ColorOfCreature += On_CreatureSymbol_ColorOfCreature;
+            On.CreatureSymbol.SpriteNameOfCreature += On_CreatureSymbol_SpriteNameOfCreature;
+            On.CreatureSymbol.SymbolDataFromCreature += On_CreatureSymbol_SymbolDataFromCreature;
             if (ModManager.MSC)
             {
                 SlugFood.ThornyStrawberry = new(nameof(SlugFood.ThornyStrawberry), true);
@@ -160,6 +164,7 @@ public static class MainHooks
                 SlugFood.MarineEye = new(nameof(SlugFood.MarineEye), true);
                 SlugFood.StarLemon = new(nameof(SlugFood.StarLemon), true);
                 SlugFood.DendriticNeuron = new(nameof(SlugFood.DendriticNeuron), true);
+                SlugFood.MiniBlueFruit = new(nameof(SlugFood.MiniBlueFruit), true);
                 ResizeGourmandCombos();
                 InitGourmandCombos();
                 On.MoreSlugcats.GourmandCombos.InitCraftingLibrary += On_GourmandCombos_InitCraftingLibrary;
@@ -180,6 +185,7 @@ public static class MainHooks
         _ = RoomEffectType.SeedBats;
         _ = DevObjectCategories.M4rblelousEntities;
         _ = DevEffectsCategories.M4rblelousEntities;
+        _ = CommunityID.TintedBeetles;
     }
 
     internal static void On_RainWorld_UnloadResources(On.RainWorld.orig_UnloadResources orig, RainWorld self)

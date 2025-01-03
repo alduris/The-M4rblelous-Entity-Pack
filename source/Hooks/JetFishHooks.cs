@@ -16,7 +16,7 @@ public static class JetFishHooks
 
     internal static void On_JetFishAI_SocialEvent(On.JetFishAI.orig_SocialEvent orig, JetFishAI self, SocialEventRecognizer.EventID ID, Creature subjectCrit, Creature objectCrit, PhysicalObject involvedItem)
     {
-        if (involvedItem is BlobPiece or MarineEye)
+        if (involvedItem is BlobPiece or MarineEye or MiniFruit)
         {
             if (self.tracker.RepresentationForObject(subjectCrit, false) is not Tracker.CreatureRepresentation repr)
                 return;

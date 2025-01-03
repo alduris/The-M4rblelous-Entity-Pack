@@ -92,7 +92,73 @@ public static class AbstractPhysicalObjectHooks
             orig(self);
     }
 
-    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || type == AbstractObjectType.StarLemon || type == AbstractObjectType.DendriticNeuron || orig(type);
+    internal static void IL_AbstractCreature_OpportunityToEnterDen(ILContext il)
+    {
+        var c = new ILCursor(il);
+        var locs = il.Body.Variables;
+        s_loc1 = 0;
+        for (var i = 0; i < locs.Count; i++)
+        {
+            if (locs[i].VariableType.Name.Contains("Boolean"))
+                s_loc1 = i;
+        }
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_InLoc1))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((bool flag, AbstractCreature self) =>
+             {
+                 var tp = self.creatureTemplate.type;
+                 var hv = tp == CreatureTemplateType.Hoverfly;
+                 if (hv || tp == CreatureTemplateType.TintedBeetle)
+                 {
+                     var obj = hv ? AbstractPhysicalObject.AbstractObjectType.DangleFruit : AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant;
+                     var stuckObjs = self.stuckObjects;
+                     for (var i = 0; i < stuckObjs.Count; i++)
+                     {
+                         if (stuckObjs[i] is AbstractPhysicalObject.CreatureGripStick st && st.A == self && st.B?.type == obj)
+                             flag = true;
+                     }
+                 }
+                 return flag;
+             });
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.OpportunityToEnterDen!");
+    }
+
+    internal static void IL_AbstractCreatureAI_AbstractBehavior(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchStloc_OutLoc1))
+        {
+            var loc = il.Body.Variables[s_loc1];
+            c.Emit(OpCodes.Ldarg_0)
+             .Emit(OpCodes.Ldloc, loc)
+             .EmitDelegate((AbstractCreatureAI self, bool flag) =>
+             {
+                 if (self.parent.creatureTemplate.type == CreatureTemplateType.TintedBeetle && self.denPosition is WorldCoordinate w && self.destination != w)
+                 {
+                     var stuckObjs = self.parent.stuckObjects;
+                     for (var i = 0; i < stuckObjs.Count; i++)
+                     {
+                         if (stuckObjs[i].B?.type == AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant)
+                         {
+                             self.GoToDen();
+                             flag = true;
+                         }
+                     }
+                 }
+                 return flag;
+             });
+            c.Emit(OpCodes.Stloc, loc);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.AbstractBehavior!");
+    }
+
+    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || type == AbstractObjectType.StarLemon || type == AbstractObjectType.DendriticNeuron || type == AbstractObjectType.MiniBlueFruit || orig(type);
 
     internal static void On_AbstractCreature_ctor(On.AbstractCreature.orig_ctor orig, AbstractCreature self, World world, CreatureTemplate creatureTemplate, Creature realizedCreature, WorldCoordinate pos, EntityID ID)
     {
@@ -170,6 +236,11 @@ public static class AbstractPhysicalObjectHooks
                         {
                             props2.IsBig = true;
                             self.superSizeMe = true;
+                        }
+                        else if (string.Equals(nm, "bigworm", StringComparison.OrdinalIgnoreCase))
+                        {
+                            props2.IsBig = true;
+                            props2.NormalLook = true;
                         }
                     }
                     else if (string.Equals(nm, "albinoform", StringComparison.OrdinalIgnoreCase) && Albino.TryGetValue(self, out var props4))
@@ -256,6 +327,8 @@ public static class AbstractPhysicalObjectHooks
                 self.realizedObject = new StarLemon(self);
             else if (type == AbstractObjectType.DendriticNeuron)
                 self.realizedObject = new DendriticNeuron(self);
+            else if (type == AbstractObjectType.MiniBlueFruit)
+                self.realizedObject = new MiniFruit(self);
         }
     }
 

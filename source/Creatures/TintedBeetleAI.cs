@@ -2,10 +2,11 @@ using Noise;
 using RWCustom;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
-public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction
+public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction, FriendTracker.IHaveFriendTracker, IReactToSocialEvents
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)
     {
@@ -13,7 +14,8 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             Flee = new("Flee", true),
             Hunt = new("Hunt", true),
             EscapeRain = new("EscapeRain", true),
-            ReturnPrey = new("ReturnPrey", true);
+            ReturnPrey = new("ReturnPrey", true),
+            FollowFriend = new("FollowFriend", true);
     }
 
     public TintedBeetle Bug;
@@ -37,11 +39,17 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         AddModule(new NoiseTracker(this, tracker));
         AddModule(new UtilityComparer(this));
         AddModule(new RelationshipTracker(this, tracker));
+        AddModule(new FriendTracker(this)
+        {
+            tamingDifficlty = Mathf.Lerp(.6f, .65f, creature.personality.dominance),
+            desiredCloseness = 4f
+        });
         FloatTweener.FloatTween smoother = new FloatTweener.FloatTweenUpAndDown(new FloatTweener.FloatTweenBasic(FloatTweener.TweenType.Lerp, .5f), new FloatTweener.FloatTweenBasic(FloatTweener.TweenType.Tick, .005f));
         utilityComparer.AddComparedModule(threatTracker, smoother, 1f, 1.1f);
         utilityComparer.AddComparedModule(rainTracker, null, 1f, 1.1f);
         smoother = new FloatTweener.FloatTweenBasic(FloatTweener.TweenType.Lerp, .15f);
         utilityComparer.AddComparedModule(FoodTracker, smoother, .6f, 1f);
+        utilityComparer.AddComparedModule(friendTracker, null, 1.01f, 1.2f);
         Behav = Behavior.Idle;
     }
 
@@ -71,7 +79,8 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             noiseTracker.hearingSkill = 2f;
         else
             noiseTracker.hearingSkill = .2f;
-        utilityComparer.GetUtilityTracker(threatTracker).weight = Custom.LerpMap(threatTracker.ThreatOfTile(creature.pos, true), .1f, 2f, .1f, 1f, .5f);
+        utilityComparer.GetUtilityTracker(threatTracker).weight = friendTracker.friend is not null ? .35f : Custom.LerpMap(threatTracker.ThreatOfTile(creature.pos, true), .1f, 2f, .1f, 1f, .5f);
+        utilityComparer.GetUtilityTracker(rainTracker).weight = friendTracker.CareAboutRain() ? 1f : .1f;
         var aIModule = utilityComparer.HighestUtilityModule();
         CurrentUtility = utilityComparer.HighestUtility();
         if (aIModule is not null)
@@ -82,6 +91,8 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
                 Behav = Behavior.EscapeRain;
             else if (aIModule is FoodItemTracker && FoodTracker.MostAttractiveItem?.RepresentedItem.realizedObject is FirecrackerPlant fp && fp.grabbedBy?.Count is 0 or null && Bug.grasps[0] is null)
                 Behav = Behavior.Hunt;
+            else if (aIModule is FriendTracker)
+                Behav = Behavior.FollowFriend;
         }
         if (CurrentUtility < .02f)
             Behav = Behavior.Idle;
@@ -102,7 +113,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             else
             {
                 var flag = pathFinder.GetDestination.room != rm.abstractRoom.index;
-                if (!flag && IdlePosCounter <= 0)
+                if (!flag && IdlePosCounter <= 0 && Random.value >= .1f)
                 {
                     var abstractNode = rm.abstractRoom.RandomNodeInRoom().abstractNode;
                     if (rm.abstractRoom.nodes[abstractNode].type == AbstractRoomNode.Type.Exit)
@@ -153,6 +164,11 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             if (denFinder.GetDenPosition() is WorldCoordinate wc)
                 creature.abstractAI.SetDestination(wc);
         }
+        else if (Behav == Behavior.FollowFriend)
+        {
+            creature.abstractAI.SetDestination(friendTracker.friendDest);
+            Bug.RunSpeed = Mathf.Lerp(Bug.RunSpeed, friendTracker.RunSpeed(), .7f);
+        }
         else if (Behav == Behavior.Hunt)
         {
             if (FoodTracker.MostAttractiveItem is FoodItemRepresentation prey)
@@ -171,6 +187,18 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             --NoiseRectionDelay;
     }
 
+    public virtual float LikeOfPlayer(Tracker.CreatureRepresentation player)
+    {
+        if (player is null)
+            return 0f;
+        var a = creature.world.game.session.creatureCommunities.LikeOfPlayer(CommunityID.TintedBeetles, creature.world.RegionNumber, (player.representedCreature.state as PlayerState)!.playerNumber);
+        var tempLike = creature.state.socialMemory.GetTempLike(player.representedCreature.ID);
+        a = Mathf.Lerp(a, tempLike, Mathf.Abs(tempLike));
+        if (friendTracker.giftOfferedToMe?.owner == player.representedCreature.realizedCreature)
+            a = Custom.LerpMap(a, -.5f, 1f, 0f, 1f, .8f);
+        return a;
+    }
+
     public virtual float IdleScore(WorldCoordinate coord)
     {
         if (coord.room != creature.pos.room || !pathFinder.CoordinateReachableAndGetbackable(coord) || Bug.room.aimap.getAItile(coord).acc >= AItile.Accessibility.Wall)
@@ -182,8 +210,9 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             num += 50f;
         num += threatTracker.ThreatOfTile(coord, true) * 1000f;
         num += threatTracker.ThreatOfTile(Bug.room.GetWorldCoordinate((Bug.room.MiddleOfTile(coord) + Bug.room.MiddleOfTile(creature.pos)) / 2f), true) * 1000f;
-        for (var i = 0; i < noiseTracker.sources.Count; i++)
-            num += Custom.LerpMap(Vector2.Distance(Bug.room.MiddleOfTile(coord), noiseTracker.sources[i].pos), 40f, 400f, 100f, 0f);
+        var sources = noiseTracker.sources;
+        for (var i = 0; i < sources.Count; i++)
+            num += Custom.LerpMap(Vector2.Distance(Bug.room.MiddleOfTile(coord), sources[i].pos), 40f, 400f, 100f, 0f);
         return num;
     }
 
@@ -213,12 +242,27 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
 
     public virtual CreatureTemplate.Relationship UpdateDynamicRelationship(RelationshipTracker.DynamicRelationship dRelation)
     {
+        var rep = dRelation.trackerRep.representedCreature;
         if (dRelation.trackerRep.VisualContact)
-            dRelation.state.alive = dRelation.trackerRep.representedCreature.state.alive;
-        var result = StaticRelationship(dRelation.trackerRep.representedCreature);
+            dRelation.state.alive = rep.state.alive;
+        var result = StaticRelationship(rep);
         if (result.type == CreatureTemplate.Relationship.Type.Afraid && !dRelation.state.alive)
             result.intensity = 0f;
-        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c)
+        if (rep.creatureTemplate.type == CreatureTemplate.Type.Slugcat)
+        {
+            result.intensity = 1f - LikeOfPlayer(dRelation.trackerRep);
+            if (result.type != CreatureTemplate.Relationship.Type.Pack && result.intensity <= .2f)
+            {
+                result.intensity = 1f;
+                result.type = CreatureTemplate.Relationship.Type.Pack;
+            }
+        }
+        else if (ModManager.MSC && friendTracker.friend is Creature friend && rep.creatureTemplate.type == MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && rep.abstractAI.RealAI is SlugNPCAI ai && ai.friendTracker.friend == friend)
+        {
+            result.intensity = 1f;
+            result.type = CreatureTemplate.Relationship.Type.Pack;
+        }
+        if (rep.realizedCreature is Creature c)
         {
             var grs = c.grasps;
             if (grs is not null)
@@ -244,7 +288,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         if (!firstSpot && Random.value > Fear)
             return;
         var relationship = DynamicRelationship(otherCreature);
-        if (relationship.type != CreatureTemplate.Relationship.Type.Ignores)
+        if (relationship.type != CreatureTemplate.Relationship.Type.Ignores && relationship.type != CreatureTemplate.Relationship.Type.Pack)
         {
             var guessPos = Bug.room.MiddleOfTile(otherCreature.BestGuessForPosition());
             if (relationship.intensity > (firstSpot ? .02f : .1f))
@@ -295,6 +339,110 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
                     break;
                 }
             }
+        }
+    }
+
+    public virtual void SocialEvent(SocialEventRecognizer.EventID ID, Creature subjectCrit, Creature objectCrit, PhysicalObject involvedItem)
+    {
+        if (subjectCrit is not Player)
+            return;
+        var creatureRepresentation = tracker.RepresentationForObject(subjectCrit, false);
+        if (creatureRepresentation is null)
+            return;
+        Tracker.CreatureRepresentation? creatureRepresentation2 = null;
+        var flag = objectCrit == Bug;
+        if (!flag)
+        {
+            creatureRepresentation2 = tracker.RepresentationForObject(objectCrit, false);
+            if (creatureRepresentation2 is null)
+                return;
+        }
+        if ((!flag && Bug.dead) || (creatureRepresentation2 is not null && creatureRepresentation.TicksSinceSeen > 40 && creatureRepresentation2.TicksSinceSeen > 40))
+            return;
+        if (ID == SocialEventRecognizer.EventID.ItemOffering)
+        {
+            if (flag)
+                friendTracker.ItemOffered(creatureRepresentation, involvedItem);
+            return;
+        }
+        var num = 0f;
+        if (ID == SocialEventRecognizer.EventID.NonLethalAttackAttempt)
+            num = .05f;
+        else if (ID == SocialEventRecognizer.EventID.NonLethalAttack)
+            num = .15f;
+        else if (ID == SocialEventRecognizer.EventID.LethalAttackAttempt)
+            num = .35f;
+        else if (ID == SocialEventRecognizer.EventID.LethalAttack)
+            num = 1f;
+        if (objectCrit.dead)
+            num /= 3f;
+        if (flag)
+        {
+            if (friendTracker.friend is Creature c && subjectCrit == c)
+            {
+                if (ID == SocialEventRecognizer.EventID.NonLethalAttackAttempt || ID == SocialEventRecognizer.EventID.LethalAttackAttempt)
+                    return;
+                num /= 2f;
+            }
+            PlayerRelationChange(-num, subjectCrit.abstractCreature);
+        }
+        else if (creatureRepresentation2?.dynamicRelationship.currentRelationship.type == CreatureTemplate.Relationship.Type.Afraid)
+        {
+            var num2 = .1f;
+            if (threatTracker.GetThreatCreature(objectCrit.abstractCreature) is not null)
+                num2 += .7f * Custom.LerpMap(Vector2.Distance(Bug.mainBodyChunk.pos, objectCrit.DangerPos), 120f, 320f, 1f, .1f);
+            var flag2 = false;
+            var grs = objectCrit.grasps;
+            for (var i = 0; i < grs.Length; i++)
+            {
+                if (flag2)
+                    break;
+                if (grs[i].grabbed == Bug)
+                    flag2 = true;
+            }
+            if (flag2)
+            {
+                if (ID == SocialEventRecognizer.EventID.NonLethalAttack || ID == SocialEventRecognizer.EventID.LethalAttack)
+                    num = 1f;
+                num2 = 2f;
+            }
+            PlayerRelationChange(Mathf.Pow(num, .5f) * num2, subjectCrit.abstractCreature);
+        }
+        else if (creatureRepresentation2?.dynamicRelationship.currentRelationship.type == CreatureTemplate.Relationship.Type.Pack)
+            PlayerRelationChange(num * -.75f, subjectCrit.abstractCreature);
+    }
+
+    public virtual void PlayerRelationChange(float change, AbstractCreature player)
+    {
+        var orInitiateRelationship = creature.state.socialMemory.GetOrInitiateRelationship(player.ID);
+        orInitiateRelationship.InfluenceTempLike(change * 1.5f);
+        orInitiateRelationship.InfluenceLike(change * .75f);
+        orInitiateRelationship.InfluenceKnow(Mathf.Abs(change) * .25f);
+        creature.world.game.session.creatureCommunities.InfluenceLikeOfPlayer(CommunityID.TintedBeetles, creature.world.RegionNumber, (player.state as PlayerState)!.playerNumber, change * .05f, .25f, .3f);
+    }
+
+    public virtual void GiftRecieved(SocialEventRecognizer.OwnedItemOnGround giftOfferedToMe)
+    {
+        if (Bug is TintedBeetle tb && tb.room is Room rm && giftOfferedToMe.item is FirecrackerPlant plt)
+        {
+            var orInitiateRelationship = tb.State.socialMemory.GetOrInitiateRelationship(giftOfferedToMe.owner.abstractCreature.ID);
+            var flag = plt.fuseCounter <= 0;
+            if (orInitiateRelationship.like > -.9f)
+            {
+                if (ModManager.MSC && rm.game.session is ArenaGameSession sess && sess.arenaSitting.gameTypeSetup.gameType == MoreSlugcatsEnums.GameTypeID.Challenge && sess.arenaSitting.gameTypeSetup.challengeMeta.tamingDifficultyMultiplier > 0)
+                {
+                    var num = sess.arenaSitting.gameTypeSetup.challengeMeta.tamingDifficultyMultiplier / 10f;
+                    orInitiateRelationship.InfluenceLike((flag ? 1.1f : .1f) / num);
+                    orInitiateRelationship.InfluenceTempLike((flag ? 1.5f : .2f) / num);
+                }
+                else
+                {
+                    orInitiateRelationship.InfluenceLike((flag ? 1.1f : .1f) / friendTracker.tamingDifficlty);
+                    orInitiateRelationship.InfluenceTempLike((flag ? 1.5f : .2f) / friendTracker.tamingDifficlty);
+                }
+            }
+            if (giftOfferedToMe.owner is Player p)
+                creature.world.game.session.creatureCommunities.InfluenceLikeOfPlayer(CommunityID.TintedBeetles, creature.world.RegionNumber, creature.world.game.session is not StoryGameSession ? p.playerState.playerNumber : 0, .1f, .2f, .1f);
         }
     }
 }

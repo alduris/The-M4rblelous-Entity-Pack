@@ -17,33 +17,55 @@ public static class IconHooks
 
     internal static Color On_CreatureSymbol_ColorOfCreature(On.CreatureSymbol.orig_ColorOfCreature orig, IconSymbol.IconSymbolData iconData)
     {
-        var res = orig(iconData);
-        if (iconData.critType == CreatureTemplate.Type.TubeWorm && iconData.intData == M4R_DATA_NUMBER)
-            res = Color.green;
-        else if (iconData.critType == CreatureTemplate.Type.Hazer && iconData.intData == M4R_DATA_NUMBER)
-            res = Color.white;
-        return res;
+        var tp = iconData.critType;
+        var dt = iconData.intData;
+        if (dt == M4R_DATA_NUMBER)
+        {
+            if (tp == CreatureTemplate.Type.TubeWorm)
+                return Color.green;
+            if (tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar)
+                return Color.white;
+            if (tp == CreatureTemplateType.ThornBug)
+                return new(0f, 133f / 255f, 250f / 255f);
+            if (tp == CreatureTemplateType.FatFireFly)
+                return new(33f / 255f, 155f / 255f, 217f / 255f);
+            if (tp == CreatureTemplateType.NoodleEater)
+                return new(138f / 255f, 245f / 255f, 0f);
+            if (tp == CreatureTemplateType.HazerMom)
+                return new(18f / 85f, .7921569f, 33f / 85f);
+            if (tp == CreatureTemplateType.TintedBeetle)
+                return new(80f / 255f, 167f / 255f, 233f / 255f);
+            if (tp == CreatureTemplateType.CommonEel)
+                return new(0f, 72f / 255f, 1f);
+        }
+        else if (dt == M4R_DATA_NUMBER2 && tp == CreatureTemplate.Type.TubeWorm)
+            return new(1f, .65f, .05f);
+        else if (dt == M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
+            return new(.05f, .3f, .7f);
+        return orig(iconData);
     }
 
     internal static string On_CreatureSymbol_SpriteNameOfCreature(On.CreatureSymbol.orig_SpriteNameOfCreature orig, IconSymbol.IconSymbolData iconData)
     {
-        var res = orig(iconData);
-        if (iconData.critType == CreatureTemplate.Type.Fly && iconData.intData == M4R_DATA_NUMBER)
-            res = "Kill_SeedBat";
-        else if (iconData.critType == CreatureTemplate.Type.TubeWorm && iconData.intData == M4R_DATA_NUMBER)
-            res = "Kill_Bigrub";
-        return res;
+        var tp = iconData.critType;
+        var dt = iconData.intData;
+        if (dt == M4R_DATA_NUMBER && tp == CreatureTemplate.Type.Fly)
+            return "Kill_SeedBat";
+        else if (dt is M4R_DATA_NUMBER or M4R_DATA_NUMBER2 or M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
+            return "Kill_Bigrub";
+        return orig(iconData);
     }
 
     internal static IconSymbol.IconSymbolData On_CreatureSymbol_SymbolDataFromCreature(On.CreatureSymbol.orig_SymbolDataFromCreature orig, AbstractCreature creature)
     {
         var res = orig(creature);
-        if (creature.creatureTemplate.type == CreatureTemplate.Type.Fly && creature.IsSeed())
+        var tp = creature.creatureTemplate.type;
+        if ((tp == CreatureTemplate.Type.Fly && creature.IsSeed()) ||
+            ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar) && Albino.TryGetValue(creature, out var props) && props.Value) ||
+            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.FatFireFly || tp == CreatureTemplateType.NoodleEater || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle) && creature.superSizeMe))
             res.intData = M4R_DATA_NUMBER;
-        else if (creature.creatureTemplate.type == CreatureTemplate.Type.TubeWorm && creature.IsBig())
-            res.intData = M4R_DATA_NUMBER;
-        else if (creature.creatureTemplate.type == CreatureTemplate.Type.Hazer && Albino.TryGetValue(creature, out var props) && props.Value)
-            res.intData = M4R_DATA_NUMBER;
+        else if (tp == CreatureTemplate.Type.TubeWorm && creature.IsBig(out var prop))
+            res.intData = prop.NormalLook ? M4R_DATA_NUMBER3 : (creature.superSizeMe ? M4R_DATA_NUMBER2 : M4R_DATA_NUMBER);
         return res;
     }
 
@@ -71,6 +93,8 @@ public static class IconHooks
             return new(1f, 210f / 255f, 0f);
         if (itemType == AbstractObjectType.DendriticNeuron)
             return Ext.MenuGrey;
+        if (itemType == AbstractObjectType.MiniBlueFruit)
+            return Color.blue;
         return orig(itemType, intData);
     }
 
@@ -100,6 +124,8 @@ public static class IconHooks
             return "Symbol_StarLemon";
         if (itemType == AbstractObjectType.DendriticNeuron)
             return "Symbol_DendriticNeuron";
+        if (itemType == AbstractObjectType.MiniBlueFruit)
+            return "Symbol_DangleFruit"; //tochange
         return orig(itemType, intData);
     }
 
@@ -135,23 +161,7 @@ public static class IconHooks
             c.Emit(OpCodes.Ldarg_0)
              .EmitDelegate((AbstractCreature crit, Map self) =>
              {
-                 if (crit.creatureTemplate.type == CreatureTemplateType.ThornBug && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(0f, 133f / 255f, 250f / 255f);
-                 else if (crit.creatureTemplate.type == CreatureTemplateType.FatFireFly && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(33f / 255f, 155f / 255f, 217f / 255f);
-                 else if (crit.creatureTemplate.type == CreatureTemplateType.NoodleEater && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(138f / 255f, 245f / 255f, 0f);
-                 else if (crit.creatureTemplate.type == CreatureTemplateType.HazerMom && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(18f / 85f, .7921569f, 33f / 85f);
-                 else if (crit.creatureTemplate.type == CreatureTemplateType.TintedBeetle && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(80f / 255f, 167f / 255f, 233f / 255f);
-                 else if (crit.creatureTemplate.type == CreatureTemplateType.CommonEel && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(0f, 72f / 255f, 1f);
-                 else if (Big.TryGetValue(crit, out var props) && props.IsBig && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = new(1f, .65f, .05f);
-                 else if (Albino.TryGetValue(crit, out var props2) && props2.Value && crit.superSizeMe)
-                     self.creatureSymbols[self.creatureSymbols.Count - 1].myColor = Color.white;
-                 else if (Jelly.TryGetValue(crit, out var jelly) && jelly.IsJelly)
+                 if (Jelly.TryGetValue(crit, out var jelly) && jelly.IsJelly)
                  {
                      var symbol = self.creatureSymbols[self.creatureSymbols.Count - 1];
                      symbol.myColor = jelly.Color;

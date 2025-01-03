@@ -153,7 +153,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.TubeWorm.Update += On_TubeWorm_Update;
         On.TubeWormGraphics.Update += On_TubeWormGraphics_Update;
         On.TubeWormGraphics.DrawSprites += On_TubeWormGraphics_DrawSprites;
-        On.CreatureSymbol.ColorOfCreature += On_CreatureSymbol_ColorOfCreature;
         On.DevInterface.MapPage.CreatureVis.CritCol += On_CreatureVis_CritCol;
         On.TubeWormGraphics.Reset += On_TubeWormGraphics_Reset;
         On.TubeWormGraphics.ApplyPalette += On_TubeWormGraphics_ApplyPalette;
@@ -188,9 +187,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.FlyAI.Update += On_FlyAI_Update;
         On.FlyGraphics.InitiateSprites += On_FlyGraphics_InitiateSprites;
         On.FlyGraphics.DrawSprites += On_FlyGraphics_DrawSprites;
-        On.CreatureSymbol.SpriteNameOfCreature += On_CreatureSymbol_SpriteNameOfCreature;
         On.DevInterface.MapPage.CreatureVis.CritString += On_CreatureVis_CritString;
-        On.CreatureSymbol.SymbolDataFromCreature += On_CreatureSymbol_SymbolDataFromCreature;
         On.MultiplayerUnlocks.SymbolDataForSandboxUnlock += On_MultiplayerUnlocks_SymbolDataForSandboxUnlock;
         On.MultiplayerUnlocks.SandboxUnlockForSymbolData += On_MultiplayerUnlocks_SandboxUnlockForSymbolData;
         IL.SandboxGameSession.SpawnEntity += IL_SandboxGameSession_SpawnEntity;
@@ -306,6 +303,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardAI.FallRisk += On_LizardAI_FallRisk;
         On.LizardAI.LikeOfPlayer += On_LizardAI_LikeOfPlayer;
         On.BigEel.Act += On_BigEel_Act;
+        IL.AbstractCreature.OpportunityToEnterDen += IL_AbstractCreature_OpportunityToEnterDen;
+        IL.AbstractCreatureAI.AbstractBehavior += IL_AbstractCreatureAI_AbstractBehavior;
+        On.FriendTracker.ItemOffered += On_FriendTracker_ItemOffered;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

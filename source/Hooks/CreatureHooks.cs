@@ -22,6 +22,17 @@ public static class CreatureHooks
             mem.Clear();
     }
 
+    internal static void On_FriendTracker_ItemOffered(On.FriendTracker.orig_ItemOffered orig, FriendTracker self, Tracker.CreatureRepresentation subjectRep, PhysicalObject involvedItem)
+    {
+        if (self.AI is TintedBeetleAI)
+        {
+            if (involvedItem is FirecrackerPlant p && p.room is Room rm)
+                self.giftOfferedToMe = rm.socialEventRecognizer.ItemOwnership(involvedItem);
+        }
+        else
+            orig(self, subjectRep, involvedItem);
+    }
+
     internal static void IL_InspectorAI_IUseARelationshipTracker_UpdateDynamicRelationship(ILContext il)
     {
         var c = new ILCursor(il);

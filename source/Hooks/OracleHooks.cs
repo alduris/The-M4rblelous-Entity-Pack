@@ -39,6 +39,8 @@ public static class OracleHooks
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Their morphology, in addition to being more imposing,<LINE>uses vastly more complex signaling than the ones you see before me."), 0));
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Although, the gesture is appreciated..."), 0));
             }
+            else if (item == MiscItemType.MiniBlueFruit)
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("WIP"), 0));
         }
     }
 
@@ -78,6 +80,8 @@ public static class OracleHooks
             return MiscItemType.SporeProjectile;
         if (testItem is DendriticNeuron)
             return MiscItemType.DendriticNeuron;
+        if (testItem is MiniFruit)
+            return MiscItemType.MiniBlueFruit;
         return orig(self, testItem);
     }
 

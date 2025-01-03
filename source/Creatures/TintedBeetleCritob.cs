@@ -75,25 +75,28 @@ sealed class TintedBeetleCritob : Critob
         t.jumpAction = "N/A";
         t.grasps = 1;
         t.movementBasedVision = 1f;
-        t.dangerousToPlayer = .7f;
         t.scaryness = .4f;
         t.deliciousness = .2f;
         t.bodySize = .4f;
         t.stowFoodInDen = true;
         t.shortcutSegments = 2;
         t.visualRadius = 1000f;
-        t.communityInfluence = .1f;
+        t.communityInfluence = 1f;
         t.waterRelationship = CreatureTemplate.WaterRelationship.AirAndSurface;
         t.waterPathingResistance = 40f;
         t.canSwim = true;
         t.usesNPCTransportation = true;
+        t.communityID = CommunityID.TintedBeetles;
+        t.socialMemory = true;
+        t.dangerousToPlayer = 0f;
         return t;
     }
 
     public override void EstablishRelationships()
     {
         var t = new Relationships(Type);
-        t.Ignores(Type);
+        t.HasDynamicRelationship(CreatureTemplate.Type.Slugcat, 1f);
+        t.IsInPack(Type, 1f);
     }
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new TintedBeetleAI(acrit, acrit.world);
