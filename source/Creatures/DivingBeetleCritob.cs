@@ -101,8 +101,8 @@ sealed class DivingBeetleCritob : Critob
         dvb.Eats(CreatureTemplate.Type.CicadaA, .5f);
         dvb.EatenBy(CreatureTemplate.Type.DaddyLongLegs, .1f);
         dvb.Fears(CreatureTemplate.Type.DaddyLongLegs, .5f);
-        dvb.FearedBy(CreatureTemplate.Type.Slugcat, .5f);
-        dvb.Eats(CreatureTemplate.Type.Slugcat, .5f);
+        dvb.FearedBy(CreatureTemplate.Type.Slugcat, 1f);
+        dvb.Eats(CreatureTemplate.Type.Slugcat, .8f);
         dvb.FearedBy(CreatureTemplate.Type.Scavenger, .55f);
         dvb.Eats(CreatureTemplate.Type.Scavenger, .55f);
         dvb.IgnoredBy(CreatureTemplate.Type.BigSpider);
