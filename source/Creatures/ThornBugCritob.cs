@@ -188,7 +188,7 @@ sealed class ThornBugCritob : Critob, ISandboxHandler
         abstractCreature.setCustomFlags();
         var state = Random.state;
         Random.InitState(data.ID.RandomSeed);
-        if (Random.value < .05f)
+        if (Random.value < .1f)
             abstractCreature.superSizeMe = true;
         Random.state = state;
         return abstractCreature;

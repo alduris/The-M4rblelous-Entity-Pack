@@ -150,9 +150,9 @@ sealed class FatFireFlyCritob : Critob, ISandboxHandler
         abstractCreature.setCustomFlags();
         var state = Random.state;
         Random.InitState(data.ID.RandomSeed);
-        if (Random.value < .05f)
+        if (Random.value < .1f)
             abstractCreature.superSizeMe = true;
-        if (Random.value < .05f && Albino.TryGetValue(abstractCreature, out var props))
+        if (Random.value < .1f && Albino.TryGetValue(abstractCreature, out var props))
             props.Value = true;
         Random.state = state;
         return abstractCreature;

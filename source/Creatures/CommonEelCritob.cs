@@ -161,8 +161,8 @@ sealed class CommonEelCritob : Critob, ISandboxHandler
         abstractCreature.setCustomFlags();
         var state = Random.state;
         Random.InitState(data.ID.RandomSeed);
-        if (Random.value < .05f && Albino.TryGetValue(abstractCreature, out var props))
-            props.Value = true;
+        if (Random.value < .1f)
+            abstractCreature.superSizeMe = true;
         Random.state = state;
         return abstractCreature;
     }
