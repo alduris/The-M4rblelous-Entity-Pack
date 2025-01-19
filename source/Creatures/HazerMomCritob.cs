@@ -90,8 +90,7 @@ sealed class HazerMomCritob : Critob, ISandboxHandler
         abstractCreature.setCustomFlags();
         var state = Random.state;
         Random.InitState(data.ID.RandomSeed);
-        if (Random.value < .1f)
-            abstractCreature.superSizeMe = false;
+        abstractCreature.superSizeMe = Random.value >= .08f;
         Random.state = state;
         return abstractCreature;
     }

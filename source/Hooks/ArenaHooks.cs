@@ -225,7 +225,7 @@ public static class ArenaHooks
                          Random.InitState(placedIconData.ID.RandomSeed);
                          if (Random.value < .1f)
                              crit.superSizeMe = true;
-                         if (Random.value < .1f)
+                         if (Random.value < .08f)
                              prop.NormalLook = true;
                          Random.state = state;
                      }

@@ -99,7 +99,7 @@ sealed class GlowpillarCritob : Critob, ISandboxHandler
         Random.InitState(data.ID.RandomSeed);
         if (Random.value < .5f)
             abstractCreature.superSizeMe = true;
-        if (Random.value < .1f && Albino.TryGetValue(abstractCreature, out var props))
+        if (Random.value < .08f && Albino.TryGetValue(abstractCreature, out var props))
             props.Value = true;
         Random.state = state;
         return abstractCreature;
