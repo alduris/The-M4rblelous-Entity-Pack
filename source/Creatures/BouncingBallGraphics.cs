@@ -9,7 +9,7 @@ public class BouncingBallGraphics : SnailGraphics
 {
     public int[] EffectColorRND;
 
-    public BouncingBallGraphics(PhysicalObject ow) : base(ow)
+    public BouncingBallGraphics(BouncingBall ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

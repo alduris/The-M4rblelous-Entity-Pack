@@ -4,7 +4,7 @@ namespace LBMergedMods.Creatures;
 
 public class NoodleEaterGraphics : LizardGraphics
 {
-    public NoodleEaterGraphics(PhysicalObject ow) : base(ow)
+    public NoodleEaterGraphics(NoodleEater ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

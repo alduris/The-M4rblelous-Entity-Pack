@@ -18,17 +18,17 @@ public class CaterpillarGraphics : GraphicsModule
     public float Darkness, LastDarkness, Hue, Saturation, WalkCycle, BodyDir, LastBodyDir, DefaultRotat, LightAlpha;
     public Color BlackColor, GlowColor;
 
-    public CaterpillarGraphics(PhysicalObject ow) : base(ow, false)
+    public CaterpillarGraphics(Caterpillar ow) : base(ow, false)
     {
         var chs = ow.bodyChunks;
         cullRange = 400f;
-        Crit = (ow as Caterpillar)!;
-        if (Crit.Glowing)
+        Crit = ow;
+        if (ow.Glowing)
         {
-            if (Crit.abstractCreature.superSizeMe)
-                EffectColor = 1;
-            else if (Albino.TryGetValue(Crit.abstractCreature, out var box) && box.Value)
+            if (Albino.TryGetValue(ow.abstractCreature, out var box) && box.Value)
                 EffectColor = 2;
+            else if (ow.abstractCreature.superSizeMe)
+                EffectColor = 1;
         }
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
@@ -77,7 +77,7 @@ public class CaterpillarGraphics : GraphicsModule
                 }
             }
         }
-        SoundLoop = new(Crit.mainBodyChunk);
+        SoundLoop = new(ow.mainBodyChunk);
         Random.state = state;
     }
 

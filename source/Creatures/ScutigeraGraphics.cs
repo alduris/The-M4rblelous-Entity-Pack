@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class ScutigeraGraphics : CentipedeGraphics
 {
-    public ScutigeraGraphics(PhysicalObject ow) : base(ow)
+    public ScutigeraGraphics(Scutigera ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

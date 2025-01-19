@@ -4,10 +4,12 @@ using Fisobs.Sandbox;
 using UnityEngine;
 using System.Collections.Generic;
 using DevInterface;
+using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
 
-sealed class NoodleEaterCritob : Critob
+sealed class NoodleEaterCritob : Critob, ISandboxHandler
 {
     internal NoodleEaterCritob() : base(CreatureTemplateType.NoodleEater)
     {
@@ -83,4 +85,18 @@ sealed class NoodleEaterCritob : Critob
     public override void LoadResources(RainWorld rainWorld) { }
 
     public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.GreenLizard;
+
+    AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
+    {
+        var text = data.CustomData + "SandboxData<cC>" + unlock.Data + "<cB>";
+        var abstractCreature = new AbstractCreature(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) { pos = data.Pos };
+        abstractCreature.state.LoadFromString(text.Split(["<cB>"], StringSplitOptions.RemoveEmptyEntries));
+        abstractCreature.setCustomFlags();
+        var state = Random.state;
+        Random.InitState(data.ID.RandomSeed);
+        if (Random.value < .05f)
+            abstractCreature.superSizeMe = true;
+        Random.state = state;
+        return abstractCreature;
+    }
 }

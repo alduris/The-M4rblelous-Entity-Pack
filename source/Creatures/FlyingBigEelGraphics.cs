@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class FlyingBigEelGraphics : BigEelGraphics
 {
-    public FlyingBigEelGraphics(PhysicalObject ow) : base(ow)
+    public FlyingBigEelGraphics(FlyingBigEel ow) : base(ow)
     {
         var eyes = eyesData;
         for (var n = 0; n < eyes.Length; n++)

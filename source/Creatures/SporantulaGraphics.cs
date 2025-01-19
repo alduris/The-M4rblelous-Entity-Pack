@@ -12,12 +12,12 @@ public class SporantulaGraphics : BigSpiderGraphics
     public SporantulaDots[] Dots;
     public int OrigNumOfSprites;
 
-    public SporantulaGraphics(PhysicalObject ow) : base(ow)
+    public SporantulaGraphics(Sporantula ow) : base(ow)
     {
         var dots = Dots = new SporantulaDots[scaleStuckPositions.Length / 2 - 2];
         var scls = Scales = new SporantulaScale[scaleStuckPositions.Length / 2];
         var state = Random.state;
-        Random.InitState(bug.abstractPhysicalObject.ID.RandomSeed);
+        Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
         var sclRnd = Random.value * 4f - 2f;
         for (var i = 0; i < scls.Length; i++)
             scls[i] = new(this, sclRnd);

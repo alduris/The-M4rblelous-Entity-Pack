@@ -43,11 +43,11 @@ public class HazerMomGraphics : GraphicsModule
         RedCol = new(col.x, col.y, col.z);
     }
 
-    public HazerMomGraphics(PhysicalObject ow) : base(ow, false)
+    public HazerMomGraphics(HazerMom ow) : base(ow, false)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
-        WhiteAmount = ((ow as HazerMom)!.abstractCreature.superSizeMe || (ow.room?.game?.IsArenaSession is true && Random.value > .5f)) ? 0f : 1f;
+        WhiteAmount = (ow.abstractCreature.superSizeMe || ow.room?.game?.IsArenaSession is true) ? 0f : 1f;
         SkinColor = HSLColor.Lerp(new((Random.value < .5f ? .348f : .56f) + Mathf.Lerp(-.03f, .03f, Random.value), .6f + Random.value * .1f, .7f + Random.value * .1f), WhiteCol, .85f * WhiteAmount);
         SecondColor = HSLColor.Lerp(new(SkinColor.hue + Mathf.Lerp(-.1f, .1f, Random.value), Mathf.Lerp(SkinColor.saturation, 1f, Random.value), SkinColor.lightness - Random.value * .4f), RedCol, .9f * WhiteAmount);
         EyeColor = HSLColor.Lerp(new((SkinColor.hue + SecondColor.hue) * .5f + .5f, 1f, .4f + Random.value * .1f), RedCol, .9f * WhiteAmount);
@@ -65,7 +65,7 @@ public class HazerMomGraphics : GraphicsModule
         for (int k = 0; k < scales.Length; k++)
             scales[k] = new(Random.value, Math.Max(Random.value * 1.4f, .3f));
         Random.state = state;
-        DeadColor = Squid.State.alive ? 0f : 1f;
+        DeadColor = ow.State.alive ? 0f : 1f;
         LastDeadColor = DeadColor;
         EyeOpen = 1f;
         LastEyeOpen = EyeOpen;

@@ -5,10 +5,12 @@ using Fisobs.Sandbox;
 using static PathCost.Legality;
 using UnityEngine;
 using DevInterface;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
 
-sealed class ThornBugCritob : Critob
+sealed class ThornBugCritob : Critob, ISandboxHandler
 {
     internal ThornBugCritob() : base(CreatureTemplateType.ThornBug)
     {
@@ -177,4 +179,18 @@ sealed class ThornBugCritob : Critob
     public override void LoadResources(RainWorld rainWorld) { }
 
     public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.EggBug;
+
+    AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
+    {
+        var text = data.CustomData + "SandboxData<cC>" + unlock.Data + "<cB>";
+        var abstractCreature = new AbstractCreature(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) { pos = data.Pos };
+        abstractCreature.state.LoadFromString(text.Split(["<cB>"], StringSplitOptions.RemoveEmptyEntries));
+        abstractCreature.setCustomFlags();
+        var state = Random.state;
+        Random.InitState(data.ID.RandomSeed);
+        if (Random.value < .05f)
+            abstractCreature.superSizeMe = true;
+        Random.state = state;
+        return abstractCreature;
+    }
 }

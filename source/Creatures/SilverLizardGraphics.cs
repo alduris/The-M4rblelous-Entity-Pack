@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class SilverLizardGraphics : LizardGraphics
 {
-    public SilverLizardGraphics(PhysicalObject ow) : base(ow)
+    public SilverLizardGraphics(SilverLizard ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

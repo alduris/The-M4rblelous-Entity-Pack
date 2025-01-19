@@ -6,7 +6,7 @@ namespace LBMergedMods.Creatures;
 
 public class WaterSpitterGraphics : LizardGraphics
 {
-    public WaterSpitterGraphics(PhysicalObject ow) : base(ow)
+    public WaterSpitterGraphics(WaterSpitter ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

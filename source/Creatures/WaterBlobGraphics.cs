@@ -13,15 +13,12 @@ public class WaterBlobGraphics : GraphicsModule
 
     public virtual float BodySize => Blob is WaterBlob b ? b.firstChunk.rad / 10f : 0f;
 
-    public WaterBlobGraphics(PhysicalObject ow) : base(ow, true)
+    public WaterBlobGraphics(WaterBlob ow) : base(ow, true)
     {
-        if (ow is WaterBlob b)
-        {
-            var state = Random.state;
-            Random.InitState(b.abstractPhysicalObject.ID.RandomSeed);
-            EyeSize = Random.Range(.6f, 1.4f);
-            Random.state = state;
-        }
+        var state = Random.state;
+        Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
+        EyeSize = Random.Range(.6f, 1.4f);
+        Random.state = state;
         internalContainerObjects = [];
     }
 

@@ -4,7 +4,7 @@ namespace LBMergedMods.Creatures;
 
 public class RedHorrorGraphics : CentipedeGraphics
 {
-    public RedHorrorGraphics(PhysicalObject ow) : base(ow)
+    public RedHorrorGraphics(RedHorror ow) : base(ow)
     {
         hue = Mathf.Lerp(-.02f, .01f, Random.value);
         saturation = .9f + .1f * Random.value;

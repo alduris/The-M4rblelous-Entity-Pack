@@ -6,7 +6,7 @@ namespace LBMergedMods.Creatures;
 
 public class CommonEelGraphics : LizardGraphics
 {
-    public CommonEelGraphics(PhysicalObject ow) : base(ow)
+    public CommonEelGraphics(CommonEel ow) : base(ow)
     {
         iVars.tailColor = .001f;
         iVars.tailFatness = 1f;

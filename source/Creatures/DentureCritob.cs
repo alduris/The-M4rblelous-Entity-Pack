@@ -5,10 +5,12 @@ using Fisobs.Sandbox;
 using UnityEngine;
 using DevInterface;
 using MoreSlugcats;
+using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
 
-sealed class DentureCritob : Critob
+sealed class DentureCritob : Critob, ISandboxHandler
 {
     internal DentureCritob() : base(CreatureTemplateType.Denture)
     {
@@ -226,4 +228,18 @@ sealed class DentureCritob : Critob
     public override void LoadResources(RainWorld rainWorld) { }
 
     public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.PoleMimic;
+
+    AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
+    {
+        var text = data.CustomData + "SandboxData<cC>" + unlock.Data + "<cB>";
+        var abstractCreature = new AbstractCreature(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) { pos = data.Pos };
+        abstractCreature.state.LoadFromString(text.Split(["<cB>"], StringSplitOptions.RemoveEmptyEntries));
+        abstractCreature.setCustomFlags();
+        var state = Random.state;
+        Random.InitState(data.ID.RandomSeed);
+        if (Random.value < .05f && Albino.TryGetValue(abstractCreature, out var props))
+            props.Value = true;
+        Random.state = state;
+        return abstractCreature;
+    }
 }

@@ -24,7 +24,7 @@ public static class ArenaHooks
         var dataTp = data.type;
         if (dataTp != MultiplayerItemType.ThornyStrawberry && dataTp != MultiplayerItemType.LittleBalloon && dataTp != MultiplayerItemType.BouncingMelon && dataTp != MultiplayerItemType.Physalis && dataTp != MultiplayerItemType.LimeMushroom && dataTp != MultiplayerItemType.MarineEye && dataTp != MultiplayerItemType.StarLemon)
             orig(self, room, placedObj);
-        else if (!self.SpawnDefaultRoomItems || Random.value > data.chance)
+        else if (self.SpawnDefaultRoomItems && Random.value <= data.chance)
         {
             var tp = new AbstractPhysicalObject.AbstractObjectType(dataTp.value);
             if (tp.Index < 0)
@@ -218,21 +218,18 @@ public static class ArenaHooks
                  {
                      prop.Born = true;
                      var data = placedIconData.data.intData;
-                     if (placedIconData.data.intData == M4R_DATA_NUMBER)
-                        prop.IsBig = true;
-                     else if (placedIconData.data.intData == M4R_DATA_NUMBER2)
+                     if (placedIconData.data.intData is M4R_DATA_NUMBER or M4R_DATA_NUMBER2 or M4R_DATA_NUMBER3)
                      {
                          prop.IsBig = true;
-                         crit.superSizeMe = true;
-                     }
-                     else if (placedIconData.data.intData == M4R_DATA_NUMBER3)
-                     {
-                         prop.IsBig = true;
-                         prop.NormalLook = true;
+                         var state = Random.state;
+                         Random.InitState(placedIconData.ID.RandomSeed);
+                         if (Random.value < .05f)
+                             crit.superSizeMe = true;
+                         if (Random.value < .05f)
+                             prop.NormalLook = true;
+                         Random.state = state;
                      }
                  }
-                 else if (placedIconData.data.critType == CreatureTemplate.Type.Hazer && Albino.TryGetValue(crit, out var prop2) && placedIconData.data.intData == M4R_DATA_NUMBER)
-                     prop2.Value = true;
              });
         }
         else

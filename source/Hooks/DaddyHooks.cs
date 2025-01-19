@@ -179,7 +179,7 @@ public static class DaddyHooks
                 var f1 = AssetManager.ResolveFilePath("levels/" + nm + "_jellylonglegs.txt");
                 if (!File.Exists(f1))
                 {
-                    if (self.world?.region?.name is string s)
+                    if (self.world?.name is string s)
                     {
                         f1 = AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_jellylonglegs.txt");
                         if (!File.Exists(f1))
@@ -218,7 +218,7 @@ public static class DaddyHooks
             return col.r >= 0f;
         var res = nm is "reef" or "cavity" or "pump" ||
             File.Exists(AssetManager.ResolveFilePath("levels/" + nm + "_jellylonglegs.txt")) ||
-            (self.world?.region?.name is string s && (s == "RF" || File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_jellylonglegs.txt"))));
+            (self.world?.name is string s && (s == "RF" || File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_jellylonglegs.txt"))));
         JLLRooms.Add(self.name, new(res ? 0f : -1f, -1f, 0f));
         return res;
     }

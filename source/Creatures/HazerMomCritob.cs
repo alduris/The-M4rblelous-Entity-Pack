@@ -5,17 +5,19 @@ using Fisobs.Creatures;
 using Fisobs.Sandbox;
 using UnityEngine;
 using MoreSlugcats;
+using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
 
-sealed class HazerMomCritob : Critob
+sealed class HazerMomCritob : Critob, ISandboxHandler
 {
 	internal HazerMomCritob() : base(CreatureTemplateType.HazerMom)
 	{
 		Icon = new SimpleIcon("Kill_HazerMom", Color.white);
 		LoadedPerformanceCost = 10f;
 		SandboxPerformanceCost = new(.4f, .4f);
-		RegisterUnlock(KillScore.Configurable(3), SandboxUnlockID.HazerMom);
+		RegisterUnlock(KillScore.Configurable(3), SandboxUnlockID.HazerMom, null, M4R_DATA_NUMBER);
 	}
 
     public override void CorpseIsEdible(Player player, Creature crit, ref bool canEatMeat)
@@ -79,4 +81,18 @@ sealed class HazerMomCritob : Critob
 	public override void EstablishRelationships() { }
 
     public override void LoadResources(RainWorld rainWorld) { }
+
+    AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
+    {
+        var text = data.CustomData + "SandboxData<cC>" + unlock.Data + "<cB>";
+        var abstractCreature = new AbstractCreature(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) { pos = data.Pos };
+        abstractCreature.state.LoadFromString(text.Split(["<cB>"], StringSplitOptions.RemoveEmptyEntries));
+        abstractCreature.setCustomFlags();
+        var state = Random.state;
+        Random.InitState(data.ID.RandomSeed);
+        if (Random.value < .05f)
+            abstractCreature.superSizeMe = true;
+        Random.state = state;
+        return abstractCreature;
+    }
 }

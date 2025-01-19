@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class MiniFlyingBigEelGraphics : BigEelGraphics
 {
-    public MiniFlyingBigEelGraphics(PhysicalObject ow) : base(ow)
+    public MiniFlyingBigEelGraphics(MiniFlyingBigEel ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

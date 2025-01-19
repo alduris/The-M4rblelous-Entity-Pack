@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class SurfaceSwimmerGraphics : EggBugGraphics
 {
-    public SurfaceSwimmerGraphics(PhysicalObject ow) : base(ow) => legLength *= 2f;
+    public SurfaceSwimmerGraphics(SurfaceSwimmer ow) : base(ow) => legLength *= 2f;
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {

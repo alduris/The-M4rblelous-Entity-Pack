@@ -11,7 +11,7 @@ public class DentureGraphics : GraphicsModule
 
     public virtual Denture Creature => (owner as Denture)!;
 
-    public DentureGraphics(PhysicalObject ow) : base(ow, false) => AlbinoForm = Albino.TryGetValue(Creature.abstractCreature, out var box) && box.Value;
+    public DentureGraphics(Denture ow) : base(ow, false) => AlbinoForm = Albino.TryGetValue(Creature.abstractCreature, out var box) && box.Value;
 
     public override void Reset() { }
 

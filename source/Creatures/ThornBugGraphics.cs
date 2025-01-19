@@ -19,12 +19,12 @@ public class ThornBugGraphics : GraphicsModule
     public Vector2 ZFalseRotat, LastZFalseRotat;
     public bool SpikeBack;
 
-    public ThornBugGraphics(PhysicalObject ow) : base(ow, false)
+    public ThornBugGraphics(ThornBug ow) : base(ow, false)
     {
-        Bug = (ow as ThornBug)!;
-        TailEnd = new(this, 7f, .51f, .98f, Bug.bodyChunks[1]);
+        Bug = ow;
+        TailEnd = new(this, 7f, .51f, .98f, ow.bodyChunks[1]);
         LastDarkness = -1f;
-        var fch = Bug.mainBodyChunk;
+        var fch = ow.mainBodyChunk;
         var ant = Antennas = new GenericBodyPart[2][];
         for (var i = 0; i < ant.Length; i++)
         {

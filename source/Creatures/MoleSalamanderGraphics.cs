@@ -6,7 +6,7 @@ namespace LBMergedMods.Creatures;
 
 public class MoleSalamanderGraphics : LizardGraphics
 {
-    public MoleSalamanderGraphics(PhysicalObject ow) : base(ow)
+    public MoleSalamanderGraphics(MoleSalamander ow) : base(ow)
     {
         var spriteIndex = startOfExtraSprites + extraSprites;
         spriteIndex = AddCosmetic(spriteIndex, new AxolotlGills(this, spriteIndex));

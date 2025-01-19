@@ -21,9 +21,9 @@ public class DivingBeetleGraphics : GraphicsModule
     public GenericBodyPart[] Mandibles, Antennae;
     public GenericBodyPart TailEnd;
 
-    public DivingBeetleGraphics(PhysicalObject ow) : base(ow, false)
+    public DivingBeetleGraphics(DivingBeetle ow) : base(ow, false)
     {
-        Bug = (ow as DivingBeetle)!;
+        Bug = ow;
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
         var chs = Bug.bodyChunks;

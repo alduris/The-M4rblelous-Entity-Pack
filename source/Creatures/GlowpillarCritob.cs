@@ -5,10 +5,12 @@ using Fisobs.Sandbox;
 using static PathCost.Legality;
 using UnityEngine;
 using DevInterface;
+using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
 
-sealed class GlowpillarCritob : Critob
+sealed class GlowpillarCritob : Critob, ISandboxHandler
 {
     internal GlowpillarCritob() : base(CreatureTemplateType.Glowpillar)
     {
@@ -86,4 +88,20 @@ sealed class GlowpillarCritob : Critob
     public override void LoadResources(RainWorld rainWorld) { }
 
     public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.Centipede;
+
+    AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
+    {
+        var text = data.CustomData + "SandboxData<cC>" + unlock.Data + "<cB>";
+        var abstractCreature = new AbstractCreature(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) { pos = data.Pos };
+        abstractCreature.state.LoadFromString(text.Split(["<cB>"], StringSplitOptions.RemoveEmptyEntries));
+        abstractCreature.setCustomFlags();
+        var state = Random.state;
+        Random.InitState(data.ID.RandomSeed);
+        if (Random.value < .5f)
+            abstractCreature.superSizeMe = true;
+        if (Random.value < .05f && Albino.TryGetValue(abstractCreature, out var props))
+            props.Value = true;
+        Random.state = state;
+        return abstractCreature;
+    }
 }

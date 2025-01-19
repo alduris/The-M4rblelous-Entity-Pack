@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class BlizzorGraphics : MirosBirdGraphics
 {
-    public BlizzorGraphics(PhysicalObject ow) : base(ow)
+    public BlizzorGraphics(Blizzor ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

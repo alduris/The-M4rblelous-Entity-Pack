@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using DevInterface;
 using RWCustom;
 using MoreSlugcats;
+using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
 
-sealed class FatFireFlyCritob : Critob
+sealed class FatFireFlyCritob : Critob, ISandboxHandler
 {
     internal FatFireFlyCritob() : base(CreatureTemplateType.FatFireFly)
     {
@@ -139,4 +141,20 @@ sealed class FatFireFlyCritob : Critob
     public override void LoadResources(RainWorld rainWorld) { }
 
     public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.Vulture;
+
+    AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
+    {
+        var text = data.CustomData + "SandboxData<cC>" + unlock.Data + "<cB>";
+        var abstractCreature = new AbstractCreature(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) { pos = data.Pos };
+        abstractCreature.state.LoadFromString(text.Split(["<cB>"], StringSplitOptions.RemoveEmptyEntries));
+        abstractCreature.setCustomFlags();
+        var state = Random.state;
+        Random.InitState(data.ID.RandomSeed);
+        if (Random.value < .05f)
+            abstractCreature.superSizeMe = true;
+        if (Random.value < .05f && Albino.TryGetValue(abstractCreature, out var props))
+            props.Value = true;
+        Random.state = state;
+        return abstractCreature;
+    }
 }

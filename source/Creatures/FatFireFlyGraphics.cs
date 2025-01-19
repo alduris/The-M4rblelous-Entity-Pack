@@ -11,7 +11,7 @@ public class FatFireFlyGraphics : VultureGraphics
 
     public FatFireFlyGraphics(FatFireFly ow) : base(ow)
     {
-        albino = false;
+        albino = Albino.TryGetValue(ow.abstractCreature, out var box) && box.Value;
         feathersPerWing /= 2;
         var vgs = wings;
         var w2 = wings = new VultureFeather[2, feathersPerWing];
@@ -20,9 +20,9 @@ public class FatFireFlyGraphics : VultureGraphics
             for (var j = 0; j < feathersPerWing; j++)
                 w2[i, j] = vgs[i, j * 2];
         }
+        var altForm = ow.abstractCreature.superSizeMe;
         if (ow.room is Room rm)
         {
-            var altForm = ow.abstractCreature.superSizeMe;
             var fires = Fires = new Fire[w2.GetLength(0)][];
             for (var i = 0; i < fires.Length; i++)
             {
@@ -33,7 +33,7 @@ public class FatFireFlyGraphics : VultureGraphics
         }
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
-        if (ow.abstractCreature.superSizeMe)
+        if (altForm)
         {
             ColorB = new(Mathf.Lerp(.5278f, .5972f, Random.value), Mathf.Lerp(.65f, .7f, 1f - Random.value * Random.value), Mathf.Lerp(.35f, .4f, Random.value * Random.value));
             ColorA = new(ColorB.hue + Mathf.Lerp(-.03f, .03f, Random.value), Mathf.Lerp(.7f, .8f, Random.value), Mathf.Lerp(.4f, .5f, Random.value));
@@ -49,28 +49,32 @@ public class FatFireFlyGraphics : VultureGraphics
     public override void Update()
     {
         base.Update();
+        int i, j;
+        VultureFeather wi;
+        Fire[] fi;
         if (owner is Vulture v && v.room is Room rm)
         {
             if (!rm.BeingViewed && Fires is Fire[][] fs)
             {
-                for (var i = 0; i < fs.Length; i++)
+                for (i = 0; i < fs.Length; i++)
                 {
-                    var fi = fs[i];
-                    for (var j = 0; j < fi.Length; j++)
+                    fi = fs[i];
+                    for (j = 0; j < fi.Length; j++)
                         fi[j].Destroy();
                 }
             }
             var ws = wings;
-            if (Fires?.Length is null or 0)
+            if (Fires is not Fire[][] fires || fires.Length == 0)
             {
                 var altForm = v.abstractCreature.superSizeMe;
-                var fires = Fires = new Fire[ws.GetLength(0)][];
-                for (var i = 0; i < fires.Length; i++)
+                fires = Fires = new Fire[ws.GetLength(0)][];
+                var l1 = ws.GetLength(1);
+                for (i = 0; i < fires.Length; i++)
                 {
-                    var fi = fires[i] = new Fire[ws.GetLength(1)];
-                    for (var j = 0; j < fi.Length; j++)
+                    fi = fires[i] = new Fire[l1];
+                    for (j = 0; j < fi.Length; j++)
                     {
-                        var wi = ws[i, j];
+                        wi = ws[i, j];
                         wi.pos = Vector2.Lerp(wi.pos, wi.ConnectedPos, .75f);
                         fi[j] = new(rm, wi, altForm);
                     }
@@ -78,14 +82,16 @@ public class FatFireFlyGraphics : VultureGraphics
             }
             else
             {
-                for (var i = 0; i < ws.GetLength(0); i++)
+                fires = Fires;
+                for (i = 0; i < fires.Length; i++)
                 {
-                    for (var j = 0; j < ws.GetLength(1); j++)
+                    fi = fires[i];
+                    for (j = 0; j < fi.Length; j++)
                     {
-                        var w = ws[i, j];
-                        var f = Fires[i][j];
-                        w.pos = Vector2.Lerp(w.pos, w.ConnectedPos, .75f);
-                        f.Feather = w;
+                        wi = ws[i, j];
+                        var f = fi[j];
+                        wi.pos = Vector2.Lerp(wi.pos, wi.ConnectedPos, .75f);
+                        f.Feather = wi;
                         f.Update(v.evenUpdate);
                     }
                 }
@@ -117,17 +123,22 @@ public class FatFireFlyGraphics : VultureGraphics
             for (var m = 0; m < feathersPerWing; m++)
                 sprites[FeatherColorSprite(j, m)].isVisible = false;
         }
-        FSprite fs0 = sprites[FrontShieldSprite(0)], bs0 = sprites[BackShieldSprite(0)], bs1 = sprites[BackShieldSprite(1)], body = sprites[BodySprite], eye = sprites[EyesSprite];
-        var altForm = vulture?.abstractCreature.superSizeMe is true;
+        FSprite fs0 = sprites[FrontShieldSprite(0)],
+            bs0 = sprites[BackShieldSprite(0)],
+            bs1 = sprites[BackShieldSprite(1)],
+            body = sprites[BodySprite],
+            eye = sprites[EyesSprite];
+        var altForm = vulture.abstractCreature.superSizeMe;
         if (!spritesInShadowMode)
-            eye.color = Color.Lerp(altForm ? new(.92f, .92f, .95f) : new(.75f, .15f, 0f), eye.color, altForm ? .25f : .5f);
-        eye.element = Futile.atlasManager.GetElementWithName($"FFFEyes{headGraphic}");
+        {
+            eye.color = Color.Lerp(altForm ? (albino ? new(0f, .15f, .75f) : new(.92f, .92f, .95f)) : new(.75f, .15f, 0f), eye.color, altForm && !albino ? .25f : .5f);
+            fs0.color = Color.Lerp(ColorB.rgb, Color.Lerp(altForm ? Color.blue : Color.red, albino ? Color.black : Color.white, .5f), .25f);
+        }
+        eye.element = Futile.atlasManager.GetElementWithName("FFFEyes" + headGraphic);
         bs1.x = bs0.x = fs0.x = body.x;
         bs1.y = bs0.y = fs0.y = body.y;
         bs1.rotation = bs0.rotation = fs0.rotation = body.rotation;
         fs0.scale = body.scale;
-        if (!spritesInShadowMode)
-            fs0.color = Color.Lerp(ColorB.rgb, Color.Lerp(altForm ? Color.blue : Color.red, Color.white, .5f), .25f);
         bs1.scale = bs0.scale = 25f;
         bs1.color = bs0.color = Color.white;
         if (vulture is Vulture v && v.dead)
@@ -145,20 +156,23 @@ public class FatFireFlyGraphics : VultureGraphics
         sprites[FrontShieldSprite(1)].isVisible = false;
     }
 
-    public override void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContatiner)
+    public override void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
     {
-        base.AddToContainer(sLeaser, rCam, newContatiner);
-        var bs0 = sLeaser.sprites[BackShieldSprite(0)];
-        bs0.RemoveFromContainer();
-        rCam.ReturnFContainer("GrabShaders").AddChild(bs0);
+        base.AddToContainer(sLeaser, rCam, newContainer);
+        newContainer = rCam.ReturnFContainer("GrabShaders");
+        var bs = sLeaser.sprites[BackShieldSprite(0)];
+        bs.RemoveFromContainer();
+        newContainer.AddChild(bs);
+        bs = sLeaser.sprites[BackShieldSprite(1)];
+        bs.RemoveFromContainer();
+        newContainer.AddChild(bs);
     }
 
     public class Fire : UpdatableAndDeletable
     {
         public class FireSprite : CosmeticSprite
         {
-            public float LifeTime;
-            public float Life, LastLife;
+            public float LifeTime, Life, LastLife;
             public bool AltForm;
 
             public FireSprite(Vector2 pos, bool altForm)
@@ -202,7 +216,7 @@ public class FatFireFlyGraphics : VultureGraphics
                 s0.SetPosition(Vector2.Lerp(lastPos, pos, timeStacker) - camPos);
                 var num = Mathf.Lerp(LastLife, Life, timeStacker);
                 s0.scale = num;
-                s0.color = Custom.HSL2RGB(AltForm ? Mathf.Lerp(194f / 360f, 250f / 360f, num) : Mathf.Lerp(.01f, .08f, num), 1f, Mathf.Lerp(.5f, 1f, Mathf.Pow(num, 3f)));
+                s0.color = Custom.HSL2RGB(AltForm ? (Mathf.Lerp(194f / 360f, 250f / 360f, num)) : Mathf.Lerp(.01f, .08f, num), 1f, Mathf.Lerp(.5f, 1f, Mathf.Pow(num, 3f)));
                 base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
             }
         }
@@ -283,6 +297,6 @@ public class FatFireFlyGraphics : VultureGraphics
             }
         }
 
-        public static bool IsPositionInsideBoundries(Vector2 pos, Room rm) => pos.x >= -50 && pos.x <= rm.PixelWidth + 50 && pos.y >= -50 && pos.y <= rm.PixelHeight + 50;
+        public static bool IsPositionInsideBoundries(Vector2 pos, Room rm) => pos.x >= -50f && pos.x <= rm.PixelWidth + 50f && pos.y >= -50f && pos.y <= rm.PixelHeight + 50f;
     }
 }

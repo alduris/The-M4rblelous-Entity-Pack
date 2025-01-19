@@ -97,7 +97,7 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 
     public virtual Hoverfly Fly => (owner as Hoverfly)!;
 
-	public HoverflyGraphics(PhysicalObject ow) : base(ow, false)
+	public HoverflyGraphics(Hoverfly ow) : base(ow, false)
 	{
         var wings = Wings = new BodyPart[2][];
         for (var i = 0; i < wings.Length; i++)
@@ -114,7 +114,7 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 		{
 			var wi = w[i] = new float[2];
 			for (var j = 0; j < wi.Length; j++)
-				wi[j] = IVars.DefaultWingDeployment;
+				wi[j] = ow.IVars.DefaultWingDeployment;
 		}
         bodyParts =
         [
@@ -123,7 +123,7 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 			Wings[0][1],
 			Wings[1][1]
         ];
-        CreatureLooker = new(this, Fly.AI.tracker, Fly, .4f, 20);
+        CreatureLooker = new(this, ow.AI.tracker, ow, .4f, 20);
         ChirpCounter = Random.Range(150, 601);
         Reset();
 	}

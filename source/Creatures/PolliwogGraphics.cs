@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class PolliwogGraphics : LizardGraphics
 {
-    public PolliwogGraphics(PhysicalObject ow) : base(ow)
+    public PolliwogGraphics(Polliwog ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

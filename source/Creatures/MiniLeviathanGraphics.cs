@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class MiniLeviathanGraphics : BigEelGraphics
 {
-    public MiniLeviathanGraphics(PhysicalObject ow) : base(ow)
+    public MiniLeviathanGraphics(MiniLeviathan ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);

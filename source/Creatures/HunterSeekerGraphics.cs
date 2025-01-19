@@ -5,14 +5,14 @@ namespace LBMergedMods.Creatures;
 
 public class HunterSeekerGraphics : LizardGraphics
 {
-    public HunterSeekerGraphics(PhysicalObject ow) : base(ow)
+    public HunterSeekerGraphics(HunterSeeker ow) : base(ow)
     {
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
         var spriteIndex = startOfExtraSprites + extraSprites;
         if (Random.value < .5f)
             spriteIndex = AddCosmetic(spriteIndex, new TailGeckoScales(this, spriteIndex));
-        var ts = lizard.lizardParams.tailSegments;
+        var ts = ow.lizardParams.tailSegments;
         for (var k = 0; k < ts; k++)
         {
             var num3 = Mathf.InverseLerp(0f, ts - 1, k);

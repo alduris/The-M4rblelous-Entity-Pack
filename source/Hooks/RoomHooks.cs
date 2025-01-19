@@ -33,7 +33,7 @@ public static class RoomHooks
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
             s_MatchIsinst_Fly))
-            c.EmitDelegate((Fly fly) => (fly?.room?.world?.region?.name == "NP" && fly.IsSeed()) ? null : fly);
+            c.EmitDelegate((Fly fly) => (fly?.room?.world?.name == "NP" && fly.IsSeed()) ? null : fly);
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook MeltLights.Update!");
     }

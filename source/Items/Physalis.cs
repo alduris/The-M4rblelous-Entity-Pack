@@ -68,11 +68,11 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
                     segip1[0] -= normalized * (num - num2) * .5f;
                     segip1[2] -= normalized * (num - num2) * .5f;
                 }
-                if (i < Segments.Length - 2)
+                if (i < segments.Length - 2)
                 {
-                    Vector2 normalized2 = (seg[0] - Segments[i + 2][0]).normalized;
+                    Vector2 normalized2 = (seg[0] - segments[i + 2][0]).normalized;
                     seg[2] += normalized2 * 1.5f;
-                    Segments[i + 2][2] -= normalized2 * 1.5f;
+                    segments[i + 2][2] -= normalized2 * 1.5f;
                 }
                 if (i == 0)
                 {
@@ -93,9 +93,10 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
 
         public virtual void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
+            var sprites = sLeaser.sprites;
             var segments = Segments;
             var vector = Vector2.Lerp(segments[0][1], segments[0][0], timeStacker);
-            var s0 = (TriangleMesh)sLeaser.sprites[0];
+            var s0 = (TriangleMesh)sprites[0];
             for (var i = 0; i < segments.Length; i++)
             {
                 var segment = segments[i];
@@ -107,20 +108,20 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
                 s0.MoveVertice(i * 4 + 3, vector2 + vector3 * .8f - normalized * num - camPos);
                 vector = vector2;
             }
-            var sprites = sLeaser.sprites;
             for (var i = 1; i < sprites.Length; i++)
             {
                 var sprite = sprites[i];
                 sprite.SetPosition(FruitPos - camPos);
                 sprite.rotation = Custom.VecToDeg(Rotation);
             }
-            sLeaser.sprites[2].alpha = 1f - rCam.currentPalette.darkness * .25f;
+            sprites[2].alpha = 1f - rCam.currentPalette.darkness * .25f;
         }
 
         public virtual void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
         {
-            sLeaser.sprites[1].color = ((TriangleMesh)sLeaser.sprites[0]).color = palette.blackColor;
-            sLeaser.sprites[2].color = new(Closed ? 245f / 255f : 195f / 255f, 151f / 255f, 20f / 255f);
+            var sprites = sLeaser.sprites;
+            sprites[1].color = ((TriangleMesh)sprites[0]).color = palette.blackColor;
+            sprites[2].color = new(Closed ? 245f / 255f : 195f / 255f, 151f / 255f, 20f / 255f);
         }
 
         public virtual void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer? newContainer)
@@ -200,11 +201,11 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
                     segip1[0] -= normalized * (num - num2) * .5f;
                     segip1[2] -= normalized * (num - num2) * .5f;
                 }
-                if (i < Segments.Length - 2)
+                if (i < segments.Length - 2)
                 {
-                    Vector2 normalized2 = (seg[0] - Segments[i + 2][0]).normalized;
+                    Vector2 normalized2 = (seg[0] - segments[i + 2][0]).normalized;
                     seg[2] += normalized2 * 1.5f;
-                    Segments[i + 2][2] -= normalized2 * 1.5f;
+                    segments[i + 2][2] -= normalized2 * 1.5f;
                 }
                 if (i == 0)
                 {
@@ -217,8 +218,9 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
             if (Fruit is Physalis f)
             {
                 var chunk = f.firstChunk;
-                if (!Custom.DistLess(FruitPos with { y = FruitPos.y + 10f }, chunk.pos, f.grabbedBy.Count == 0 ? 40f : 20f) || f.room != room || f.slatedForDeletetion || chunk.vel.magnitude > 15f)
+                if (!Custom.DistLess(FruitPos with { y = FruitPos.y + 10f }, chunk.pos, f.grabbedBy.Count == 0 ? 40f : 4f) || f.room != room || f.slatedForDeletetion || chunk.vel.magnitude > 15f)
                 {
+                    chunk.mass = .07f;
                     f.AbstrCons.Consume();
                     Fruit = null;
                 }
@@ -227,6 +229,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
                     chunk.vel.y += f.gravity;
                     chunk.vel *= .6f;
                     chunk.vel += (FruitPos with { y = FruitPos.y + 10f } - chunk.pos) / 20f;
+                    chunk.mass = 50f;
                 }
             }
             Rotation = Custom.DirVec(segments[segments.Length - 2][0], FruitPos);
@@ -240,9 +243,10 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
 
         public virtual void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
+            var sprites = sLeaser.sprites;
             var segments = Segments;
             var vector = Vector2.Lerp(segments[0][1], segments[0][0], timeStacker);
-            var s0 = (TriangleMesh)sLeaser.sprites[0];
+            var s0 = (TriangleMesh)sprites[0];
             for (var i = 0; i < segments.Length; i++)
             {
                 var segment = segments[i];
@@ -254,20 +258,20 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
                 s0.MoveVertice(i * 4 + 3, vector2 + vector3 * .8f - normalized * num - camPos);
                 vector = vector2;
             }
-            var sprites = sLeaser.sprites;
             for (var i = 1; i < sprites.Length; i++)
             {
                 var sprite = sprites[i];
                 sprite.SetPosition(FruitPos - camPos);
                 sprite.rotation = Custom.VecToDeg(Rotation);
             }
-            sLeaser.sprites[2].alpha = 1f - rCam.currentPalette.darkness * .25f;
+            sprites[2].alpha = 1f - rCam.currentPalette.darkness * .25f;
         }
 
         public virtual void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
         {
-            sLeaser.sprites[1].color = ((TriangleMesh)sLeaser.sprites[0]).color = palette.blackColor;
-            sLeaser.sprites[2].color = new(195f / 255f, 151f / 255f, 20f / 255f);
+            var sprites = sLeaser.sprites;
+            sprites[1].color = ((TriangleMesh)sprites[0]).color = palette.blackColor;
+            sprites[2].color = new(195f / 255f, 151f / 255f, 20f / 255f);
         }
 
         public virtual void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer? newContainer)
@@ -389,6 +393,12 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
         (grasp.grabber as Player)?.ObjectEaten(this);
         grasp.Release();
         Destroy();
+    }
+
+    public override void Grabbed(Creature.Grasp grasp)
+    {
+        firstChunk.mass = .07f;
+        base.Grabbed(grasp);
     }
 
     public virtual void ThrowByPlayer() { }

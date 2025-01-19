@@ -137,7 +137,7 @@ public static class FlyHooks
         if (SeedRooms.TryGetValue(nm, out var flag))
             return flag;
         var res = File.Exists(AssetManager.ResolveFilePath("levels/" + nm + "_seedbats.txt")) ||
-            (self.world?.region?.name is string s && File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_seedbats.txt")));
+            (self.world?.name is string s && File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_seedbats.txt")));
         SeedRooms.Add(self.name, res);
         return res;
     }

@@ -5,7 +5,7 @@ namespace LBMergedMods.Creatures;
 
 public class MiniLeechGraphics : LeechGraphics
 {
-    public MiniLeechGraphics(PhysicalObject ow) : base(ow)
+    public MiniLeechGraphics(MiniLeech ow) : base(ow)
     {
         var bdy = body;
         for (var i = 0; i < bdy.Length; i++)

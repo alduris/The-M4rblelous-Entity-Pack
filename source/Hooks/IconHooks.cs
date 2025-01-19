@@ -38,8 +38,13 @@ public static class IconHooks
             if (tp == CreatureTemplateType.CommonEel)
                 return new(0f, 72f / 255f, 1f);
         }
-        else if (dt == M4R_DATA_NUMBER2 && tp == CreatureTemplate.Type.TubeWorm)
-            return new(1f, .65f, .05f);
+        else if (dt == M4R_DATA_NUMBER2)
+        {
+            if (tp == CreatureTemplate.Type.TubeWorm)
+                return new(1f, .65f, .05f);
+            if (tp == CreatureTemplateType.FatFireFly)
+                return Color.white;
+        }
         else if (dt == M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
             return new(.05f, .3f, .7f);
         return orig(iconData);
@@ -60,9 +65,16 @@ public static class IconHooks
     {
         var res = orig(creature);
         var tp = creature.creatureTemplate.type;
-        if ((tp == CreatureTemplate.Type.Fly && creature.IsSeed()) ||
+        if (tp == CreatureTemplateType.FatFireFly)
+        {
+            if (creature.superSizeMe)
+                res.intData = M4R_DATA_NUMBER;
+            else if (Albino.TryGetValue(creature, out var props2) && props2.Value)
+                res.intData = M4R_DATA_NUMBER;
+        }
+        else if ((tp == CreatureTemplate.Type.Fly && creature.IsSeed()) ||
             ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar) && Albino.TryGetValue(creature, out var props) && props.Value) ||
-            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.FatFireFly || tp == CreatureTemplateType.NoodleEater || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle) && creature.superSizeMe))
+            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.NoodleEater || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle) && creature.superSizeMe))
             res.intData = M4R_DATA_NUMBER;
         else if (tp == CreatureTemplate.Type.TubeWorm && creature.IsBig(out var prop))
             res.intData = prop.NormalLook ? M4R_DATA_NUMBER3 : (creature.superSizeMe ? M4R_DATA_NUMBER2 : M4R_DATA_NUMBER);
