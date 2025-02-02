@@ -15,7 +15,7 @@ public static class StatisticsScreenHooks
         {
             var tickers = self.allTickers;
             var ticker = new StoryGameStatisticsScreen.LabelTicker(self, self.pages[0], new(self.ContinueAndExitButtonsXPos - 300f, 535f - 30f * (-3 + tickers.Count)), score, NewTickerID.ScoreTokens, self.Translate("Bonus score from collecting tokens : "));
-            ticker.numberLabel.pos.x += 130f;
+            ticker.numberLabel.pos.x += 160f;
             tickers.Add(ticker);
             self.pages[0].subObjects.Add(ticker);
         }
