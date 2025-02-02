@@ -38,7 +38,7 @@ public static class JetFishHooks
     internal static bool On_JetFishAI_WantToEatObject(On.JetFishAI.orig_WantToEatObject orig, JetFishAI self, PhysicalObject obj)
     {
         var res = orig(self, obj);
-        if (obj is BlobPiece or MarineEye && self.fish?.room is Room rmj && self.pathFinder is PathFinder p && obj.room == rmj && obj.grabbedBy?.Count == 0 && !obj.slatedForDeletetion)
+        if (obj is BlobPiece or MarineEye or MiniFruit && self.fish?.room is Room rmj && self.pathFinder is PathFinder p && obj.room == rmj && obj.grabbedBy?.Count == 0 && !obj.slatedForDeletetion)
         {
             var coord = rmj.GetWorldCoordinate(obj.firstChunk.pos);
             if (p.CoordinateReachableAndGetbackable(coord) || p.CoordinateReachableAndGetbackable(coord + new IntVector2(0, -1)) || p.CoordinateReachableAndGetbackable(coord + new IntVector2(0, -2)) && self.threatTracker is ThreatTracker t && t.ThreatOfArea(coord, true) < .55f)

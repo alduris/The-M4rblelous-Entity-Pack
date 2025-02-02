@@ -18,7 +18,7 @@ using Fisobs.Sandbox;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.5"), BepInDependency("io.github.dual.fisobs")]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.6"), BepInDependency("io.github.dual.fisobs")]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -247,7 +247,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.ShortcutHelper.PopsOutOfDeadShortcuts += On_ShortcutHelper_PopsOutOfDeadShortcuts;
         On.Hazer.Collide += On_Hazer_Collide;
         IL.AbstractCreature.InitiateAI += IL_AbstractCreature_InitiateAI;
-        On.AbstractCreature.MSCInitiateAI += IL_AbstractCreature_MSCInitiateAI;
+        On.AbstractCreature.MSCInitiateAI += On_AbstractCreature_MSCInitiateAI;
         On.Player.IsCreatureLegalToHoldWithoutStun += On_Player_IsCreatureLegalToHoldWithoutStun;
         On.HazerGraphics.ctor += On_HazerGraphics_ctor;
         IL.HazerGraphics.ApplyPalette += IL_HazerGraphics_ApplyPalette;
@@ -306,6 +306,15 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.AbstractCreature.OpportunityToEnterDen += IL_AbstractCreature_OpportunityToEnterDen;
         IL.AbstractCreatureAI.AbstractBehavior += IL_AbstractCreatureAI_AbstractBehavior;
         On.FriendTracker.ItemOffered += On_FriendTracker_ItemOffered;
+        On.ScavengerOutpost.FeeRecieved += On_ScavengerOutpost_FeeRecieved;
+        On.DeathPersistentSaveData.ctor += On_DeathPersistentSaveData_ctor;
+        On.DeathPersistentSaveData.FromString += On_DeathPersistentSaveData_FromString;
+        On.DeathPersistentSaveData.SaveToString += On_DeathPersistentSaveData_SaveToString;
+        On.Menu.StoryGameStatisticsScreen.TickerIsDone += On_StoryGameStatisticsScreen_TickerIsDone;
+        On.Menu.StoryGameStatisticsScreen.GetDataFromGame += On_StoryGameStatisticsScreen_GetDataFromGame;
+        IL.MoreSlugcats.CollectiblesTracker.ctor += IL_CollectiblesTracker_ctor;
+        On.MoreSlugcats.CollectiblesTracker.MineForSaveData += On_CollectiblesTracker_MineForSaveData;
+        On.RainWorld.ClearTokenCacheInMemory += On_RainWorld_ClearTokenCacheInMemory;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -352,6 +361,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         s_logger = null;
         JLLRooms = null!;
         SeedRooms = null!;
+        ScoreData = null!;
+        TrackerScoreData = null!;
+        RegionScoreData = null!;
         InternalMatch.Dispose();
     }
 }

@@ -270,7 +270,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
         public virtual void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
         {
             var sprites = sLeaser.sprites;
-            sprites[1].color = ((TriangleMesh)sprites[0]).color = palette.blackColor;
+            sprites[1].color = sprites[0].color = palette.blackColor;
             sprites[2].color = new(195f / 255f, 151f / 255f, 20f / 255f);
         }
 
@@ -317,6 +317,12 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
         ColorAdd = Random.value / 5f;
         AlphaRemove = 1f - Random.value / 5f;
         Random.state = state;
+    }
+
+    public override void HitByWeapon(Weapon weapon)
+    {
+        firstChunk.mass = .07f;
+        base.HitByWeapon(weapon);
     }
 
     public override void PlaceInRoom(Room placeRoom)

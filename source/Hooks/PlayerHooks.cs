@@ -34,7 +34,7 @@ public static class PlayerHooks
     {
         if (obj is ThornyStrawberry or BlobPiece or BouncingMelon or LittleBalloon or TintedBeetle or Physalis or LimeMushroom or GummyAnther or MarineEye or SmallPuffBall or DendriticNeuron or MiniFruit)
             return Player.ObjectGrabability.OneHand;
-        if (obj is RubberBlossom)
+        if (obj is RubberBlossom or MiniFruitSpawner)
             return Player.ObjectGrabability.CantGrab;
         if (obj is StarLemon)
             return Player.ObjectGrabability.TwoHands;
@@ -50,8 +50,6 @@ public static class PlayerHooks
             self.dangerGrasp = grasp;
         }
     }
-
-    //marche pas pour marine eye et lime mush
 
     internal static void IL_Player_GrabUpdate(ILContext il)
     {

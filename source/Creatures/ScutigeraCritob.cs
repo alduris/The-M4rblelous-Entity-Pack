@@ -123,6 +123,8 @@ sealed class ScutigeraCritob : Critob
         scut.Ignores(CreatureTemplate.Type.GarbageWorm);
         scut.Ignores(CreatureTemplate.Type.PoleMimic);
         scut.Ignores(Type);
+        scut.IgnoredBy(CreatureTemplateType.ThornBug);
+        scut.Ignores(CreatureTemplateType.ThornBug);
     }
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new ScutigeraAI(acrit, acrit.world);

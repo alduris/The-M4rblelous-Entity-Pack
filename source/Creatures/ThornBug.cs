@@ -44,7 +44,7 @@ public class ThornBug : InsectoidCreature
         collisionLayer = 1;
         waterFriction = .96f;
         buoyancy = .95f;
-        Random.State state = Random.state;
+        var state = Random.state;
         Random.InitState(abstractCreature.ID.RandomSeed);
         Hue = abstractCreature.superSizeMe ? Mathf.Lerp(.5f, .56f, Custom.ClampedRandomVariation(.5f, .5f, 2f)) : Mathf.Lerp(0f, .15f, Custom.ClampedRandomVariation(.5f, .5f, 2f));
         Random.state = state;

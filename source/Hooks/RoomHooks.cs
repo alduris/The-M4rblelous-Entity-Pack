@@ -78,13 +78,19 @@ public static class RoomHooks
         orig(self);
         if (self.game is RainWorldGame game)
         {
+            var exped = ModManager.Expedition && game.rainWorld.ExpeditionMode;
             var objs = self.roomSettings.placedObjects;
             for (var i = 0; i < objs.Count; i++)
             {
                 var pObj = objs[i];
                 if (pObj.active)
                 {
-                    if (firstTimeRealized && pObj.type == PlacedObjectType.ThornyStrawberry && (game.session is not StoryGameSession session || !session.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                    if (pObj.type == PlacedObjectType.BonusScoreToken && !exped)
+                    {
+                        var data = (pObj.data as ScoreTokenData)!;
+                        self.AddObject(game.session is StoryGameSession session && session.saveState?.deathPersistentSaveData?.GetScoreTokenCollected(data.ID) is false ? new ScoreToken(self, pObj) : new ScoreToken.TokenStalk(self, pObj.pos, pObj.pos + data.handlePos, null));
+                    }
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.ThornyStrawberry && (game.session is not StoryGameSession session || !session.saveState.ItemConsumed(self.world, false, arm.index, i)))
                         arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.ThornyStrawberry, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.LittleBalloon && (game.session is not StoryGameSession session2 || !session2.saveState.ItemConsumed(self.world, false, arm.index, i)))
                         arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LittleBalloon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
@@ -113,11 +119,43 @@ public static class RoomHooks
                         arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DendriticNeuron, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
                         self.waitToEnterAfterFullyLoaded = Math.Max(self.waitToEnterAfterFullyLoaded, 80);
                     }
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.MiniFruitBranch)
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.MiniFruitBranch && (game.session is not StoryGameSession session23 || !session23.saveState.ItemConsumed(self.world, false, arm.index, i)))
                     {
-                        var data = (pObj.data as PlacedObject.ConsumableObjectData)!;
-                        for (var r = data.maxRegen - 100; r >= 0; r -= 100)//to change
-                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MiniBlueFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        var data = (pObj.data as MiniFruitSpawnerData)!;
+                        AbstractConsumable spawner;
+                        arm.entities.Add(spawner = new AbstractConsumable(self.world, AbstractObjectType.MiniFruitSpawner, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, data)
+                        {
+                            isConsumed = false
+                        });
+                        if (MiniFruitSpawners.TryGetValue(spawner, out var props))
+                        {
+                            props.RootPos = data.RootHandlePos + pObj.pos;
+                            var state = Random.state;
+                            Random.InitState(spawner.ID.RandomSeed);
+                            AbstractConsumable fruit;
+                            List<Vector2> vecs = [];
+                            props.NumberOfFruits = game.session is StoryGameSession ses ? data.FoodAmount - ses.saveState.ConsumedFruits(self.world, arm.index, i) : data.FoodAmount;
+                            for (var j = 1; j <= props.NumberOfFruits; j++)
+                            {
+                                arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.MiniBlueFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
+                                {
+                                    isConsumed = false
+                                });
+                                if (MiniFruits.TryGetValue(fruit, out var fprops))
+                                {
+                                    fprops.Spawner = spawner;
+                                    var pos = Random.insideUnitCircle * .95f * data.Rad + pObj.pos;
+                                    var cntUnstuck = 0;
+                                    while (vecs.ContainsClosePosition(pos, 10f) && cntUnstuck < 25)
+                                    {
+                                        pos = Random.insideUnitCircle * .95f * data.Rad + pObj.pos;
+                                        ++cntUnstuck;
+                                    }
+                                    fprops.FruitPos = pos;
+                                }
+                            }
+                            Random.state = state;
+                        }
                     }
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.RubberBlossom)
                     {
@@ -128,8 +166,10 @@ public static class RoomHooks
                         });
                         if (StationPlant.TryGetValue(plant, out var props))
                         {
+                            //var consumedFruits = 0;
                             if (game.session is StoryGameSession ses)
                             {
+                                //consumedFruits = ses.saveState.ConsumedFruits(self.world, arm.index, i); // removal intended
                                 var (consumed, waitCycles) = ses.saveState.PlantConsumed(self.world, arm.index, i);
                                 if (consumed)
                                 {
@@ -160,9 +200,9 @@ public static class RoomHooks
                             var state = Random.state;
                             Random.InitState(plant.ID.RandomSeed);
                             AbstractConsumable fruit;
-                            for (var j = 1; j <= props.NumberOfFruits; j++)
+                            for (var j = 1; j <= props.NumberOfFruits /* - consumedFruits*/; j++)
                             {
-                                arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.GummyAnther, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -1, null)
+                                arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.GummyAnther, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
                                 {
                                     isConsumed = false
                                 });
@@ -267,4 +307,15 @@ public static class RoomHooks
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static float FloatWaterLevel(this Room self, Vector2 pos) => self.FloatWaterLevel(pos.x);
+
+    public static bool ContainsClosePosition(this List<Vector2> self, Vector2 pos, float dist)
+    {
+        for (var i = 0; i < self.Count; i++)
+        {
+            var vec = self[i];
+            if (Mathf.Abs(vec.y - pos.y) < dist || Mathf.Abs(vec.x - pos.x) < dist)
+                return true;
+        }
+        return false;
+    }
 }

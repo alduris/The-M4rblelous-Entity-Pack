@@ -1,11 +1,29 @@
 ﻿global using static LBMergedMods.Hooks.MainHooks;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace LBMergedMods.Hooks;
 
 public static class MainHooks
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public sealed class ScoreTokens
+    {
+        public Dictionary<string, List<string>> RegionScoreTokens = [];
+        public Dictionary<string, List<List<SlugcatStats.Name>>> RegionScoreTokensInaccessibility = [];
+    }
+
+    public static ConditionalWeakTable<RainWorld, ScoreTokens> RegionScoreData = new();
     internal static bool s_init;
+
+    internal static void On_RainWorld_ClearTokenCacheInMemory(On.RainWorld.orig_ClearTokenCacheInMemory orig, RainWorld self)
+    {
+        orig(self);
+        if (RegionScoreData.TryGetValue(self, out _))
+            RegionScoreData.Remove(self);
+    }
 
     internal static void On_RainWorld_OnModsDisabled(On.RainWorld.orig_OnModsDisabled orig, RainWorld self, ModManager.Mod[] newlyDisabledMods)
     {
@@ -20,6 +38,8 @@ public static class MainHooks
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.LittleBalloon);
                 if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.BouncingMelon))
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.BouncingMelon);
+                if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.MiniBlueFruit))
+                    MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.MiniBlueFruit);
                 if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.Physalis))
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.Physalis);
                 if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.LimeMushroom))
@@ -98,6 +118,7 @@ public static class MainHooks
                 DevEffectsCategories.UnregisterValues();
                 DevObjectCategories.UnregisterValues();
                 CommunityID.UnregisterValues();
+                NewTickerID.UnregisterValues();
                 break;
             }
         }
@@ -124,6 +145,8 @@ public static class MainHooks
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.ThornyStrawberry);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.BouncingMelon))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.BouncingMelon);
+        if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.MiniBlueFruit))
+            MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.MiniBlueFruit);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.Physalis))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.Physalis);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.LimeMushroom))
@@ -186,6 +209,7 @@ public static class MainHooks
         _ = DevObjectCategories.M4rblelousEntities;
         _ = DevEffectsCategories.M4rblelousEntities;
         _ = CommunityID.TintedBeetles;
+        _ = NewTickerID.ScoreTokens;
     }
 
     internal static void On_RainWorld_UnloadResources(On.RainWorld.orig_UnloadResources orig, RainWorld self)

@@ -114,6 +114,36 @@ public static class ScavengerHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ScavengerAI.IUseARelationshipTracker.UpdateDynamicRelationship! (part 2)");
     }
 
+    internal static void On_ScavengerOutpost_FeeRecieved(On.ScavengerOutpost.orig_FeeRecieved orig, ScavengerOutpost self, Player player, AbstractPhysicalObject item, int value)
+    {
+        if (self.worldOutpost is ScavengersWorldAI.Outpost outpost && item.type == AbstractObjectType.Physalis)
+        {
+            var flag1 = false;
+            var recs = self.receivedItems;
+            for (var i = 0; i < recs.Count; i++)
+            {
+                if (recs[i] == item.ID)
+                {
+                    flag1 = true;
+                    break;
+                }
+            }
+            var flag2 = false;
+            var stls = self.room.socialEventRecognizer.stolenProperty;
+            for (var j = 0; j < stls.Count; j++)
+            {
+                if (item.ID == stls[j])
+                {
+                    flag2 = true;
+                    break;
+                }
+            }
+            if (!flag1 && !flag2)
+                outpost.feePayed += value;
+        }
+        orig(self, player, item, value);
+    }
+
     internal static void IL_WorldFloodFiller_Update(ILContext il)
     {
         var c = new ILCursor(il);

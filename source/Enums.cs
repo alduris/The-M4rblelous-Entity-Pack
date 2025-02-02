@@ -2,6 +2,7 @@
 using DevInterface;
 using MoreSlugcats;
 using System.Collections.Generic;
+using Menu;
 
 namespace LBMergedMods.Enums;
 
@@ -307,7 +308,8 @@ public static class SandboxUnlockID
         CommonEel = new(nameof(CommonEel), true),
         DivingBeetle = new(nameof(DivingBeetle), true),
         Killerpillar = new(nameof(Killerpillar), true),
-        Glowpillar = new(nameof(Glowpillar), true);
+        Glowpillar = new(nameof(Glowpillar), true),
+        MiniBlueFruit = new(nameof(MiniBlueFruit), true);
 
     public static void UnregisterValues()
     {
@@ -496,6 +498,11 @@ public static class SandboxUnlockID
             Glowpillar.Unregister();
             Glowpillar = null!;
         }
+        if (MiniBlueFruit is not null)
+        {
+            MiniBlueFruit.Unregister();
+            MiniBlueFruit = null!;
+        }
     }
 }
 
@@ -516,7 +523,8 @@ public static class PlacedObjectType
         MarineEye = new(nameof(MarineEye), true),
         StarLemon = new(nameof(StarLemon), true),
         DendriticNeuron = new(nameof(DendriticNeuron), true),
-        MiniFruitBranch = new(nameof(MiniFruitBranch), true);
+        MiniFruitBranch = new(nameof(MiniFruitBranch), true),
+        BonusScoreToken = new(nameof(BonusScoreToken), true);
 
     public static void UnregisterValues()
     {
@@ -600,6 +608,11 @@ public static class PlacedObjectType
             MiniFruitBranch.Unregister();
             MiniFruitBranch = null!;
         }
+        if (BonusScoreToken is not null)
+        {
+            BonusScoreToken.Unregister();
+            BonusScoreToken = null!;
+        }
     }
 }
 
@@ -617,7 +630,8 @@ public static class AbstractObjectType
         MarineEye = new(nameof(MarineEye), true),
         StarLemon = new(nameof(StarLemon), true),
         DendriticNeuron = new(nameof(DendriticNeuron), true),
-        MiniBlueFruit = new(nameof(MiniBlueFruit), true);
+        MiniBlueFruit = new(nameof(MiniBlueFruit), true),
+        MiniFruitSpawner = new(nameof(MiniFruitSpawner), true);
 
     public static void UnregisterValues()
     {
@@ -685,6 +699,11 @@ public static class AbstractObjectType
         {
             MiniBlueFruit.Unregister();
             MiniBlueFruit = null!;
+        }
+        if (MiniFruitSpawner is not null)
+        {
+            MiniFruitSpawner.Unregister();
+            MiniFruitSpawner = null!;
         }
     }
 }
@@ -901,6 +920,20 @@ public static class NewSoundID
         {
             Flying_Leviathan_Bite.Unregister();
             Flying_Leviathan_Bite = null!;
+        }
+    }
+}
+
+public static class NewTickerID
+{
+    public static StoryGameStatisticsScreen.TickerID ScoreTokens = new(nameof(ScoreTokens), true);
+
+    internal static void UnregisterValues()
+    {
+        if (ScoreTokens is not null)
+        {
+            ScoreTokens.Unregister();
+            ScoreTokens = null!;
         }
     }
 }

@@ -161,7 +161,7 @@ public static class ArenaHooks
 
     internal static void On_SandboxEditor_GetPerformanceEstimate(On.ArenaBehaviors.SandboxEditor.orig_GetPerformanceEstimate orig, SandboxEditor.PlacedIcon placedIcon, ref float exponentialPart, ref float linearPart)
     {
-        if (placedIcon is SandboxEditor.CreatureOrItemIcon i && (i.iconData.itemType == AbstractObjectType.LittleBalloon || i.iconData.itemType == AbstractObjectType.Physalis))
+        if (placedIcon is SandboxEditor.CreatureOrItemIcon i && (i.iconData.itemType == AbstractObjectType.LittleBalloon || i.iconData.itemType == AbstractObjectType.Physalis || i.iconData.itemType == AbstractObjectType.MiniBlueFruit))
             linearPart += .6f;
         else
             orig(placedIcon, ref exponentialPart, ref linearPart);

@@ -2,6 +2,7 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MoreSlugcats;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -123,6 +124,8 @@ static class InternalMatch
         s_MatchLdfld_Centipede_size = MatchLdfld_Centipede_size,
         s_MatchLdfld_CentipedeAI_centipede = MatchLdfld_CentipedeAI_centipede,
         s_MatchLdfld_CentipedeGraphics_lightSource = MatchLdfld_CentipedeGraphics_lightSource,
+        s_MatchLdfld_CollectiblesTracker_displayRegions = MatchLdfld_CollectiblesTracker_displayRegions,
+        s_MatchLdfld_CollectiblesTracker_sprites = MatchLdfld_CollectiblesTracker_sprites,
         s_MatchLdfld_CreatureTemplate_type = MatchLdfld_CreatureTemplate_type,
         s_MatchLdfld_Creature_Grasp_grabbed = MatchLdfld_Creature_Grasp_grabbed,
         s_MatchLdfld_GameSession_game = MatchLdfld_GameSession_game,
@@ -181,6 +184,7 @@ static class InternalMatch
         s_MatchLdsfld_CreatureTemplate_Type_YellowLizard = MatchLdsfld_CreatureTemplate_Type_YellowLizard,
         s_MatchLdsfld_Lizard_Animation_Spit = MatchLdsfld_Lizard_Animation_Spit,
         s_MatchLdsfld_ModManager_MMF = MatchLdsfld_ModManager_MMF,
+        s_MatchLdsfld_ModManager_MSC = MatchLdsfld_ModManager_MSC,
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorA = MatchLdsfld_RainWorld_ShadPropLeviathanColorA,
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorB = MatchLdsfld_RainWorld_ShadPropLeviathanColorB,
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorHead = MatchLdsfld_RainWorld_ShadPropLeviathanColorHead,
@@ -322,6 +326,8 @@ static class InternalMatch
         s_MatchLdfld_Centipede_size = null!;
         s_MatchLdfld_CentipedeAI_centipede = null!;
         s_MatchLdfld_CentipedeGraphics_lightSource = null!;
+        s_MatchLdfld_CollectiblesTracker_displayRegions = null!;
+        s_MatchLdfld_CollectiblesTracker_sprites = null!;
         s_MatchLdfld_CreatureTemplate_type = null!;
         s_MatchLdfld_Creature_Grasp_grabbed = null!;
         s_MatchLdfld_GameSession_game = null!;
@@ -380,6 +386,7 @@ static class InternalMatch
         s_MatchLdsfld_CreatureTemplate_Type_YellowLizard = null!;
         s_MatchLdsfld_Lizard_Animation_Spit = null!;
         s_MatchLdsfld_ModManager_MMF = null!;
+        s_MatchLdsfld_ModManager_MSC = null!;
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorA = null!;
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorB = null!;
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorHead = null!;
@@ -607,6 +614,10 @@ static class InternalMatch
 
     internal static bool MatchLdfld_CentipedeGraphics_lightSource(Instruction x) => x.MatchLdfld<CentipedeGraphics>("lightSource");
 
+    internal static bool MatchLdfld_CollectiblesTracker_displayRegions(Instruction x) => x.MatchLdfld<CollectiblesTracker>("displayRegions");
+
+    internal static bool MatchLdfld_CollectiblesTracker_sprites(Instruction x) => x.MatchLdfld<CollectiblesTracker>("sprites");
+
     internal static bool MatchLdfld_CreatureTemplate_type(Instruction x) => x.MatchLdfld<CreatureTemplate>("type");
 
     internal static bool MatchLdfld_Creature_Grasp_grabbed(Instruction x) => x.MatchLdfld<Creature.Grasp>("grabbed");
@@ -722,6 +733,8 @@ static class InternalMatch
     internal static bool MatchLdsfld_Lizard_Animation_Spit(Instruction x) => x.MatchLdsfld<Lizard.Animation>("Spit");
 
     internal static bool MatchLdsfld_ModManager_MMF(Instruction x) => x.MatchLdsfld<ModManager>("MMF");
+
+    internal static bool MatchLdsfld_ModManager_MSC(Instruction x) => x.MatchLdsfld<ModManager>("MSC");
 
     internal static bool MatchLdsfld_RainWorld_ShadPropLeviathanColorA(Instruction x) => x.MatchLdsfld<RainWorld>("ShadPropLeviathanColorA");
 

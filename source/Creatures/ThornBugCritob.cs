@@ -118,8 +118,8 @@ sealed class ThornBugCritob : Critob, ISandboxHandler
         t.Fears(CreatureTemplate.Type.PoleMimic, 1f);
         t.Fears(CreatureTemplate.Type.MirosBird, 1f);
         t.Ignores(CreatureTemplate.Type.TempleGuard);
-        t.Eats(CreatureTemplate.Type.Centipede, .4f);
-        t.Eats(CreatureTemplate.Type.Centiwing, .3f);
+        t.Ignores(CreatureTemplate.Type.Centipede);
+        t.Ignores(CreatureTemplate.Type.Centiwing);
         t.Eats(CreatureTemplate.Type.SmallCentipede, .2f);
         t.Fears(CreatureTemplate.Type.RedCentipede, 1f);
         t.Fears(CreatureTemplate.Type.Scavenger, .6f);
@@ -155,8 +155,8 @@ sealed class ThornBugCritob : Critob, ISandboxHandler
         t.EatenBy(CreatureTemplate.Type.PoleMimic, 1f);
         t.EatenBy(CreatureTemplate.Type.MirosBird, 1f);
         t.IgnoredBy(CreatureTemplate.Type.TempleGuard);
-        t.FearedBy(CreatureTemplate.Type.Centipede, .4f);
-        t.FearedBy(CreatureTemplate.Type.Centiwing, .3f);
+        t.IgnoredBy(CreatureTemplate.Type.Centipede);
+        t.IgnoredBy(CreatureTemplate.Type.Centiwing);
         t.FearedBy(CreatureTemplate.Type.SmallCentipede, .2f);
         t.EatenBy(CreatureTemplate.Type.RedCentipede, 1f);
         t.AttackedBy(CreatureTemplate.Type.Scavenger, .6f);

@@ -21,6 +21,8 @@ public static class AbstractPhysicalObjectHooks
     public static ConditionalWeakTable<AbstractConsumable, ThornyStrawberryData> StrawberryData = new();
     public static ConditionalWeakTable<AbstractConsumable, RubberBlossomProperties> StationPlant = new();
     public static ConditionalWeakTable<AbstractConsumable, GummyAntherProperties> StationFruit = new();
+    public static ConditionalWeakTable<AbstractConsumable, MiniFruitSpawnerProperties> MiniFruitSpawners = new();
+    public static ConditionalWeakTable<AbstractConsumable, MiniFruitProperties> MiniFruits = new();
 
     internal static void On_AbstractConsumable_ctor(On.AbstractConsumable.orig_ctor orig, AbstractConsumable self, World world, AbstractPhysicalObject.AbstractObjectType type, PhysicalObject realizedObject, WorldCoordinate pos, EntityID ID, int originRoom, int placedObjectIndex, PlacedObject.ConsumableObjectData consumableData)
     {
@@ -53,11 +55,32 @@ public static class AbstractPhysicalObjectHooks
             StationPlant.Add(self, dt);
             Random.state = state;
         }
+        else if (type == AbstractObjectType.MiniBlueFruit && !MiniFruits.TryGetValue(self, out _))
+            MiniFruits.Add(self, new());
+        else if (type == AbstractObjectType.MiniFruitSpawner && !MiniFruitSpawners.TryGetValue(self, out _))
+            MiniFruitSpawners.Add(self, new());
     }
 
     internal static void On_AbstractConsumable_Consume(On.AbstractConsumable.orig_Consume orig, AbstractConsumable self)
     {
-        if (StationPlant.TryGetValue(self, out var props) && !props.AlwaysClosed && !props.AlwaysOpen)
+        if (MiniFruits.TryGetValue(self, out var fprops) && fprops.Spawner is AbstractConsumable cons && MiniFruitSpawners.TryGetValue(cons, out var prps))
+        {
+            if (!self.isConsumed)
+            {
+                if (prps.NumberOfFruits > 0)
+                    --prps.NumberOfFruits;
+                self.isConsumed = true;
+                if (self.world.game.session is StoryGameSession sess)
+                    sess.saveState.ReportConsumedFruit(self.world, self.originRoom, self.placedObjectIndex);
+            }
+        }
+        /*else if (StationFruit.TryGetValue(self, out var pprops) && !self.isConsumed && pprops.Plant is not null) // removal intended
+        {
+            self.isConsumed = true;
+            if (self.world.game.session is StoryGameSession sess)
+                sess.saveState.ReportConsumedFruit(self.world, self.originRoom, self.placedObjectIndex);
+        }*/
+        else if (StationPlant.TryGetValue(self, out var props) && !props.AlwaysClosed && !props.AlwaysOpen)
         {
             if (!self.isConsumed)
             {
@@ -65,7 +88,23 @@ public static class AbstractPhysicalObjectHooks
                     --props.RemainingOpenCycles;
                 self.isConsumed = props.RemainingOpenCycles == 0;
                 if (self.world.game.session is StoryGameSession session)
+                {
+                    /*if (self.isConsumed)
+                        session.saveState.ClearConsumedFruits(self.world, self.originRoom, self.placedObjectIndex);*/ // removal intended
                     session.saveState.ReportConsumedItem(self.world, false, self.originRoom, self.placedObjectIndex, self.minCycles > 0 ? Random.Range(self.minCycles, self.maxCycles + 1) + props.RemainingOpenCycles * 100 : -1);
+                }
+            }
+        }
+        else if (self.type == AbstractObjectType.MiniFruitSpawner)
+        {
+            if (!self.isConsumed)
+            {
+                self.isConsumed = true;
+                if (self.world.game.session is StoryGameSession sess)
+                {
+                    sess.saveState.ClearConsumedFruits(self.world, self.originRoom, self.placedObjectIndex);
+                    sess.saveState.ReportConsumedItem(self.world, false, self.originRoom, self.placedObjectIndex, self.minCycles > 0 ? Random.Range(self.minCycles, self.maxCycles + 1) : -1);
+                }
             }
         }
         else
@@ -86,7 +125,7 @@ public static class AbstractPhysicalObjectHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.InitiateAI!");
     }
 
-    internal static void IL_AbstractCreature_MSCInitiateAI(On.AbstractCreature.orig_MSCInitiateAI orig, AbstractCreature self)
+    internal static void On_AbstractCreature_MSCInitiateAI(On.AbstractCreature.orig_MSCInitiateAI orig, AbstractCreature self)
     {
         if (!CreatureTemplateType.s_M4RCreatureList.Contains(self.creatureTemplate.type))
             orig(self);
@@ -158,7 +197,7 @@ public static class AbstractPhysicalObjectHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.AbstractBehavior!");
     }
 
-    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || type == AbstractObjectType.StarLemon || type == AbstractObjectType.DendriticNeuron || type == AbstractObjectType.MiniBlueFruit || orig(type);
+    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || type == AbstractObjectType.StarLemon || type == AbstractObjectType.DendriticNeuron || type == AbstractObjectType.MiniBlueFruit || type == AbstractObjectType.MiniFruitSpawner || orig(type);
 
     internal static void On_AbstractCreature_ctor(On.AbstractCreature.orig_ctor orig, AbstractCreature self, World world, CreatureTemplate creatureTemplate, Creature realizedCreature, WorldCoordinate pos, EntityID ID)
     {
@@ -329,6 +368,8 @@ public static class AbstractPhysicalObjectHooks
                 self.realizedObject = new DendriticNeuron(self);
             else if (type == AbstractObjectType.MiniBlueFruit)
                 self.realizedObject = new MiniFruit(self);
+            else if (type == AbstractObjectType.MiniFruitSpawner)
+                self.realizedObject = new MiniFruitSpawner(self);
         }
     }
 
@@ -344,10 +385,46 @@ public static class AbstractPhysicalObjectHooks
         return (false, 101);
     }
 
-    public static (bool Consumed, int WaitCycles) PlantConsumed(this SaveState self, World world, int originroom, int placedObjectIndex)
+    public static (bool Consumed, int WaitCycles) PlantConsumed(this SaveState self, World world, int originRoom, int placedObjectIndex)
     {
-        if (world.singleRoomWorld || originroom < 0 || placedObjectIndex < 0 || originroom < world.firstRoomIndex || originroom >= world.firstRoomIndex + world.NumberOfRooms || self.regionStates[world.region.regionNumber] is not RegionState st)
+        if (world.singleRoomWorld || originRoom < 0 || placedObjectIndex < 0 || originRoom < world.firstRoomIndex || originRoom >= world.firstRoomIndex + world.NumberOfRooms || self.regionStates[world.region.regionNumber] is not RegionState st)
             return (false, 101);
-        return st.PlantConsumed(originroom, placedObjectIndex);
+        return st.PlantConsumed(originRoom, placedObjectIndex);
+    }
+
+    public static void ReportConsumedFruit(this SaveState self, World world, int originRoom, int placedObjectFruitIndex)
+    {
+        if (!world.singleRoomWorld && originRoom >= 0 && placedObjectFruitIndex <= -10 && originRoom >= world.firstRoomIndex && originRoom < world.firstRoomIndex + world.NumberOfRooms && self.regionStates[world.region.regionNumber] is RegionState st)
+            st.consumedItems.Add(new(originRoom, placedObjectFruitIndex, -1));
+    }
+
+    public static int ConsumedFruits(this SaveState self, World world, int originRoom, int placedObjectOwnerIndex)
+    {
+        if (world.singleRoomWorld || originRoom < 0 || placedObjectOwnerIndex < 0 || originRoom < world.firstRoomIndex || originRoom >= world.firstRoomIndex + world.NumberOfRooms || self.regionStates[world.region.regionNumber] is not RegionState st)
+            return 0;
+        var cons = st.consumedItems;
+        var index = -10 - placedObjectOwnerIndex;
+        var res = 0;
+        for (var num = cons.Count - 1; num >= 0; num--)
+        {
+            var item = cons[num];
+            if (item.originRoom == originRoom && item.placedObjectIndex == index)
+                ++res;
+        }
+        return res;
+    }
+
+    public static void ClearConsumedFruits(this SaveState self, World world, int originRoom, int placedObjectOwnerIndex)
+    {
+        if (world.singleRoomWorld || originRoom < 0 || placedObjectOwnerIndex < 0 || originRoom < world.firstRoomIndex || originRoom >= world.firstRoomIndex + world.NumberOfRooms || self.regionStates[world.region.regionNumber] is not RegionState st)
+            return;
+        var index = -10 - placedObjectOwnerIndex;
+        var cons = st.consumedItems;
+        for (var num = cons.Count - 1; num >= 0; num--)
+        {
+            var item = cons[num];
+            if (item.originRoom == originRoom && item.placedObjectIndex == index)
+                cons.RemoveAt(num);
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace LBMergedMods.Items;
 
@@ -17,10 +16,13 @@ public class RubberBlossomData : PlacedObject.ConsumableObjectData
 
     public override void FromString(string s)
     {
-        base.FromString(s);
-        var array = Regex.Split(s, "~");
+        var array = s.Split('~');
         if (array.Length >= 14)
         {
+            float.TryParse(array[0], NumberStyles.Any, CultureInfo.InvariantCulture, out panelPos.x);
+            float.TryParse(array[1], NumberStyles.Any, CultureInfo.InvariantCulture, out panelPos.y);
+            int.TryParse(array[2], NumberStyles.Any, CultureInfo.InvariantCulture, out minRegen);
+            int.TryParse(array[3], NumberStyles.Any, CultureInfo.InvariantCulture, out maxRegen);
             int.TryParse(array[4], NumberStyles.Any, CultureInfo.InvariantCulture, out CyclesOpen);
             int.TryParse(array[5], NumberStyles.Any, CultureInfo.InvariantCulture, out CyclesClosed);
             int.TryParse(array[6], NumberStyles.Any, CultureInfo.InvariantCulture, out FoodAmount);
@@ -49,19 +51,19 @@ public class RubberBlossomData : PlacedObject.ConsumableObjectData
     }
 
     public override string ToString() => SaveUtils.AppendUnrecognizedStringAttrs(new StringBuilder()
-            .Append(panelPos.x)
+            .Append(panelPos.x.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(panelPos.y)
+            .Append(panelPos.y.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(minRegen)
+            .Append(minRegen.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(maxRegen)
+            .Append(maxRegen.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(CyclesOpen)
+            .Append(CyclesOpen.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(CyclesClosed)
+            .Append(CyclesClosed.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(FoodAmount)
+            .Append(FoodAmount.ToString(CultureInfo.InvariantCulture))
             .Append('~')
             .Append(RandomOpen ? '1' : '0')
             .Append('~')
@@ -71,16 +73,15 @@ public class RubberBlossomData : PlacedObject.ConsumableObjectData
             .Append('~')
             .Append(StartsOpen ? '1' : '0')
             .Append('~')
-            .Append(Red)
+            .Append(Red.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(Green)
+            .Append(Green.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(Blue)
+            .Append(Blue.ToString(CultureInfo.InvariantCulture))
             .Append('~')
-            .Append(MaxUpwardVel)
+            .Append(MaxUpwardVel.ToString(CultureInfo.InvariantCulture))
             .Append('~')
             .Append(AlwaysOpen && !AlwaysClosed ? '1' : '0')
             .Append('~')
-            .Append(AlwaysClosed && !AlwaysOpen ? '1' : '0')
-            .Append('~').ToString(), "~", unrecognizedAttributes);
+            .Append(AlwaysClosed && !AlwaysOpen ? '1' : '0').ToString(), "~", unrecognizedAttributes);
 }

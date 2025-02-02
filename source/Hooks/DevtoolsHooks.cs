@@ -67,7 +67,7 @@ public static class DevtoolsHooks
 
     internal static void On_ObjectsPage_CreateObjRep(On.DevInterface.ObjectsPage.orig_CreateObjRep orig, ObjectsPage self, PlacedObject.Type tp, PlacedObject pObj)
     {
-        if (tp == PlacedObjectType.ThornyStrawberry || tp == PlacedObjectType.LittleBalloon || tp == PlacedObjectType.BouncingMelon || tp == PlacedObjectType.HazerMom || tp == PlacedObjectType.AlbinoHazerMom || tp == PlacedObjectType.DeadHazerMom || tp == PlacedObjectType.DeadAlbinoHazerMom || tp == PlacedObjectType.DeadAlbinoFormHazer || tp == PlacedObjectType.AlbinoFormHazer || tp == PlacedObjectType.Physalis || tp == PlacedObjectType.LimeMushroom || tp == PlacedObjectType.MarineEye || tp == PlacedObjectType.StarLemon || tp == PlacedObjectType.DendriticNeuron || tp == PlacedObjectType.MiniFruitBranch) //tochange
+        if (tp == PlacedObjectType.ThornyStrawberry || tp == PlacedObjectType.LittleBalloon || tp == PlacedObjectType.BouncingMelon || tp == PlacedObjectType.HazerMom || tp == PlacedObjectType.AlbinoHazerMom || tp == PlacedObjectType.DeadHazerMom || tp == PlacedObjectType.DeadAlbinoHazerMom || tp == PlacedObjectType.DeadAlbinoFormHazer || tp == PlacedObjectType.AlbinoFormHazer || tp == PlacedObjectType.Physalis || tp == PlacedObjectType.LimeMushroom || tp == PlacedObjectType.MarineEye || tp == PlacedObjectType.StarLemon || tp == PlacedObjectType.DendriticNeuron)
         {
             if (pObj is null)
                 self.RoomSettings.placedObjects.Add(pObj = new(tp, null)
@@ -89,6 +89,28 @@ public static class DevtoolsHooks
             self.tempNodes.Add(rep);
             self.subNodes.Add(rep);
         }
+        else if (tp == PlacedObjectType.MiniFruitBranch)
+        {
+            if (pObj is null)
+                self.RoomSettings.placedObjects.Add(pObj = new(tp, null)
+                {
+                    pos = self.owner.game.cameras[0].pos + Vector2.Lerp(self.owner.mousePos, new(-683f, 384f), .25f) + Custom.DegToVec(Random.value * 360f) * .2f
+                });
+            var rep = new MiniFruitSpawnerRepresentation(self.owner, self, pObj);
+            self.tempNodes.Add(rep);
+            self.subNodes.Add(rep);
+        }
+        else if (tp == PlacedObjectType.BonusScoreToken)
+        {
+            if (pObj is null)
+                self.RoomSettings.placedObjects.Add(pObj = new(tp, null)
+                {
+                    pos = self.owner.game.cameras[0].pos + Vector2.Lerp(self.owner.mousePos, new(-683f, 384f), .25f) + Custom.DegToVec(Random.value * 360f) * .2f
+                });
+            var pObjRep = new ScoreTokenRepresentation(self.owner, "BonusScoreToken_Rep", self, pObj);
+            self.tempNodes.Add(pObjRep);
+            self.subNodes.Add(pObjRep);
+        }
         else
             orig(self, tp, pObj);
     }
@@ -102,10 +124,14 @@ public static class DevtoolsHooks
 
     internal static void On_PlacedObject_GenerateEmptyData(On.PlacedObject.orig_GenerateEmptyData orig, PlacedObject self)
     {
-        if (self.type == PlacedObjectType.ThornyStrawberry || self.type == PlacedObjectType.LittleBalloon || self.type == PlacedObjectType.BouncingMelon || self.type == PlacedObjectType.HazerMom || self.type == PlacedObjectType.AlbinoHazerMom || self.type == PlacedObjectType.DeadHazerMom || self.type == PlacedObjectType.DeadAlbinoHazerMom || self.type == PlacedObjectType.DeadAlbinoFormHazer || self.type == PlacedObjectType.AlbinoFormHazer || self.type == PlacedObjectType.Physalis || self.type == PlacedObjectType.LimeMushroom || self.type == PlacedObjectType.MarineEye || self.type == PlacedObjectType.StarLemon || self.type == PlacedObjectType.DendriticNeuron || self.type == PlacedObjectType.MiniFruitBranch) //tochange
+        if (self.type == PlacedObjectType.ThornyStrawberry || self.type == PlacedObjectType.LittleBalloon || self.type == PlacedObjectType.BouncingMelon || self.type == PlacedObjectType.HazerMom || self.type == PlacedObjectType.AlbinoHazerMom || self.type == PlacedObjectType.DeadHazerMom || self.type == PlacedObjectType.DeadAlbinoHazerMom || self.type == PlacedObjectType.DeadAlbinoFormHazer || self.type == PlacedObjectType.AlbinoFormHazer || self.type == PlacedObjectType.Physalis || self.type == PlacedObjectType.LimeMushroom || self.type == PlacedObjectType.MarineEye || self.type == PlacedObjectType.StarLemon || self.type == PlacedObjectType.DendriticNeuron)
             self.data = new PlacedObject.ConsumableObjectData(self);
         else if (self.type == PlacedObjectType.RubberBlossom)
             self.data = new RubberBlossomData(self);
+        else if (self.type == PlacedObjectType.MiniFruitBranch)
+            self.data = new MiniFruitSpawnerData(self);
+        else if (self.type == PlacedObjectType.BonusScoreToken)
+            self.data = new ScoreTokenData(self);
         else
             orig(self);
     }

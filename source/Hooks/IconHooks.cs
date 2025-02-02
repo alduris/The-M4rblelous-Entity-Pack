@@ -107,6 +107,8 @@ public static class IconHooks
             return Ext.MenuGrey;
         if (itemType == AbstractObjectType.MiniBlueFruit)
             return Color.blue;
+        if (itemType == AbstractObjectType.MiniFruitSpawner)
+            return default;
         return orig(itemType, intData);
     }
 
@@ -137,7 +139,9 @@ public static class IconHooks
         if (itemType == AbstractObjectType.DendriticNeuron)
             return "Symbol_DendriticNeuron";
         if (itemType == AbstractObjectType.MiniBlueFruit)
-            return "Symbol_DangleFruit"; //tochange
+            return "Symbol_MiniBlueFruit";
+        if (itemType == AbstractObjectType.MiniFruitSpawner)
+            return "1x1TPX4";
         return orig(itemType, intData);
     }
 

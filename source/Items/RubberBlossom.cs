@@ -138,7 +138,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
         }
     }
 
-    void IDrawable.InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
+    public virtual void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
         const string NM = "BigStationPlant", GR = "GR", LR = "LR";
         var cl = Open ? string.Empty : "CL";
@@ -162,7 +162,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
         AddToContainer(sLeaser, rCam, null);
     }
 
-    void ChangeDirtySprites(RoomCamera.SpriteLeaser sLeaser)
+    public virtual void ChangeDirtySprites(RoomCamera.SpriteLeaser sLeaser)
     {
         const string NM = "BigStationPlant", GR = "GR", LR = "LR";
         var cl = Open ? string.Empty : "CL";
@@ -178,7 +178,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
         SpritesDirty = false;
     }
 
-    void IDrawable.DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+    public virtual void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
         var sprites = sLeaser.sprites;
         var pos = Vector2.Lerp(firstChunk.lastPos, firstChunk.pos, timeStacker);
@@ -226,9 +226,9 @@ public class RubberBlossom : PhysicalObject, IDrawable
             sLeaser.CleanSpritesAndRemove();
     }
 
-    void IDrawable.ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette) { }
+    public virtual void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette) { }
 
-    public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer? newContainer)
+    public virtual void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer? newContainer)
     {
         newContainer ??= rCam.ReturnFContainer("Midground");
         var sprites = sLeaser.sprites;
