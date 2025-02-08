@@ -99,6 +99,12 @@ public static class CreatureHooks
         return res;
     }
 
+    internal static void On_SporePlant_HitByWeapon(On.SporePlant.orig_HitByWeapon orig, SporePlant self, Weapon weapon)
+    {
+        if (weapon is not SmallPuffBall)
+            orig(self, weapon);
+    }
+
     internal static bool On_SporePlant_SporePlantInterested(On.SporePlant.orig_SporePlantInterested orig, CreatureTemplate.Type tp) => tp != CreatureTemplateType.Denture && orig(tp);
 
     internal static bool On_StowawayBugAI_WantToEat(On.MoreSlugcats.StowawayBugAI.orig_WantToEat orig, StowawayBugAI self, CreatureTemplate.Type input) => input != CreatureTemplateType.Denture && input != CreatureTemplateType.MiniLeviathan && input != CreatureTemplateType.FatFireFly && input != CreatureTemplateType.FlyingBigEel && input != CreatureTemplateType.MiniFlyingBigEel && input != CreatureTemplateType.Blizzor && orig(self, input);

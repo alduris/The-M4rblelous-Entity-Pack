@@ -13,6 +13,8 @@ public class SmallPuffBall : Rock
     public bool LastModeThrown;
     public Vector2[] Dots;
 
+    public virtual AbstractConsumable AbstrCons => (abstractPhysicalObject as AbstractConsumable)!;
+
     public SmallPuffBall(AbstractPhysicalObject abstractPhysicalObject, World world) : base(abstractPhysicalObject, world)
     {
         var state = Random.state;
@@ -95,6 +97,19 @@ public class SmallPuffBall : Rock
         return true;
     }
 
+
+    public override void PlaceInRoom(Room placeRoom)
+    {
+        if (!AbstrCons.isConsumed)
+        {
+            var index = AbstrCons.placedObjectIndex;
+            if (index >= 0 && index < placeRoom.roomSettings.placedObjects.Count)
+                firstChunk.HardSetPosition(placeRoom.roomSettings.placedObjects[index].pos);
+        }
+        base.PlaceInRoom(placeRoom);
+    }
+
+
     public override void Thrown(Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
         base.Thrown(thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
@@ -128,6 +143,7 @@ public class SmallPuffBall : Rock
 
     public override void HitWall()
     {
+        AbstrCons.Consume();
         Explode();
         SetRandomSpin();
         ChangeMode(Mode.Free);
@@ -137,12 +153,14 @@ public class SmallPuffBall : Rock
     public override void HitByExplosion(float hitFac, Explosion explosion, int hitChunk)
     {
         base.HitByExplosion(hitFac, explosion, hitChunk);
+        AbstrCons.Consume();
         Explode();
     }
 
     public override void HitByWeapon(Weapon weapon)
     {
         base.HitByWeapon(weapon);
+        AbstrCons.Consume();
         Explode();
     }
 
@@ -182,6 +200,13 @@ public class SmallPuffBall : Rock
             sprs[2 + dotl + i] = new("pixel");
         }
         AddToContainer(sLeaser, rCam, null);
+    }
+
+    public override void NewRoom(Room newRoom)
+    {
+        base.NewRoom(newRoom);
+        if (grabbedBy.Count > 0 && AbstrCons.originRoom >= 0 && AbstrCons.originRoom != newRoom.abstractRoom.index)
+            AbstrCons.Consume();
     }
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)

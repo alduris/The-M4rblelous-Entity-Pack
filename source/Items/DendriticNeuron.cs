@@ -134,6 +134,8 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
     public override void NewRoom(Room newRoom)
     {
         base.NewRoom(newRoom);
+        if (grabbedBy.Count > 0 && AbstrCons.originRoom >= 0 && AbstrCons.originRoom != newRoom.abstractRoom.index)
+            AbstrCons.Consume();
         if (newRoom.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SuperStructureProjector) > 0f)
         {
             if (Circle is null)

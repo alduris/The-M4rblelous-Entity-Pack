@@ -309,7 +309,8 @@ public static class SandboxUnlockID
         DivingBeetle = new(nameof(DivingBeetle), true),
         Killerpillar = new(nameof(Killerpillar), true),
         Glowpillar = new(nameof(Glowpillar), true),
-        MiniBlueFruit = new(nameof(MiniBlueFruit), true);
+        MiniBlueFruit = new(nameof(MiniBlueFruit), true),
+        SporeProjectile = new(nameof(SporeProjectile), true);
 
     public static void UnregisterValues()
     {
@@ -503,6 +504,11 @@ public static class SandboxUnlockID
             MiniBlueFruit.Unregister();
             MiniBlueFruit = null!;
         }
+        if (SporeProjectile is not null)
+        {
+            SporeProjectile.Unregister();
+            SporeProjectile = null!;
+        }
     }
 }
 
@@ -524,7 +530,8 @@ public static class PlacedObjectType
         StarLemon = new(nameof(StarLemon), true),
         DendriticNeuron = new(nameof(DendriticNeuron), true),
         MiniFruitBranch = new(nameof(MiniFruitBranch), true),
-        BonusScoreToken = new(nameof(BonusScoreToken), true);
+        BonusScoreToken = new(nameof(BonusScoreToken), true),
+        SporeProjectile = new(nameof(SporeProjectile), true);
 
     public static void UnregisterValues()
     {
@@ -612,6 +619,11 @@ public static class PlacedObjectType
         {
             BonusScoreToken.Unregister();
             BonusScoreToken = null!;
+        }
+        if (SporeProjectile is not null)
+        {
+            SporeProjectile.Unregister();
+            SporeProjectile = null!;
         }
     }
 }
@@ -716,7 +728,8 @@ public static class MultiplayerItemType
         Physalis = new(nameof(Physalis), true),
         LimeMushroom = new(nameof(LimeMushroom), true),
         MarineEye = new(nameof(MarineEye), true),
-        StarLemon = new(nameof(StarLemon), true);
+        StarLemon = new(nameof(StarLemon), true),
+        SporeProjectile = new(nameof(SporeProjectile), true);
 
     public static void UnregisterValues()
     {
@@ -754,6 +767,11 @@ public static class MultiplayerItemType
         {
             StarLemon.Unregister();
             StarLemon = null!;
+        }
+        if (SporeProjectile is not null)
+        {
+            SporeProjectile.Unregister();
+            SporeProjectile = null!;
         }
     }
 }

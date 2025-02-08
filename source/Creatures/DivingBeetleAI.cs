@@ -241,7 +241,7 @@ public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         if (dRelation.trackerRep.VisualContact)
             dRelation.state.alive = dRelation.trackerRep.representedCreature.state.alive;
         var result = StaticRelationship(dRelation.trackerRep.representedCreature);
-        if (result.type != CreatureTemplate.Relationship.Type.Eats && !dRelation.trackerRep.representedCreature.creatureTemplate.smallCreature && dRelation.trackerRep.representedCreature.realizedCreature is Creature c && c.dead && c.TotalMass < Bug.TotalMass * 1.15f)
+        if (result.type != CreatureTemplate.Relationship.Type.Eats && dRelation.trackerRep.representedCreature.realizedCreature is Creature c && c.dead && c.TotalMass < Bug.TotalMass * 1.15f)
             result = new CreatureTemplate.Relationship(CreatureTemplate.Relationship.Type.Eats, Mathf.InverseLerp(Bug.TotalMass * .3f, Bug.TotalMass * 1.15f, c.TotalMass) * .5f);
         if (result.type == CreatureTemplate.Relationship.Type.Eats)
         {

@@ -22,7 +22,7 @@ public static class ArenaHooks
     {
         var data = (placedObj.data as PlacedObject.MultiplayerItemData)!;
         var dataTp = data.type;
-        if (dataTp != MultiplayerItemType.ThornyStrawberry && dataTp != MultiplayerItemType.LittleBalloon && dataTp != MultiplayerItemType.BouncingMelon && dataTp != MultiplayerItemType.Physalis && dataTp != MultiplayerItemType.LimeMushroom && dataTp != MultiplayerItemType.MarineEye && dataTp != MultiplayerItemType.StarLemon)
+        if (dataTp != MultiplayerItemType.ThornyStrawberry && dataTp != MultiplayerItemType.LittleBalloon && dataTp != MultiplayerItemType.BouncingMelon && dataTp != MultiplayerItemType.Physalis && dataTp != MultiplayerItemType.LimeMushroom && dataTp != MultiplayerItemType.MarineEye && dataTp != MultiplayerItemType.StarLemon && dataTp != MultiplayerItemType.SporeProjectile)
             orig(self, room, placedObj);
         else if (self.SpawnDefaultRoomItems && Random.value <= data.chance)
         {

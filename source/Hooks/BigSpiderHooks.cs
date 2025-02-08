@@ -132,7 +132,7 @@ public static class BigSpiderHooks
              {
                  if (self is Sporantula)
                  {
-                     var puffBall = new AbstractPhysicalObject(self.room.world, AbstractObjectType.SporeProjectile, null, self.abstractCreature.pos, self.room.game.GetNewID());
+                     var puffBall = new AbstractConsumable(self.room.world, AbstractObjectType.SporeProjectile, null, self.abstractCreature.pos, self.room.game.GetNewID(), -1, -1, null);
                      puffBall.RealizeInRoom();
                      var rObj = puffBall.realizedObject as SmallPuffBall;
                      rObj!.Shoot(self.mainBodyChunk.pos, aimDir, self);

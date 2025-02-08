@@ -83,6 +83,7 @@ static class InternalMatch
         s_MatchIsinst_IPlayerEdible = MatchIsinst_IPlayerEdible,
         s_MatchIsinst_LizardAI_LizardTrackState = MatchIsinst_LizardAI_LizardTrackState,
         s_MatchIsinst_KarmaFlower = MatchIsinst_KarmaFlower,
+        s_MatchIsinst_PuffBall = MatchIsinst_PuffBall,
         s_MatchLdarg_0 = MatchLdarg_0,
         s_MatchLdarg_1 = MatchLdarg_1,
         s_MatchLdarg_2 = MatchLdarg_2,
@@ -285,6 +286,7 @@ static class InternalMatch
         s_MatchIsinst_IPlayerEdible = null!;
         s_MatchIsinst_LizardAI_LizardTrackState = null!;
         s_MatchIsinst_KarmaFlower = null!;
+        s_MatchIsinst_PuffBall = null!;
         s_MatchLdarg_0 = null!;
         s_MatchLdarg_1 = null!;
         s_MatchLdarg_2 = null!;
@@ -531,6 +533,8 @@ static class InternalMatch
     internal static bool MatchIsinst_LizardAI_LizardTrackState(Instruction x) => x.MatchIsinst<LizardAI.LizardTrackState>();
 
     internal static bool MatchIsinst_KarmaFlower(Instruction x) => x.MatchIsinst<KarmaFlower>();
+
+    internal static bool MatchIsinst_PuffBall(Instruction x) => x.MatchIsinst<PuffBall>();
 
     internal static bool MatchLdarg_0(Instruction x) => x.MatchLdarg(0);
 

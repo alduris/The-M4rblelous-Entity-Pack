@@ -31,14 +31,34 @@ public class SporantulaGraphics : BigSpiderGraphics
     public override void Update()
     {
         base.Update();
-        var dots = Dots;
         var scls = Scales;
+        var b1 = bug.bodyChunks[1];
+        var b1pos = b1.pos;
+        var b1lastPos = b1.pos;
         for (var j = 0; j < scls.Length; j++)
-            scls[j]?.Update();
-        for (var k = 0; k < dots.Length; k++)
-            dots[k]?.Update();
-        if (bug is Sporantula s && s.dead is false && bug.AI?.preyTracker?.currentPrey?.critRep?.representedCreature is AbstractCreature crit && Random.value < .6f && SporeMemory.TryGetValue(bug.abstractCreature, out var mem) && mem.Contains(crit))
-            s.Angry();
+        {
+            if (scls[j] is SporantulaScale s)
+            {
+                var scly = scaleStuckPositions[j * 2].y;
+                var bse = new Vector2(s.BaseY, s.BaseY);
+                s.LastPos = Vector2.Lerp(tailEnd.lastPos, b1lastPos, scly) + bse;
+                s.Pos = Vector2.Lerp(tailEnd.pos, b1pos, scly) + bse;
+                s.Update();
+            }
+        }
+        var dots = Dots;
+        for (var j = 0; j < dots.Length; j++)
+        {
+            if (dots[j] is SporantulaDots dot)
+            {
+                var scly = scaleStuckPositions[(j + 2) * 2].y * 1.4f;
+                var bse = new Vector2(dot.BaseY, dot.BaseY);
+                dot.LastPos = Vector2.Lerp(tailEnd.lastPos, b1lastPos, scly) + bse;
+                dot.Pos = Vector2.Lerp(tailEnd.pos, b1pos, scly) + bse;
+            }
+        }
+        if (bug is Sporantula spo && spo.dead is false && bug.AI?.preyTracker?.currentPrey?.critRep?.representedCreature is AbstractCreature crit && Random.value < .6f && SporeMemory.TryGetValue(bug.abstractCreature, out var mem) && mem.Contains(crit))
+            spo.Angry();
     }
 
     public override void Reset()
@@ -82,28 +102,14 @@ public class SporantulaGraphics : BigSpiderGraphics
         base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
         var num2 = Mathf.Lerp(lastMandiblesCharge, mandiblesCharge, timeStacker);
         var vector2 = Vector2.Lerp(bug.bodyChunks[1].lastPos, bug.bodyChunks[1].pos, timeStacker) + Custom.RNV() * Random.value * 3.5f * num2;
-        var mesh = sLeaser.sprites[MeshSprite] as TriangleMesh;
-        var rot = mesh!.rotation;
         var scls = Scales;
         for (var m = 0; m < scls.Length; m++)
-        {
-            if (scls[m] is SporantulaScale s)
-            {
-                var rt = s.BaseY * Mathf.Cos(rot);
-                s.Pos = Vector2.Lerp(Vector2.Lerp(tailEnd.lastPos, tailEnd.pos, timeStacker), vector2, scaleStuckPositions[m * 2].y) + new Vector2(rt, rt);
-                s.DrawSprites(OrigNumOfSprites + 1 + m, sLeaser, timeStacker, camPos);
-            }
-        }
+            scls[m]?.DrawSprites(OrigNumOfSprites + 1 + m, sLeaser, timeStacker, camPos);
         var dots = Dots;
         for (var j = 0; j < dots.Length; j++)
         {
             if (dots[j] is SporantulaDots dot)
-            {
-                dot.Rot = rot;
-                var rt = dot.BaseY * Mathf.Cos(rot);
-                dot.Pos = Vector2.Lerp(Vector2.Lerp(tailEnd.lastPos, tailEnd.pos, timeStacker), vector2, scaleStuckPositions[(j + 2) * 2].y * 1.4f) + new Vector2(rt, rt);
                 dot.DrawSprites(OrigNumOfSprites + 1 + scls.Length + j * dot.Dots.Length * 2, sLeaser, timeStacker, camPos);
-            }
         }
         var scals = scales;
         for (var m = 0; m < scals.Length; m++)
@@ -119,8 +125,9 @@ public class SporantulaGraphics : BigSpiderGraphics
             spr.verticeColors[0] = spr.verticeColors[1] = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), rCam.currentPalette.texture.GetPixel(11, 4), .5f), blackColor, .6f * (1f - num2) + .4f * darkness + .2f);
         }
         var colr = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), rCam.currentPalette.texture.GetPixel(11, 4), .5f), rCam.currentPalette.blackColor, rCam.currentPalette.darkness / 2f);
-        mesh!.color = colr;
-        var mesh2 = sLeaser.sprites[OrigNumOfSprites] as TriangleMesh;
+        var mesh = (sLeaser.sprites[MeshSprite] as TriangleMesh)!;
+        mesh.color = colr;
+        var mesh2 = (sLeaser.sprites[OrigNumOfSprites] as TriangleMesh)!;
         var vector22 = Vector2.Lerp(bug.mainBodyChunk.lastPos, bug.mainBodyChunk.pos, timeStacker);
         var vector3 = Custom.DirVec(vector2, vector22);
         var b = Vector2.Lerp(tailEnd.lastPos, tailEnd.pos, timeStacker);
@@ -132,14 +139,14 @@ public class SporantulaGraphics : BigSpiderGraphics
             var vector6 = Custom.Bezier(vector22 + vector3 * 3f, vector2, b, vector2, f);
             var num4 = Mathf.Lerp(2.5f, 10f + Mathf.Sin(Mathf.Lerp(lastBreathCounter, breathCounter, timeStacker) / 10f), Mathf.Sin(Mathf.Pow(f, .75f) * Mathf.PI)) * bodyThickness * .675f;
             var vector7 = Custom.PerpendicularVector(vector6, vector5);
-            mesh2!.MoveVertice(i * 4, (vector5 + vector6) / 2f - vector7 * (num4 + num3) * .5f - camPos);
-            mesh2!.MoveVertice(i * 4 + 1, (vector5 + vector6) / 2f + vector7 * (num4 + num3) * .5f - camPos);
-            mesh2!.MoveVertice(i * 4 + 2, vector6 - vector7 * num4 - camPos);
-            mesh2!.MoveVertice(i * 4 + 3, vector6 + vector7 * num4 - camPos);
+            mesh2.MoveVertice(i * 4, (vector5 + vector6) / 2f - vector7 * (num4 + num3) * .5f - camPos);
+            mesh2.MoveVertice(i * 4 + 1, (vector5 + vector6) / 2f + vector7 * (num4 + num3) * .5f - camPos);
+            mesh2.MoveVertice(i * 4 + 2, vector6 - vector7 * num4 - camPos);
+            mesh2.MoveVertice(i * 4 + 3, vector6 + vector7 * num4 - camPos);
             vector5 = vector6;
             num3 = num4;
         }
-        mesh2!.color = Color.Lerp(colr, Color.Lerp(Color.white, rCam.currentPalette.blackColor, rCam.currentPalette.darkness / 4f), .3f);
+        mesh2.color = Color.Lerp(colr, Color.Lerp(Color.white, rCam.currentPalette.blackColor, rCam.currentPalette.darkness / 4f), .3f);
         mesh2.alpha = .5f;
         if (bug is BigSpider bs && bs.dead)
             mesh.isVisible = mesh2.isVisible = false;
@@ -206,7 +213,6 @@ public class SporantulaGraphics : BigSpiderGraphics
 
         public virtual void Update()
         {
-            LastPos = Pos;
             var segs = Segments;
             var l = segs.Length;
             for (var j = 0; j < l; j++)
@@ -268,7 +274,7 @@ public class SporantulaGraphics : BigSpiderGraphics
         public virtual void DrawSprites(int startIndex, RoomCamera.SpriteLeaser sLeaser, float timeStacker, Vector2 camPos)
         {
             var vector3 = Vector2.Lerp(LastPos, Pos, timeStacker);
-            var mesh = sLeaser.sprites[startIndex] as TriangleMesh;
+            var mesh = (sLeaser.sprites[startIndex] as TriangleMesh)!;
             var segs = Segments;
             for (var j = 0; j < segs.Length; j++)
             {
@@ -277,19 +283,19 @@ public class SporantulaGraphics : BigSpiderGraphics
                 var num2 = Vector2.Distance(vector4, vector3) / 5f;
                 if (j == 0)
                 {
-                    mesh!.MoveVertice(j * 4, vector3 - vector5 * .5f - camPos);
+                    mesh.MoveVertice(j * 4, vector3 - vector5 * .5f - camPos);
                     mesh.MoveVertice(j * 4 + 1, vector3 + vector5 * .5f - camPos);
                 }
                 else
                 {
-                    mesh!.MoveVertice(j * 4, vector3 - vector5 * .5f + normalized * num2 - camPos);
+                    mesh.MoveVertice(j * 4, vector3 - vector5 * .5f + normalized * num2 - camPos);
                     mesh.MoveVertice(j * 4 + 1, vector3 + vector5 * .5f + normalized * num2 - camPos);
                 }
                 mesh.MoveVertice(j * 4 + 2, vector4 - vector5 * .5f - normalized * num2 - camPos);
                 mesh.MoveVertice(j * 4 + 3, vector4 + vector5 * .5f - normalized * num2 - camPos);
                 vector3 = vector4;
             }
-            mesh!.isVisible = Graphics?.bug is BigSpider b && !b.dead;
+            mesh.isVisible = Graphics?.bug is BigSpider b && !b.dead;
         }
 
         public virtual void ApplyPalette(int startIndex, RoomCamera.SpriteLeaser sLeaser, RoomPalette palette)
@@ -307,7 +313,6 @@ public class SporantulaGraphics : BigSpiderGraphics
         public BigSpiderGraphics Graphics;
         public float BaseY;
         public Vector2 Pos, LastPos;
-        public float Rot, LastRot;
 
         public SporantulaDots(BigSpiderGraphics graphicsModule, float baseY)
         {
@@ -353,12 +358,6 @@ public class SporantulaGraphics : BigSpiderGraphics
                 dots[num8] /= num6;
         }
 
-        public virtual void Update()
-        {
-            LastRot = Rot;
-            LastPos = Pos;
-        }
-
         public virtual void InitiateSprites(int startIndex, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
             var cont = rCam.ReturnFContainer("Midground");
@@ -385,7 +384,6 @@ public class SporantulaGraphics : BigSpiderGraphics
                 Vector2 dot = dots[i], vector2 = vector + new Vector2(dot.x * 7f, dot.y * 8.5f) * num;
                 spr1.x = spr2.x = vector2.x - camPos.x;
                 spr1.y = spr2.y = vector2.y - camPos.y;
-                spr1.rotation = Mathf.Lerp(LastRot, Rot, timeStacker);
                 spr1.scaleX = num;
                 spr1.scaleY = Custom.LerpMap(dot.magnitude, 0f, 1f, 1f, .25f, 4f);
                 spr1.isVisible = spr2.isVisible = Graphics?.bug is BigSpider b && !b.dead;

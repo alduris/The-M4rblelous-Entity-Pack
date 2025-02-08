@@ -67,7 +67,7 @@ public class BouncingBallGraphics : SnailGraphics
             spr8.x = spr7.x;
             spr8.y = spr7.y;
             spr8.rotation = spr7.rotation;
-            spr8.scale = spr7.scale;
+            spr8.scale = spr7.scale / 2f;
             spr9.x = Mathf.Lerp(chunk.lastPos.x, chunk.pos.x, timeStacker) - camPos.x;
             spr9.y = Mathf.Lerp(chunk.lastPos.y, chunk.pos.y, timeStacker) - camPos.y;
             spr9.scaleY = rm.lightAngle.magnitude * .25f * shadowExtensionFac;
@@ -89,7 +89,7 @@ public class BouncingBallGraphics : SnailGraphics
             sprites[6].color = rCam.currentPalette.blackColor;
             sprites[7].element = Futile.atlasManager.GetElementWithName("BoBShellB");
             sprites[7].alpha = .75f;
-            sprites[8] = new("BoBShellC") { color = s.shellColor[1] };
+            sprites[8] = new("BoBShellC2") { color = s.shellColor[1] };
             sprites[9] = new("Circle20")
             {
                 scaleX = s.firstChunk.rad / 10f,

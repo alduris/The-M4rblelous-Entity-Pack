@@ -50,6 +50,8 @@ public static class MainHooks
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.StarLemon);
                 if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.DendriticNeuron))
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.DendriticNeuron);
+                if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.SporeProjectile))
+                    MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.SporeProjectile);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.NoodleEater))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.NoodleEater);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SilverLizard))
@@ -149,6 +151,8 @@ public static class MainHooks
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.MiniBlueFruit);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.Physalis))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.Physalis);
+        if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.SporeProjectile))
+            MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.SporeProjectile);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.LimeMushroom))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.LimeMushroom);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.MarineEye))
@@ -197,6 +201,8 @@ public static class MainHooks
                 On.MoreSlugcats.BigJellyFish.ValidGrabCreature += On_BigJellyFish_ValidGrabCreature;
                 On.MoreSlugcats.StowawayBugAI.WantToEat += On_StowawayBugAI_WantToEat;
                 IL.MoreSlugcats.InspectorAI.IUseARelationshipTracker_UpdateDynamicRelationship += IL_InspectorAI_IUseARelationshipTracker_UpdateDynamicRelationship;
+                IL.MoreSlugcats.SlugNPCAI.PassingGrab += IL_SlugNPCAI_PassingGrab;
+                On.MoreSlugcats.SlugNPCAI.LethalWeaponScore += On_SlugNPCAI_LethalWeaponScore;
             }
             s_init = true;
         }

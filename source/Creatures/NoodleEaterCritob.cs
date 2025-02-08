@@ -38,8 +38,9 @@ sealed class NoodleEaterCritob : Critob, ISandboxHandler
     public override void EstablishRelationships()
     {
         var nl = new Relationships(Type);
-        for (var i = 0; i < CreatureTemplate.Type.values.entries.Count; i++)
-            nl.Fears(new CreatureTemplate.Type(CreatureTemplate.Type.values.entries[i]), 1f);
+        var entries = CreatureTemplate.Type.values.entries;
+        for (var i = 0; i < entries.Count; i++)
+            nl.Fears(new(entries[i]), 1f);
         nl.Ignores(CreatureTemplate.Type.LizardTemplate);
         nl.Ignores(CreatureTemplate.Type.TubeWorm);
         nl.Ignores(CreatureTemplate.Type.Hazer);

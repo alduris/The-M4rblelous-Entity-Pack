@@ -82,7 +82,7 @@ sealed class FlyingBigEelCritob : Critob
         var b = new Relationships(Type);
         var entries = CreatureTemplate.Type.values.entries;
         for (var i = 0; i < entries.Count; i++)
-            b.FearedBy(new CreatureTemplate.Type(entries[i]), 1f);
+            b.FearedBy(new(entries[i]), 1f);
         b.IgnoredBy(CreatureTemplate.Type.TempleGuard);
         b.IgnoredBy(CreatureTemplate.Type.GarbageWorm);
         b.IgnoredBy(CreatureTemplate.Type.Leech);

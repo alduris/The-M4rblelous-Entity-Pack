@@ -3,6 +3,8 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+namespace LBMergedMods.Creatures;
+
 public class CaterpillarGraphics : GraphicsModule
 {
     public const int TUBE_SPRITE = 0;

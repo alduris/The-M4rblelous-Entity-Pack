@@ -18,7 +18,7 @@ using Fisobs.Sandbox;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.6"), BepInDependency("io.github.dual.fisobs")]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.7"), BepInDependency("io.github.dual.fisobs")]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -291,6 +291,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.AbstractCreature.WantToStayInDenUntilEndOfCycle += IL_AbstractCreature_WantToStayInDenUntilEndOfCycle;
         IL.AbstractCreature.Update += IL_AbstractCreature_Update;
         On.SporePlant.SporePlantInterested += On_SporePlant_SporePlantInterested;
+        On.SporePlant.HitByWeapon += On_SporePlant_HitByWeapon;
         IL.OverseerHolograms.OverseerHologram.CreaturePointer.Update += IL_CreaturePointer_Update;
         IL.OverseerCommunicationModule.CreatureDangerScore += IL_OverseerCommunicationModule_CreatureDangerScore;
         On.ThreatDetermination.ThreatOfCreature += On_ThreatDetermination_ThreatOfCreature;

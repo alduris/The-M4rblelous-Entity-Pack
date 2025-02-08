@@ -79,9 +79,10 @@ sealed class SporantulaCritob : Critob
     public override void EstablishRelationships()
     {
         var s = new Relationships(Type);
-        var enums = CreatureTemplate.Type.values.entries;
-        foreach (var val in enums)
-            s.Ignores(new(val));
+        var entries = CreatureTemplate.Type.values.entries;
+        for (var i = 0; i < entries.Count; i++)
+            s.Ignores(new(entries[i]));
+        s.IgnoredBy(CreatureTemplate.Type.Deer);
         s.FearedBy(CreatureTemplate.Type.BigSpider, 1f);
         s.FearedBy(CreatureTemplate.Type.SpitterSpider, 1f);
         s.FearedBy(CreatureTemplate.Type.SmallNeedleWorm, 1f);
@@ -102,6 +103,7 @@ sealed class SporantulaCritob : Critob
         s.Fears(CreatureTemplate.Type.KingVulture, 1f);
         s.Fears(CreatureTemplate.Type.DaddyLongLegs, 1f);
         s.Fears(CreatureTemplate.Type.LizardTemplate, 1f);
+        s.Fears(CreatureTemplate.Type.Deer, 1f);
         s.Ignores(CreatureTemplate.Type.BlueLizard);
         s.Ignores(Type);
     }

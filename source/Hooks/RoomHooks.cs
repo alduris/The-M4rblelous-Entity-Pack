@@ -102,6 +102,8 @@ public static class RoomHooks
                         arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MarineEye, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.StarLemon && (game.session is not StoryGameSession session15 || !session15.saveState.ItemConsumed(self.world, false, arm.index, i)))
                         arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.SporeProjectile && (game.session is not StoryGameSession session133 || !session133.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.SporeProjectile, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.DendriticNeuron && (game.session is not StoryGameSession session16 || !session16.saveState.ItemConsumed(self.world, false, arm.index, i)))
                     {
                         var flag = true;
@@ -278,7 +280,7 @@ public static class RoomHooks
     internal static void On_Room_SpawnMultiplayerItem(On.Room.orig_SpawnMultiplayerItem orig, Room self, PlacedObject placedObj)
     {
         var data = (placedObj.data as PlacedObject.MultiplayerItemData)!;
-        if (data.type == MultiplayerItemType.ThornyStrawberry || data.type == MultiplayerItemType.LittleBalloon || data.type == MultiplayerItemType.BouncingMelon || data.type == MultiplayerItemType.Physalis || data.type == MultiplayerItemType.LimeMushroom || data.type == MultiplayerItemType.MarineEye || data.type == MultiplayerItemType.StarLemon)
+        if (data.type == MultiplayerItemType.ThornyStrawberry || data.type == MultiplayerItemType.LittleBalloon || data.type == MultiplayerItemType.BouncingMelon || data.type == MultiplayerItemType.Physalis || data.type == MultiplayerItemType.LimeMushroom || data.type == MultiplayerItemType.MarineEye || data.type == MultiplayerItemType.StarLemon || data.type == MultiplayerItemType.SporeProjectile)
         {
             var tp = new AbstractPhysicalObject.AbstractObjectType(data.type.value);
             if (tp.Index >= 0 && Random.value <= data.chance)

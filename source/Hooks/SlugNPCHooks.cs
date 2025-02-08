@@ -1,6 +1,8 @@
 ﻿global using static LBMergedMods.Hooks.SlugNPCHooks;
+using MonoMod.Cil;
 using MoreSlugcats;
 using UnityEngine;
+using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
 
@@ -81,6 +83,38 @@ public static class SlugNPCHooks
         if (food is MiniFruit)
             return SlugFood.MiniBlueFruit!;
         return orig(self, food);
+    }
+
+    internal static float On_SlugNPCAI_LethalWeaponScore(On.MoreSlugcats.SlugNPCAI.orig_LethalWeaponScore orig, SlugNPCAI self, PhysicalObject obj, Creature target)
+    {
+        if (obj is PuffBall or FlareBomb && target is Sporantula)
+            return 0f;
+        if (obj is SmallPuffBall)
+            return target is InsectoidCreature ? (target is Sporantula ? 0f : 5.3f) : .3f;
+        if (obj is ThornyStrawberry st)
+            return st.SpikesRemoved() ? 0f : .75f;
+        if (obj is LittleBalloon)
+            return self.WantsToEatThis(obj) ? 0f : .35f;
+        return orig(self, obj, target);
+    }
+
+    internal static void IL_SlugNPCAI_PassingGrab(ILContext il)
+    {
+        var c = new ILCursor(il);
+        for (var i = 1; i <= 2; i++)
+        {
+            if (c.TryGotoNext(MoveType.After,
+                s_MatchLdloc_OutLoc1,
+                s_MatchIsinst_PuffBall,
+                s_MatchBrtrue_OutLabel))
+            {
+                c.Emit(OpCodes.Ldloc, s_loc1)
+                 .EmitDelegate((PhysicalObject realizedObject) => realizedObject is SmallPuffBall || realizedObject is LittleBalloon || (realizedObject is ThornyStrawberry st && !st.SpikesRemoved()));
+                c.Emit(OpCodes.Brtrue, s_label);
+            }
+            else
+                LBMergedModsPlugin.s_logger.LogError($"Couldn't ILHook SlugNPCAI.PassingGrab (part {i})!");
+        }
     }
 
     internal static bool On_SlugNPCAI_WantsToEatThis(On.MoreSlugcats.SlugNPCAI.orig_WantsToEatThis orig, SlugNPCAI self, PhysicalObject obj) => (obj is BouncingMelon && !self.IsFull) || orig(self, obj);
