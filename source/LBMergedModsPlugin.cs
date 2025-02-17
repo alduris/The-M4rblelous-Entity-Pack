@@ -18,7 +18,7 @@ using Fisobs.Sandbox;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.7"), BepInDependency("io.github.dual.fisobs")]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.8"), BepInDependency("io.github.dual.fisobs")]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -316,6 +316,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.MoreSlugcats.CollectiblesTracker.ctor += IL_CollectiblesTracker_ctor;
         On.MoreSlugcats.CollectiblesTracker.MineForSaveData += On_CollectiblesTracker_MineForSaveData;
         On.RainWorld.ClearTokenCacheInMemory += On_RainWorld_ClearTokenCacheInMemory;
+        On.Spear.Update += On_Spear_Update;
+        On.AbstractCreature.AllowedToExistInRoom += On_AbstractCreature_AllowedToExistInRoom;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -337,6 +339,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new ScutigeraCritob(),
                         new RedHorrorCritob(),
                         new SporantulaCritob(),
+                        new ChipChopCritob(),
                         new KillerpillarCritob(),
                         new GlowpillarCritob(),
                         new MiniLeviathanCritob(),

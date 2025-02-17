@@ -485,6 +485,8 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
                 (p.State as PlayerNPCState)!.Glowing = true;
             p.glowing = true;
         }
+        else if (grasp.grabber is ChipChop ch)
+            ch.Glowing = true;
         grasp.Release();
         Destroy();
         AbstrCons.Consume();

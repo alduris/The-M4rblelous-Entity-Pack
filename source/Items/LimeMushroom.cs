@@ -4,7 +4,7 @@ using MoreSlugcats;
 
 namespace LBMergedMods.Items;
 
-public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
+public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
 {
     public struct StalkPart
     {
@@ -38,11 +38,13 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
     }
 
     public const int STALK_SPRITE = 0, HAT_SPRITE = 1, EFFECT_SPRITE = 3, TOTAL_SPRITES = 4;
-    public StalkPart[] stalk;
+    public StalkPart[] Stalk;
     public Vector2 Rotation, LastRotation, HoverPos;
     public float Darkness, LastDarkness, HoverDirAdd, Hue;
     public Color StalkColor;
     public Vector2? SetRotation, GrowPos;
+
+    public virtual bool StalkActive => GrowPos is not null;
 
     public virtual AbstractConsumable AbstrConsumable => (abstractPhysicalObject as AbstractConsumable)!;
 
@@ -66,14 +68,14 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
         waterFriction = .95f;
         buoyancy = .9f;
         Hue = 68f / 360f + 14f / 360f * abstractPhysicalObject.world.game.SeededRandom(abstractPhysicalObject.ID.RandomSeed);
-        var stk = stalk = new StalkPart[6];
+        var stk = Stalk = new StalkPart[6];
         for (var i = 0; i < stk.Length; i++)
             stk[i] = new(this);
     }
 
     public virtual void ResetParts()
     {
-        var stk = stalk;
+        var stk = Stalk;
         for (var i = 0; i < stk.Length; i++)
             stk[i].Reset();
     }
@@ -109,7 +111,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
         }
         else if (!GrowPos.HasValue && fc.ContactPoint.y == 0 && fc.ContactPoint.x == 0)
         {
-            Rotation += fc.pos - stalk[2].Pos;
+            Rotation += fc.pos - Stalk[2].Pos;
             Rotation.Normalize();
         }
         if (SetRotation.HasValue)
@@ -122,7 +124,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
             Rotation = (Rotation - Custom.PerpendicularVector(Rotation) * .1f * fc.vel.x).normalized;
             fc.vel.x *= .8f;
         }
-        var stk = stalk;
+        var stk = Stalk;
         for (var i = 0; i < stk.Length; i++)
         {
             ref var st = ref stk[i];
@@ -170,7 +172,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public virtual void ConnectStalkSegment(int i)
     {
-        ref var st = ref stalk[i];
+        ref var st = ref Stalk[i];
         if (i == 0)
         {
             var vec = (2.5f - Vector2.Distance(st.Pos, firstChunk.pos)) * Custom.DirVec(st.Pos, firstChunk.pos);
@@ -179,7 +181,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
         }
         else
         {
-            ref var stm1 = ref stalk[i - 1];
+            ref var stm1 = ref Stalk[i - 1];
             var vec = (2.5f - Vector2.Distance(st.Pos, stm1.Pos)) * Custom.DirVec(st.Pos, stm1.Pos) * .5f;
             st.Pos -= vec;
             st.Vel -= vec;
@@ -236,7 +238,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
     public virtual void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
         var sprs = sLeaser.sprites = new FSprite[TOTAL_SPRITES];
-        sprs[STALK_SPRITE] = TriangleMesh.MakeLongMesh(stalk.Length, false, false);
+        sprs[STALK_SPRITE] = TriangleMesh.MakeLongMesh(Stalk.Length, false, false);
         sprs[HAT_SPRITE] = new("MushroomA") { scaleY = 1.8f };
         sprs[HAT_SPRITE + 1] = new("MushroomB") { scaleY = 1.8f };
         sprs[EFFECT_SPRITE] = new("Futile_White") { shader = Custom.rainWorld.Shaders["FlatLightBehindTerrain"] };
@@ -263,7 +265,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
         effect.color = Custom.HSL2RGB(Hue, .9f + .1f * num, .4f + .2f * num);
         var vector2 = vector;
         var num2 = .75f;
-        var stk = stalk;
+        var stk = Stalk;
         var stalkSpr = (sLeaser.sprites[STALK_SPRITE] as TriangleMesh)!;
         stalkSpr.color = StalkColor;
         for (var i = 0; i < stk.Length; i++)
@@ -314,10 +316,10 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
+        firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
+        grasp.grabber.Stun(75);
         if (grasp.grabber is Player p)
         {
-            firstChunk.MoveFromOutsideMyUpdate(eu, p.mainBodyChunk.pos);
-            p.Stun(75);
             if (p.FoodInStomach > 0)
                 p.AddFood(-1);
             p.ObjectEaten(this);

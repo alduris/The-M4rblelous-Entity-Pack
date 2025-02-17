@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
-public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible
+public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -84,6 +84,7 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible
                 if (!Custom.DistLess(FruitPos, chunk.pos, b.grabbedBy.Count == 0 ? 100f : 20f) || b.room != room || b.slatedForDeletetion || chunk.vel.magnitude > 15f)
                 {
                     b.AbstrCons.Consume();
+                    b.MyStalk = null;
                     Fruit = null;
                 }
                 else
@@ -131,6 +132,7 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible
         }
     }
 
+    public Stalk? MyStalk;
     public Vector2 Rotation, LastRotation, PObjPos;
     public Vector2? SetRotation;
     public float Darkness, LastDarkness;
@@ -145,6 +147,8 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible
     public virtual bool Edible => true;
 
     public virtual bool AutomaticPickUp => true;
+
+    public virtual bool StalkActive => MyStalk is not null;
 
     public GummyAnther(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
     {
@@ -163,8 +167,8 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible
     {
         base.Update(eu);
         var fs = firstChunk;
-        if (room.game.devToolsActive && Input.GetKey("b"))
-            fs.vel += Custom.DirVec(fs.pos, Futile.mousePosition) * 3f;
+        if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
+            fs.vel += Custom.DirVec(fs.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 3f;
         LastRotation = Rotation;
         if (grabbedBy.Count > 0)
         {
@@ -201,7 +205,7 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible
             }
             else
                 firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
-            placeRoom.AddObject(new Stalk(this, placeRoom));
+            placeRoom.AddObject(MyStalk = new(this, placeRoom));
         }
         else
             firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));

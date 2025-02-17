@@ -6,6 +6,8 @@ using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Random = UnityEngine.Random;
+using UnityEngine;
+using RWCustom;
 
 namespace LBMergedMods.Hooks;
 
@@ -111,6 +113,14 @@ public static class AbstractPhysicalObjectHooks
             orig(self);
     }
 
+    internal static bool On_AbstractCreature_AllowedToExistInRoom(On.AbstractCreature.orig_AllowedToExistInRoom orig, AbstractCreature self, Room room)
+    {
+        var res = orig(self, room);
+        if (res && self.creatureTemplate.type == CreatureTemplateType.ChipChop && !room.readyForAI)
+            return false;
+        return res;
+    }
+
     internal static void IL_AbstractCreature_InitiateAI(ILContext il)
     {
         var c = new ILCursor(il);
@@ -149,13 +159,14 @@ public static class AbstractPhysicalObjectHooks
              {
                  var tp = self.creatureTemplate.type;
                  var hv = tp == CreatureTemplateType.Hoverfly;
-                 if (hv || tp == CreatureTemplateType.TintedBeetle)
+                 var chch = tp == CreatureTemplateType.ChipChop;
+                 if (hv || chch || tp == CreatureTemplateType.TintedBeetle)
                  {
                      var obj = hv ? AbstractPhysicalObject.AbstractObjectType.DangleFruit : AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant;
                      var stuckObjs = self.stuckObjects;
                      for (var i = 0; i < stuckObjs.Count; i++)
                      {
-                         if (stuckObjs[i] is AbstractPhysicalObject.CreatureGripStick st && st.A == self && st.B?.type == obj)
+                         if (stuckObjs[i] is AbstractPhysicalObject.CreatureGripStick st && st.A == self && (chch || st.B?.type == obj))
                              flag = true;
                      }
                  }
@@ -215,6 +226,17 @@ public static class AbstractPhysicalObjectHooks
             Albino.Add(self, new());
         if (tp == CreatureTemplateType.Denture)
             self.remainInDenCounter = 0;
+    }
+
+    internal static void On_Spear_Update(On.Spear.orig_Update orig, Spear self, bool eu)
+    {
+        orig(self, eu);
+        if (self.mode == Weapon.Mode.StuckInCreature && !self.stuckInWall.HasValue && self.stuckInObject is ChipChop ch && !ch.slatedForDeletetion && ch.graphicsModule is ChipChopGraphics gr)
+        {
+            var ang = self.stuckRotation * (Mathf.PI / 180f);
+            var newAng = (ang + Mathf.Atan2(-gr.BodyDir.x, gr.BodyDir.y)) % (2f * Mathf.PI);
+            self.setRotation = new(Mathf.Cos(newAng), Mathf.Sin(newAng));
+        }
     }
 
     internal static void On_AbstractCreature_IsEnteringDen(On.AbstractCreature.orig_IsEnteringDen orig, AbstractCreature self, WorldCoordinate den)
@@ -331,9 +353,12 @@ public static class AbstractPhysicalObjectHooks
 
     internal static bool On_AbstractCreature_WantToStayInDenUntilEndOfCycle(On.AbstractCreature.orig_WantToStayInDenUntilEndOfCycle orig, AbstractCreature self)
     {
-        if (self.realizedCreature is MiniLeech l && l.fleeFromRain)
+        if ((self.realizedCreature is MiniLeech l && l.fleeFromRain) || (self.realizedCreature is ChipChop c && c.DenMovement == 1))
             return true;
-        return orig(self);
+        var res = orig(self);
+        if (res && ModManager.MSC && self.creatureTemplate.type == CreatureTemplateType.ChipChop && !self.state.dead && (self.state as HealthState)!.health >= .6f && (self.world.rainCycle.TimeUntilRain >= (!self.world.game.IsStorySession ? 600 : 2400) || self.nightCreature || self.ignoreCycle) && (!self.preCycle || self.world.rainCycle.maxPreTimer > 0) && self.Room.world.rainCycle.preTimer <= 0)
+            res = false;
+        return res;
     }
 
     internal static void On_AbstractPhysicalObject_Realize(On.AbstractPhysicalObject.orig_Realize orig, AbstractPhysicalObject self)

@@ -108,6 +108,8 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Killerpillar);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Glowpillar))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Glowpillar);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.ChipChop))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.ChipChop);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();

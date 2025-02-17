@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
-public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
+public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -41,10 +41,10 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
                             x2 += intSn;
                     }
                     StuckPos = room.MiddleOfTile(x2, y) + new Vector2(Mathf.Lerp(-5f, 5f, Random.value), 5f);
+                    StalkLength = Mathf.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
                     break;
                 }
             }
-            StalkLength = Mathf.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
             BaseDirVec = Custom.DirVec(StuckPos, fruitPos);
             var segs = Segs = new Vector2[Mathf.Max(1, (int)(StalkLength / 8f))][];
             for (var index = 0; index < segs.Length; ++index)
@@ -63,7 +63,11 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
         {
             base.Update(eu);
             if (StalkLength == -1f)
+            {
+                if (Fruit is MarineEye fruit)
+                    fruit.MyStalk = null;
                 Destroy();
+            }
             else
             {
                 var segs = Segs;
@@ -114,6 +118,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
                     if (ReleaseCounter != 1 && Custom.DistLess(fruit2.firstChunk.pos, StuckPos, StalkLength * 1.39999997615814f + 10f) && fruit2.grabbedBy.Count == 0 && !fruit2.slatedForDeletetion && fruit2.room == room && room.VisualContact(StuckPos + new Vector2(0f, 10f), fruit2.firstChunk.pos))
                         return;
                     fruit2.AbstrCons.Consume();
+                    fruit2.MyStalk = null;
                     Fruit = null;
                 }
             }
@@ -224,6 +229,8 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public virtual bool AutomaticPickUp => false;
 
+    public virtual bool StalkActive => MyStalk is not null;
+
     public MarineEye(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
     {
         bodyChunks = [new(this, 0, default, 6.5f, .18f)];
@@ -247,8 +254,8 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
     {
         base.Update(eu);
         var fc = firstChunk;
-        if (room.game.devToolsActive && Input.GetKey("b"))
-            fc.vel += Custom.DirVec(fc.pos, Futile.mousePosition) * 3f;
+        if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
+            fc.vel += Custom.DirVec(fc.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 3f;
         LastRotation = Rotation;
         if (grabbedBy.Count > 0)
         {
@@ -387,15 +394,16 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
-        var player = grasp.grabber as Player;
-        if (player is not null && PlayerData.TryGetValue(player.abstractCreature, out var props))
+        if (grasp.grabber is ChipChop ch)
+            ch.MarineEyeEffectDuration = Math.Min(ch.MarineEyeEffectDuration + 1700, 5000);
+        else if (grasp.grabber is Player p && PlayerData.TryGetValue(p.abstractCreature, out var props))
             props.BlueFaceDuration = Math.Min(props.BlueFaceDuration + 1700, 5000);
         --Bites;
         room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk.pos);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
-            player?.ObjectEaten(this);
+            (grasp.grabber as Player)?.ObjectEaten(this);
             grasp.Release();
             Destroy();
         }

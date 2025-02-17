@@ -38,16 +38,25 @@ public class CommonEel : Lizard
         {
             if (AirInLungs > 0f)
                 AirInLungs -= .002f;
-            if (Consious)
+            GoThroughFloors = false;
+            if (Consious && room is Room rm)
             {
                 var chs = bodyChunks;
-                chs[0].pos += Custom.RNV();
-                chs[1].pos += Custom.RNV();
-                chs[2].pos += Custom.RNV();
+                for (var i = 0; i < chs.Length; i++)
+                {
+                    var ch = chs[i];
+                    ch.vel += Custom.RNV();
+                    var tl = rm.GetTile(ch.pos);
+                    if (tl.Terrain == Room.Tile.TerrainType.ShortcutEntrance)
+                        ch.vel += Custom.IntVector2ToVector2(rm.ShorcutEntranceHoleDirection(new(tl.X, tl.Y))) * 15f;
+                }
             }
         }
         else
+        {
+            GoThroughFloors = !dead;
             AirInLungs = 1f;
+        }
         if (AirInLungs <= 0f)
             Die();
     }

@@ -4,7 +4,7 @@ using MoreSlugcats;
 
 namespace LBMergedMods.Items;
 
-public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
+public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable, IHaveAStalk
 {
     public class Stem : UpdatableAndDeletable, IDrawable
     {
@@ -20,20 +20,30 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
             var tilePosition = room.GetTilePosition(fruitPos);
             while (tilePosition.y < room.TileHeight && !room.GetTile(tilePosition).Solid)
                 ++tilePosition.y;
-            RootPos = room.MiddleOfTile(tilePosition) + new Vector2(0f, 10f);
-            var segs = Segments = new Vector2[Custom.IntClamp((int)(Vector2.Distance(fruitPos, RootPos) / 15f), 4, 60)][];
-            for (var i = 0; i < segs.Length; i++)
+            if (tilePosition.y == room.TileHeight)
             {
-                var seg = Vector2.Lerp(RootPos, fruitPos, (float)i / segs.Length);
-                segs[i] = [seg, seg, default];
+                Segments = [];
+                Destroy();
             }
-            Direction = Custom.DegToVec(Mathf.Lerp(-90f, 90f, room.game.SeededRandom((int)(fruitPos.x + fruitPos.y))));
-            for (var j = 0; j < 100; j++)
-                Update(false);
+            else
+            {
+                RootPos = room.MiddleOfTile(tilePosition) + new Vector2(0f, 10f);
+                var segs = Segments = new Vector2[Custom.IntClamp((int)(Vector2.Distance(fruitPos, RootPos) / 15f), 4, 60)][];
+                for (var i = 0; i < segs.Length; i++)
+                {
+                    var seg = Vector2.Lerp(RootPos, fruitPos, (float)i / segs.Length);
+                    segs[i] = [seg, seg, default];
+                }
+                Direction = Custom.DegToVec(Mathf.Lerp(-90f, 90f, room.game.SeededRandom((int)(fruitPos.x + fruitPos.y))));
+                for (var j = 0; j < 100; j++)
+                    Update(false);
+            }
         }
 
         public override void Update(bool eu)
         {
+            if (slatedForDeletetion)
+                return;
             base.Update(eu);
             var segments = Segments;
             for (var i = 0; i < segments.Length; i++)
@@ -142,6 +152,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
         public Physalis? Fruit;
         public Vector2[][] Segments;
         public Vector2 RootPos, Direction, FruitPos, Rotation;
+        public bool Kill;
 
         public Stalk(Physalis fruit, Room room)
         {
@@ -152,6 +163,8 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
             var tilePosition = room.GetTilePosition(fruit.firstChunk.pos);
             while (tilePosition.y < room.TileHeight && !room.GetTile(tilePosition).Solid)
                 ++tilePosition.y;
+            if (tilePosition.y == room.TileHeight)
+                Kill = true;
             RootPos = room.MiddleOfTile(tilePosition) + new Vector2(0f, 10f);
             var segs = Segments = new Vector2[Custom.IntClamp((int)(Vector2.Distance(fruit.firstChunk.pos, RootPos) / 15f), 4, 60)][];
             for (var i = 0; i < segs.Length; i++)
@@ -167,6 +180,13 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
 
         public override void Update(bool eu)
         {
+            if (Kill)
+            {
+                if (Fruit is Physalis ph)
+                    ph.MyStalk = null;
+                Destroy();
+                return;
+            }
             base.Update(eu);
             var segments = Segments;
             for (var i = 0; i < segments.Length; i++)
@@ -222,6 +242,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
                 {
                     chunk.mass = .07f;
                     f.AbstrCons.Consume();
+                    f.MyStalk = null;
                     Fruit = null;
                 }
                 else
@@ -287,6 +308,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
         }
     }
 
+    public Stalk? MyStalk;
     public float Darkness, ColorAdd, AlphaRemove;
 
     public virtual int BitesLeft => 1;
@@ -300,6 +322,8 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
     public override float ThrowPowerFactor => .5f;
 
     public virtual AbstractConsumable AbstrCons => (AbstractConsumable)abstractPhysicalObject;
+
+    public virtual bool StalkActive => MyStalk is not null;
 
     public Physalis(AbstractPhysicalObject obj) : base(obj)
     {
@@ -331,12 +355,12 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
         if (ModManager.MMF && room.game.IsArenaSession && (MMF.cfgSandboxItemStems.Value || room.game.GetArenaGameSession.chMeta is not null) && room.game.GetArenaGameSession.counter < 10)
         {
             firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
-            placeRoom.AddObject(new Stalk(this, placeRoom));
+            placeRoom.AddObject(MyStalk = new(this, placeRoom));
         }
         else if (!AbstrCons.isConsumed && AbstrCons.placedObjectIndex >= 0 && AbstrCons.placedObjectIndex < placeRoom.roomSettings.placedObjects.Count)
         {
             firstChunk.HardSetPosition(placeRoom.roomSettings.placedObjects[AbstrCons.placedObjectIndex].pos);
-            placeRoom.AddObject(new Stalk(this, placeRoom));
+            placeRoom.AddObject(MyStalk = new(this, placeRoom));
         }
         else
             firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
@@ -346,8 +370,8 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable
     {
         base.Update(eu);
         var ch = firstChunk;
-        if (room.game.devToolsActive && Input.GetKey("b"))
-            ch.vel += Custom.DirVec(ch.pos, Futile.mousePosition) * 3f;
+        if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
+            ch.vel += Custom.DirVec(ch.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 3f;
         var flag = grabbedBy.Count < 1;
         ch.collideWithTerrain = ch.collideWithObjects = flag;
     }

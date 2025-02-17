@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
-public class ThornyStrawberry : Weapon, IPlayerEdible
+public class ThornyStrawberry : Weapon, IPlayerEdible, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -59,6 +59,8 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
             base.Update(eu);
             if (RopeLength == -1f)
             {
+                if (Fruit is ThornyStrawberry fruit1)
+                    fruit1.MyStalk = null;
                 Destroy();
                 return;
             }
@@ -84,6 +86,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
                 if (!Custom.DistLess(fpos, StuckPos, RopeLength * 1.4f + 10f) || fruit.slatedForDeletetion || fruit.Bites < 3 || fruit.room != room || ReleaseCounter == 1)
                 {
                     fruit.AbstrCons.Consume();
+                    fruit.MyStalk = null;
                     Fruit = null;
                 }
             }
@@ -210,6 +213,8 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
 
     public override int DefaultCollLayer => 1;
 
+    public virtual bool StalkActive => MyStalk is not null;
+
     public ThornyStrawberry(AbstractPhysicalObject abstractPhysicalObject, World world) : base(abstractPhysicalObject, world)
     {
         bodyChunks = [new(this, 0, default, 8.2f, .205f)];
@@ -233,8 +238,8 @@ public class ThornyStrawberry : Weapon, IPlayerEdible
     {
         base.Update(eu);
         var fc = firstChunk;
-        if (room?.game is RainWorldGame g && g.devToolsActive && Input.GetKey("b"))
-            fc.vel += Custom.DirVec(fc.pos, Futile.mousePosition) * 3f;
+        if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
+            fc.vel += Custom.DirVec(fc.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 3f;
         if (fc.ContactPoint.y != 0 || fc.submersion > .5f)
         {
             rotation = (rotation - Custom.PerpendicularVector(rotation) * .1f * fc.vel.x).normalized;

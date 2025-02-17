@@ -97,7 +97,8 @@ public static class CreatureTemplateType
         CommonEel = new(nameof(CommonEel), true),
         DivingBeetle = new(nameof(DivingBeetle), true),
         Killerpillar = new(nameof(Killerpillar), true),
-        Glowpillar = new(nameof(Glowpillar), true);
+        Glowpillar = new(nameof(Glowpillar), true),
+        ChipChop = new(nameof(ChipChop), true);
 
     static CreatureTemplateType()
     {
@@ -127,7 +128,8 @@ public static class CreatureTemplateType
             CommonEel,
             DivingBeetle,
             Killerpillar,
-            Glowpillar];
+            Glowpillar,
+            ChipChop];
     }
 
     public static void UnregisterValues()
@@ -267,6 +269,11 @@ public static class CreatureTemplateType
             Glowpillar.Unregister();
             Glowpillar = null!;
         }
+        if (ChipChop is not null)
+        {
+            ChipChop.Unregister();
+            ChipChop = null!;
+        }
     }
 }
 
@@ -310,7 +317,8 @@ public static class SandboxUnlockID
         Killerpillar = new(nameof(Killerpillar), true),
         Glowpillar = new(nameof(Glowpillar), true),
         MiniBlueFruit = new(nameof(MiniBlueFruit), true),
-        SporeProjectile = new(nameof(SporeProjectile), true);
+        SporeProjectile = new(nameof(SporeProjectile), true),
+        ChipChop = new(nameof(ChipChop), true);
 
     public static void UnregisterValues()
     {
@@ -508,6 +516,11 @@ public static class SandboxUnlockID
         {
             SporeProjectile.Unregister();
             SporeProjectile = null!;
+        }
+        if (ChipChop is not null)
+        {
+            ChipChop.Unregister();
+            ChipChop = null!;
         }
     }
 }

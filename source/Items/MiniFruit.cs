@@ -4,13 +4,14 @@ using UnityEngine;
 
 namespace LBMergedMods.Items;
 
-public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible
+public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
         public MiniFruit? Fruit;
         public Vector2[][] Segments;
         public Vector2 RootPos, Direction, FruitPos;
+        public bool Kill;
 
         public Stalk(MiniFruit fruit, Vector2? rootPos, Room room)
         {
@@ -24,6 +25,8 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible
                 var tilePosition = room.GetTilePosition(FruitPos);
                 while (tilePosition.y < room.TileHeight && !room.GetTile(tilePosition).Solid)
                     ++tilePosition.y;
+                if (tilePosition.y == room.TileHeight)
+                    Kill = true;
                 RootPos = room.MiddleOfTile(tilePosition) + new Vector2(0f, 10f);
             }
             var segs = Segments = new Vector2[Custom.IntClamp((int)(Vector2.Distance(FruitPos, RootPos) / 15f), 4, 60)][];
@@ -40,6 +43,13 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible
 
         public override void Update(bool eu)
         {
+            if (Kill)
+            {
+                if (Fruit is MiniFruit f1)
+                    f1.MyStalk = null;
+                Destroy();
+                return;
+            }
             base.Update(eu);
             var segments = Segments;
             for (var i = 0; i < segments.Length; i++)
@@ -103,6 +113,7 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible
                     chunk.mass = .1f;
                     f.ChangeCollisionLayer(1);
                     f.AbstrCons.Consume();
+                    f.MyStalk = null;
                     Fruit = null;
                 }
                 else
@@ -169,7 +180,9 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible
 
 	public virtual bool AutomaticPickUp => true;
 
-	public MiniFruit(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
+    public virtual bool StalkActive => MyStalk is not null;
+
+    public MiniFruit(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
 	{
 		bodyChunks = [new(this, 0, default, 3f, .1f)];
 		bodyChunkConnections = [];
@@ -186,9 +199,9 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible
 	{
 		base.Update(eu);
 		var fc = firstChunk;
-		if (room.game.devToolsActive && Input.GetKey("b"))
-			fc.vel += Custom.DirVec(fc.pos, Futile.mousePosition) * 3f;
-		LastRotation = Rotation;
+        if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
+            fc.vel += Custom.DirVec(fc.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 3f;
+        LastRotation = Rotation;
 		if (grabbedBy.Count > 0)
 		{
 			Rotation = Custom.PerpendicularVector(Custom.DirVec(fc.pos, grabbedBy[0].grabber.mainBodyChunk.pos));

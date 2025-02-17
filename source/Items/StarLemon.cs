@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
-public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
+public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -62,6 +62,8 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
             base.Update(eu);
             if (RopeLength == -1f)
             {
+                if (Fruit is StarLemon fruit1)
+                    fruit1.MyStalk = null;
                 Destroy();
                 return;
             }
@@ -87,6 +89,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
                 if (!Custom.DistLess(fpos, StuckPos, RopeLength * 1.8f + 10f) || fruit.slatedForDeletetion || fruit.Bites < 6 || fruit.room != room || ReleaseCounter == 1)
                 {
                     fruit.AbstrCons.Consume();
+                    fruit.MyStalk = null;
                     Fruit = null;
                 }
             }
@@ -224,6 +227,8 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public virtual bool AutomaticPickUp => true;
 
+    public virtual bool StalkActive => MyStalk is not null;
+
     public StarLemon(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
     {
         bodyChunks = [new(this, 0, default, 8.5f, .3f)];
@@ -246,8 +251,8 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
     {
         base.Update(eu);
         var fc = firstChunk;
-        if (room.game.devToolsActive && Input.GetKey("b"))
-            fc.vel += Custom.DirVec(fc.pos, Futile.mousePosition) * 3f;
+        if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
+            fc.vel += Custom.DirVec(fc.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 3f;
         var crits = room.abstractRoom.creatures;
         for (var i = 0; i < crits.Count; i++)
         {
@@ -421,6 +426,8 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible
                 p.ObjectEaten(this);
                 p.glowing = true;
             }
+            else if (grasp.grabber is ChipChop ch)
+                ch.Glowing = true;
             grasp.Release();
             Destroy();
         }

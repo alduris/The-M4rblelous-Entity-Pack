@@ -185,6 +185,7 @@ sealed class DentureCritob : Critob, ISandboxHandler
         dt.Eats(CreatureTemplateType.DivingBeetle, 1f);
         dt.Eats(CreatureTemplateType.NoodleEater, 1f);
         dt.Eats(CreatureTemplateType.MiniBlackLeech, 1f);
+        dt.Eats(CreatureTemplateType.ChipChop, 1f);
         dt.Attacks(CreatureTemplateType.HunterSeeker, 1f);
         dt.Attacks(CreatureTemplateType.MoleSalamander, 1f);
         dt.Attacks(CreatureTemplateType.WaterSpitter, 1f);
@@ -201,6 +202,7 @@ sealed class DentureCritob : Critob, ISandboxHandler
         dt.FearedBy(CreatureTemplateType.DivingBeetle, 1f);
         dt.FearedBy(CreatureTemplateType.NoodleEater, 1f);
         dt.FearedBy(CreatureTemplateType.MiniBlackLeech, 1f);
+        dt.FearedBy(CreatureTemplateType.ChipChop, 1f);
         dt.FearedBy(CreatureTemplateType.HunterSeeker, .5f);
         dt.FearedBy(CreatureTemplateType.MoleSalamander, .5f);
         dt.FearedBy(CreatureTemplateType.WaterSpitter, .5f);

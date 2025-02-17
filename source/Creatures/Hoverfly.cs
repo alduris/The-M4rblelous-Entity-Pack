@@ -339,7 +339,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
 
     public virtual bool TryToGrabPrey(DangleFruit prey)
     {
-        var res = Grab(prey, 0, prey.firstChunk.index, Grasp.Shareability.CanOnlyShareWithNonExclusive, 1f, true, false);
+        var res = Grab(prey, 0, 0, Grasp.Shareability.CanOnlyShareWithNonExclusive, 1f, true, false);
         if (HoverflyData.TryGetValue(abstractCreature, out var d))
             d.BiteWait = 1000;
         if (AI is HoverflyAI ai && ai.SwooshToPos.HasValue)

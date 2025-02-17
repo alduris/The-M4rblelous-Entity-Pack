@@ -246,10 +246,13 @@ public static class PlayerHooks
             }
             else
                 self.bounce = props.OriginalBounce;
-            if (props.BounceEffectDuration > 0)
-                --props.BounceEffectDuration;
-            if (props.BlueFaceDuration > 0)
-                --props.BlueFaceDuration;
+            if (!self.inShortcut)
+            {
+                if (props.BounceEffectDuration > 0)
+                    --props.BounceEffectDuration;
+                if (props.BlueFaceDuration > 0)
+                    --props.BlueFaceDuration;
+            }
         }
         orig(self, eu);
         if (flag && props.BounceEffectDuration > 0)

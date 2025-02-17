@@ -5,7 +5,7 @@ using MoreSlugcats;
 
 namespace LBMergedMods.Items;
 
-public class LittleBalloon : Rock, IPlayerEdible
+public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -13,6 +13,7 @@ public class LittleBalloon : Rock, IPlayerEdible
         public Vector2[][] Segments;
         public Vector2 RootPos, Direction, BalloonPos;
         public float ColorAdd;
+        public bool Kill;
 
         public Stalk(LittleBalloon balloon, Room room)
         {
@@ -23,6 +24,8 @@ public class LittleBalloon : Rock, IPlayerEdible
             var tilePosition = room.GetTilePosition(balloon.firstChunk.pos);
             while (tilePosition.y >= 0 && !room.GetTile(tilePosition).Solid)
                 --tilePosition.y;
+            if (tilePosition.y < 0)
+                Kill = true;
             RootPos = room.MiddleOfTile(tilePosition) + new Vector2(0f, -10f);
             var segs = Segments = new Vector2[Custom.IntClamp((int)(Vector2.Distance(balloon.firstChunk.pos, RootPos) / 15f), 4, 60)][];
             for (var i = 0; i < segs.Length; i++)
@@ -38,6 +41,13 @@ public class LittleBalloon : Rock, IPlayerEdible
 
         public override void Update(bool eu)
         {
+            if (Kill)
+            {
+                if (Balloon is LittleBalloon ba)
+                    ba.MyStalk = null;
+                Destroy();
+                return;
+            }
             base.Update(eu);
             var segments = Segments;
             for (var i = 0; i < segments.Length; i++)
@@ -92,6 +102,7 @@ public class LittleBalloon : Rock, IPlayerEdible
                 if (!Custom.DistLess(BalloonPos, chunk.pos, b.grabbedBy.Count == 0 ? 100f : 20f) || b.room != room || b.slatedForDeletetion || chunk.vel.magnitude > 15f)
                 {
                     b.AbstrCons.Consume();
+                    b.MyStalk = null;
                     Balloon = null;
                 }
                 else
@@ -139,6 +150,7 @@ public class LittleBalloon : Rock, IPlayerEdible
         }
     }
 
+    public Stalk? MyStalk;
     public int Bites = 2, BounceCounter;
     public float Prop, LastProp, PropSpeed, Darkness, LastDarkness, Plop, LastPlop;
     public float ColorAdd, AlphaRemove;
@@ -154,6 +166,8 @@ public class LittleBalloon : Rock, IPlayerEdible
     public virtual AbstractConsumable AbstrCons => (AbstractConsumable)abstractPhysicalObject;
 
     public override bool HeavyWeapon => false;
+
+    public virtual bool StalkActive => MyStalk is not null;
 
     public LittleBalloon(AbstractPhysicalObject obj) : base(obj, obj.world)
     {
@@ -178,8 +192,8 @@ public class LittleBalloon : Rock, IPlayerEdible
     {
         base.Update(eu);
         var ch = firstChunk;
-        if (room.game.devToolsActive && Input.GetKey("b"))
-            ch.vel += Custom.DirVec(ch.pos, Futile.mousePosition) * 3f;
+        if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
+            ch.vel += Custom.DirVec(ch.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 3f;
         lastRotation = rotation;
         if (grabbedBy.Count > 0)
         {
@@ -257,12 +271,12 @@ public class LittleBalloon : Rock, IPlayerEdible
         if (ModManager.MMF && room.game.IsArenaSession && (MMF.cfgSandboxItemStems.Value || room.game.GetArenaGameSession.chMeta is not null) && room.game.GetArenaGameSession.counter < 10)
         {
             firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
-            placeRoom.AddObject(new Stalk(this, placeRoom));
+            placeRoom.AddObject(MyStalk = new(this, placeRoom));
         }
         else if (!AbstrCons.isConsumed && AbstrCons.placedObjectIndex >= 0 && AbstrCons.placedObjectIndex < placeRoom.roomSettings.placedObjects.Count)
         {
             firstChunk.HardSetPosition(placeRoom.roomSettings.placedObjects[AbstrCons.placedObjectIndex].pos);
-            placeRoom.AddObject(new Stalk(this, placeRoom));
+            placeRoom.AddObject(MyStalk = new(this, placeRoom));
         }
         else
             firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
