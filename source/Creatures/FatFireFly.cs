@@ -3,8 +3,14 @@ using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
-public class FatFireFly : Vulture
+public class FatFireFly : Vulture, IProvideWarmth
 {
+    public virtual Room loadedRoom => room;
+
+    public virtual float warmth => !dead ? RainWorldGame.DefaultHeatSourceWarmth * 2f : 0f;
+
+    public virtual float range => 600f;
+
     public FatFireFly(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
     {
         var num = .8f;
@@ -79,4 +85,6 @@ public class FatFireFly : Vulture
     }
 
     public override void LoseAllGrasps() => ReleaseGrasp(0);
+
+    public virtual Vector2 Position() => mainBodyChunk.pos;
 }

@@ -1,4 +1,5 @@
 using LBMergedMods.Hooks;
+using MoreSlugcats;
 using RWCustom;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
 
-public class Caterpillar : InsectoidCreature
+public class Caterpillar : InsectoidCreature, IProvideWarmth
 {
     public CaterpillarAI? AI;
 	public bool Moving, Glowing;
@@ -16,7 +17,13 @@ public class Caterpillar : InsectoidCreature
 	public int NoFollowConCounter, StunCounter;
 	public float BodyWave;
 
-	public override Vector2 VisionPoint => firstChunk.pos;
+    public virtual Room loadedRoom => room;
+
+    public virtual float warmth => Consious && Glowing && graphicsModule is CaterpillarGraphics gr ? RainWorldGame.DefaultHeatSourceWarmth * 1.5f * gr.LightAlpha : 0f;
+
+    public virtual float range => 170f;
+
+    public override Vector2 VisionPoint => firstChunk.pos;
 
     public new virtual HealthState State => (abstractCreature.state as HealthState)!;
 
@@ -519,4 +526,8 @@ public class Caterpillar : InsectoidCreature
     }
 
     public override void LoseAllGrasps() => ReleaseGrasp(0);
+
+	public virtual Vector2 TailPosition() => bodyChunks[bodyChunks.Length - 1].pos;
+
+	Vector2 IProvideWarmth.Position() => TailPosition();
 }

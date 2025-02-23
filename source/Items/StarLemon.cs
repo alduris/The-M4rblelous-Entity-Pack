@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
-public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
+public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk, IProvideWarmth
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -216,6 +216,12 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
     public Vector2 Rotation, LastRotation;
     public Vector2? SetRotation;
     public bool Side;
+
+    public virtual float warmth => RainWorldGame.DefaultHeatSourceWarmth;
+
+    public virtual Room loadedRoom => room;
+
+    public virtual float range => 360f;
 
     public virtual AbstractConsumable AbstrCons => (AbstractConsumable)abstractPhysicalObject;
 
@@ -434,4 +440,6 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual Vector2 Position() => firstChunk.pos;
 }
