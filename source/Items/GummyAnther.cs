@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using RWCustom;
 using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Items;
 
@@ -173,7 +174,7 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveA
         if (grabbedBy.Count > 0)
         {
             Rotation = Custom.PerpendicularVector(Custom.DirVec(fs.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-            Rotation.y = Mathf.Abs(Rotation.y);
+            Rotation.y = Math.Abs(Rotation.y);
         }
         if (SetRotation.HasValue)
         {

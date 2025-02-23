@@ -168,7 +168,7 @@ public class ThornBug : InsectoidCreature
         for (var num4 = 0; num4 < bs.Length; num4++)
         {
             var b = bs[num4];
-            if (rm.aimap?.TileAccessibleToCreature(rm.GetTilePosition(b.pos), Template) is true)
+            if (rm.aimap?.TileAccessibleToCreature(Room.StaticGetTilePosition(b.pos), Template) is true)
                 b.vel += Custom.DegToVec(Random.value * 360f) * Random.value * 5f;
         }
     }

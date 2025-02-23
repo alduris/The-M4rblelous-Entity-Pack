@@ -128,7 +128,7 @@ public class ChipChop : InsectoidCreature
         }
         else
             Excitement = 0f;
-        var tilePosition = rm.GetTilePosition(ps);
+        var tilePosition = Room.StaticGetTilePosition(ps);
 		tilePosition.x = Custom.IntClamp(tilePosition.x, 0, rm.TileWidth - 1);
 		tilePosition.y = Custom.IntClamp(tilePosition.y, 0, rm.TileHeight - 1);
 		var flag = rm.aimap.TileAccessibleToCreature(tilePosition, Template);
@@ -296,7 +296,7 @@ public class ChipChop : InsectoidCreature
 			if (FollowingConnection != default)
 			{
 				Move(FollowingConnection);
-				if (rm.GetTilePosition(firstChunk.pos) == FollowingConnection.DestTile)
+				if (Room.StaticGetTilePosition(firstChunk.pos) == FollowingConnection.DestTile)
 					FollowingConnection = default;
 			}
 			else
@@ -333,7 +333,7 @@ public class ChipChop : InsectoidCreature
 			if (FollowingConnection != default)
 				LastFollowingConnection = FollowingConnection;
 			Move(FollowingConnection);
-			if (rm.GetTilePosition(firstChunk.pos) != FollowingConnection.DestTile)
+			if (Room.StaticGetTilePosition(firstChunk.pos) != FollowingConnection.DestTile)
 				return;
 		}
 		else if (FollowingConnection != default)

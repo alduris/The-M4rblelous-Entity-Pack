@@ -98,7 +98,8 @@ public static class CreatureTemplateType
         DivingBeetle = new(nameof(DivingBeetle), true),
         Killerpillar = new(nameof(Killerpillar), true),
         Glowpillar = new(nameof(Glowpillar), true),
-        ChipChop = new(nameof(ChipChop), true);
+        ChipChop = new(nameof(ChipChop), true),
+        MiniScutigera = new(nameof(MiniScutigera), true);
 
     static CreatureTemplateType()
     {
@@ -129,7 +130,8 @@ public static class CreatureTemplateType
             DivingBeetle,
             Killerpillar,
             Glowpillar,
-            ChipChop];
+            ChipChop,
+            MiniScutigera];
     }
 
     public static void UnregisterValues()
@@ -274,6 +276,11 @@ public static class CreatureTemplateType
             ChipChop.Unregister();
             ChipChop = null!;
         }
+        if (MiniScutigera is not null)
+        {
+            MiniScutigera.Unregister();
+            MiniScutigera = null!;
+        }
     }
 }
 
@@ -318,7 +325,8 @@ public static class SandboxUnlockID
         Glowpillar = new(nameof(Glowpillar), true),
         MiniBlueFruit = new(nameof(MiniBlueFruit), true),
         SporeProjectile = new(nameof(SporeProjectile), true),
-        ChipChop = new(nameof(ChipChop), true);
+        ChipChop = new(nameof(ChipChop), true),
+        MiniScutigera = new(nameof(MiniScutigera), true);
 
     public static void UnregisterValues()
     {
@@ -521,6 +529,11 @@ public static class SandboxUnlockID
         {
             ChipChop.Unregister();
             ChipChop = null!;
+        }
+        if (MiniScutigera is not null)
+        {
+            MiniScutigera.Unregister();
+            MiniScutigera = null!;
         }
     }
 }
@@ -871,7 +884,7 @@ public static class MiscItemType
 
 public static class SlugFood
 {
-    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron, MiniBlueFruit;
+    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron, MiniBlueFruit, MiniScutigera;
 
     public static void UnregisterValues()
     {
@@ -919,6 +932,11 @@ public static class SlugFood
         {
             MiniBlueFruit.Unregister();
             MiniBlueFruit = null;
+        }
+        if (MiniScutigera is not null)
+        {
+            MiniScutigera.Unregister();
+            MiniScutigera = null;
         }
     }
 }

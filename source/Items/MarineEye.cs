@@ -27,21 +27,21 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
             SinSide = Random.value >= .5f ? .5f : -.5f;
             StuckPos.x = fruitPos.x;
             StalkLength = -1f;
-            var tl = room.GetTilePosition(fruitPos);
+            var tl = Room.StaticGetTilePosition(fruitPos);
             var x1 = tl.x;
             for (var y = tl.y; y >= 0; --y)
             {
                 if (room.GetTile(x1, y).Solid)
                 {
                     var x2 = tl.x;
-                    for (var index = Random.Range(0, Mathf.Min(20, Mathf.Abs(room.GetTilePosition(fruitPos).y - y))); index >= 0; --index)
+                    for (var index = Random.Range(0, Mathf.Min(20, Mathf.Abs(Room.StaticGetTilePosition(fruitPos).y - y))); index >= 0; --index)
                     {
                         var intSn = (int)SinSide;
                         if (room.GetTile(x2 + intSn, y).Solid && !room.GetTile(x2 + intSn, y + 1).Solid)
                             x2 += intSn;
                     }
                     StuckPos = room.MiddleOfTile(x2, y) + new Vector2(Mathf.Lerp(-5f, 5f, Random.value), 5f);
-                    StalkLength = Mathf.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
+                    StalkLength = Math.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
                     break;
                 }
             }
@@ -260,7 +260,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
         if (grabbedBy.Count > 0)
         {
             Rotation = Custom.PerpendicularVector(Custom.DirVec(fc.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-            Rotation.y = Mathf.Abs(Rotation.y);
+            Rotation.y = Math.Abs(Rotation.y);
         }
         if (SetRotation is Vector2 vec)
         {

@@ -1,5 +1,6 @@
 using RWCustom;
 using UnityEngine;
+using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
@@ -160,7 +161,7 @@ public class DivingBeetleGraphics : GraphicsModule
                 if (Random.value < 1f / 20f)
                     mandMvt[1] = Mathf.Clamp(mandMvt[1] + Mathf.Lerp(-1f, 1f, Random.value) * .75f, -1f, 1f);
             }
-            mand.vel += (vector2 + Custom.PerpendicularVector(vector2) * Mathf.Lerp(m == 0 ? -1f : 1f, Flip * 10f, Mathf.Abs(Flip) * .9f)).normalized;
+            mand.vel += (vector2 + Custom.PerpendicularVector(vector2) * Mathf.Lerp(m == 0 ? -1f : 1f, Flip * 10f, Math.Abs(Flip) * .9f)).normalized;
             if (bodyChunk is not null)
             {
                 mand.pos = Vector2.Lerp(mand.pos, bodyChunk.pos, .5f);
@@ -168,7 +169,7 @@ public class DivingBeetleGraphics : GraphicsModule
             }
             var ant = Antennae[m];
             ant.Update();
-            var vector4 = (Custom.DirVec(chs[1].pos, fch.pos) + Custom.PerpendicularVector(chs[1].pos, fch.pos) * Flip * .5f + Custom.PerpendicularVector(chs[1].pos, fch.pos) * (m == 0 ? -1f : 1f) * (1f - Mathf.Abs(Flip)) * .35f).normalized;
+            var vector4 = (Custom.DirVec(chs[1].pos, fch.pos) + Custom.PerpendicularVector(chs[1].pos, fch.pos) * Flip * .5f + Custom.PerpendicularVector(chs[1].pos, fch.pos) * (m == 0 ? -1f : 1f) * (1f - Math.Abs(Flip)) * .35f).normalized;
             ant.ConnectToPoint(fch.pos, 50f * AntennaeLength, false, 0f, fch.vel, .05f, 0f);
             ant.vel += vector4 * Custom.LerpMap(Vector2.Distance(ant.pos, fch.pos + vector4 * 50f * AntennaeLength), 10f, 150f, 0f, 14f, .7f);
             if (Bug.Consious)
@@ -228,7 +229,7 @@ public class DivingBeetleGraphics : GraphicsModule
                     knee.pos += Custom.DirVec(fch.pos, knee.pos) * (15f - Vector2.Distance(knee.pos, fch.pos));
                 }
                 knee.vel = Vector2.Lerp(knee.vel, fch.vel, .8f) * Bug.BurstSpeed * .25f;
-                knee.vel += Custom.PerpendicularVector(chs[1].pos, fch.pos) * Mathf.Lerp(num9 == 0 ? -1f : 1f, Mathf.Sign(Flip), Mathf.Abs(Flip)) * 9f * Bug.BurstSpeed * .25f;
+                knee.vel += Custom.PerpendicularVector(chs[1].pos, fch.pos) * Mathf.Lerp(num9 == 0 ? -1f : 1f, Mathf.Sign(Flip), Math.Abs(Flip)) * 9f * Bug.BurstSpeed * .25f;
                 if (!Custom.DistLess(knee.pos, vector6, 200f))
                     knee.pos = vector6 + Custom.RNV() * Random.value * .1f;
                 if (LegsDangleCounter > 0 || num10 < .1f)
@@ -341,9 +342,9 @@ public class DivingBeetleGraphics : GraphicsModule
         {
             var num5 = Mathf.InverseLerp(0f, 11f, i);
             var vector9 = Custom.Bezier(vector + vector4 * 3f, vector2, vector6, vector3, num5);
-            float num6 = Mathf.Lerp(6f, 2f, num5) + Mathf.Pow(Mathf.Clamp01(Mathf.Sin(Mathf.Pow(num5, 1.7f) * Mathf.PI)), .75f) * Mathf.Lerp(7f, 5f, Mathf.Abs(num)) * BodyThickness,
+            float num6 = Mathf.Lerp(6f, 2f, num5) + Mathf.Pow(Mathf.Clamp01(Mathf.Sin(Mathf.Pow(num5, 1.7f) * Mathf.PI)), .75f) * Mathf.Lerp(7f, 5f, Math.Abs(num)) * BodyThickness,
                 a = Mathf.Lerp(.5f + Mathf.Pow(Mathf.Clamp01(Mathf.Sin(Mathf.InverseLerp(0f, 10f, i) * Mathf.PI)), .25f) * 2f, num6 * .5f, num5 * .5f);
-            a = Mathf.Lerp(a, Mathf.Max(a, num6 * .5f), Mathf.Abs(Vector2.Dot((vector9 - vector7).normalized, normalized))) * 1.4f;
+            a = Mathf.Lerp(a, Mathf.Max(a, num6 * .5f), Math.Abs(Vector2.Dot((vector9 - vector7).normalized, normalized))) * 1.4f;
             Vector2 vector10 = vector9 - normalized * (num6 - a), vector11 = Custom.PerpendicularVector(vector9, vector7);
             mesh.MoveVertice(i * 4, (vector7 + vector9) / 2f - vector11 * (num6 + num3) * .5f - camPos);
             mesh.MoveVertice(i * 4 + 1, (vector7 + vector9) / 2f + vector11 * (num6 + num3) * .5f - camPos);
@@ -390,7 +391,7 @@ public class DivingBeetleGraphics : GraphicsModule
             {
                 float t2 = Mathf.InverseLerp(0f, legs[legs.Length - j - 1].Length - 1, k), num7 = 5f;
                 var vector14 = Vector2.Lerp(vector, vector2, .3f);
-                vector14 += vector5 * (j == 0 ? 1f : -1f) * 3f * (1f - Mathf.Abs(num));
+                vector14 += vector5 * (j == 0 ? 1f : -1f) * 3f * (1f - Math.Abs(num));
                 vector14 += vector4 * Mathf.Lerp(5f, -11f, t2);
                 Vector2 vector15 = Vector2.Lerp(legs[legs.Length - j - 1][k].lastPos, legs[legs.Length - j - 1][k].pos, timeStacker), vector16 = Vector2.Lerp(Knees[legs.Length - j - 1][k].lastPos, Knees[legs.Length - j - 1][k].pos, timeStacker),
                     vector17 = Vector2.Lerp(vector14, vector16, .5f), vector18 = Vector2.Lerp(vector16, vector15, .5f), vector19 = Vector2.Lerp(vector17, vector18, .5f);
@@ -416,8 +417,9 @@ public class DivingBeetleGraphics : GraphicsModule
         }
         for (var m = 0; m < 2; m++)
         {
-            var num11 = Mathf.Lerp(m == 0 ? 1f : -1f, num, Mathf.Pow(Mathf.Abs(num), 2f));
-            Vector2 vector23 = vector + vector4 * 4f + vector5 * num11 * -3f, vector24 = Vector2.Lerp(Mandibles[m].lastPos, Mandibles[m].pos, timeStacker), vector25 = Custom.InverseKinematic(vector23, vector24, 16f, 18f, num11);
+            var num11 = Mathf.Lerp(m == 0 ? 1f : -1f, num, Mathf.Pow(Math.Abs(num), 2f));
+            var mand = Mandibles[m];
+            Vector2 vector23 = vector + vector4 * 4f + vector5 * num11 * -3f, vector24 = Vector2.Lerp(mand.lastPos, mand.pos, timeStacker), vector25 = Custom.InverseKinematic(vector23, vector24, 16f, 18f, num11);
             var s = sprites[MandibleSprite(m, 0)];
             s.SetPosition(vector23 - camPos);
             s.anchorY = 0f;
@@ -448,15 +450,16 @@ public class DivingBeetleGraphics : GraphicsModule
                 tst.scaleY = 1.1f - sp * .5f;
                 tst.anchorY = .5f + sp * .5f;
                 wing.scaleY = .9f;
-                var val = Mathf.Abs(Vector2.Dot(vector4, Custom.DegToVec(Custom.VecToDeg(normalized) - 90f + (90f * num + (m == 0 ? -1f : 1f) * 24f) * .4f)));
+                var val = Math.Abs(Vector2.Dot(vector4, Custom.DegToVec(Custom.VecToDeg(normalized) - 90f + (90f * num + (m == 0 ? -1f : 1f) * 24f) * .4f)));
                 if (rCam.room.PointSubmerged(vector27))
                     wing.color = new Color(0f, .003921569f, 0f);
                 else
                     wing.color = Color.Lerp(CurrentSkinColor, ShineColor, .15f + Custom.LerpMap(val, .55f, 1f, 0f, .25f, 3f));
             }
             vector23 = vector;
-            vector25 = Vector2.Lerp(Antennae[m].lastPos, Antennae[m].pos, timeStacker);
-            var normalized2 = (Custom.DirVec(vector2, vector) + Custom.PerpendicularVector(vector2, vector) * num * .5f + Custom.PerpendicularVector(vector2, vector) * (m == 0 ? -1f : 1f) * (1f - Mathf.Abs(num)) * .35f).normalized;
+            var ant = Antennae[m];
+            vector25 = Vector2.Lerp(ant.lastPos, ant.pos, timeStacker);
+            var normalized2 = (Custom.DirVec(vector2, vector) + Custom.PerpendicularVector(vector2, vector) * num * .5f + Custom.PerpendicularVector(vector2, vector) * (m == 0 ? -1f : 1f) * (1f - Math.Abs(num)) * .35f).normalized;
             vector7 = vector;
             num3 = 3f;
             var anMesh = (sprites[AntennaSprite(m)] as TriangleMesh)!;

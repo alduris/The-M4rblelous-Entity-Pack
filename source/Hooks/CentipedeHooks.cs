@@ -14,6 +14,8 @@ public static class CentipedeHooks
 
     internal static bool On_Centipede_get_Red(Func<Centipede, bool> orig, Centipede self) => self is RedHorror || orig(self);
 
+    internal static bool On_Centipede_get_Small(Func<Centipede, bool> orig, Centipede self) => self is MiniScutigera || orig(self);
+
     internal static void IL_Centipede_ctor(ILContext il)
     {
         var c = new ILCursor(il);
@@ -68,7 +70,15 @@ public static class CentipedeHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Centipede.Crawl!");
     }
 
-    internal static float On_Centipede_GenerateSize(On.Centipede.orig_GenerateSize orig, AbstractCreature abstrCrit) => abstrCrit.creatureTemplate.type == CreatureTemplateType.Scutigera || abstrCrit.creatureTemplate.type == CreatureTemplateType.RedHorrorCenti ? 1f : orig(abstrCrit);
+    internal static float On_Centipede_GenerateSize(On.Centipede.orig_GenerateSize orig, AbstractCreature abstrCrit)
+    {
+        var tp = abstrCrit.creatureTemplate.type;
+        if (tp == CreatureTemplateType.Scutigera || tp == CreatureTemplateType.RedHorrorCenti)
+            return 1f;
+        if (tp == CreatureTemplateType.MiniScutigera)
+            return 0f;
+        return orig(abstrCrit);
+    }
 
     internal static void IL_Centipede_Shock(ILContext il)
     {
@@ -80,7 +90,7 @@ public static class CentipedeHooks
             s_MatchNewobj_Color))
         {
             c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((Color color, Centipede self) => self is Scutigera ? new(color.r, color.b, color.g) : color);
+             .EmitDelegate((Color color, Centipede self) => self is Scutigera or MiniScutigera ? new(color.r, color.b, color.g) : color);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Centipede.Shock! (part 1)");
@@ -94,7 +104,7 @@ public static class CentipedeHooks
             s_MatchNewobj_Color))
         {
             c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((Color color, Centipede self) => self is Scutigera ? new(color.r, color.b, color.g) : color);
+             .EmitDelegate((Color color, Centipede self) => self is Scutigera or MiniScutigera ? new(color.r, color.b, color.g) : color);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Centipede.Shock! (part 2)");
@@ -272,7 +282,7 @@ public static class CentipedeHooks
     internal static Color On_CentipedeGraphics_get_SecondaryShellColor(Func<CentipedeGraphics, Color> orig, CentipedeGraphics self)
     {
         var res = orig(self);
-        if (self.centipede is Scutigera c)
+        if (self.centipede is Centipede c && c is Scutigera or MiniScutigera)
         {
             var state = Random.state;
             Random.InitState(c.abstractPhysicalObject.ID.RandomSeed);
@@ -319,13 +329,16 @@ public static class CentipedeHooks
              {
                  if (self.centipede is Centipede c)
                  {
-                     if (self is ScutigeraGraphics)
+                     if (self is ScutigeraGraphics or MiniScutigeraGraphics)
                      {
                          var sprs = sLeaser.sprites;
-                         for (var l = 0; l < 2; l++)
+                         if (self is not MiniScutigeraGraphics)
                          {
-                             for (var num = 0; num < self.wingPairs; num++)
-                                 sprs[self.WingSprite(l, num)] = new CustomFSprite("ScutigeraWing");
+                             for (var l = 0; l < 2; l++)
+                             {
+                                 for (var num = 0; num < self.wingPairs; num++)
+                                     sprs[self.WingSprite(l, num)] = new CustomFSprite("ScutigeraWing");
+                             }
                          }
                          var lg = c.bodyChunks.Length;
                          for (var i = 0; i < lg; i++)
@@ -367,7 +380,7 @@ public static class CentipedeHooks
             s_MatchNewobj_Color))
         {
             c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((Color color, CentipedeGraphics self) => self is ScutigeraGraphics ? new(color.r, color.b, color.g) : color);
+             .EmitDelegate((Color color, CentipedeGraphics self) => self is ScutigeraGraphics or MiniScutigeraGraphics ? new(color.r, color.b, color.g) : color);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook CentipedeGraphics.Update!");

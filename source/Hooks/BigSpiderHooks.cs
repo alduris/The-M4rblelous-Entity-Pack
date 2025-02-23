@@ -238,7 +238,7 @@ public static class BigSpiderHooks
                      if (self.preyTracker.MostAttractivePrey.representedCreature.realizedCreature is Creature c && self.bug is Sporantula s && s.CanJump && !s.jumping && s.charging == 0f && s.Footing && c.room == s.room)
                      {
                          Vector2 pos = c.mainBodyChunk.pos, myPos = s.mainBodyChunk.pos, b1pos = s.bodyChunks[1].pos;
-                         if (Custom.DistLess(myPos, pos, 120f) && (s.room.aimap.TileAccessibleToCreature(s.room.GetTilePosition(b1pos - Custom.DirVec(b1pos, pos) * 30f), s.Template) || s.room.GetTile(b1pos - Custom.DirVec(b1pos, pos) * 30f).Solid) && s.room.VisualContact(myPos, pos))
+                         if (Custom.DistLess(myPos, pos, 120f) && (s.room.aimap.TileAccessibleToCreature(Room.StaticGetTilePosition(b1pos - Custom.DirVec(b1pos, pos) * 30f), s.Template) || s.room.GetTile(b1pos - Custom.DirVec(b1pos, pos) * 30f).Solid) && s.room.VisualContact(myPos, pos))
                          {
                              if (Vector2.Dot((myPos - pos).normalized, (b1pos - myPos).normalized) > .2f)
                                  s.InitiateJump(pos);

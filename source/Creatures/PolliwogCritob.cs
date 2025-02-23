@@ -38,6 +38,9 @@ sealed class PolliwogCritob : Critob
     {
         var p = new Relationships(Type);
         p.Fears(CreatureTemplate.Type.GreenLizard, .3f);
+        p.Fears(CreatureTemplate.Type.RedLizard, .5f);
+        p.Fears(CreatureTemplate.Type.CyanLizard, .4f);
+        p.Fears(CreatureTemplateType.HunterSeeker, .4f);
         p.Attacks(CreatureTemplate.Type.YellowLizard, .3f);
         p.IsInPack(Type, .6f);
         p.Eats(CreatureTemplate.Type.Snail, .4f);
@@ -46,6 +49,9 @@ sealed class PolliwogCritob : Critob
         p.Fears(CreatureTemplate.Type.Vulture, .7f);
         p.Fears(CreatureTemplate.Type.KingVulture, .8f);
         p.EatenBy(CreatureTemplate.Type.GreenLizard, .5f);
+        p.EatenBy(CreatureTemplate.Type.RedLizard, .5f);
+        p.EatenBy(CreatureTemplate.Type.CyanLizard, .4f);
+        p.EatenBy(CreatureTemplateType.HunterSeeker, .4f);
         p.AttackedBy(CreatureTemplate.Type.YellowLizard, .5f);
         p.EatenBy(CreatureTemplate.Type.Vulture, .6f);
         p.EatenBy(CreatureTemplate.Type.KingVulture, .5f);

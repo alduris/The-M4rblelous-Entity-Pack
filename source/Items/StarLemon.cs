@@ -25,7 +25,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
             fruit.firstChunk.HardSetPosition(fruitPos);
             StuckPos.x = fruitPos.x;
             RopeLength = -1f;
-            var fpos = room.GetTilePosition(fruitPos);
+            var fpos = Room.StaticGetTilePosition(fruitPos);
             var x = fpos.x;
             int i, height = room.TileHeight;
             for (i = fpos.y; i < height; i++)
@@ -33,7 +33,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
                 if (room.GetTile(x, i).Solid)
                 {
                     StuckPos.y = room.MiddleOfTile(x, i).y - 10f;
-                    RopeLength = Mathf.Abs(StuckPos.y - fruitPos.y);
+                    RopeLength = Math.Abs(StuckPos.y - fruitPos.y);
                     break;
                 }
             }
@@ -264,7 +264,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
         if (grabbedBy.Count > 0)
         {
             Rotation = Custom.PerpendicularVector(Custom.DirVec(fc.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-            Rotation.y = Mathf.Abs(Rotation.y);
+            Rotation.y = Math.Abs(Rotation.y);
         }
         if (SetRotation.HasValue)
         {

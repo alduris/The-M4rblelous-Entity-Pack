@@ -288,12 +288,14 @@ public static class LizardHooks
         var res = orig(self, dRelation);
         if (self.creature.creatureTemplate.type == CreatureTemplateType.NoodleEater)
         {
-            var rel = dRelation.trackerRep.representedCreature.creatureTemplate.type;
-            if ((rel == CreatureTemplate.Type.Slugcat && res.type == CreatureTemplate.Relationship.Type.Eats) || res.type == CreatureTemplate.Relationship.Type.Attacks)
+            var rel = dRelation.trackerRep.representedCreature.creatureTemplate;
+            if (rel.TopAncestor().type == CreatureTemplate.Type.Scavenger)
+                res = new(CreatureTemplate.Relationship.Type.Ignores, 0f);
+            if ((rel.type == CreatureTemplate.Type.Slugcat && res.type == CreatureTemplate.Relationship.Type.Eats) || res.type == CreatureTemplate.Relationship.Type.Attacks)
                 res.type = CreatureTemplate.Relationship.Type.Afraid;
-            if (rel?.value == "DrainMite")
+            if (rel.type?.value == "DrainMite")
                 res = new(CreatureTemplate.Relationship.Type.Eats, 1f);
-            else if (rel?.value == "SnootShootNoot")
+            else if (rel.type?.value == "SnootShootNoot")
                 res = new(CreatureTemplate.Relationship.Type.Afraid, .15f);
         }
         return res;

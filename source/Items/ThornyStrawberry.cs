@@ -23,7 +23,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible, IHaveAStalk
             fruit.firstChunk.HardSetPosition(fruitPos);
             StuckPos.x = fruitPos.x;
             RopeLength = -1f;
-            var fpos = room.GetTilePosition(fruitPos);
+            var fpos = Room.StaticGetTilePosition(fruitPos);
             var x = fpos.x;
             int i, height = room.TileHeight;
             for (i = fpos.y; i < height; i++)
@@ -31,7 +31,7 @@ public class ThornyStrawberry : Weapon, IPlayerEdible, IHaveAStalk
                 if (room.GetTile(x, i).Solid)
                 {
                     StuckPos.y = room.MiddleOfTile(x, i).y - 10f;
-                    RopeLength = Mathf.Abs(StuckPos.y - fruitPos.y);
+                    RopeLength = Math.Abs(StuckPos.y - fruitPos.y);
                     break;
                 }
             }

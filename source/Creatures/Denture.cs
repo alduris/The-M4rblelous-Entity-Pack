@@ -97,7 +97,7 @@ public class Denture : Creature
             --NoiseReaction;
         LastSuckedIntoShortcut = SuckedIntoShortcut;
         LastJawOpen = JawOpen;
-        abstractCreature.pos.Tile = rm.GetTilePosition(RootPos);
+        abstractCreature.pos.Tile = Room.StaticGetTilePosition(RootPos);
         if (CreatureEaten > 0)
             --CreatureEaten;
         if (enteringShortCut.HasValue)
@@ -223,6 +223,7 @@ public class Denture : Creature
                     t.Explode(rm);
                 else
                 {
+                    c.killTag = abstractCreature;
                     c.Die();
                     c.Destroy();
                     if (c is Player)

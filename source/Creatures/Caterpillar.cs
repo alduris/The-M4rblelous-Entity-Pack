@@ -313,7 +313,7 @@ public class Caterpillar : InsectoidCreature
 				if (NoFollowConCounter > 40)
 				{
 					var ps = bodyChunks[Random.Range(0, bodyChunks.Length)].pos;
-                    if (AccessibleTile(room.GetTilePosition(ps)))
+                    if (AccessibleTile(Room.StaticGetTilePosition(ps)))
 						MoveToPos = ps;
 				}
 			}
@@ -341,17 +341,17 @@ public class Caterpillar : InsectoidCreature
 		for (var i = 0; i < bodyChunks.Length; i++)
 		{
 			var ch = bodyChunks[i];
-			if (!AccessibleTile(room.GetTilePosition(ch.pos)))
+			if (!AccessibleTile(Room.StaticGetTilePosition(ch.pos)))
 				continue;
             ++num;
             ch.vel *= .7f;
             ch.vel.y += gravity * Mathf.Pow(Mathf.Max(0f, Mathf.Lerp(State.ClampedHealth, 1f, Random.value)), .25f) * (1f - ex * .25f);
-			if (i > 0 && !AccessibleTile(room.GetTilePosition(bodyChunks[i - 1].pos)))
+			if (i > 0 && !AccessibleTile(Room.StaticGetTilePosition(bodyChunks[i - 1].pos)))
 			{
                 ch.vel *= .3f;
                 ch.vel.y += gravity * Mathf.Pow(Mathf.Max(0f, Mathf.Lerp(State.ClampedHealth, 1f, Random.value)), .25f) * (1f - ex * .25f);
 			}
-			if (i < bodyChunks.Length - 1 && !AccessibleTile(room.GetTilePosition(bodyChunks[i + 1].pos)))
+			if (i < bodyChunks.Length - 1 && !AccessibleTile(Room.StaticGetTilePosition(bodyChunks[i + 1].pos)))
 			{
                 ch.vel *= .3f;
                 ch.vel.y += gravity * Mathf.Pow(Mathf.Max(0f, Mathf.Lerp(State.ClampedHealth, 1f, Random.value)), .25f) * (1f - ex * .25f);
@@ -360,15 +360,15 @@ public class Caterpillar : InsectoidCreature
 				continue;
             if (Moving)
             {
-                if (AccessibleTile(room.GetTilePosition(bodyChunks[i - 1].pos)))
+                if (AccessibleTile(Room.StaticGetTilePosition(bodyChunks[i - 1].pos)))
                     ch.vel += Custom.DirVec(ch.pos, bodyChunks[i - 1].pos) * 1.5f * Mathf.Lerp(.5f, 1.5f, State.ClampedHealth) * 1.25f * ex;
                 ch.vel -= Custom.DirVec(ch.pos, bodyChunks[i + 1].pos) * .8f * Mathf.Lerp(0.7f, 1.3f, State.ClampedHealth) * ex;
                 continue;
             }
             var vector = ((ch.pos - bodyChunks[i - 1].pos).normalized + (bodyChunks[i + 1].pos - ch.pos).normalized) / 2f;
-            if (Mathf.Abs(vector.x) > .5f)
+            if (Math.Abs(vector.x) > .5f)
                 ch.vel.y -= (ch.pos.y - (room.MiddleOfTile(ch.pos).y + VerticalSitSurface(ch.pos) * (10f - ch.rad))) * Mathf.Lerp(.01f, .6f, Mathf.Pow(State.ClampedHealth, 1.2f));
-            if (Mathf.Abs(vector.y) > .5f)
+            if (Math.Abs(vector.y) > .5f)
                 ch.vel.x -= (ch.pos.x - (room.MiddleOfTile(ch.pos).x + HorizontalSitSurface(ch.pos) * (10f - ch.rad))) * Mathf.Lerp(.01f, .6f, Mathf.Pow(State.ClampedHealth, 1.2f));
         }
 		if (num > 0 && !Custom.DistLess(bodyChunks[0].pos, MoveToPos, 10f))

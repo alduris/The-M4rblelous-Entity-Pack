@@ -1,5 +1,6 @@
 using RWCustom;
 using UnityEngine;
+using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
@@ -219,7 +220,7 @@ public class TintedBeetleGraphics : GraphicsModule
     {
         var bs = Bug.bodyChunks;
         var vector = Custom.DirVec(Vector2.Lerp(bs[1].lastPos, bs[1].pos, timeStacker), Vector2.Lerp(bs[0].lastPos, bs[0].pos, timeStacker));
-        return (vector + Custom.PerpendicularVector(vector) * Mathf.Lerp(s == 0 ? -.7f : .7f, Mathf.Lerp(LastFlip, Flip, timeStacker) * -1.4f, Mathf.Abs(Mathf.Lerp(LastFlip, Flip, timeStacker) * .7f)) * sideFac).normalized;
+        return (vector + Custom.PerpendicularVector(vector) * Mathf.Lerp(s == 0 ? -.7f : .7f, Mathf.Lerp(LastFlip, Flip, timeStacker) * -1.4f, Math.Abs(Mathf.Lerp(LastFlip, Flip, timeStacker) * .7f)) * sideFac).normalized;
     }
 
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
@@ -272,14 +273,14 @@ public class TintedBeetleGraphics : GraphicsModule
         var col = Bug.Consious ? Color.Lerp(Color.Lerp(rCam.currentPalette.fogColor, AltForm ? Custom.HSL2RGB(348f / 360f, .77f, .81f) : Custom.HSL2RGB(Bug.Hue, 1f, .5f), .75f), BlackColor, Mathf.InverseLerp(.75f, 1f, Darkness) * .4f) : BlackColor;
         for (var i = 0; i < 2; i++)
         {
-            var num2 = (i == 0 == num < 0f ? -1f : 1f) * (1f - Mathf.Abs(num));
+            var num2 = (i == 0 == num < 0f ? -1f : 1f) * (1f - Math.Abs(num));
             var vector6 = vector + vector3 * 4f + vector4 * num2 * 3f;
             var eye = sprs[EyeSprite(i)];
             eye.SetPosition(vector6 - camPos);
             eye.color = col;
         }
         var vector7 = vector + vector3;
-        float num3 = 0f, b = Mathf.Lerp(7f, 5f, Mathf.Abs(num)), num32 = num3;
+        float num3 = 0f, b = Mathf.Lerp(7f, 5f, Math.Abs(num)), num32 = num3;
         var mes = (sprs[MESH_SPRITE] as TriangleMesh)!;
         var mesh2 = (sprs[MESH_2] as TriangleMesh)!;
         for (var j = 0; j < 11; j++)
@@ -306,13 +307,13 @@ public class TintedBeetleGraphics : GraphicsModule
             for (var l = 0; l < 2; l++)
             {
                 var vector10 = Vector2.Lerp(vector, vector2, .3f);
-                vector10 += vector4 * (k == 0 ? -1f : 1f) * 3f * (1f - Mathf.Abs(num));
+                vector10 += vector4 * (k == 0 ? -1f : 1f) * 3f * (1f - Math.Abs(num));
                 vector10 += vector3 * (l == 0 ? -1f : 1f) * 4f;
                 var leg = Legs[k][l];
                 var vector11 = Vector2.Lerp(leg.lastPos, leg.pos, timeStacker);
                 if (Custom.DistLess(vector10, vector11, 6f))
                     vector11 = vector10 + Custom.DirVec(vector10, vector11) * 6f;
-                var f2 = Mathf.Lerp(k == 0 ? -1f : 1f, num * Mathf.Clamp(Custom.DistanceToLine(vector11, vector2 - vector3 * 20f, vector2 - vector3 * 20f + vector4) / -20f, -1f, 1f), Mathf.Abs(num));
+                var f2 = Mathf.Lerp(k == 0 ? -1f : 1f, num * Mathf.Clamp(Custom.DistanceToLine(vector11, vector2 - vector3 * 20f, vector2 - vector3 * 20f + vector4) / -20f, -1f, 1f), Math.Abs(num));
                 var vector12 = Custom.InverseKinematic(vector10, vector11, LEG_LENGTH / 3f, LEG_LENGTH * (2f / 3f), f2);
                 var l0 = sprs[LegSprite(l, k, 0)];
                 var l1 = sprs[LegSprite(l, k, 1)];

@@ -1,6 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.BodyPartHooks;
 using UnityEngine;
 using RWCustom;
+using System;
 
 namespace LBMergedMods.Hooks;
 
@@ -27,11 +28,11 @@ public static class BodyPartHooks
                 res = true;
             else
             {
-                var tlPs = rm.GetTilePosition(self.pos);
-                var a = IntVector2.ClampAtOne(rm.GetTilePosition(conPos) - tlPs);
+                var tlPs = Room.StaticGetTilePosition(self.pos);
+                var a = IntVector2.ClampAtOne(Room.StaticGetTilePosition(conPos) - tlPs);
                 if (a.x != 0 && a.y != 0)
                 {
-                    if (Mathf.Abs(conPos.x - self.pos.x) > Mathf.Abs(conPos.y - self.pos.y))
+                    if (Math.Abs(conPos.x - self.pos.x) > Math.Abs(conPos.y - self.pos.y))
                         a.y = 0;
                     else
                         a.x = 0;
@@ -64,7 +65,7 @@ public static class BodyPartHooks
             searchFromPos = attachedPos + Custom.DirVec(attachedPos, searchFromPos) * (maximumRadiusFromAttachedPos - 1f);
         if (!Custom.DistLess(attachedPos, goalPos, maximumRadiusFromAttachedPos))
             goalPos = attachedPos + Custom.DirVec(attachedPos, goalPos) * maximumRadiusFromAttachedPos;
-        var tilePosition = room.GetTilePosition(searchFromPos);
+        var tilePosition = Room.StaticGetTilePosition(searchFromPos);
         var vector = new Vector2(-100000f, -100000f);
         for (var i = 0; i < 9; i++)
         {
@@ -127,7 +128,7 @@ public static class BodyPartHooks
         for (var i = 0; i < 9; i++)
         {
             var eightDir = Custom.eightDirectionsAndZero[i];
-            var tlPos = room.GetTilePosition(self.pos) + eightDir;
+            var tlPos = Room.StaticGetTilePosition(self.pos) + eightDir;
             var tl = room.GetTile(tlPos);
             if (tl.Solid || tl.AnyWater)
             {
@@ -153,7 +154,7 @@ public static class BodyPartHooks
                     else if (self.pos.y < vector.y + 10f + self.rad && room.GetTile(tlPos + new IntVector2(0, 1)) is Room.Tile gtl && !gtl.Solid && !gtl.AnyWater)
                         num2 = vector.y + 10f + self.rad;
                 }
-                if (Mathf.Abs(self.pos.x - num) < Mathf.Abs(self.pos.y - num2) && num != 0f)
+                if (Math.Abs(self.pos.x - num) < Math.Abs(self.pos.y - num2) && num != 0f)
                 {
                     self.pos.x = num;
                     self.vel.x = num - self.pos.x;

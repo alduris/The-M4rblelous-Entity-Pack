@@ -99,7 +99,7 @@ public static class EggBugHooks
                     c.Emit(OpCodes.Ldarg_0)
                      .EmitDelegate((bool solid, EggBugGraphics self) =>
                      {
-                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(self.bug.room.GetTilePosition(self.bug.mainBodyChunk.pos + Custom.PerpendicularVector(self.bug.mainBodyChunk.pos, self.bug.bodyChunks[1].pos) * 20f))))
+                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(Room.StaticGetTilePosition(self.bug.mainBodyChunk.pos + Custom.PerpendicularVector(self.bug.mainBodyChunk.pos, self.bug.bodyChunks[1].pos) * 20f))))
                              return true;
                          return solid;
                      });
@@ -109,7 +109,7 @@ public static class EggBugHooks
                     c.Emit(OpCodes.Ldarg_0)
                      .EmitDelegate((bool solid, EggBugGraphics self) =>
                      {
-                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(self.bug.room.GetTilePosition(self.bug.mainBodyChunk.pos - Custom.PerpendicularVector(self.bug.mainBodyChunk.pos, self.bug.bodyChunks[1].pos) * 20f))))
+                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(Room.StaticGetTilePosition(self.bug.mainBodyChunk.pos - Custom.PerpendicularVector(self.bug.mainBodyChunk.pos, self.bug.bodyChunks[1].pos) * 20f))))
                              return true;
                          return solid;
                      });

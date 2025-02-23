@@ -17,7 +17,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable, IHaveASta
             FruitPos = fruitPos with { y = fruitPos.y - 10f };
             Closed = closed;
             base.room = room;
-            var tilePosition = room.GetTilePosition(fruitPos);
+            var tilePosition = Room.StaticGetTilePosition(fruitPos);
             while (tilePosition.y < room.TileHeight && !room.GetTile(tilePosition).Solid)
                 ++tilePosition.y;
             if (tilePosition.y == room.TileHeight)
@@ -160,7 +160,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable, IHaveASta
             FruitPos = fruit.firstChunk.pos;
             FruitPos.y -= 10f;
             base.room = room;
-            var tilePosition = room.GetTilePosition(fruit.firstChunk.pos);
+            var tilePosition = Room.StaticGetTilePosition(fruit.firstChunk.pos);
             while (tilePosition.y < room.TileHeight && !room.GetTile(tilePosition).Solid)
                 ++tilePosition.y;
             if (tilePosition.y == room.TileHeight)

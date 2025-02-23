@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using RWCustom;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
 
@@ -29,28 +31,28 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
                 return;
             if (Vector2.Distance(lastPos, pos) > 9f && rm.GetTile(pos).Solid && !rm.GetTile(lastPos).Solid)
             {
-                var intVector = SharedPhysics.RayTraceTilesForTerrainReturnFirstSolid(rm, rm.GetTilePosition(lastPos), rm.GetTilePosition(pos));
+                var intVector = SharedPhysics.RayTraceTilesForTerrainReturnFirstSolid(rm, Room.StaticGetTilePosition(lastPos), Room.StaticGetTilePosition(pos));
                 var floatRect = intVector.HasValue ? Custom.RectCollision(pos, lastPos, rm.TileRect(intVector.Value).Grow(2f)) : new();
                 pos = floatRect.GetCorner(FloatRect.CornerLabel.D);
                 var flag = false;
                 if (floatRect.GetCorner(FloatRect.CornerLabel.B).x < 0f)
                 {
-                    vel.x = Mathf.Abs(vel.x) * .25f;
+                    vel.x = Math.Abs(vel.x) * .25f;
                     flag = true;
                 }
                 else if (floatRect.GetCorner(FloatRect.CornerLabel.B).x > 0f)
                 {
-                    vel.x = (0f - Mathf.Abs(vel.x)) * .25f;
+                    vel.x = Math.Abs(vel.x) * -.25f;
                     flag = true;
                 }
                 else if (floatRect.GetCorner(FloatRect.CornerLabel.B).y < 0f)
                 {
-                    vel.y = Mathf.Abs(vel.y) * .25f;
+                    vel.y = Math.Abs(vel.y) * .25f;
                     flag = true;
                 }
                 else if (floatRect.GetCorner(FloatRect.CornerLabel.B).y > 0f)
                 {
-                    vel.y = (0f - Mathf.Abs(vel.y)) * .25f;
+                    vel.y = Math.Abs(vel.y) * -.25f;
                     flag = true;
                 }
                 if (flag)
@@ -437,7 +439,7 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
                     num *= Random.Range(1.5f, 2f);
             }
             else
-                direction.y = Mathf.Abs(direction.y);
+                direction.y = Math.Abs(direction.y);
             if (movementConnection != default && movementConnection.type > MovementConnection.MovementType.Standard && movementConnection.type < MovementConnection.MovementType.DropToFloor || ai.Behav == WaterBlobAI.Behavior.Fleeing)
                 num *= 1.5f;
             Jump(num, direction);

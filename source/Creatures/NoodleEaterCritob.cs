@@ -53,12 +53,13 @@ sealed class NoodleEaterCritob : Critob, ISandboxHandler
         nl.Ignores(CreatureTemplate.Type.JetFish);
         nl.Fears(CreatureTemplate.Type.Slugcat, .25f);
         nl.Fears(CreatureTemplate.Type.GreenLizard, 1f);
+        nl.Fears(CreatureTemplate.Type.CyanLizard, 1f);
         nl.Fears(CreatureTemplate.Type.RedLizard, 1f);
+        nl.Fears(CreatureTemplateType.HunterSeeker, 1f);
         nl.Fears(CreatureTemplate.Type.BigNeedleWorm, .25f);
         nl.Eats(CreatureTemplate.Type.Fly, .2f);
         nl.Eats(CreatureTemplate.Type.SmallNeedleWorm, 1f);
         nl.IgnoredBy(CreatureTemplate.Type.LizardTemplate);
-        nl.IgnoredBy(CreatureTemplate.Type.Scavenger);
         nl.IgnoredBy(CreatureTemplate.Type.Slugcat);
         nl.IgnoredBy(CreatureTemplate.Type.Deer);
         nl.IgnoredBy(CreatureTemplate.Type.Scavenger);
@@ -69,7 +70,8 @@ sealed class NoodleEaterCritob : Critob, ISandboxHandler
         nl.EatenBy(CreatureTemplate.Type.GreenLizard, 1f);
         nl.EatenBy(CreatureTemplate.Type.RedLizard, 1f);
         nl.EatenBy(CreatureTemplate.Type.MirosBird, 1f);
-        nl.EatenBy(CreatureTemplate.Type.GreenLizard, 1f);
+        nl.EatenBy(CreatureTemplate.Type.CyanLizard, 1f);
+        nl.EatenBy(CreatureTemplateType.HunterSeeker, 1f);
         nl.EatenBy(CreatureTemplate.Type.Vulture, 1f);
         nl.EatenBy(CreatureTemplate.Type.BigEel, 1f);
         nl.FearedBy(CreatureTemplate.Type.Fly, .2f);

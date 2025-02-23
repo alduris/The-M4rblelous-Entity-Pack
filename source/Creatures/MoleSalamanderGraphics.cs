@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using LizardCosmetics;
 using RWCustom;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
 
@@ -8,6 +10,7 @@ public class MoleSalamanderGraphics : LizardGraphics
 {
     public MoleSalamanderGraphics(MoleSalamander ow) : base(ow)
     {
+        blackSalamander = ow.Black;
         var spriteIndex = startOfExtraSprites + extraSprites;
         spriteIndex = AddCosmetic(spriteIndex, new AxolotlGills(this, spriteIndex));
         spriteIndex = AddCosmetic(spriteIndex, new TailFin(this, spriteIndex));
@@ -43,7 +46,7 @@ public class MoleSalamanderGraphics : LizardGraphics
             for (var m = 7; m < 11; m++)
             {
                 sprites[m + 9].color = !blackSalamander ? effectColor : palette.blackColor;
-                sprites[m + 9].alpha = !blackSalamander ? (m % 2 != 1 ? .3f : Mathf.Lerp(.3f, .1f, Mathf.Abs(Mathf.Lerp(lastDepthRotation, depthRotation, timeStacker)))) : Mathf.Sin(whiteCamoColorAmount * Mathf.PI) * .3f;
+                sprites[m + 9].alpha = !blackSalamander ? (m % 2 != 1 ? .3f : Mathf.Lerp(.3f, .1f, Math.Abs(Mathf.Lerp(lastDepthRotation, depthRotation, timeStacker)))) : Mathf.Sin(whiteCamoColorAmount * Mathf.PI) * .3f;
             }
             if (blackSalamander)
                 sprites[13].color = Color.Lerp(palette.blackColor, new(.5f, .5f, .5f), Mathf.Pow(blackLizardLightUpHead, 1f - .95f * num2));

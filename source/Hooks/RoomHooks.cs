@@ -315,7 +315,7 @@ public static class RoomHooks
         for (var i = 0; i < self.Count; i++)
         {
             var vec = self[i];
-            if (Mathf.Abs(vec.y - pos.y) < dist || Mathf.Abs(vec.x - pos.x) < dist)
+            if (Math.Abs(vec.y - pos.y) < dist || Math.Abs(vec.x - pos.x) < dist)
                 return true;
         }
         return false;

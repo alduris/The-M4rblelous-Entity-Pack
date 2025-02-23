@@ -3,6 +3,7 @@ using MonoMod.Cil;
 using MoreSlugcats;
 using UnityEngine;
 using Mono.Cecil.Cil;
+using System;
 
 namespace LBMergedMods.Hooks;
 
@@ -11,53 +12,19 @@ public static class SlugNPCHooks
     internal static void On_SlugNPCAI_AteFood(On.MoreSlugcats.SlugNPCAI.orig_AteFood orig, SlugNPCAI self, PhysicalObject food)
     {
         if (food is ThornyStrawberry or GummyAnther or MiniFruit)
-        {
-            var num = self.foodPreference[SlugNPCAI.Food.DangleFruit.index];
-            if (Mathf.Abs(num) > .4f)
-                self.foodReaction += (int)(num * 120f);
-            if (Mathf.Abs(num) > .85f && self.FunStuff)
-                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
-        }
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.DangleFruit.index]);
         else if (food is BlobPiece or MarineEye)
-        {
-            var num = self.foodPreference[SlugNPCAI.Food.WaterNut.index];
-            if (Mathf.Abs(num) > .4f)
-                self.foodReaction += (int)(num * 120f);
-            if (Mathf.Abs(num) > .85f && self.FunStuff)
-                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
-        }
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.WaterNut.index]);
         else if (food is LittleBalloon)
-        {
-            var num = self.foodPreference[SlugNPCAI.Food.Popcorn.index];
-            if (Mathf.Abs(num) > .4f)
-                self.foodReaction += (int)(num * 120f);
-            if (Mathf.Abs(num) > .85f && self.FunStuff)
-                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
-        }
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.Popcorn.index]);
         else if (food is Physalis)
-        {
-            var num = self.foodPreference[SlugNPCAI.Food.SlimeMold.index];
-            if (Mathf.Abs(num) > .4f)
-                self.foodReaction += (int)(num * 120f);
-            if (Mathf.Abs(num) > .85f && self.FunStuff)
-                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
-        }
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.SlimeMold.index]);
         else if (food is StarLemon)
-        {
-            var num = self.foodPreference[SlugNPCAI.Food.GlowWeed.index];
-            if (Mathf.Abs(num) > .4f)
-                self.foodReaction += (int)(num * 120f);
-            if (Mathf.Abs(num) > .85f && self.FunStuff)
-                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
-        }
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.GlowWeed.index]);
         else if (food is DendriticNeuron)
-        {
-            var num = self.foodPreference[SlugNPCAI.Food.Neuron.index];
-            if (Mathf.Abs(num) > .4f)
-                self.foodReaction += (int)(num * 120f);
-            if (Mathf.Abs(num) > .85f && self.FunStuff)
-                self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, Mathf.Abs(num))));
-        }
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.Neuron.index]);
+        else if (food is MiniScutigera)
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.SmallCentipede.index]);
         else
             orig(self, food);
     }
@@ -82,6 +49,8 @@ public static class SlugNPCHooks
             return SlugFood.DendriticNeuron!;
         if (food is MiniFruit)
             return SlugFood.MiniBlueFruit!;
+        if (food is MiniScutigera)
+            return SlugFood.MiniScutigera!;
         return orig(self, food);
     }
 
@@ -118,4 +87,13 @@ public static class SlugNPCHooks
     }
 
     internal static bool On_SlugNPCAI_WantsToEatThis(On.MoreSlugcats.SlugNPCAI.orig_WantsToEatThis orig, SlugNPCAI self, PhysicalObject obj) => (obj is BouncingMelon && !self.IsFull) || orig(self, obj);
+
+    public static void DefaultFoodReaction(this SlugNPCAI self, float preference)
+    {
+        var abs = Math.Abs(preference);
+        if (abs > .4f)
+            self.foodReaction += (int)(preference * 120f);
+        if (abs > .85f && self.FunStuff)
+            self.cat.Stun((int)Mathf.Lerp(10f, 25f, Mathf.InverseLerp(.85f, 1f, abs)));
+    }
 }

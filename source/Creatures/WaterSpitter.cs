@@ -40,7 +40,7 @@ public class WaterSpitter : Lizard
                     mc.vel += Vector2.ClampMagnitude(vector2 - Custom.DirVec(vector2, value) * bodyChunkConnections[0].distance - mc.pos, 10f) / 500f;
                     b1.vel += Vector2.ClampMagnitude(vector2 - b1.pos, 10f) / 500f;
                 }
-                if (!AI.UnpleasantFallRisk(rm.GetTilePosition(mc.pos)))
+                if (!AI.UnpleasantFallRisk(Room.StaticGetTilePosition(mc.pos)))
                 {
                     var ltr = Custom.DirVec(mc.pos, value) * LegsGripping * .02f;
                     mc.vel += ltr * 2f;

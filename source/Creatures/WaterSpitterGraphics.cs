@@ -14,9 +14,9 @@ public class WaterSpitterGraphics : LizardGraphics
         spriteIndex = AddCosmetic(spriteIndex, new Whiskers(this, spriteIndex));
         spriteIndex = AddCosmetic(spriteIndex, new TailFin(this, spriteIndex));
         spriteIndex = AddCosmetic(spriteIndex, new AxolotlGills(this, spriteIndex));
-        if (Random.value < .4)
+        if (Random.value < .4f)
             spriteIndex = AddCosmetic(spriteIndex, new LongShoulderScales(this, spriteIndex));
-        if (Random.value < .4)
+        if (Random.value < .4f)
             AddCosmetic(spriteIndex, new ShortBodyScales(this, spriteIndex));
         Random.state = state;
         overrideHeadGraphic = -1;

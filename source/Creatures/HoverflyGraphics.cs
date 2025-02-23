@@ -1,6 +1,7 @@
 using RWCustom;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
 
@@ -283,7 +284,7 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 					w.vel *= .8f;
 					var t = Mathf.InverseLerp(.5f, 1f, wk[l]) * f.FlyingPower;
 					w.vel -= (l == 0 ? .6f : .3f) * vector * num2 * Mathf.Lerp(1f, l == 0 ? 0f : -5.5f, t);
-					w.vel += .2f * vector2 * (k == 0 ? -1f : 1f) * Mathf.Abs(ZRotation.y) * num2 * Mathf.Lerp(1f, 6f, t);
+					w.vel += .2f * vector2 * (k == 0 ? -1f : 1f) * Math.Abs(ZRotation.y) * num2 * Mathf.Lerp(1f, 6f, t);
 					w.vel += .2f * vector2 * ZRotation.x * num2 * Mathf.Lerp(1f, 6f, t);
 					if (!flag)
 						w.vel.y -= .3f;
@@ -291,7 +292,7 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 					{
 						var num3 = Mathf.InverseLerp(.5f, 0f, wk[l]);
 						var b = f.firstChunk.pos - vector * (l == 0 ? 20f : 15f);
-						b += -2f * vector2 * (k == 0 ? -1f : 1f) * Mathf.Abs(ZRotation.y);
+						b += -2f * vector2 * (k == 0 ? -1f : 1f) * Math.Abs(ZRotation.y);
 						b += 5f * vector2 * ZRotation.x;
 						w.vel *= 1f - num3;
 						w.pos = Vector2.Lerp(w.pos, b, num3);
@@ -337,7 +338,7 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
         w.vel *= 0f;
 		w.pos = Fly.firstChunk.pos - vector * 5f;
 		w.pos += (wing == 0 ? -3f : 10f) * vector;
-		w.pos += 17f * vector2 * (side == 0 ? -1f : 1f) * Mathf.Abs(ZRotation.y);
+		w.pos += 17f * vector2 * (side == 0 ? -1f : 1f) * Math.Abs(ZRotation.y);
 		w.pos += 17f * vector2 * ZRotation.x;
 		w.ConnectToPoint(Fly.firstChunk.pos - vector * 5f, wing == 0 ? 23f : 17f, true, 0f, Fly.firstChunk.vel, 0f, 0f);
 		w.PushOutOfTerrain(Fly.room, Fly.firstChunk.pos);

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using RWCustom;
 using MoreSlugcats;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
@@ -103,7 +105,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHave
         if (grabbedBy.Count > 0)
         {
             Rotation = Custom.PerpendicularVector(Custom.DirVec(fc.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-            Rotation.y = Mathf.Abs(Rotation.y);
+            Rotation.y = Math.Abs(Rotation.y);
             if (!AbstrConsumable.isConsumed)
                 AbstrConsumable.Consume();
             if (GrowPos.HasValue)
@@ -200,7 +202,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHave
                 fc.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
             else
                 fc.HardSetPosition(placeRoom.roomSettings.placedObjects[AbstrConsumable.placedObjectIndex].pos);
-            var tlPos = placeRoom.GetTilePosition(fc.pos);
+            var tlPos = Room.StaticGetTilePosition(fc.pos);
             int x = tlPos.x, y = tlPos.y;
             while (y >= 0 && y >= tlPos.y - 4)
             {

@@ -80,7 +80,7 @@ public class HazerMom : Creature
             abstractPhysicalObject.pos.abstractNode = Random.Range(0, nds.Length);
         WeightedPush(1, 2, Custom.DirVec(chs[2].pos, chs[1].pos), Custom.LerpMap(Vector2.Distance(chs[2].pos, chs[1].pos), 3.5f, 8f, 1f, 0f));
         if (!room.GetTile(chs[0].pos).Solid)
-            LastAirTile = room.GetTilePosition(chs[0].pos);
+            LastAirTile = Room.StaticGetTilePosition(chs[0].pos);
         else
         {
             for (var i = 0; i < chs.Length; i++)
@@ -201,7 +201,7 @@ public class HazerMom : Creature
                 return;
             if (MoveCounter > 0 && MoveCounter % 6 == 0)
             {
-                if (room.readyForAI && (room.aimap.getAItile(room.GetTilePosition(chs[0].pos) + new IntVector2(HopDir, 0)).floorAltitude > 2 || room.aimap.getAItile(room.GetTilePosition(chs[0].pos) + new IntVector2(HopDir * 2, 0)).floorAltitude > 2))
+                if (room.readyForAI && (room.aimap.getAItile(Room.StaticGetTilePosition(chs[0].pos) + new IntVector2(HopDir, 0)).floorAltitude > 2 || room.aimap.getAItile(Room.StaticGetTilePosition(chs[0].pos) + new IntVector2(HopDir * 2, 0)).floorAltitude > 2))
                 {
                     HopDir = -HopDir;
                     MoveCounter = -Random.Range(60, 120);
@@ -234,7 +234,7 @@ public class HazerMom : Creature
             if (room.readyForAI)
             {
                 Vector2 vector = default;
-                var tilePosition = room.GetTilePosition(chs[2].pos);
+                var tilePosition = Room.StaticGetTilePosition(chs[2].pos);
                 var terrainProximity = room.aimap.getTerrainProximity(chs[2].pos);
                 for (var j = 1; j < 3; j++)
                 {
@@ -252,7 +252,7 @@ public class HazerMom : Creature
             chs[2].vel += SwimDir;
             if (MoveCounter > Random.Range(120, 8000))
                 MoveCounter = -Random.Range(120, 800);
-            FloatHeight = Mathf.Max(30f, Mathf.Abs(room.DefaultWaterLevel(new(tl.X, tl.Y)) * 20f - chs[2].pos.y));
+            FloatHeight = Mathf.Max(30f, Math.Abs(room.DefaultWaterLevel(new(tl.X, tl.Y)) * 20f - chs[2].pos.y));
         }
         else
         {

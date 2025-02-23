@@ -3,6 +3,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using HUD;
 using LBMergedMods.Hooks;
+using System;
 
 namespace LBMergedMods.Items;
 
@@ -172,7 +173,7 @@ public class ScoreToken : UpdatableAndDeletable, IDrawable
             {
                 cv[2] = cv[3];
                 cv[3] = to;
-                cv[4] = speed / Mathf.Abs(cv[2] - cv[3]);
+                cv[4] = speed / Math.Abs(cv[2] - cv[3]);
                 cv[1] = cv[0] = 0f;
             }
         }
@@ -455,7 +456,7 @@ public class ScoreToken : UpdatableAndDeletable, IDrawable
         SinCounter += Random.value * Power;
         SinCounter2 += (1f + Mathf.Lerp(-10f, 10f, Random.value) * Glitch) * Power;
         var f = Mathf.Sin(SinCounter2 / 20f);
-        f = Mathf.Pow(Mathf.Abs(f), .5f) * Mathf.Sign(f);
+        f = Mathf.Pow(Math.Abs(f), .5f) * Mathf.Sign(f);
         var snd = SoundLoop;
         snd.Update();
         snd.pos = Pos;

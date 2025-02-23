@@ -2,6 +2,7 @@
 using MoreSlugcats;
 using RWCustom;
 using UnityEngine;
+using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
@@ -35,7 +36,7 @@ public class BouncingMelon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHav
                 if (ul[i] is BouncingMelon fru && fru.MyStalk is Stalk sta && sta != this)
                     stalkList.Add(sta);
             }
-            var tl = room.GetTilePosition(fruitPos);
+            var tl = Room.StaticGetTilePosition(fruitPos);
             var x1 = tl.x;
             for (var y = tl.y; y >= 0; --y)
             {
@@ -53,11 +54,11 @@ public class BouncingMelon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHav
                                     for (var i = 0; i < stalkList.Count; i++)
                                     {
                                         var stalk = stalkList[i];
-                                        if (room.GetTilePosition(stalk.StuckPos) == new IntVector2(x1, y))
+                                        if (Room.StaticGetTilePosition(stalk.StuckPos) == new IntVector2(x1, y))
                                         {
                                             flag = true;
                                             StuckPos = stalk.StuckPos;
-                                            StalkLength = Mathf.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
+                                            StalkLength = Math.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
                                             break;
                                         }
                                     }
@@ -72,14 +73,14 @@ public class BouncingMelon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHav
                     if (!flag)
                     {
                         var x2 = tl.x;
-                        for (var index = Random.Range(0, Mathf.Min(20, Mathf.Abs(room.GetTilePosition(fruitPos).y - y))); index >= 0; --index)
+                        for (var index = Random.Range(0, Mathf.Min(20, Mathf.Abs(Room.StaticGetTilePosition(fruitPos).y - y))); index >= 0; --index)
                         {
                             var intSn = (int)SinSide;
                             if (room.GetTile(x2 + intSn, y).Solid && !room.GetTile(x2 + intSn, y + 1).Solid)
                                 x2 += intSn;
                         }
                         StuckPos = room.MiddleOfTile(x2, y) + new Vector2(Mathf.Lerp(-5f, 5f, Random.value), 5f);
-                        StalkLength = Mathf.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
+                        StalkLength = Math.Abs(StuckPos.y - fruitPos.y) * 1.10000002384186f + 30f;
                     }
                     break;
                 }
@@ -316,7 +317,7 @@ public class BouncingMelon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHav
         if (grabbedBy.Count > 0)
         {
             Rotation = Custom.PerpendicularVector(Custom.DirVec(fc.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-            Rotation.y = Mathf.Abs(Rotation.y);
+            Rotation.y = Math.Abs(Rotation.y);
         }
         if (SetRotation is Vector2 vec)
         {

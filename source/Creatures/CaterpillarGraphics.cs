@@ -183,7 +183,7 @@ public class CaterpillarGraphics : GraphicsModule
                 legPart.Update();
                 var vector5 = pos + vector3 * (k == 0 ? -1f : 1f) * vector4.y * ch.rad;
                 var lgt = LegLengths[j];
-                Vector2 vector6 = Vector3.Slerp(vector2 * Mathf.Lerp(Mathf.Lerp(-1f, 1f, num2), -1f, Mathf.Abs(num3 - .5f)), Vector3.Slerp(vector3 * (k == 0 ? -1f : 1f) * vector4.y, vector3 * vector4.x, Mathf.Abs(vector4.x)), Mathf.Lerp(.5f + .5f * Mathf.Sin(num2 * Mathf.PI), 0f, Mathf.Abs(num3 - .5f) * 2f)).normalized,
+                Vector2 vector6 = Vector3.Slerp(vector2 * Mathf.Lerp(Mathf.Lerp(-1f, 1f, num2), -1f, Math.Abs(num3 - .5f)), Vector3.Slerp(vector3 * (k == 0 ? -1f : 1f) * vector4.y, vector3 * vector4.x, Math.Abs(vector4.x)), Mathf.Lerp(.5f + .5f * Mathf.Sin(num2 * Mathf.PI), 0f, Math.Abs(num3 - .5f) * 2f)).normalized,
                     vector7 = vector5 + vector6 * lgt;
                 legPart.ConnectToPoint(vector5, lgt, false, 0f, ch.vel, .1f, 0f);
                 if (Crit.Consious && !legPart.reachedSnapPosition)
@@ -270,7 +270,7 @@ public class CaterpillarGraphics : GraphicsModule
             vector2 = RotatAtChunk(chs.Length - 1, timeStacker);
         }
         var vector3 = Custom.PerpendicularVector(vector) * (end == 0 ? -1f : 1f);
-        return (vector + (Vector2)Vector3.Slerp(vector3 * (side == 0 ? -1f : 1f) * vector2.y * (part == 0 ? .4f : 1.4f), vector3 * vector2.x * (part == 0 ? .25f : -.5f), Mathf.Abs(vector2.x))).normalized;
+        return (vector + (Vector2)Vector3.Slerp(vector3 * (side == 0 ? -1f : 1f) * vector2.y * (part == 0 ? .4f : 1.4f), vector3 * vector2.x * (part == 0 ? .25f : -.5f), Math.Abs(vector2.x))).normalized;
     }
 
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
@@ -365,19 +365,19 @@ public class CaterpillarGraphics : GraphicsModule
             var seg = sprites[SegmentSprite(i)];
             seg.SetPosition(vector3 - camPos);
             seg.rotation = Custom.VecToDeg((vector2 - vector4).normalized);
-            seg.scaleX = ch.rad * Mathf.Lerp(1f, Mathf.Lerp(1.5f, .9f, Mathf.Abs(normalized.x)), num6) * (2f * .0625f);
+            seg.scaleX = ch.rad * Mathf.Lerp(1f, Mathf.Lerp(1.5f, .9f, Math.Abs(normalized.x)), num6) * (2f * .0625f);
             if (glowing && i == chs.Length - 1)
                 seg.color = col;
             var dots = sprites[DotsSprite(i)];
             if (i == 0 || (!hairy && normalized.y > 0f && (!glowing || i != chs.Length - 1)))
             {
                 dots.isVisible = true;
-                dots.scaleX = ch.rad * Mathf.Lerp(1f, Mathf.Lerp(1.5f, .9f, Mathf.Abs(normalized.x)), num6) * normalized.y * (1.8f * (1f / 14f));
+                dots.scaleX = ch.rad * Mathf.Lerp(1f, Mathf.Lerp(1.5f, .9f, Math.Abs(normalized.x)), num6) * normalized.y * (1.8f * (1f / 14f));
                 dots.scaleY = ch.rad * (1.5f * (1f / 11f));
                 dots.SetPosition(vector3 + Custom.PerpendicularVector(normalized2) * normalized.x * ch.rad * 1.1f - camPos);
                 dots.rotation = Custom.VecToDeg((vector2 - vector4).normalized);
                 if (i == 0)
-                    dots.color = !Crit.Consious ? BlackColor : (glowing ? GlowColor : Color.Lerp(Custom.HSL2RGB(Hue, Saturation, .7f), BlackColor, Darkness * .2f + .5f));
+                    dots.color = !Crit.Consious ? BlackColor : (glowing ? Color.Lerp(GlowColor, Color.white, .33f * LightAlpha) : Color.Lerp(Custom.HSL2RGB(Hue, Saturation, .7f), BlackColor, Darkness * .2f + .5f));
                 else
                     dots.color = glowing ? col : Color.Lerp(clr, BlackColor, Darkness * .2f + .8f);
             }
@@ -388,7 +388,7 @@ public class CaterpillarGraphics : GraphicsModule
                 var seg2 = sprites[SecondarySegmentSprite(i - 1)];
                 seg2.SetPosition(Vector2.Lerp(vector2, vector3, .5f) - camPos);
                 seg2.rotation = Custom.VecToDeg(Vector3.Slerp(vector, normalized2, .5f));
-                seg2.scaleX = ch.rad * Mathf.Lerp(.9f, Mathf.Lerp(1.1f, .8f, Mathf.Abs(normalized.x)), num6) * 2f;
+                seg2.scaleX = ch.rad * Mathf.Lerp(.9f, Mathf.Lerp(1.1f, .8f, Math.Abs(normalized.x)), num6) * 2f;
             }
             vector2 = vector3;
             vector = normalized2;
@@ -399,8 +399,8 @@ public class CaterpillarGraphics : GraphicsModule
                 var legPart = leg[l];
                 Vector2 vector7 = vector3 - vector5 * (l == 0 ? -1f : 1f) * normalized.y * ch.rad,
                     vector8 = Vector2.Lerp(legPart.lastPos, legPart.pos, timeStacker);
-                var f = Mathf.Lerp(-1f, 1f, Mathf.Clamp(num - BodyDir * .4f, 0f, 1f)) * Mathf.Lerp(l == 0 ? 1f : -1f, 0f - normalized.x, Mathf.Abs(normalized.x));
-                f = Mathf.Pow(Mathf.Abs(f), .2f) * Mathf.Sign(f);
+                var f = Mathf.Lerp(-1f, 1f, Mathf.Clamp(num - BodyDir * .4f, 0f, 1f)) * Mathf.Lerp(l == 0 ? 1f : -1f, 0f - normalized.x, Math.Abs(normalized.x));
+                f = Mathf.Pow(Math.Abs(f), .2f) * Mathf.Sign(f);
                 var vector9 = Custom.InverseKinematic(vector7, vector8, lgt / 2f, lgt / 2f, f);
                 var legPart1 = sprites[LegSprite(i, l, 0)];
                 var legPart2 = sprites[LegSprite(i, l, 1)];

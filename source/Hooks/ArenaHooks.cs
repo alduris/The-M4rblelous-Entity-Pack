@@ -64,7 +64,11 @@ public static class ArenaHooks
             var vars = il.Body.Variables;
             c.Emit(OpCodes.Ldloc, vars[s_loc1])
              .Emit(OpCodes.Ldloc, vars[s_loc2])
-             .EmitDelegate((bool flag, List<AbstractCreature> challengeKillList, int l) => flag && challengeKillList[l].creatureTemplate.type != CreatureTemplateType.MiniBlackLeech);
+             .EmitDelegate((bool flag, List<AbstractCreature> challengeKillList, int l) =>
+             {
+                 var tp = challengeKillList[l].creatureTemplate.type;
+                 return flag && tp != CreatureTemplateType.MiniBlackLeech && tp != CreatureTemplateType.MiniScutigera;
+             });
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ExitManager.Update!");

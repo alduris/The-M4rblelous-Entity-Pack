@@ -235,7 +235,7 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
                         var cons = rm.abstractRoom.connections;
                         for (var j = 0; j < cons.Length; j++)
                         {
-                            if (rm.aimap.ExitDistanceForCreature(rm.GetTilePosition(fc.pos), j, FlyTemplate) > 0)
+                            if (rm.aimap.ExitDistanceForCreature(Room.StaticGetTilePosition(fc.pos), j, FlyTemplate) > 0)
                                 list.Add(j);
                         }
                         if (list.Count > 0)
@@ -248,7 +248,7 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
             }
             else if (Mode == MovementMode.FollowPath)
             {
-                var tilePosition = rm.GetTilePosition(fc.pos);
+                var tilePosition = Room.StaticGetTilePosition(fc.pos);
                 int num2 = -1, num3 = int.MaxValue;
                 var dirs = Custom.fourDirections;
                 for (var k = 0; k < dirs.Length; k++)
@@ -327,7 +327,7 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
         MyColor = Vector2.Lerp(MyColor, CurrentBehavior.Color, .05f);
         if (rm.aimap.getTerrainProximity(fc.pos) < 5)
         {
-            var tilePosition = rm.GetTilePosition(fc.pos);
+            var tilePosition = Room.StaticGetTilePosition(fc.pos);
             Vector2 vector3 = default;
             var dirs = Custom.fourDirections;
             for (var j = 0; j < dirs.Length; j++)
@@ -420,8 +420,8 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
         sprs[num + 3].SetPosition(ps);
         sprs[num + 3].rotation = sprs[num + 2].rotation = sprs[num + 1].rotation = Custom.VecToDeg(vector);
         MyceliaDir = -vector;
-        sprs[num + 2].scaleX = (.25f * .8f - Mathf.Abs(num2) * .25f * .8f) * Size;
-        sprs[num + 3].scaleX = (.25f * .6f - Mathf.Abs(num2) * .25f * .6f) * Size;
+        sprs[num + 2].scaleX = (.25f * .8f - Math.Abs(num2) * .25f * .8f) * Size;
+        sprs[num + 3].scaleX = (.25f * .6f - Math.Abs(num2) * .25f * .6f) * Size;
         Color color;
         bool flag;
         var darkness = rCam.currentPalette.darkness;

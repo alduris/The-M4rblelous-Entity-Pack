@@ -2,6 +2,8 @@
 using RWCustom;
 using Noise;
 using MoreSlugcats;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
@@ -21,7 +23,7 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
             BalloonPos = balloon.firstChunk.pos;
             ColorAdd = balloon.ColorAdd;
             base.room = room;
-            var tilePosition = room.GetTilePosition(balloon.firstChunk.pos);
+            var tilePosition = Room.StaticGetTilePosition(balloon.firstChunk.pos);
             while (tilePosition.y >= 0 && !room.GetTile(tilePosition).Solid)
                 --tilePosition.y;
             if (tilePosition.y < 0)
@@ -198,7 +200,7 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
         if (grabbedBy.Count > 0)
         {
             rotation = Custom.PerpendicularVector(Custom.DirVec(ch.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-            rotation.y = Mathf.Abs(rotation.y);
+            rotation.y = Math.Abs(rotation.y);
         }
         if (setRotation.HasValue)
         {

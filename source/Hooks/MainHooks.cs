@@ -110,6 +110,8 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Glowpillar);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.ChipChop))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.ChipChop);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.MiniScutigera))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.MiniScutigera);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();
@@ -194,6 +196,7 @@ public static class MainHooks
                 SlugFood.StarLemon = new(nameof(SlugFood.StarLemon), true);
                 SlugFood.DendriticNeuron = new(nameof(SlugFood.DendriticNeuron), true);
                 SlugFood.MiniBlueFruit = new(nameof(SlugFood.MiniBlueFruit), true);
+                SlugFood.MiniScutigera = new(nameof(SlugFood.MiniScutigera), true);
                 ResizeGourmandCombos();
                 InitGourmandCombos();
                 On.MoreSlugcats.GourmandCombos.InitCraftingLibrary += On_GourmandCombos_InitCraftingLibrary;

@@ -3,6 +3,8 @@ using RWCustom;
 using System.Collections.Generic;
 using UnityEngine;
 using MoreSlugcats;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
 
@@ -193,7 +195,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             return 0f;
         var a = creature.world.game.session.creatureCommunities.LikeOfPlayer(CommunityID.TintedBeetles, creature.world.RegionNumber, (player.representedCreature.state as PlayerState)!.playerNumber);
         var tempLike = creature.state.socialMemory.GetTempLike(player.representedCreature.ID);
-        a = Mathf.Lerp(a, tempLike, Mathf.Abs(tempLike));
+        a = Mathf.Lerp(a, tempLike, Math.Abs(tempLike));
         if (friendTracker.giftOfferedToMe?.owner == player.representedCreature.realizedCreature)
             a = Custom.LerpMap(a, -.5f, 1f, 0f, 1f, .8f);
         return a;
@@ -417,7 +419,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         var orInitiateRelationship = creature.state.socialMemory.GetOrInitiateRelationship(player.ID);
         orInitiateRelationship.InfluenceTempLike(change * 1.5f);
         orInitiateRelationship.InfluenceLike(change * .75f);
-        orInitiateRelationship.InfluenceKnow(Mathf.Abs(change) * .25f);
+        orInitiateRelationship.InfluenceKnow(Math.Abs(change) * .25f);
         creature.world.game.session.creatureCommunities.InfluenceLikeOfPlayer(CommunityID.TintedBeetles, creature.world.RegionNumber, (player.state as PlayerState)!.playerNumber, change * .05f, .25f, .3f);
     }
 

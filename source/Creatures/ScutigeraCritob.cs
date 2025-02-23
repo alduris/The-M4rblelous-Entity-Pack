@@ -36,7 +36,7 @@ sealed class ScutigeraCritob : Critob
             canEatMeat = crit.dead;
     }
 
-    public override IEnumerable<string> WorldFileAliases() => ["scut", "scutigera"];
+    public override IEnumerable<string> WorldFileAliases() => ["scut", "scutigera", "scuti"];
 
     public override CreatureTemplate CreateTemplate()
     {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Mono.Cecil.Cil;
 using UnityEngine;
 using RWCustom;
+using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
@@ -84,10 +85,11 @@ public static class BigEelHooks
             var vector = Custom.DirVec(self.bodyChunks[1].pos, mbcPos);
             if (!Custom.DistLess(mbcPos + vector * 45f, pos, 14f + margin))
                 return false;
-            Vector2 pos2 = mbcPos, vector2 = Custom.PerpendicularVector(vector);
-            if (Mathf.Abs(Custom.DistanceToLine(pos, pos2 + 60f * vector - vector2, pos2 + 60f * vector + vector2)) > 30f + margin)
+            Vector2 pos2 = mbcPos,
+                vector2 = Custom.PerpendicularVector(vector);
+            if (Math.Abs(Custom.DistanceToLine(pos, pos2 + 60f * vector - vector2, pos2 + 60f * vector + vector2)) > 30f + margin)
                 return false;
-            if (Mathf.Abs(Custom.DistanceToLine(pos, pos2 - vector, pos2 + vector)) > 20f + margin)
+            if (Math.Abs(Custom.DistanceToLine(pos, pos2 - vector, pos2 + vector)) > 20f + margin)
                 return false;
         }
         return orig(self, pos, margin);

@@ -1,6 +1,7 @@
 ﻿using RWCustom;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Items;
 
@@ -132,7 +133,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
                 for (var i = 0; i < bs.Length; i++)
                 {
                     var b = bs[i];
-                    b.vel.y = Mathf.Min(b.vel.y + Mathf.Abs(b.vel.y) * 5f, MaxUpwardVel);
+                    b.vel.y = Mathf.Min(b.vel.y + Math.Abs(b.vel.y) * 5f, MaxUpwardVel);
                 }
             }
         }

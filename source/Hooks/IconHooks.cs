@@ -50,6 +50,8 @@ public static class IconHooks
         return orig(iconData);
     }
 
+    internal static bool On_CreatureSymbol_DoesCreatureEarnATrophy(On.CreatureSymbol.orig_DoesCreatureEarnATrophy orig, CreatureTemplate.Type creature) => creature != CreatureTemplateType.MiniScutigera && orig(creature);
+
     internal static string On_CreatureSymbol_SpriteNameOfCreature(On.CreatureSymbol.orig_SpriteNameOfCreature orig, IconSymbol.IconSymbolData iconData)
     {
         var tp = iconData.critType;

@@ -1,6 +1,8 @@
 using MoreSlugcats;
 using RWCustom;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
@@ -22,7 +24,7 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
                 RootPos = rootPos.Value;
             else
             {
-                var tilePosition = room.GetTilePosition(FruitPos);
+                var tilePosition = Room.StaticGetTilePosition(FruitPos);
                 while (tilePosition.y < room.TileHeight && !room.GetTile(tilePosition).Solid)
                     ++tilePosition.y;
                 if (tilePosition.y == room.TileHeight)
@@ -205,7 +207,7 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
 		if (grabbedBy.Count > 0)
 		{
 			Rotation = Custom.PerpendicularVector(Custom.DirVec(fc.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-			Rotation.y = Mathf.Abs(Rotation.y);
+			Rotation.y = Math.Abs(Rotation.y);
 		}
 		if (SetRotation is Vector2 v)
 		{

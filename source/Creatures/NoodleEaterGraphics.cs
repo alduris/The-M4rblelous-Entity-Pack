@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
 
@@ -63,7 +65,7 @@ public class NoodleEaterGraphics : LizardGraphics
         {
             var sprites = sLeaser.sprites;
             var eye = sprites[SpriteHeadStart + 4];
-            eye.element = Futile.atlasManager.GetElementWithName((liz.Consious ? "NoodleEaterEye" : "NoodleEaterEyeDead") + (3 - (int)(Mathf.Abs(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, timeStacker)) * 3.9f)).ToString());
+            eye.element = Futile.atlasManager.GetElementWithName((liz.Consious ? "NoodleEaterEye" : "NoodleEaterEyeDead") + (3 - (int)(Math.Abs(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, timeStacker)) * 3.9f)).ToString());
             eye.color = liz.Consious ? effectColor : palette.blackColor;
             var num8 = SpriteLimbsColorStart - SpriteLimbsStart;
             for (var l = SpriteLimbsStart; l < SpriteLimbsEnd; l++)

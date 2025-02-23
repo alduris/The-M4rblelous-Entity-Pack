@@ -171,7 +171,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
             firstChunk.vel.y += .8f * FlyingPower * Stamina;
             firstChunk.vel *= AI.Behavior == HoverflyAI.FlyBehavior.Idle || AI.Behavior == HoverflyAI.FlyBehavior.Hunt ? .7f : 1f;
             var flag = false;
-            if (movementConnection == default || Climbable(movementConnection.DestTile) || Climbable(room.GetTilePosition(firstChunk.pos)))
+            if (movementConnection == default || Climbable(movementConnection.DestTile) || Climbable(Room.StaticGetTilePosition(firstChunk.pos)))
             {
                 var aiTile = room.aimap.getAItile(firstChunk.pos);
                 if (aiTile.narrowSpace || room.aimap.getTerrainProximity(firstChunk.pos) == 1 && (movementConnection == default || room.aimap.getTerrainProximity(movementConnection.destinationCoord) == 1) || AtSitDestination)
@@ -198,7 +198,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
         else
         {
             FlyingPower = Mathf.Lerp(FlyingPower, 0f, .05f);
-            if (Climbable(room.GetTilePosition(firstChunk.pos)))
+            if (Climbable(Room.StaticGetTilePosition(firstChunk.pos)))
             {
                 firstChunk.vel *= .8f;
                 firstChunk.vel.y += gravity;

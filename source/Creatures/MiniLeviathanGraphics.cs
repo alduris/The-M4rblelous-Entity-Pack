@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using RWCustom;
+using System;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
 
@@ -151,7 +153,7 @@ public class MiniLeviathanGraphics : BigEelGraphics
                     var s = sprites[BeakSprite(k, num12)];
                     s.SetPosition(vector11 - camPos);
                     s.rotation = num11;
-                    var num13 = num4 >= .35f ? (num12 == 0 ? (43f * Mathf.Abs(Mathf.Cos(Mathf.InverseLerp(1f, .4f, num4) * Mathf.PI))) : (30f * Mathf.InverseLerp(1f, .4f, num4))) : (num12 == 0 ? Mathf.Lerp(15f, 43f, Mathf.InverseLerp(.35f, .15f, num4)) : (30f * Mathf.Pow(Mathf.InverseLerp(0f, .5f, num5), .2f)));
+                    var num13 = num4 >= .35f ? (num12 == 0 ? (43f * Math.Abs(Mathf.Cos(Mathf.InverseLerp(1f, .4f, num4) * Mathf.PI))) : (30f * Mathf.InverseLerp(1f, .4f, num4))) : (num12 == 0 ? Mathf.Lerp(15f, 43f, Mathf.InverseLerp(.35f, .15f, num4)) : (30f * Mathf.Pow(Mathf.InverseLerp(0f, .5f, num5), .2f)));
                     Vector2 vector12 = vector4 + vector6 * num8 * num13 - vector5 * (num12 == 0 ? 22f : 30f),
                         vector13 = vector11 + Custom.DegToVec(num11) * (num12 == 0 ? -12f : 10f) + Custom.PerpendicularVector(Custom.DegToVec(num11)) * 2.5f * num8,
                         vector14 = Custom.InverseKinematic(vector12, vector13, 35f, 25f, 0f - num8);
