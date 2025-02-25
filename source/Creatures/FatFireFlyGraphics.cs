@@ -131,9 +131,12 @@ public class FatFireFlyGraphics : VultureGraphics
         var altForm = vulture.abstractCreature.superSizeMe;
         if (!spritesInShadowMode)
         {
+            fs0.isVisible = true;
             eye.color = Color.Lerp(altForm ? (albino ? new(0f, .15f, .75f) : new(.92f, .92f, .95f)) : new(.75f, .15f, 0f), eye.color, altForm && !albino ? .25f : .5f);
             fs0.color = Color.Lerp(ColorB.rgb, Color.Lerp(altForm ? Color.blue : Color.red, albino ? Color.black : Color.white, .5f), .25f);
         }
+        else
+            fs0.isVisible = false;
         eye.element = Futile.atlasManager.GetElementWithName("FFFEyes" + headGraphic);
         bs1.x = bs0.x = fs0.x = body.x;
         bs1.y = bs0.y = fs0.y = body.y;
