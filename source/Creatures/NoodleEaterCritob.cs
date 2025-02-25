@@ -72,6 +72,8 @@ sealed class NoodleEaterCritob : Critob, ISandboxHandler
         nl.EatenBy(CreatureTemplate.Type.MirosBird, 1f);
         nl.EatenBy(CreatureTemplate.Type.CyanLizard, 1f);
         nl.EatenBy(CreatureTemplateType.HunterSeeker, 1f);
+        nl.EatenBy(CreatureTemplateType.WaterSpitter, 1f);
+        nl.Fears(CreatureTemplateType.WaterSpitter, 1f);
         nl.EatenBy(CreatureTemplate.Type.Vulture, 1f);
         nl.EatenBy(CreatureTemplate.Type.BigEel, 1f);
         nl.FearedBy(CreatureTemplate.Type.Fly, .2f);

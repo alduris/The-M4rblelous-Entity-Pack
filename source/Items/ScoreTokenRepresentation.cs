@@ -111,10 +111,17 @@ public class ScoreTokenRepresentation : ResizeableObjectRepresentation
                 int.TryParse(ar[1], NumberStyles.Any, CultureInfo.InvariantCulture, out n);
             subNodes.Add(new IDController(owner, "ID", this, new(5f, 25f), "ID : ", n));
             var bts = SlugcatButtons = new Button[SlugcatStats.Name.values.Count];
+            var psX = 0f;
             for (var i = 0; i < bts.Length; i++)
             {
-                subNodes.Add(bts[i] = new(owner, "Button_" + i, this, new(5f, 45f + 20f * i), 240f, string.Empty));
-                size.y += 20f;
+                subNodes.Add(bts[i] = new(owner, "Button_" + i, this, new(5f + psX, 45f + 20f * Mathf.Floor(i / 2f)), 115f, string.Empty));
+                if (psX > 0f)
+                {
+                    psX = 0f;
+                    size.y += 20f;
+                }
+                else
+                    psX = 125f;
             }
             UpdateButtonText();
         }

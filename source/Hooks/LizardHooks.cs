@@ -286,10 +286,18 @@ public static class LizardHooks
     internal static CreatureTemplate.Relationship On_LizardAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.LizardAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, LizardAI self, RelationshipTracker.DynamicRelationship dRelation)
     {
         var res = orig(self, dRelation);
-        if (self.creature.creatureTemplate.type == CreatureTemplateType.NoodleEater)
+        var rel = dRelation.trackerRep.representedCreature.creatureTemplate;
+        var tp = self.creature.creatureTemplate.type;
+        if (self is PolliwogAI)
         {
-            var rel = dRelation.trackerRep.representedCreature.creatureTemplate;
-            if (rel.TopAncestor().type == CreatureTemplate.Type.Scavenger)
+            if (rel.type == CreatureTemplateType.SilverLizard || rel.type == CreatureTemplateType.HunterSeeker || rel.type == CreatureTemplateType.WaterSpitter || (ModManager.MSC && rel.type == MoreSlugcatsEnums.CreatureTemplateType.SpitLizard))
+                res = new(CreatureTemplate.Relationship.Type.Afraid, 1f);
+        }
+        else if (tp == CreatureTemplateType.NoodleEater)
+        {
+            if (rel.type == CreatureTemplateType.SilverLizard || rel.type == CreatureTemplateType.HunterSeeker || rel.type == CreatureTemplateType.WaterSpitter || (ModManager.MSC && rel.type == MoreSlugcatsEnums.CreatureTemplateType.SpitLizard))
+                res = new(CreatureTemplate.Relationship.Type.Afraid, 1f);
+            else if (rel.TopAncestor().type == CreatureTemplate.Type.Scavenger)
                 res = new(CreatureTemplate.Relationship.Type.Ignores, 0f);
             if ((rel.type == CreatureTemplate.Type.Slugcat && res.type == CreatureTemplate.Relationship.Type.Eats) || res.type == CreatureTemplate.Relationship.Type.Attacks)
                 res.type = CreatureTemplate.Relationship.Type.Afraid;
@@ -298,6 +306,10 @@ public static class LizardHooks
             else if (rel.type?.value == "SnootShootNoot")
                 res = new(CreatureTemplate.Relationship.Type.Afraid, .15f);
         }
+        else if ((self is HunterSeekerAI or WaterSpitterAI || tp == CreatureTemplateType.SilverLizard) && (rel.type == CreatureTemplate.Type.BlueLizard || rel.type == CreatureTemplateType.Polliwog || rel.type == CreatureTemplateType.NoodleEater))
+            res = new(CreatureTemplate.Relationship.Type.Eats, 1f);
+        else if (ModManager.MSC && tp == MoreSlugcatsEnums.CreatureTemplateType.SpitLizard && (rel.type == CreatureTemplateType.Polliwog || rel.type == CreatureTemplateType.NoodleEater))
+            res = new(CreatureTemplate.Relationship.Type.Eats, 1f);
         return res;
     }
 

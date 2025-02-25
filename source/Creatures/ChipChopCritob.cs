@@ -134,7 +134,7 @@ sealed class ChipChopCritob : Critob
         ctp.EatenBy(CreatureTemplate.Type.Centipede, 1f);
         ctp.EatenBy(CreatureTemplate.Type.Vulture, 1f);
         ctp.EatenBy(CreatureTemplate.Type.PoleMimic, 1f);
-        ctp.EatenBy(CreatureTemplate.Type.TempleGuard, 1f);
+        ctp.IgnoredBy(CreatureTemplate.Type.TempleGuard);
         ctp.EatenBy(CreatureTemplate.Type.TentaclePlant, 1f);
         ctp.EatenBy(CreatureTemplate.Type.DaddyLongLegs, 1f);
         if (ModManager.MSC)
