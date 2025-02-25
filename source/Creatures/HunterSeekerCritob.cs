@@ -4,6 +4,7 @@ using Fisobs.Creatures;
 using System.Collections.Generic;
 using UnityEngine;
 using Fisobs.Sandbox;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
@@ -39,6 +40,11 @@ sealed class HunterSeekerCritob : Critob
         p.Rivals(Type, .1f);
         p.Rivals(CreatureTemplate.Type.LizardTemplate, .2f);
         p.Rivals(CreatureTemplate.Type.WhiteLizard, .5f);
+        if (ModManager.MSC)
+        {
+            p.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+            p.Ignores(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+        }
     }
 
     public override IEnumerable<string> WorldFileAliases() => ["seeker", "hunterseeker", "hunter seeker"];

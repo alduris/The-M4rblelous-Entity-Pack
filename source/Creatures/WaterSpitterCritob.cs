@@ -4,6 +4,7 @@ using Fisobs.Sandbox;
 using DevInterface;
 using UnityEngine;
 using System.Collections.Generic;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
@@ -92,6 +93,11 @@ sealed class WaterSpitterCritob : Critob
         w.IgnoredBy(CreatureTemplate.Type.GarbageWorm);
         w.FearedBy(CreatureTemplate.Type.VultureGrub, 1f);
         w.FearedBy(CreatureTemplate.Type.Slugcat, .9f);
+        if (ModManager.MSC)
+        {
+            w.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+            w.Ignores(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+        }
     }
 
     public override IEnumerable<string> WorldFileAliases() => ["waterspitter", "water spitter"];

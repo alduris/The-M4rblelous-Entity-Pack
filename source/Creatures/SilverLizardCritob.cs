@@ -4,6 +4,7 @@ using Fisobs.Sandbox;
 using UnityEngine;
 using System.Collections.Generic;
 using DevInterface;
+using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
 
@@ -64,6 +65,11 @@ sealed class SilverLizardCritob : Critob
         s.FearedBy(CreatureTemplate.Type.Scavenger, .5f);
         s.EatenBy(CreatureTemplate.Type.BigSpider, .3f);
         s.EatenBy(CreatureTemplate.Type.DaddyLongLegs, 1f);
+        if (ModManager.MSC)
+        {
+            s.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+            s.Ignores(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+        }
     }
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new LizardAI(acrit, acrit.world);

@@ -288,7 +288,12 @@ public static class LizardHooks
         var res = orig(self, dRelation);
         var rel = dRelation.trackerRep.representedCreature.creatureTemplate;
         var tp = self.creature.creatureTemplate.type;
-        if (self is PolliwogAI)
+        if (tp == CreatureTemplate.Type.BlueLizard)
+        {
+            if (rel.type == CreatureTemplateType.SilverLizard || rel.type == CreatureTemplateType.HunterSeeker || rel.type == CreatureTemplateType.WaterSpitter)
+                res = new(CreatureTemplate.Relationship.Type.Afraid, 1f);
+        }
+        else if (self is PolliwogAI)
         {
             if (rel.type == CreatureTemplateType.SilverLizard || rel.type == CreatureTemplateType.HunterSeeker || rel.type == CreatureTemplateType.WaterSpitter || (ModManager.MSC && rel.type == MoreSlugcatsEnums.CreatureTemplateType.SpitLizard))
                 res = new(CreatureTemplate.Relationship.Type.Afraid, 1f);
@@ -299,12 +304,12 @@ public static class LizardHooks
                 res = new(CreatureTemplate.Relationship.Type.Afraid, 1f);
             else if (rel.TopAncestor().type == CreatureTemplate.Type.Scavenger)
                 res = new(CreatureTemplate.Relationship.Type.Ignores, 0f);
-            if ((rel.type == CreatureTemplate.Type.Slugcat && res.type == CreatureTemplate.Relationship.Type.Eats) || res.type == CreatureTemplate.Relationship.Type.Attacks)
-                res.type = CreatureTemplate.Relationship.Type.Afraid;
-            if (rel.type?.value == "DrainMite")
+            else if (rel.type?.value == "DrainMite")
                 res = new(CreatureTemplate.Relationship.Type.Eats, 1f);
             else if (rel.type?.value == "SnootShootNoot")
                 res = new(CreatureTemplate.Relationship.Type.Afraid, .15f);
+            else if ((rel.type == CreatureTemplate.Type.Slugcat && res.type == CreatureTemplate.Relationship.Type.Eats) || res.type == CreatureTemplate.Relationship.Type.Attacks)
+                res.type = CreatureTemplate.Relationship.Type.Afraid;
         }
         else if ((self is HunterSeekerAI or WaterSpitterAI || tp == CreatureTemplateType.SilverLizard) && (rel.type == CreatureTemplate.Type.BlueLizard || rel.type == CreatureTemplateType.Polliwog || rel.type == CreatureTemplateType.NoodleEater))
             res = new(CreatureTemplate.Relationship.Type.Eats, 1f);
