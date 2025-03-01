@@ -37,7 +37,8 @@ sealed class DentureCritob : Critob, ISandboxHandler
         {
             DefaultRelationship = new(CreatureTemplate.Relationship.Type.Ignores, 0f),
             DamageResistances = new() { Base = float.MaxValue },
-            StunResistances = new() { Base = float.MaxValue }
+            StunResistances = new() { Base = float.MaxValue },
+            HasAI = false
         }.IntoTemplate();
         t.requireAImap = true;
         t.doPreBakedPathing = false;

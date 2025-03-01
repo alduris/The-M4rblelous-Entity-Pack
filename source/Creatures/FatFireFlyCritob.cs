@@ -22,7 +22,7 @@ sealed class FatFireFlyCritob : Critob, ISandboxHandler
         RegisterUnlock(KillScore.Configurable(23), SandboxUnlockID.FatFireFly);
     }
 
-    public override int ExpeditionScore() => 25;
+    public override int ExpeditionScore() => 23;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => new(.75f, .15f, 0f);
 

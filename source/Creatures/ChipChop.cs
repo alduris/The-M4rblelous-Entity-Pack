@@ -370,21 +370,21 @@ public class ChipChop : InsectoidCreature
 	public virtual bool CanEat(PhysicalObject item) => Hunger > 0 && !item.slatedForDeletetion && item switch
 	{
         ThornyStrawberry t => !t.StalkActive && t.SpikesRemoved(),
+        GooieDuck gd => !gd.StalkActive() && gd.bites < 6,
         IHaveAStalk st => !st.StalkActive,
-        SlimeMold mld => !mld.stuckPos.HasValue,
-        Mushroom mush => !mush.growPos.HasValue,
-        KarmaFlower flower => !flower.growPos.HasValue,
-        LillyPuck ll => ll.myStalk is not LillyPuck.Stalk st || st.slatedForDeletetion,
-        GlowWeed gw => gw.stalk is not GlowWeed.Stalk st || st.slatedForDeletetion,
-        DangleFruit dangle => dangle.stalk is not DangleFruit.Stalk st || st.fruit is null || st.slatedForDeletetion,
-        DandelionPeach dd => dd.stalk is not DandelionPeach.Stalk st || st.slatedForDeletetion,
-		GooieDuck gd => gd.bites < 6,
         DendriticNeuron or OracleSwarmer or JellyFish or SwollenWaterNut or EggBugEgg or FireEgg or BlobPiece => true,
 		Hazer h => h.dead,
         VultureGrub gb => gb.dead,
 		SmallNeedleWorm sw => sw.dead,
 		Centipede ce => ce.Small && ce.dead,
 		Fly f => f.dead,
+        SlimeMold mld => !mld.StalkActive(),
+        Mushroom mush => !mush.StalkActive(),
+        KarmaFlower flower => !flower.StalkActive(),
+        LillyPuck ll => !ll.StalkActive(),
+        GlowWeed gw => !gw.StalkActive(),
+        DangleFruit dangle => !dangle.StalkActive(),
+        DandelionPeach dd => !dd.StalkActive(),
         _ => false
 	};
 
