@@ -1,5 +1,6 @@
 ﻿global using static LBMergedMods.Hooks.MainHooks;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -169,6 +170,8 @@ public static class MainHooks
             MultiplayerUnlocks.CreatureUnlockList.Add(SandboxUnlockID.SeedBat);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Bigrub))
             MultiplayerUnlocks.CreatureUnlockList.Add(SandboxUnlockID.Bigrub);
+
+        if (ModManager.ActiveMods.Any(x => x.id == "slime-cubed.devconsole")) DevConsoleCommands.RegisterDevConsole();
     }
 
     internal static void On_RainWorld_PostModsInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)

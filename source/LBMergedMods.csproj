@@ -42,5 +42,8 @@
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>Refs\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
+    <Reference Include="DevConsole">
+      <HintPath>Refs\DevConsole.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
