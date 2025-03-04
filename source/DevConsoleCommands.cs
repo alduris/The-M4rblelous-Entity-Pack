@@ -179,6 +179,7 @@ namespace LBMergedMods
 
                     // Actually apply the tags
                     crit.spawnData = $"{{{string.Join(",", tags)}}}";
+                    crit.setCustomFlags();
                 }
                 else if (objType.index > -1 || critType.index > -1)
                 {
