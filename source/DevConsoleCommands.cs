@@ -241,7 +241,7 @@ namespace LBMergedMods
                     // Show arguments specific to object
                     if (objType == AbstractObjectType.BlobPiece && foundFloats == 0)
                     {
-                        yield return "color: float";
+                        yield return hintPrefix + "color: float";
                     }
                 }
                 else if (critterTypes.Contains(critType))
