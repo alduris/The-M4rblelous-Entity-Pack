@@ -170,8 +170,6 @@ public static class MainHooks
             MultiplayerUnlocks.CreatureUnlockList.Add(SandboxUnlockID.SeedBat);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Bigrub))
             MultiplayerUnlocks.CreatureUnlockList.Add(SandboxUnlockID.Bigrub);
-
-        if (ModManager.ActiveMods.Any(x => x.id == "slime-cubed.devconsole")) DevConsoleCommands.RegisterDevConsole();
     }
 
     internal static void On_RainWorld_PostModsInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
@@ -213,6 +211,8 @@ public static class MainHooks
                 On.MoreSlugcats.SlugNPCAI.LethalWeaponScore += On_SlugNPCAI_LethalWeaponScore;
             }
             s_init = true;
+
+            if (ModManager.ActiveMods.Any(x => x.id == "slime-cubed.devconsole")) DevConsoleCommands.RegisterDevConsole();
         }
         _ = PlacedObjectType.ThornyStrawberry;
         _ = MultiplayerItemType.ThornyStrawberry;

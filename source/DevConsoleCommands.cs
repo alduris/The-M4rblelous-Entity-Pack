@@ -18,12 +18,14 @@ namespace LBMergedMods
     internal static class DevConsoleCommands
     {
         private static readonly Regex entityID = new(@"^ID\.-?\d+\.-?\d+(\.-?\d+)?$");
-        private static readonly string[] allTags = ["Voidsea", "Winter", "Ignorecycle", "TentacleImmune", "Lavasafe", "AlternateForm", "PreCycle", "Night", "DestroyOnAbstract", "DontSave"];
+        private static readonly string[] allTags = ["Voidsea", "Winter", "Ignorecycle", "TentacleImmune", "Lavasafe", "AlternateForm", "PreCycle", "Night", "AlbinoForm", "DestroyOnAbstract", "DontSave"];
         private const string hintPrefix = "help-";
 
         private static HashSet<ObjType> objectTypes = [];
         private static HashSet<CritType> critterTypes = [];
         private static HashSet<SandboxUnlock> sandboxUnlocks = [];
+
+        private static HashSet<CritType> daddyBases = [];
 
         public static Vector2 GetMiddleOfTile(this IntVector2 vector)
         {
@@ -57,6 +59,10 @@ namespace LBMergedMods
                 objectTypes = GetEnumTypes<ObjType>(typeof(AbstractObjectType));
                 critterTypes = GetEnumTypes<CritType>(typeof(CreatureTemplateType));
                 sandboxUnlocks = GetEnumTypes<SandboxUnlock>(typeof(SandboxUnlockID));
+
+                // Special cases for creature variants
+                critterTypes.Add(new CritType("Bigrub", false));
+                critterTypes.Add(new CritType("SeedBat", false));
 
                 // Actually register commands
                 new CommandBuilder("spawn_lb")
@@ -114,17 +120,18 @@ namespace LBMergedMods
                     ID = game.GetNewID();
                 }
 
-                List<int> foundIntegers = [];
                 List<float> foundFloats = [];
+                List<bool> foundBools = [];
                 for (int i = startIndex; i < args.Length; i++)
                 {
                     if (float.TryParse(args[i], NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var _f)) foundFloats.Add(_f);
-                    if (int.TryParse(args[i], NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out var _i)) foundIntegers.Add(_i);
+                    else if (bool.TryParse(args[i], out var _b)) foundBools.Add(_b);
                 }
 
                 AbstractPhysicalObject entity = null!;
                 var pos = GameConsole.TargetPos.Room.GetWorldCoordinate(GameConsole.TargetPos.Pos);
 
+                // Generic cases
                 if (objectTypes.Contains(objType))
                 {
                     // Special cases
@@ -136,6 +143,15 @@ namespace LBMergedMods
                             c = foundFloats[0];
                         }
                         entity = new BlobPiece.AbstractBlobPiece(game.world, null, pos, ID, c);
+                    }
+                    else if (objType == AbstractObjectType.ThornyStrawberry)
+                    {
+                        var strawb = new AbstractConsumable(game.world, objType, null, pos, ID, -1, -1, null);
+                        entity = strawb;
+                        if (foundBools.Count > 0 && StrawberryData.TryGetValue(strawb, out var data))
+                        {
+                            data.SpikesRemoved = foundBools[0];
+                        }
                     }
 
                     // Generic cases
@@ -150,7 +166,11 @@ namespace LBMergedMods
                 }
                 else if (critterTypes.Contains(critType))
                 {
-                    var template = StaticWorld.GetCreatureTemplate(critType);
+                    var actualCritType = critType;
+                    if (critType.value == "Bigrub") actualCritType = CritType.TubeWorm;
+                    else if (critType.value == "SeedBat") actualCritType = CritType.Fly;
+
+                    var template = StaticWorld.GetCreatureTemplate(actualCritType);
                     var crit = new AbstractCreature(game.world, template, null, pos, ID);
                     entity = crit;
                     crit.Move(pos);
@@ -168,6 +188,11 @@ namespace LBMergedMods
                     if (tagSet.Remove("DestroyOnAbstract")) crit.destroyOnAbstraction = true;
                     if (tagSet.Remove("DontSave")) crit.saveCreature = false;
 
+                    if (critType.value == "Bigrub")
+                        tagSet.Add(foundBools.Count > 0 && foundBools[0] ? "altbigrub" : "bigrub");
+                    else if (critType.value == "SeedBat")
+                        tagSet.Add("seedbat");
+                    
                     var tags = tagSet.ToList();
 
                     // Apply creature-specific tags
@@ -228,12 +253,12 @@ namespace LBMergedMods
                 }
 
                 // Search for ints and floats
-                int foundIntegers = 0;
                 int foundFloats = 0;
+                int foundBools = 0;
                 for (int i = startIndex; i < args.Length; i++)
                 {
                     if (float.TryParse(args[i], NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _)) foundFloats++;
-                    if (int.TryParse(args[i], NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out _)) foundIntegers++;
+                    else if (bool.TryParse(args[i], out _)) foundBools++;
                 }
 
                 if (objectTypes.Contains(objType))
@@ -243,6 +268,30 @@ namespace LBMergedMods
                     {
                         yield return hintPrefix + "color: float";
                     }
+                    else if (objType == AbstractObjectType.ThornyStrawberry && foundBools == 0)
+                    {
+                        yield return hintPrefix + "thorns: bool";
+                    }
+                    /*else if (objType == AbstractObjectType.RubberBlossom)
+                    {
+                        if (foundBools == 0) yield return "open: bool";
+                        bool open = false;
+                        args.FirstOrDefault(x => bool.TryParse(x, out open));
+
+                        string? hint = foundFloats switch
+                        {
+                            0 => hintPrefix + "r: float",
+                            1 => hintPrefix + "g: float",
+                            2 => hintPrefix + "b: float",
+                            3 when foundBools > 0 && open => hintPrefix + "food: int",
+                            3 when foundBools > 0 && !open => hintPrefix + "boost: float",
+                            _ => null
+                        };
+                        if (hint != null)
+                        {
+                            yield return hint;
+                        }
+                    }*/
                 }
                 else if (critterTypes.Contains(critType))
                 {
@@ -263,6 +312,10 @@ namespace LBMergedMods
                     {
                         // Lizard-specific
                         yield return hintPrefix + "mean: float";
+                    }
+                    else if (critType.value == "Bigrub" && foundBools == 0)
+                    {
+                        yield return hintPrefix + "alt: bool";
                     }
                 }
             }
