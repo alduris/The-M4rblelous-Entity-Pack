@@ -24,7 +24,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
         RndColorAlpha = Random.Range(-.2f, 0f);
         PetalVars = [Random.value > .5f ? -1f : 1f, Random.value > .5f ? -1f : 1f, Random.value > .5f ? -1f : 1f, Random.value > .5f ? -1f : 1f];
         Random.state = state;
-        bodyChunks = [new(this, 0, default, 13f, .5f)];
+        bodyChunks = [new(this, 0, default, 15f, .5f)];
         bodyChunkConnections = [];
         CollideWithObjects = false;
         CollideWithSlopes = false;
@@ -127,7 +127,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
         if (otherObject is Player p && p.bodyChunks is BodyChunk[] bs)
         {
             var intVector = bs[1].ContactPoint;
-            if (intVector == new IntVector2(0, -1))
+            if (intVector.y == -1)
             {
                 WowSpeed = .0025f;
                 for (var i = 0; i < bs.Length; i++)
@@ -247,4 +247,10 @@ public class RubberBlossom : PhysicalObject, IDrawable
             newContainer.AddChild(sprite);
         }
     }
+
+    public override void Grabbed(Creature.Grasp grasp) { }
+
+    public override void HitByExplosion(float hitFac, Explosion explosion, int hitChunk) { }
+
+    public override void HitByWeapon(Weapon weapon) { }
 }
