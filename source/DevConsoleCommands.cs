@@ -25,19 +25,9 @@ namespace LBMergedMods
         private static HashSet<CritType> s_CritterTypes = [];
         private static HashSet<SandboxUnlock> s_SandboxUnlocks = [];
 
-        public static Vector2 GetMiddleOfTile(this IntVector2 vector)
-        {
-            return new Vector2(10f + vector.x * 20f, 10f + vector.y * 20f);
-        }
-
-        public static IntVector2 GetTilePosition(this Vector2 pos)
-        {
-            return new((int)((pos.x + 20f) / 20f) - 1, (int)((pos.y + 20f) / 20f) - 1);
-        }
-
         public static WorldCoordinate GetWorldCoordinate(this AbstractRoom self, Vector2 pos)
         {
-            return Custom.MakeWorldCoordinate(pos.GetTilePosition(), self.index);
+            return Custom.MakeWorldCoordinate(Room.StaticGetTilePosition(pos), self.index);
         }
 
         public static HashSet<T> GetEnumTypes<T>(Type C)
