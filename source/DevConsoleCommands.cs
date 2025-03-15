@@ -17,15 +17,13 @@ namespace LBMergedMods
 {
     internal static class DevConsoleCommands
     {
-        private static readonly Regex entityID = new(@"^ID\.-?\d+\.-?\d+(\.-?\d+)?$");
-        private static readonly string[] allTags = ["Voidsea", "Winter", "Ignorecycle", "TentacleImmune", "Lavasafe", "AlternateForm", "PreCycle", "Night", "AlbinoForm", "DestroyOnAbstract", "DontSave"];
-        private const string hintPrefix = "help-";
+        private static readonly Regex s_EntityID = new(@"^ID\.-?\d+\.-?\d+(\.-?\d+)?$");
+        private static readonly string[] s_AllTags = ["Voidsea", "Winter", "Ignorecycle", "TentacleImmune", "Lavasafe", "AlternateForm", "PreCycle", "Night", "AlbinoForm", "DestroyOnAbstract", "DontSave"];
+        private const string s_HintPrefix = "help-";
 
-        private static HashSet<ObjType> objectTypes = [];
-        private static HashSet<CritType> critterTypes = [];
-        private static HashSet<SandboxUnlock> sandboxUnlocks = [];
-
-        private static HashSet<CritType> daddyBases = [];
+        private static HashSet<ObjType> s_ObjectTypes = [];
+        private static HashSet<CritType> s_CritterTypes = [];
+        private static HashSet<SandboxUnlock> s_SandboxUnlocks = [];
 
         public static Vector2 GetMiddleOfTile(this IntVector2 vector)
         {
@@ -56,13 +54,19 @@ namespace LBMergedMods
             try
             {
                 // Collect information using reflection so we don't have to worry about collecting it later when it inevitably changes lmao
-                objectTypes = GetEnumTypes<ObjType>(typeof(AbstractObjectType));
-                critterTypes = GetEnumTypes<CritType>(typeof(CreatureTemplateType));
-                sandboxUnlocks = GetEnumTypes<SandboxUnlock>(typeof(SandboxUnlockID));
+                s_ObjectTypes = GetEnumTypes<ObjType>(typeof(AbstractObjectType));
+                s_CritterTypes = CreatureTemplateType.s_M4RCreatureList.Union([new CritType("Bigrub", false), new CritType("SeedBat", false), new CritType("JellyLongLegs", false)]).ToHashSet();
+                s_SandboxUnlocks = GetEnumTypes<SandboxUnlock>(typeof(SandboxUnlockID));
 
-                // Special cases for creature variants
-                critterTypes.Add(new CritType("Bigrub", false));
-                critterTypes.Add(new CritType("SeedBat", false));
+                // Shrembly
+                if (ModManager.ActiveMods.Any(x => x.id == "com.rainworldgame.shroudedassembly.plugin"))
+                {
+                    s_CritterTypes.Add(new CritType("BabyCroaker", false));
+                    s_CritterTypes.Add(new CritType("Gecko", false));
+                    s_CritterTypes.Add(new CritType("MaracaSpider", false));
+                    s_ObjectTypes.Add(new ObjType("PureCrystal", false));
+                    s_ObjectTypes.Add(new ObjType("RockFruit", false));
+                }
 
                 // Actually register commands
                 new CommandBuilder("spawn_lb")
@@ -110,7 +114,7 @@ namespace LBMergedMods
 
                 var startIndex = 1;
                 EntityID ID;
-                if (args.Length > 1 && entityID.IsMatch(args[1]))
+                if (args.Length > 1 && s_EntityID.IsMatch(args[1]))
                 {
                     startIndex = 2;
                     ID = ParseExtendedID(args[1]);
@@ -132,7 +136,7 @@ namespace LBMergedMods
                 var pos = GameConsole.TargetPos.Room.GetWorldCoordinate(GameConsole.TargetPos.Pos);
 
                 // Generic cases
-                if (objectTypes.Contains(objType))
+                if (s_ObjectTypes.Contains(objType))
                 {
                     // Special cases
                     if (objType == AbstractObjectType.BlobPiece)
@@ -153,6 +157,26 @@ namespace LBMergedMods
                             data.SpikesRemoved = foundBools[0];
                         }
                     }
+                    else if (objType == AbstractObjectType.RubberBlossom)
+                    {
+                        if (foundBools.Count == 0 || (foundFloats.Count != 1 && foundFloats.Count != 4))
+                        {
+                            GameConsole.WriteLine("Invalid spawn line for rubber blossom!");
+                            return;
+                        }
+                        bool open = foundBools[0];
+                        GameConsole.WriteLine("OPEN IS " + open);
+                        Color color = StationPlantCol;
+                        if (foundFloats.Count > 1)
+                        {
+                            color = new Color(foundFloats[1], foundFloats[2], foundFloats[3]);
+                        }
+
+                        var flower = new AbstractConsumable(game.world, objType, null, pos, ID, -1, -1, null);
+                        StationPlant.Remove(flower);
+                        StationPlant.Add(flower, new RubberBlossomProperties(open, (int)foundFloats[0], 999, open, !open) { Open = open, DevSpawn = true, forceMaxVel = foundFloats[0], forceColor = color });
+                        entity = flower;
+                    }
 
                     // Generic cases
                     else if (AbstractConsumable.IsTypeConsumable(objType))
@@ -164,11 +188,12 @@ namespace LBMergedMods
                         entity = new AbstractPhysicalObject(game.world, objType, null, pos, ID);
                     }
                 }
-                else if (critterTypes.Contains(critType))
+                else if (s_CritterTypes.Contains(critType))
                 {
                     var actualCritType = critType;
                     if (critType.value == "Bigrub") actualCritType = CritType.TubeWorm;
                     else if (critType.value == "SeedBat") actualCritType = CritType.Fly;
+                    else if (critType.value == "JellyLongLegs") actualCritType = CritType.BrotherLongLegs;
 
                     var template = StaticWorld.GetCreatureTemplate(actualCritType);
                     var crit = new AbstractCreature(game.world, template, null, pos, ID);
@@ -177,7 +202,7 @@ namespace LBMergedMods
 
                     // Get tags to apply from arguments
                     HashSet<string> tagSet = [];
-                    foreach (var tag in allTags)
+                    foreach (var tag in s_AllTags)
                     {
                         if (args.Any(x => x.Equals(tag, StringComparison.OrdinalIgnoreCase)))
                         {
@@ -192,11 +217,13 @@ namespace LBMergedMods
                         tagSet.Add(foundBools.Count > 0 && foundBools[0] ? "altbigrub" : "bigrub");
                     else if (critType.value == "SeedBat")
                         tagSet.Add("seedbat");
+                    else if (critType.value == "JellyLongLegs")
+                        Jelly.Add(crit, new JellyProperties() { Born = false, IsJelly = true });
                     
                     var tags = tagSet.ToList();
 
                     // Apply creature-specific tags
-                    if (StaticWorld.GetCreatureTemplate(critType).TopAncestor().type == CritType.LizardTemplate && foundFloats.Count > 0)
+                    if (critType.Index > -1 && StaticWorld.GetCreatureTemplate(critType).TopAncestor().type == CritType.LizardTemplate && foundFloats.Count > 0)
                     {
                         // Lizard meanness
                         tags.Add("Mean:" + foundFloats[0].ToString(NumberFormatInfo.InvariantInfo));
@@ -236,9 +263,9 @@ namespace LBMergedMods
             if (args.Length == 0)
             {
                 // All objects and creatures
-                foreach (var key in objectTypes)
+                foreach (var key in s_ObjectTypes)
                     yield return (key.ToString());
-                foreach (var key in critterTypes)
+                foreach (var key in s_CritterTypes)
                     yield return (key.ToString());
             }
             else
@@ -247,7 +274,7 @@ namespace LBMergedMods
                 var critType = new CritType(args[0], false);
 
                 var startIndex = 1;
-                if (args.Length > 1 && entityID.IsMatch(args[1]))
+                if (args.Length > 1 && s_EntityID.IsMatch(args[1]))
                 {
                     startIndex = 2;
                 }
@@ -261,43 +288,47 @@ namespace LBMergedMods
                     else if (bool.TryParse(args[i], out _)) foundBools++;
                 }
 
-                if (objectTypes.Contains(objType))
+                if (s_ObjectTypes.Contains(objType))
                 {
                     // Show arguments specific to object
                     if (objType == AbstractObjectType.BlobPiece && foundFloats == 0)
                     {
-                        yield return hintPrefix + "color: float";
+                        yield return s_HintPrefix + "color: float";
                     }
                     else if (objType == AbstractObjectType.ThornyStrawberry && foundBools == 0)
                     {
-                        yield return hintPrefix + "thorns: bool";
+                        yield return s_HintPrefix + "thorns: bool";
                     }
-                    /*else if (objType == AbstractObjectType.RubberBlossom)
+                    else if (objType == AbstractObjectType.RubberBlossom)
                     {
-                        if (foundBools == 0) yield return "open: bool";
-                        bool open = false;
-                        args.FirstOrDefault(x => bool.TryParse(x, out open));
+                        if (foundBools == 0)
+                            yield return "open: bool";
+                        else
+                        {
+                            bool open = false;
+                            args.FirstOrDefault(x => bool.TryParse(x, out open));
 
-                        string? hint = foundFloats switch
-                        {
-                            0 => hintPrefix + "r: float",
-                            1 => hintPrefix + "g: float",
-                            2 => hintPrefix + "b: float",
-                            3 when foundBools > 0 && open => hintPrefix + "food: int",
-                            3 when foundBools > 0 && !open => hintPrefix + "boost: float",
-                            _ => null
-                        };
-                        if (hint != null)
-                        {
-                            yield return hint;
+                            string? hint = foundFloats switch
+                            {
+                                0 when open => s_HintPrefix + "food: int",
+                                0 when !open => s_HintPrefix + "boost: float",
+                                1 => s_HintPrefix + "r: float",
+                                2 => s_HintPrefix + "g: float",
+                                3 => s_HintPrefix + "b: float",
+                                _ => null
+                            };
+                            if (hint != null)
+                            {
+                                yield return hint;
+                            }
                         }
-                    }*/
+                    }
                 }
-                else if (critterTypes.Contains(critType))
+                else if (s_CritterTypes.Contains(critType))
                 {
 
                     // Show generic creature tags
-                    var tags = allTags.ToHashSet();
+                    var tags = s_AllTags.ToHashSet();
                     for (int i = startIndex; i < args.Length; i++)
                     {
                         tags.Remove(args[i]);
@@ -311,11 +342,11 @@ namespace LBMergedMods
                     if (StaticWorld.GetCreatureTemplate(critType).TopAncestor().type == CritType.LizardTemplate && foundFloats == 0)
                     {
                         // Lizard-specific
-                        yield return hintPrefix + "mean: float";
+                        yield return s_HintPrefix + "mean: float";
                     }
                     else if (critType.value == "Bigrub" && foundBools == 0)
                     {
-                        yield return hintPrefix + "alt: bool";
+                        yield return s_HintPrefix + "alt: bool";
                     }
                 }
             }
@@ -336,7 +367,7 @@ namespace LBMergedMods
                     if (args[i] == "ALL")
                     {
                         // Unlock all
-                        foreach (var unlock in sandboxUnlocks)
+                        foreach (var unlock in s_SandboxUnlocks)
                         {
                             if (enable)
                             {
@@ -360,7 +391,7 @@ namespace LBMergedMods
                     else
                     {
                         var unlock = new SandboxUnlock(args[i], false);
-                        if (sandboxUnlocks.Contains(unlock))
+                        if (s_SandboxUnlocks.Contains(unlock))
                         {
                             if (enable)
                             {
@@ -408,7 +439,7 @@ namespace LBMergedMods
                 if (args[0] == "enable" || args[0] == "disable")
                 {
                     yield return "ALL";
-                    foreach (var unlock in sandboxUnlocks)
+                    foreach (var unlock in s_SandboxUnlocks)
                     {
                         yield return (unlock.ToString());
                     }
