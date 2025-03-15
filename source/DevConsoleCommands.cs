@@ -55,7 +55,7 @@ namespace LBMergedMods
             {
                 // Collect information using reflection so we don't have to worry about collecting it later when it inevitably changes lmao
                 s_ObjectTypes = GetEnumTypes<ObjType>(typeof(AbstractObjectType));
-                s_CritterTypes = CreatureTemplateType.s_M4RCreatureList.Union([new CritType("Bigrub", false), new CritType("SeedBat", false), new CritType("JellyLongLegs", false)]).ToHashSet();
+                s_CritterTypes = CreatureTemplateType.s_M4RCreatureList.Union([new CritType("Bigrub", false), new CritType("Bigworm", false), new CritType("SeedBat", false), new CritType("JellyLongLegs", false)]).ToHashSet();
                 s_SandboxUnlocks = GetEnumTypes<SandboxUnlock>(typeof(SandboxUnlockID));
 
                 // Shrembly
@@ -191,7 +191,7 @@ namespace LBMergedMods
                 else if (s_CritterTypes.Contains(critType))
                 {
                     var actualCritType = critType;
-                    if (critType.value == "Bigrub") actualCritType = CritType.TubeWorm;
+                    if (critType.value == "Bigrub" || critType.value == "Bigworm") actualCritType = CritType.TubeWorm;
                     else if (critType.value == "SeedBat") actualCritType = CritType.Fly;
                     else if (critType.value == "JellyLongLegs") actualCritType = CritType.BrotherLongLegs;
 
@@ -215,6 +215,8 @@ namespace LBMergedMods
 
                     if (critType.value == "Bigrub")
                         tagSet.Add(foundBools.Count > 0 && foundBools[0] ? "altbigrub" : "bigrub");
+                    if (critType.value == "Bigworm")
+                        tagSet.Add("bigworm");
                     else if (critType.value == "SeedBat")
                         tagSet.Add("seedbat");
                     else if (critType.value == "JellyLongLegs")
