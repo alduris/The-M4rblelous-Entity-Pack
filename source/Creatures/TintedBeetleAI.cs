@@ -346,25 +346,27 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
 
     public virtual void SocialEvent(SocialEventRecognizer.EventID ID, Creature subjectCrit, Creature objectCrit, PhysicalObject involvedItem)
     {
-        if (subjectCrit is not Player)
+        if (Bug is not TintedBeetle bug || subjectCrit is not Player || tracker is not Tracker trk)
             return;
-        var creatureRepresentation = tracker.RepresentationForObject(subjectCrit, false);
+        var creatureRepresentation = trk.RepresentationForObject(subjectCrit, false);
         if (creatureRepresentation is null)
             return;
         Tracker.CreatureRepresentation? creatureRepresentation2 = null;
-        var flag = objectCrit == Bug;
+        var flag = objectCrit == bug;
         if (!flag)
         {
-            creatureRepresentation2 = tracker.RepresentationForObject(objectCrit, false);
+            if (objectCrit is null)
+                return;
+            creatureRepresentation2 = trk.RepresentationForObject(objectCrit, false);
             if (creatureRepresentation2 is null)
                 return;
         }
-        if ((!flag && Bug.dead) || (creatureRepresentation2 is not null && creatureRepresentation.TicksSinceSeen > 40 && creatureRepresentation2.TicksSinceSeen > 40))
+        if ((!flag && bug.dead) || (creatureRepresentation2 is not null && creatureRepresentation.TicksSinceSeen > 40 && creatureRepresentation2.TicksSinceSeen > 40))
             return;
         if (ID == SocialEventRecognizer.EventID.ItemOffering)
         {
             if (flag)
-                friendTracker.ItemOffered(creatureRepresentation, involvedItem);
+                friendTracker?.ItemOffered(creatureRepresentation, involvedItem);
             return;
         }
         var num = 0f;
@@ -380,7 +382,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             num /= 3f;
         if (flag)
         {
-            if (friendTracker.friend is Creature c && subjectCrit == c)
+            if (friendTracker?.friend is Creature c && subjectCrit == c)
             {
                 if (ID == SocialEventRecognizer.EventID.NonLethalAttackAttempt || ID == SocialEventRecognizer.EventID.LethalAttackAttempt)
                     return;
@@ -388,18 +390,18 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             }
             PlayerRelationChange(-num, subjectCrit.abstractCreature);
         }
-        else if (creatureRepresentation2?.dynamicRelationship.currentRelationship.type == CreatureTemplate.Relationship.Type.Afraid)
+        else if (creatureRepresentation2?.dynamicRelationship?.currentRelationship.type == CreatureTemplate.Relationship.Type.Afraid)
         {
             var num2 = .1f;
-            if (threatTracker.GetThreatCreature(objectCrit.abstractCreature) is not null)
-                num2 += .7f * Custom.LerpMap(Vector2.Distance(Bug.mainBodyChunk.pos, objectCrit.DangerPos), 120f, 320f, 1f, .1f);
+            if (threatTracker?.GetThreatCreature(objectCrit.abstractCreature) is not null && bug.mainBodyChunk is BodyChunk b)
+                num2 += .7f * Custom.LerpMap(Vector2.Distance(b.pos, objectCrit.DangerPos), 120f, 320f, 1f, .1f);
             var flag2 = false;
             var grs = objectCrit.grasps;
             for (var i = 0; i < grs.Length; i++)
             {
                 if (flag2)
                     break;
-                if (grs[i].grabbed == Bug)
+                if (grs[i]?.grabbed == bug)
                     flag2 = true;
             }
             if (flag2)
@@ -410,7 +412,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             }
             PlayerRelationChange(Mathf.Pow(num, .5f) * num2, subjectCrit.abstractCreature);
         }
-        else if (creatureRepresentation2?.dynamicRelationship.currentRelationship.type == CreatureTemplate.Relationship.Type.Pack)
+        else if (creatureRepresentation2?.dynamicRelationship?.currentRelationship.type == CreatureTemplate.Relationship.Type.Pack)
             PlayerRelationChange(num * -.75f, subjectCrit.abstractCreature);
     }
 

@@ -1,7 +1,6 @@
 ﻿global using static LBMergedMods.Hooks.MirosHooks;
 using UnityEngine;
 using MonoMod.Cil;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
@@ -11,7 +10,7 @@ public static class MirosHooks
     internal static void On_BirdLeg_RunMode(On.MirosBird.BirdLeg.orig_RunMode orig, MirosBird.BirdLeg self)
     {
         orig(self);
-        if (self.bird is Blizzor)
+        if (self.bird is Blizzor b && (b.AI is not MirosBirdAI ai || ai.behavior != MirosBirdAI.Behavior.Hunt || ai.focusCreature is not Tracker.CreatureRepresentation rep || ai.DynamicRelationship(rep).type != CreatureTemplate.Relationship.Type.Eats || !rep.VisualContact))
         {
             self.springPower = Mathf.Lerp(self.springPower, 0f, .5f);
             self.forwardPower = Mathf.Lerp(self.forwardPower, 0f, .5f);
@@ -23,12 +22,27 @@ public static class MirosHooks
         orig(self);
         if (self is Blizzor)
         {
-            self.forwardPower = Mathf.Lerp(self.forwardPower, 0f, .5f);
             var bs = self.bodyChunks;
-            for (var i = 0; i < bs.Length; i++)
+            if (self.AI is not MirosBirdAI ai || ai.behavior != MirosBirdAI.Behavior.Hunt || ai.focusCreature is not Tracker.CreatureRepresentation rep || ai.DynamicRelationship(rep).type != CreatureTemplate.Relationship.Type.Eats || !rep.VisualContact)
             {
-                var b = bs[i];
-                b.vel.x = Mathf.Lerp(b.vel.x, 0f, .125f);
+                self.forwardPower = Mathf.Lerp(self.forwardPower, 0f, .5f);
+                for (var i = 0; i < bs.Length; i++)
+                {
+                    var b = bs[i];
+                    b.vel.x = Mathf.Lerp(b.vel.x, 0f, .125f);
+                }
+            }
+            else
+            {
+                if (self.forwardPower < .5f)
+                    self.forwardPower = .5f;
+                self.forwardPower = Mathf.Lerp(self.forwardPower, 0f, .5f);
+                for (var i = 0; i < bs.Length; i++)
+                {
+                    var b = bs[i];
+                    if (b.vel.x < 10f)
+                        b.vel.x += .001f;
+                }
             }
         }
     }
