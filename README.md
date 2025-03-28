@@ -1,4 +1,4 @@
-# The-M4rblelous-Entity-Pack
+# The M4rblelous Entity Pack
 A Rain World modded creature and item pack to use as a dependency for other mods.
 
 Steam workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3311812030
