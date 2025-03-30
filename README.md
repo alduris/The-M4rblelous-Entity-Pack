@@ -16,9 +16,15 @@ Will only be updated very very slowly when get some little free time.
  - CreatureHooks -> V
 
 # Items:
- - LittleBalloon -> PlaySound chunk arg, IHaveAStalk impl
+ - LittleBalloon -> PlaySound chunk arg, IHaveAStalk impl, ripple check
+ - ScoreToken -> V
+ - ScoreTokenData -> V
+ - ScoreTokenRepresentation -> V
+ - SmallPuffBall -> ripple checks
+ - StarLemon -> IHaveAStalk impl
  - IHaveAStalk -> IHaveAStalkState rename
- - ThornyStrawberry -> PlaySound chunk arg, IHaveAStalk impl
+ - StalkUtils -> SkyDandelion + Pomegranate
+ - ThornyStrawberry -> PlaySound chunk arg, IHaveAStalk impl, ripple check
  - ThornyStrawberryData -> V
 
 # Enums:
