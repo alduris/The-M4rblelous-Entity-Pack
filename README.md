@@ -20,7 +20,7 @@ Will only be updated very very slowly when get some little free time.
  - ScoreToken -> V
  - ScoreTokenData -> V
  - ScoreTokenRepresentation -> V
- - SmallPuffBall -> ripple checks
+ - SmallPuffBall -> ripple checks + PlaySound chunk arg
  - StarLemon -> IHaveAStalk impl
  - IHaveAStalk -> IHaveAStalkState rename
  - StalkUtils -> SkyDandelion + Pomegranate
