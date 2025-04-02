@@ -15,7 +15,8 @@ Will only be updated very very slowly when get some little free time.
  - CollectiblesTrackerHooks -> V
  - CreatureHooks -> V
 
-# Items:
+# Items: V
+the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLayer string
  - LittleBalloon -> PlaySound chunk arg, IHaveAStalk impl, ripple check
  - ScoreToken -> V
  - ScoreTokenData -> V
