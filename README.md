@@ -29,3 +29,5 @@ Will only be updated very very slowly when get some little free time.
 
 # Enums:
  - Added M4RUnlockList and M4RItemList
+
+# REMINDER FOR ME: THE WATCHER PR FOR FISOBS IS REMOVING setCustomFlags FROM THE PARSE METHOD, ADD A NEW HOOK
