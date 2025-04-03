@@ -5,6 +5,11 @@ Will only be updated very very slowly when get some little free time.
  - ChipChop -> not done yet but added interactions with new edible watcher creatures even if I've not played with them
  - RedHorrorShell -> V
  - ScutigeraShell -> V
+ - BigrubProperties -> V
+ - WaterSpitter (Graphics, Main, AI, WaterSpit) updated
+ - ThornBug (Graphics, Main, AI) updated
+ - TintedBeetle (Graphics, Main, AI) updated
+ - WaterBlob (Graphics, Main, AI) updated
 
 # Hooks:
  - AbstractPhysicalObjectHooks -> Added global flag support in the hook + WatcherInitiateAI hook
