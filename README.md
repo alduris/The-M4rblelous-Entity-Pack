@@ -15,6 +15,7 @@ Will only be updated very very slowly when get some little free time.
  - TintedBeetle (Graphics, Main, AI) updated
  - WaterBlob (Graphics, Main, AI) updated
  - WaterSpitter (Graphics, Main, AI, WaterSpit) updated
+
 do critobs with static world changes (main ones) when it's updated
 
 # Hooks:
