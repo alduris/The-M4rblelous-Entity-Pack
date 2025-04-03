@@ -2,7 +2,7 @@ Port in progress.
 My local changes (will need testing when fisobs is ported).
 Will only be updated very very slowly when get some little free time.
 # Creatures:
- - ChipChop -> not done yet but added interactions with new edible watcher creatures even if I've not played with them
+ - ChipChop (Graphics, Main) updated
  - RedHorrorShell -> V
  - ScutigeraShell -> V
  - BigrubProperties -> V
