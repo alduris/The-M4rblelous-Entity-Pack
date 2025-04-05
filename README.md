@@ -7,6 +7,8 @@ Will only be updated very very slowly when get some little free time.
  - BouncingBall (Graphics, Main, AI) updated
  - Caterpillar (Graphics, Main, AI) updated
  - ChipChop (Graphics, Main) updated
+ - CommonEel (Graphics, AI, Main) updated
+ - Denture (Graphics, Main) updated
  - RedHorrorShell -> V
  - ScutigeraShell -> V
  - Sporantula (Main, AI, Graphics) updated
