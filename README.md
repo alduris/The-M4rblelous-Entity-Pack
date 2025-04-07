@@ -45,7 +45,7 @@ the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLa
 # Enums:
  - Added M4RUnlockList and M4RItemList
 
-Don't forget to recompile shaders.
+Don't forget to recompile shaders and to redraw some sprites because the shader acts differently now.
 
 Shrouded and CW will be the next ones.
 
