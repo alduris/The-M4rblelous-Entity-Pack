@@ -47,6 +47,7 @@ the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLa
 
 Don't forget to recompile shaders and to redraw some sprites because the shader acts differently now.
 
-Shrouded and CW will be the next ones.
+Shrouded and centi maker will be the next ones.
+CW CODE UPDATE YAY!
 
 # REMINDER FOR ME: THE WATCHER PR FOR FISOBS IS REMOVING setCustomFlags FROM THE PARSE METHOD, ADD A NEW HOOK
