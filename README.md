@@ -31,7 +31,7 @@ do critobs with static world changes (main ones) when it's updated
  - From DaddyHooks to OverseerHooks -> updated
 
 # Items: V
-the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLayer string
+the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLayer string + fixed gummy anther sprites
  - LittleBalloon -> PlaySound chunk arg, IHaveAStalk impl, ripple check
  - ScoreToken -> V
  - ScoreTokenData -> V
