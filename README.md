@@ -28,6 +28,7 @@ do critobs with static world changes (main ones) when it's updated
  - CentipedeHooks -> V
  - CollectiblesTrackerHooks -> V
  - CreatureHooks -> V
+ - From DaddyHooks to OverseerHooks -> updated
 
 # Items: V
 the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLayer string
@@ -44,6 +45,7 @@ the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLa
 
 # Enums:
  - Added M4RUnlockList and M4RItemList
+ - New sounds
 
 Don't forget to recompile shaders and to redraw some sprites because the shader acts differently now.
 
