@@ -1,6 +1,7 @@
 Port in progress.
 My local changes (will need testing when fisobs is ported).
 Will only be updated very very slowly when get some little free time.
+
 # Creatures:
  - BigrubProperties -> V
  - Blizzor (Graphics, Main) update (special AbstractAI class removed, replaced by a hook to a new miros method)
@@ -18,9 +19,9 @@ Will only be updated very very slowly when get some little free time.
  - WaterBlob (Graphics, Main, AI) updated
  - WaterSpitter (Graphics, Main, AI, WaterSpit) updated
 
-do critobs with static world changes (main ones) when it's updated
+do critobs with static world changes (main ones)
 
-# Hooks:
+# Hooks: V
  - AbstractPhysicalObjectHooks -> Added global flag support in the hook + WatcherInitiateAI hook
  - ArenaHooks -> just need to fix the fisobs hooks when it's updated
  - BigEelHooks -> V
@@ -29,6 +30,9 @@ do critobs with static world changes (main ones) when it's updated
  - CollectiblesTrackerHooks -> V
  - CreatureHooks -> V
  - From DaddyHooks to OverseerHooks -> updated
+ - the rest -> updated
+
+will need in-game testing ofc, tho I cannot test watcher stuff like rotten lizards
 
 # Items: V
 the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLayer string + fixed gummy anther sprites
@@ -43,7 +47,7 @@ the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLa
  - ThornyStrawberry -> PlaySound chunk arg, IHaveAStalk impl, ripple check
  - ThornyStrawberryData -> V
 
-# Enums:
+# Enums: V
  - Added M4RUnlockList and M4RItemList
  - New sounds
 
@@ -52,5 +56,3 @@ Don't forget to recompile shaders and to redraw some sprites because the shader 
 Shrouded and centi maker will be the next ones.
 
 CW CODE UPDATED YAY!
-
-# REMINDER FOR ME: THE WATCHER PR FOR FISOBS IS REMOVING setCustomFlags FROM THE PARSE METHOD, ADD A NEW HOOK
