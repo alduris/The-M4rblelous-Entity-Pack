@@ -764,10 +764,12 @@ public static class LizardHooks
 
     internal static int On_LizardGraphics_AddCosmetic(On.LizardGraphics.orig_AddCosmetic orig, LizardGraphics self, int spriteIndex, Template cosmetic)
     {
-        if (self is NoodleEaterGraphics or CommonEelGraphics)
+        if ((self is NoodleEaterGraphics && cosmetic is not LizardRotGraphics) || self is CommonEelGraphics)
             return spriteIndex;
         return orig(self, spriteIndex, cosmetic);
     }
+
+    internal static bool On_LizardRotGraphics_get_ApplyPaletteInDraw(Func<LizardRotGraphics, bool> orig, LizardRotGraphics self) => orig(self) || self.lGraphics is HunterSeekerGraphics;
 
     internal static Color On_LizardGraphics_BodyColor(On.LizardGraphics.orig_BodyColor orig, LizardGraphics self, float f)
     {
