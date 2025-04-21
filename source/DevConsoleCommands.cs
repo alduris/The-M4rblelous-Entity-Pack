@@ -189,6 +189,7 @@ namespace LBMergedMods
                             tagSet.Add(tag);
                         }
                     }
+                    tagSet.UnionWith(args.Where(x => s_AllTags.FirstOrDefault(y => y.Equals(x, StringComparison.OrdinalIgnoreCase)) == default));
                     // Special tags
                     if (tagSet.Remove("DestroyOnAbstract")) crit.destroyOnAbstraction = true;
                     if (tagSet.Remove("DontSave")) crit.saveCreature = false;

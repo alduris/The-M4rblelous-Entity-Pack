@@ -63,4 +63,18 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  <!-- PDB generation on Debug and removal on Release -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	<DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <Target Name="GenerateMod" AfterTargets="PostBuildEvent" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <ItemGroup>
+      <RemovePlugins Include="../modpack/newest/plugins/*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(RemovePlugins)" />
+  </Target>
 </Project>
