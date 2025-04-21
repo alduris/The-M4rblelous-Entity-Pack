@@ -1,4 +1,4 @@
-# The-M4rblelous-Entity-Pack
+# The M4rblelous Entity Pack
 A Rain World modded creature and item pack to use as a dependency for other mods.
 
 Steam workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3311812030
@@ -21,3 +21,4 @@ Requires fisobs: https://github.com/Dual-Iron/fisobs/releases
 - Fishnoid for the Polliwog, Jelly Long Legs, Sporantula and Flying Big Eel concepts.
 - Myrmice for the Hunter Seeker and Mini Leviathan concepts.
 - snoodle for the Hoverfly concept.
+- qt_pi for the MiniBlueFruit concept.
