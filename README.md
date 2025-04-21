@@ -2,7 +2,7 @@ Port in progress.
 My local changes (will need testing when fisobs is ported).
 Will only be updated very very slowly when get some little free time.
 
-# Creatures:
+# Creatures: V
  - BigrubProperties -> V
  - Blizzor (Graphics, Main) update (special AbstractAI class removed, replaced by a hook to a new miros method)
  - BouncingBall (Graphics, Main, AI) updated
@@ -18,6 +18,7 @@ Will only be updated very very slowly when get some little free time.
  - TintedBeetle (Graphics, Main, AI) updated
  - WaterBlob (Graphics, Main, AI) updated
  - WaterSpitter (Graphics, Main, AI, WaterSpit) updated
+ - the rest -> updated
 
 do critobs with static world changes (main ones)
 
@@ -53,6 +54,6 @@ the rest: added ripple checks, PlaySound chunk arg, IHaveAStalkImpl, ID+RippleLa
 
 Don't forget to recompile shaders and to redraw some sprites because the shader acts differently now.
 
-Shrouded and centi maker will be the next ones.
+Shrouded and seer will be the next ones.
 
-CW CODE UPDATED YAY!
+CW CODE and CENTI MAKER UPDATED YAY!
