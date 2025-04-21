@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class HazerMom : Creature
 {
     public BlackHaze? Smoke;
@@ -134,7 +134,7 @@ public class HazerMom : Creature
             }
         }
         else if (Spraying)
-            room.AddObject(Smoke = new(room, ChunkInOrder0.pos));
+            room.AddObject(Smoke = new(room, ChunkInOrder0.pos) { rippleLayer = abstractPhysicalObject.rippleLayer });
         if (PlacedObj?.data is PlacedObject.ConsumableObjectData dt && grabbedBy.Count > 0)
         {
             if (room.game.session is StoryGameSession sess)

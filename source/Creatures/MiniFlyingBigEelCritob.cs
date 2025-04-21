@@ -8,7 +8,7 @@ using DevInterface;
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class MiniFlyingBigEelCritob : Critob
 {
     internal MiniFlyingBigEelCritob() : base(CreatureTemplateType.MiniFlyingBigEel)

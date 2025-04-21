@@ -7,7 +7,7 @@ Shader "DivingBeetleFin"
 
 	Category
 	{
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		Fog { Color(0.0, 0.0, 0.0, 0.0) }
@@ -30,6 +30,9 @@ Shader "DivingBeetleFin"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				//#include "_ShaderFix.cginc" -> unused code
+				sampler2D _MainTex;
+				float4 _MainTex_ST;
 				
 				struct v2f
 				{
@@ -39,9 +42,6 @@ Shader "DivingBeetleFin"
 					float4 clr : COLOR;
 				};
 
-				sampler2D _MainTex;
-				float4 _MainTex_ST;
-
 				v2f vert(appdata_full v)
 				{
 					v2f o;
@@ -49,18 +49,16 @@ Shader "DivingBeetleFin"
 					o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 					o.scrPos = ComputeScreenPos(o.pos);
 					o.clr = v.color;
-					o.uv.xy = o.uv.xy * 2.0 - float2(1.0, 1.0);
 					float s = sin(o.clr.w);
 					float c = cos(o.clr.w);
-					o.uv.xy = mul(float2x2(c, -s, s, c), o.uv.xy);
-					o.uv.xy = o.uv.xy * 0.5 + float2(0.5, 0.5);
+					o.uv.xy = mul(float2x2(c, -s, s, c), o.uv.xy * 2.0 - float2(1.0, 1.0)) * 0.5 + float2(0.5, 0.5);
 					return o;
 				}
 
 				float4 frag(v2f i) : SV_Target
 				{
 					float4 texCol = tex2D(_MainTex, i.uv);
-					return float4(texCol.x * i.clr.x, texCol.y * i.clr.y, texCol.z * i.clr.z, texCol.w);
+					return float4(texCol.xyz * i.clr.xyz, texCol.w);
 				}
 				ENDCG
 			}

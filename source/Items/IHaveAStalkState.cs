@@ -1,6 +1,6 @@
 ﻿namespace LBMergedMods.Items;
-
-public interface IHaveAStalk
+//CHK
+public interface IHaveAStalkState
 {
     public bool StalkActive { get; }
 }

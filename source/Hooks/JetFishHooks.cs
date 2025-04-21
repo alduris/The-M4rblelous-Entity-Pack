@@ -3,7 +3,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class JetFishHooks
 {
     internal static void On_JetFish_ctor(On.JetFish.orig_ctor orig, JetFish self, AbstractCreature abstractCreature, World world)
@@ -16,7 +16,7 @@ public static class JetFishHooks
 
     internal static void On_JetFishAI_SocialEvent(On.JetFishAI.orig_SocialEvent orig, JetFishAI self, SocialEventRecognizer.EventID ID, Creature subjectCrit, Creature objectCrit, PhysicalObject involvedItem)
     {
-        if (involvedItem is BlobPiece or MarineEye or MiniFruit)
+        if (involvedItem is BlobPiece or MarineEye or MiniFruit && subjectCrit is Player p && (objectCrit is null || p.abstractPhysicalObject.SameRippleLayer(objectCrit.abstractPhysicalObject)))
         {
             if (self.tracker.RepresentationForObject(subjectCrit, false) is not Tracker.CreatureRepresentation repr)
                 return;

@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class MiniLeviathanCritob : Critob, ISandboxHandler
 {
     internal MiniLeviathanCritob() : base(CreatureTemplateType.MiniLeviathan)

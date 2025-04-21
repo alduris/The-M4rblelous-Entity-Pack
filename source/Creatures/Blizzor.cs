@@ -1,5 +1,5 @@
 ﻿namespace LBMergedMods.Creatures;
-
+//CHK
 public class Blizzor : MirosBird
 {
     public Blizzor(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

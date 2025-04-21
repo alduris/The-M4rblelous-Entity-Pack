@@ -8,7 +8,7 @@ using System;
 using MoreSlugcats;
 
 namespace LBMergedMods.Items;
-
+//CHK
 public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnProjectedCircles, IOwnMycelia
 {
     public sealed class MovementMode(string value, bool register = false) : ExtEnum<MovementMode>(value, register)
@@ -299,7 +299,7 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
             p.AddQuarterFood();
             p.AddQuarterFood();
             AbstrCons.Consume();
-            room?.PlaySound(SoundID.Slugcat_Eat_Swarmer, firstChunk.pos);
+            room?.PlaySound(SoundID.Slugcat_Eat_Swarmer, firstChunk);
             if (!p.isNPC)
             {
                 if (room?.game?.session is StoryGameSession sess)
@@ -469,7 +469,7 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
     {
         --Bites;
         Size -= .25f;
-        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Swarmer : SoundID.Slugcat_Bite_Swarmer, firstChunk.pos);
+        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Swarmer : SoundID.Slugcat_Bite_Swarmer, firstChunk);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites >= 1)
             return;
@@ -508,8 +508,5 @@ public class DendriticNeuron : PhysicalObject, IDrawable, IPlayerEdible, IOwnPro
             Circle.Destroy();
             Circle = null;
         }
-        var mycelia = Mycelia;
-        for (var n = 0; n < mycelia.Length; n++)
-            mycelia[n].Dispose();
     }
 }

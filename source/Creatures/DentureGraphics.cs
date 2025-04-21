@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class DentureGraphics : GraphicsModule
 {
     public const int BODY_SPRITE = 0, BODY_SPRITE2 = 1, BODY_SPRITE3 = 2, JAW1_SPRITE = 3, JAW2_SPRITE = 4;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class FoodItemRepresentation(Tracker parent, AbstractPhysicalObject representedItem, float priority, bool forgetWhenNotVisible)
 {
     public Tracker Parent = parent;
@@ -17,7 +17,7 @@ public class FoodItemRepresentation(Tracker parent, AbstractPhysicalObject repre
     {
         get
         {
-            if (RepresentedItem.realizedObject is not PhysicalObject o || o.room != Parent.AI.creature.Room.realizedRoom)
+            if (RepresentedItem.realizedObject is not PhysicalObject o || o.room != Parent.AI.creature.Room.realizedRoom || o is Player { isCamo: true, VisibilityBonus: <= -1f })
                 VisualContact = false;
             return VisualContact;
         }
@@ -46,6 +46,8 @@ public class FoodItemRepresentation(Tracker parent, AbstractPhysicalObject repre
         if (TicksSinceSeen > seeAC + 5)
             TicksSinceSeen = (TicksSinceSeen - seeAC) / 2;
     }
+
+    public void SetVisualContact(bool val) => VisualContact = val;
 
     public virtual void MakeVisible()
     {

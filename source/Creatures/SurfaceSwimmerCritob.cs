@@ -8,7 +8,7 @@ using DevInterface;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class SurfaceSwimmerCritob : Critob
 {
     internal SurfaceSwimmerCritob() : base(CreatureTemplateType.SurfaceSwimmer)

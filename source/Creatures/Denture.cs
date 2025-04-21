@@ -1,5 +1,4 @@
-﻿using MoreSlugcats;
-using Noise;
+﻿using Noise;
 using RWCustom;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class Denture : Creature
 {
     public float JawRad;
@@ -18,6 +17,8 @@ public class Denture : Creature
     public bool CreatureMissed, CanEat = true, CanReactToNoise = true;
 
     public override float VisibilityBonus => -JawOpen * .8f;
+
+    public override bool SandstormImmune => true;
 
     public Denture(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
     {
@@ -123,7 +124,7 @@ public class Denture : Creature
                 {
                     SuckedIntoShortcut = Mathf.Lerp(SuckedIntoShortcut, 1f, .1f);
                     enteringShortCut = ShortCutPos;
-                    rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, firstChunk.pos, 1.2f, 1.02f);
+                    rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, firstChunk, false, 1.2f, 1.02f);
                 }
             }
             else if (cs && CanEat && ((!safari && TastyChunkInRange(rm) && CreatureEaten == 0 && !CreatureMissed) || (safari && !CreatureMissed && inputWithDiagonals?.pckp == true)))
@@ -176,7 +177,7 @@ public class Denture : Creature
     public virtual bool WantsToEat(Creature c)
     {
         var rel = Template.CreatureRelationship(c).type;
-        return rel == CreatureTemplate.Relationship.Type.Eats || (abstractCreature.superSizeMe && rel == CreatureTemplate.Relationship.Type.Attacks);
+        return (rel == CreatureTemplate.Relationship.Type.Eats || (abstractCreature.superSizeMe && rel == CreatureTemplate.Relationship.Type.Attacks)) && c.abstractPhysicalObject.SameRippleLayer(abstractPhysicalObject) && c.NoCamo();
     }
 
     public virtual bool TastyChunkInRange(Room rm)
@@ -228,7 +229,7 @@ public class Denture : Creature
                     c.Destroy();
                     if (c is Player)
                         playerCrush = true;
-                    else if (c is ThornBug or Sporantula or Hazer or HazerMom || (ModManager.MSC && c is BigSpider spider && spider.Template.type == MoreSlugcatsEnums.CreatureTemplateType.MotherSpider))
+                    else if (c is ThornBug or Sporantula or Hazer or HazerMom || (ModManager.DLCShared && c is BigSpider spider && spider.Template.type == DLCSharedEnums.CreatureTemplateType.MotherSpider))
                         badFood = true;
                 }
                 CreatureEaten = 8;
@@ -236,8 +237,8 @@ public class Denture : Creature
         }
         if (CreatureEaten > 0)
         {
-            rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, fcp, 1.2f, 1.02f);
-            rm.PlaySound(playerCrush ? SoundID.Leviathan_Crush_Player : SoundID.Leviathan_Crush_NPC, fcp, .82f, 1.2f);
+            rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, firstChunk, false, 1.2f, 1.02f);
+            rm.PlaySound(playerCrush ? SoundID.Leviathan_Crush_Player : SoundID.Leviathan_Crush_NPC, firstChunk, false, .82f, 1.2f);
             for (var i = 0; i < 10; i++)
             {
                 rm.AddObject(new WaterDrip(fcp, new Vector2(Random.value, Random.value).normalized, false));
@@ -249,7 +250,7 @@ public class Denture : Creature
         else
         {
             CreatureMissed = true;
-            rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, fcp, 1.2f, 1.02f);
+            rm.PlaySound(SoundID.Lizard_Jaws_Shut_Miss_Creature, firstChunk, false, 1.2f, 1.02f);
         }
     }
 

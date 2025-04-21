@@ -6,7 +6,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
 {
     public class BodyFragment : CosmeticSprite
@@ -112,9 +112,9 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
             base.LoadFromString(s);
             for (var i = 0; i < s.Length; i++)
             {
-                var text = Regex.Split(s[i], "<cC>")[0];
-                if (text is "SATURATED")
-                    float.TryParse(Regex.Split(s[i], "<cC>")[1], out Saturated);
+                var ccAr = s[i].Split(["<cC>"], StringSplitOptions.None);
+                if (ccAr[0] == "SATURATED")
+                    float.TryParse(ccAr[1], out Saturated);
             }
             unrecognizedSaveStrings.Remove("SATURATED");
         }
@@ -183,7 +183,7 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
             room.abstractRoom.AddEntity(abstractBlobPiece);
             abstractBlobPiece.RealizeInRoom();
         }
-        room.PlaySound(SoundID.Egg_Bug_Drop_Eggs, firstChunk.pos, 1f, .9f);
+        room.PlaySound(SoundID.Egg_Bug_Drop_Eggs, firstChunk, false, 1f, .9f);
         Destroy();
     }
 
@@ -337,7 +337,7 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
             }
             return;
         }
-        MovementConnection movementConnection = p.FollowPath(abstractCreature.pos, false);
+        var movementConnection = p.FollowPath(abstractCreature.pos, false);
         NarrowUpcoming = false;
         ClimbUpcoming = false;
         JumpOver = false;
@@ -403,7 +403,7 @@ public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
             ClimbingWall = false;
             gravity = 1f;
         }
-        if (room.aimap.TileAccessibleToCreature(bodyChunks[0].pos, abstractCreature.creatureTemplate))
+        if (room.aimap.TileAccessibleToCreature(firstChunk.pos, abstractCreature.creatureTemplate))
         {
             if (ClimbingWall)
             {

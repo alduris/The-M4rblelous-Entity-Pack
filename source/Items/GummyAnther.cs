@@ -4,8 +4,8 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Items;
-
-public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
+//CHK
+public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalkState, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -223,7 +223,7 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveA
 
     public virtual void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
-        sLeaser.sprites = [new("BigStationPlantFruit2")];
+        sLeaser.sprites = [new("WABigStationPlantFruit2"), new("WB141BigStationPlantFruit2")];
         AddToContainer(sLeaser, rCam, null);
     }
 
@@ -236,15 +236,25 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveA
         if (Darkness != LastDarkness)
             ApplyPalette(sLeaser, rCam, rCam.currentPalette);
         var spr = sLeaser.sprites[0];
-        spr.x = pos.x - camPos.x;
-        spr.y = pos.y - camPos.y;
-        spr.rotation = Custom.VecToDeg(rotat);
+        var spr2 = sLeaser.sprites[1];
+        var ps = pos - camPos;
+        spr.SetPosition(ps);
+        spr2.SetPosition(ps);
+        spr2.rotation = spr.rotation = Custom.VecToDeg(rotat);
         if (Bites > 0)
-            spr.element = Futile.atlasManager.GetElementWithName("BigStationPlantFruit" + Bites.ToString());
+        {
+            var bts = Bites.ToString();
+            spr.element = Futile.atlasManager.GetElementWithName("WABigStationPlantFruit" + bts);
+            spr2.element = Futile.atlasManager.GetElementWithName("WB141BigStationPlantFruit" + bts);
+        }
         if (blink > 0 && Random.value < .5f)
-            spr.color = blinkColor;
+            spr2.color = spr.color = blinkColor;
         else
+        {
             spr.color = color;
+            spr2.color = Color.black;
+        }
+        spr2.alpha = .4470588f; // 1f - 141f / 255f
         if (slatedForDeletetion || room != rCam.room)
             sLeaser.CleanSpritesAndRemove();
     }
@@ -254,14 +264,19 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveA
     public virtual void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer? newContainer)
     {
         newContainer ??= rCam.ReturnFContainer("Midground");
-        sLeaser.sprites[0].RemoveFromContainer();
-        newContainer.AddChild(sLeaser.sprites[0]);
+        var sprs = sLeaser.sprites;
+        for (var i = 0; i < sprs.Length; i++)
+        {
+            var sprite = sprs[i];
+            sprite.RemoveFromContainer();
+            newContainer.AddChild(sprite);
+        }
     }
 
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
         --Bites;
-        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk.pos);
+        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
@@ -272,4 +287,17 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveA
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual void DetatchStalk()
+    {
+        if (MyStalk is Stalk st)
+        {
+            if (st.Fruit is GummyAnther anther)
+            {
+                anther.AbstrCons.Consume();
+                st.Fruit = null;
+            }
+            MyStalk = null;
+        }
+    }
 }

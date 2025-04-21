@@ -5,12 +5,11 @@ using Fisobs.Sandbox;
 using static PathCost.Legality;
 using UnityEngine;
 using DevInterface;
-using MoreSlugcats;
 using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class KillerpillarCritob : Critob, ISandboxHandler
 {
     internal KillerpillarCritob() : base(CreatureTemplateType.Killerpillar)
@@ -156,16 +155,16 @@ sealed class KillerpillarCritob : Critob, ISandboxHandler
         ctp.IgnoredBy(CreatureTemplate.Type.TempleGuard);
         ctp.EatenBy(CreatureTemplate.Type.PoleMimic, 1f);
         ctp.EatenBy(CreatureTemplate.Type.TentaclePlant, 1f);
-        if (ModManager.MSC)
+        if (ModManager.DLCShared)
         {
-            ctp.Eats(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
-            ctp.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
-            ctp.Fears(MoreSlugcatsEnums.CreatureTemplateType.AquaCenti, 1f);
-            ctp.EatenBy(MoreSlugcatsEnums.CreatureTemplateType.AquaCenti, 1f);
-            ctp.Fears(MoreSlugcatsEnums.CreatureTemplateType.BigJelly, 1f);
-            ctp.EatenBy(MoreSlugcatsEnums.CreatureTemplateType.BigJelly, 1f);
-            ctp.Ignores(MoreSlugcatsEnums.CreatureTemplateType.Inspector);
-            ctp.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.Inspector);
+            ctp.Eats(DLCSharedEnums.CreatureTemplateType.Yeek, 1f);
+            ctp.FearedBy(DLCSharedEnums.CreatureTemplateType.Yeek, 1f);
+            ctp.Fears(DLCSharedEnums.CreatureTemplateType.AquaCenti, 1f);
+            ctp.EatenBy(DLCSharedEnums.CreatureTemplateType.AquaCenti, 1f);
+            ctp.Fears(DLCSharedEnums.CreatureTemplateType.BigJelly, 1f);
+            ctp.EatenBy(DLCSharedEnums.CreatureTemplateType.BigJelly, 1f);
+            ctp.Ignores(DLCSharedEnums.CreatureTemplateType.Inspector);
+            ctp.IgnoredBy(DLCSharedEnums.CreatureTemplateType.Inspector);
         }
         ctp.Eats(CreatureTemplateType.HazerMom, 1f);
         ctp.Eats(CreatureTemplateType.Hoverfly, 1f);

@@ -7,7 +7,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class Caterpillar : InsectoidCreature, IProvideWarmth
 {
     public CaterpillarAI? AI;
@@ -416,10 +416,10 @@ public class Caterpillar : InsectoidCreature, IProvideWarmth
 
 	public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos hitAppendage, DamageType type, float damage, float stunBonus)
 	{
-		if (damage >= .2f && Consious)
+		if (damage >= .2f && Consious && RippleViolenceCheck(source))
 		{
             ReleaseGrasp(0);
-            room.PlaySound(SoundID.Drop_Bug_Voice, firstChunk, false, 1f, .75f);
+            room.PlaySound(NewSoundID.M4R_GenericBug_Chip, firstChunk, false, 1f, .85f);
         }
 		base.Violence(source, directionAndMomentum, hitChunk, hitAppendage, type, damage * .075f, stunBonus * (1f - State.health));
 	}
@@ -521,7 +521,7 @@ public class Caterpillar : InsectoidCreature, IProvideWarmth
     public override void Die()
     {
 		if (!dead)
-            room?.PlaySound(SoundID.Drop_Bug_Voice, firstChunk.pos, 1f, .7f);
+            room?.PlaySound(NewSoundID.M4R_GenericBug_BigChip, firstChunk, false, 1f, .85f);
         base.Die();
     }
 

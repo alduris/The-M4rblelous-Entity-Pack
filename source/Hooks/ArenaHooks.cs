@@ -11,7 +11,7 @@ using Fisobs.Sandbox;
 using System.Linq;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class ArenaHooks
 {
     public const int M4R_DATA_NUMBER = 319, M4R_DATA_NUMBER2 = 320, M4R_DATA_NUMBER3 = 321;
@@ -40,13 +40,6 @@ public static class ArenaHooks
             else
                 room.abstractRoom.entities.Add(new AbstractConsumable(room.world, tp, null, room.GetWorldCoordinate(placedObj.pos), self.game.GetNewID(), -2, -2, null));
         }
-    }
-
-    internal static bool On_CollectToken_AvailableToPlayer(On.CollectToken.orig_AvailableToPlayer orig, CollectToken self)
-    {
-        if (self.placedObj?.data is CollectToken.CollectTokenData d && d.SandboxUnlock is MultiplayerUnlocks.SandboxUnlockID id && id.Index < 0)
-            return false;
-        return orig(self);
     }
 
     internal static void IL_ExitManager_Update(ILContext il)

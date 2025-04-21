@@ -4,10 +4,9 @@ using Fisobs.Sandbox;
 using UnityEngine;
 using System.Collections.Generic;
 using DevInterface;
-using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class SilverLizardCritob : Critob
 {
     internal SilverLizardCritob() : base(CreatureTemplateType.SilverLizard)
@@ -32,7 +31,7 @@ sealed class SilverLizardCritob : Critob
         RoomAttractivenessPanel.Category.LikesInside
     ];
 
-    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), null, null, null);
+    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.PinkLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.BlueLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.GreenLizard));
 
     public override void EstablishRelationships()
     {
@@ -65,10 +64,10 @@ sealed class SilverLizardCritob : Critob
         s.FearedBy(CreatureTemplate.Type.Scavenger, .5f);
         s.EatenBy(CreatureTemplate.Type.BigSpider, .3f);
         s.EatenBy(CreatureTemplate.Type.DaddyLongLegs, 1f);
-        if (ModManager.MSC)
+        if (ModManager.DLCShared)
         {
-            s.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
-            s.Ignores(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+            s.IgnoredBy(DLCSharedEnums.CreatureTemplateType.ZoopLizard);
+            s.Ignores(DLCSharedEnums.CreatureTemplateType.ZoopLizard);
         }
     }
 

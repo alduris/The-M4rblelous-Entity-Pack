@@ -11,7 +11,7 @@ using Noise;
 using System.Collections.Generic;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class DaddyHooks
 {
     public static Dictionary<string, Color> JLLRooms = [];
@@ -61,21 +61,16 @@ public static class DaddyHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook DaddyGraphics.ReactToNoise! (part 2)");
     }
 
-    internal static void On_DaddyGraphics_RenderSlits(On.DaddyGraphics.orig_RenderSlits orig, DaddyGraphics self, int chunk, Vector2 pos, Vector2 middleOfBody, float rotation, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+    internal static void On_Eye_RenderSlits(On.DaddyGraphics.Eye.orig_RenderSlits orig, DaddyGraphics.Eye self, Vector2 pos, Vector2 middleOfBody, float rotation, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
-        if (self is JellyGraphics && self.daddy is DaddyLongLegs d)
+        if (self.rotOwner is JellyGraphics j)
         {
-            var rad = d.bodyChunks[chunk].rad;
-            var eye = self.eyes[chunk];
+            var eye = j.Eyes[self.index];
             var b = Vector2.Lerp(eye.lastDir, eye.dir, timeStacker);
-            var a = Mathf.Lerp(eye.lastFocus, eye.focus, timeStacker) * Mathf.Pow(Mathf.InverseLerp(-1f, 1f, Vector2.Dot(Custom.DirVec(middleOfBody, pos), b.normalized)), .7f);
-            a = Mathf.Max(a, Mathf.Pow(Mathf.Max(0f, Mathf.Lerp(eye.lastClosed, eye.closed, timeStacker)), .6f));
-            var a2 = Mathf.InverseLerp(0f, Mathf.Lerp(30f, 50f, self.chunksRotats[chunk, 1]), Vector2.Distance(middleOfBody, pos + Custom.DirVec(middleOfBody, pos) * rad)) * .9f;
-            a2 = Mathf.Lerp(a2, 1f, .5f * a);
-            eye.centerRenderPos = pos + Vector2.Lerp(Custom.DirVec(middleOfBody, pos) * a2, b, b.magnitude * .5f) * rad;
-            return;
+            eye.centerRenderPos = pos + Vector2.Lerp(Custom.DirVec(middleOfBody, pos) * Mathf.Lerp(Mathf.InverseLerp(0f, Mathf.Lerp(30f, 50f, self.rotats[1]), Vector2.Distance(middleOfBody, pos + Custom.DirVec(middleOfBody, pos) * self.rad)) * .9f, 1f, .5f * Mathf.Max(Mathf.Lerp(eye.lastFocus, eye.focus, timeStacker) * Mathf.Pow(Mathf.InverseLerp(-1f, 1f, Vector2.Dot(Custom.DirVec(middleOfBody, pos), b.normalized)), .7f), Mathf.Pow(Mathf.Max(0f, Mathf.Lerp(eye.lastClosed, eye.closed, timeStacker)), .6f))), b, b.magnitude * .5f) * self.rad;
         }
-        orig(self, chunk, pos, middleOfBody, rotation, sLeaser, rCam, timeStacker, camPos);
+        else
+            orig(self, pos, middleOfBody, rotation, sLeaser, rCam, timeStacker, camPos);
     }
 
     internal static void On_DaddyLongLegs_InitiateGraphicsModule(On.DaddyLongLegs.orig_InitiateGraphicsModule orig, DaddyLongLegs self)
@@ -125,7 +120,7 @@ public static class DaddyHooks
                      self.JellyColor(abstractCreature, world);
                      j.Color = self.effectColor;
                      var num = self.SizeClass ? 12f : 8f;
-                     if (ModManager.MSC && abstractCreature.superSizeMe)
+                     if (ModManager.DLCShared && abstractCreature.superSizeMe)
                          num = 18f;
                      var num5 = Mathf.Lerp(num * .9f, num, Random.value);
                      j.IconRadBonus = (num5 * 3.5f + 3.5f) * .005f;
@@ -153,13 +148,6 @@ public static class DaddyHooks
     }
 
     internal static Color On_DaddyLongLegs_ShortCutColor(On.DaddyLongLegs.orig_ShortCutColor orig, DaddyLongLegs self) => Jelly.TryGetValue(self.abstractCreature, out var j) && j.IsJelly ? self.eyeColor : orig(self);
-
-    internal static void On_DaddyTentacle_ctor(On.DaddyTentacle.orig_ctor orig, DaddyTentacle self, DaddyLongLegs daddy, BodyChunk chunk, float length, int tentacleNumber, Vector2 tentacleDir)
-    {
-        orig(self, daddy, chunk, length, tentacleNumber, tentacleDir);
-        if (daddy.SizeClass)
-            self._cachedRays1 = new IntVector2[200];
-    }
 
     internal static void On_DaddyTentacle_CollideWithCreature(On.DaddyTentacle.orig_CollideWithCreature orig, DaddyTentacle self, int tChunk, BodyChunk creatureChunk)
     {

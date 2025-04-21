@@ -7,7 +7,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction, FriendTracker.IHaveFriendTracker, IReactToSocialEvents
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)
@@ -66,7 +66,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         {
             for (var i = 0; i < l.Count; i++)
             {
-                if (l[i] is AbstractPhysicalObject obj && obj.type == AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant && obj.realizedObject is not null && !obj.InDen)
+                if (l[i] is AbstractPhysicalObject obj && obj.SameRippleLayer(creature) && obj.type == AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant && obj.realizedObject is not null && !obj.InDen)
                     FoodTracker.AddItem(this.CreateTrackerRepresentationForItem(obj));
             }
         }
@@ -264,7 +264,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             result.intensity = 1f;
             result.type = CreatureTemplate.Relationship.Type.Pack;
         }
-        if (rep.realizedCreature is Creature c)
+        if (rep.realizedCreature is Creature c && c.abstractPhysicalObject.SameRippleLayer(creature))
         {
             var grs = c.grasps;
             if (grs is not null)
@@ -346,7 +346,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
 
     public virtual void SocialEvent(SocialEventRecognizer.EventID ID, Creature subjectCrit, Creature objectCrit, PhysicalObject involvedItem)
     {
-        if (Bug is not TintedBeetle bug || subjectCrit is not Player || tracker is not Tracker trk)
+        if (Bug is not TintedBeetle bug || subjectCrit is not Player || tracker is not Tracker trk || (objectCrit is not null && subjectCrit.abstractPhysicalObject.SameRippleLayer(objectCrit.abstractPhysicalObject)))
             return;
         var creatureRepresentation = trk.RepresentationForObject(subjectCrit, false);
         if (creatureRepresentation is null)
@@ -378,7 +378,7 @@ public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             num = .35f;
         else if (ID == SocialEventRecognizer.EventID.LethalAttack)
             num = 1f;
-        if (objectCrit.dead)
+        if (objectCrit!.dead)
             num /= 3f;
         if (flag)
         {

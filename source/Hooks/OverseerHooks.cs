@@ -6,7 +6,7 @@ using RWCustom;
 using OverseerHolograms;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class OverseerHooks
 {
     internal static bool On_OverseerAbstractAI_AllowSwarmTarget(On.OverseerAbstractAI.orig_AllowSwarmTarget orig, OverseerAbstractAI self, AbstractCreature evalTarget, AbstractRoom roomCheck)
@@ -54,7 +54,7 @@ public static class OverseerHooks
                 res = .25f;
                 if (testCrit.state.dead)
                     res /= 10f;
-                res *= testCrit.Room.AttractionValueForCreature(self.parent.creatureTemplate.type);
+                res *= testCrit.Room.AttractionValueForCreature(self.parent);
                 res *= Mathf.Lerp(.5f, 1.5f, self.world.game.SeededRandom(self.parent.ID.RandomSeed + testCrit.ID.RandomSeed));
             }
             else if (tpl == CreatureTemplateType.FlyingBigEel)
@@ -64,7 +64,7 @@ public static class OverseerHooks
                 res = .55f;
                 if (testCrit.state.dead)
                     res /= 10f;
-                res *= testCrit.Room.AttractionValueForCreature(self.parent.creatureTemplate.type);
+                res *= testCrit.Room.AttractionValueForCreature(self.parent);
                 res *= Mathf.Lerp(.5f, 1.5f, self.world.game.SeededRandom(self.parent.ID.RandomSeed + testCrit.ID.RandomSeed));
             }
         }

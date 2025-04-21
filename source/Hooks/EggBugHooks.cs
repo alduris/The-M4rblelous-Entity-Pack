@@ -4,9 +4,10 @@ using RWCustom;
 using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class EggBugHooks
 {
     internal static void IL_EggBug_Act(ILContext il)
@@ -19,7 +20,28 @@ public static class EggBugHooks
              .EmitDelegate((float num, EggBug self) => self is SurfaceSwimmer ? 10f : num);
         }
         else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook EggBug.Act!");
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook EggBug.Act! (part 1)");
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdsfld_SoundID_Egg_Bug_Scurry))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((SoundID snd, EggBug self) => self is SurfaceSwimmer && Random.value < .075f ? NewSoundID.M4R_SurfaceSwimmer_Chip : snd);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook EggBug.Act! (part 2)");
+    }
+
+    internal static void IL_EggBug_TryJump(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdsfld_SoundID_Egg_Bug_Scurry))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((SoundID snd, EggBug self) => self is SurfaceSwimmer ? NewSoundID.M4R_SurfaceSwimmer_Chip : snd);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook EggBug.TryJump!");
     }
 
     internal static void On_EggBug_DropEggs(On.EggBug.orig_DropEggs orig, EggBug self)
@@ -62,7 +84,7 @@ public static class EggBugHooks
     internal static CreatureTemplate.Relationship On_EggBugAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.EggBugAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, EggBugAI self, RelationshipTracker.DynamicRelationship dRelation)
     {
         var result = orig(self, dRelation);
-        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c)
+        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c && c.abstractPhysicalObject.SameRippleLayer(self.creature))
         {
             var grs = c.grasps;
             if (grs is not null)
@@ -99,7 +121,8 @@ public static class EggBugHooks
                     c.Emit(OpCodes.Ldarg_0)
                      .EmitDelegate((bool solid, EggBugGraphics self) =>
                      {
-                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(Room.StaticGetTilePosition(self.bug.mainBodyChunk.pos + Custom.PerpendicularVector(self.bug.mainBodyChunk.pos, self.bug.bodyChunks[1].pos) * 20f))))
+                         var mbcpos = self.bug.mainBodyChunk.pos;
+                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(Room.StaticGetTilePosition(mbcpos + Custom.PerpendicularVector(mbcpos, self.bug.bodyChunks[1].pos) * 20f))))
                              return true;
                          return solid;
                      });
@@ -109,7 +132,8 @@ public static class EggBugHooks
                     c.Emit(OpCodes.Ldarg_0)
                      .EmitDelegate((bool solid, EggBugGraphics self) =>
                      {
-                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(Room.StaticGetTilePosition(self.bug.mainBodyChunk.pos - Custom.PerpendicularVector(self.bug.mainBodyChunk.pos, self.bug.bodyChunks[1].pos) * 20f))))
+                         var mbcpos = self.bug.mainBodyChunk.pos;
+                         if (self is SurfaceSwimmerGraphics && self.bug.room.PointSubmerged(self.bug.room.MiddleOfTile(Room.StaticGetTilePosition(mbcpos - Custom.PerpendicularVector(mbcpos, self.bug.bodyChunks[1].pos) * 20f))))
                              return true;
                          return solid;
                      });

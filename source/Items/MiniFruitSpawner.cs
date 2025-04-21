@@ -2,12 +2,14 @@
 using UnityEngine;
 
 namespace LBMergedMods.Items;
-
+//CHK
 public class MiniFruitSpawner : PhysicalObject
 {
     public Vector2 RootPos;
 
     public override float EffectiveRoomGravity => 0f;
+
+    public override bool SandstormImmune => true;
 
     public virtual AbstractConsumable AbstrCons => (abstractPhysicalObject as AbstractConsumable)!;
 
@@ -25,6 +27,7 @@ public class MiniFruitSpawner : PhysicalObject
         gravity = .0001f;
         bounce = .0001f;
         surfaceFriction = .0001f;
+        burrowFriction = .0001f;
         collisionLayer = 0;
         waterFriction = .0001f;
         buoyancy = .0001f;

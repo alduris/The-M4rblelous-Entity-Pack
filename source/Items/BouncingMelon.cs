@@ -6,8 +6,8 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-
-public class BouncingMelon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
+//CHK
+public class BouncingMelon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalkState, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -431,4 +431,10 @@ public class BouncingMelon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHav
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual void DetatchStalk()
+    {
+        if (MyStalk is Stalk st && st.ReleaseCounter == 0)
+            st.ReleaseCounter = 2;
+    }
 }

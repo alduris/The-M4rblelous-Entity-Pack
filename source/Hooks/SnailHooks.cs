@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class SnailHooks
 {
     internal static void IL_Snail_Click(ILContext il)
@@ -82,7 +82,7 @@ public static class SnailHooks
         var crits = self.room.abstractRoom.creatures;
         for (var i = 0; i < crits.Count; i++)
         {
-            if (crits[i].realizedCreature is MiniLeech l && l.room == self.room && Custom.DistLess(self.mainBodyChunk.pos, l.mainBodyChunk.pos, rad) && (Custom.DistLess(self.mainBodyChunk.pos, l.mainBodyChunk.pos, rad / 4f) || self.room.VisualContact(self.mainBodyChunk.pos, l.mainBodyChunk.pos)))
+            if (crits[i].realizedCreature is MiniLeech l && l.abstractPhysicalObject.SameRippleLayer(self.abstractPhysicalObject) && l.room == self.room && Custom.DistLess(self.mainBodyChunk.pos, l.mainBodyChunk.pos, rad) && (Custom.DistLess(self.mainBodyChunk.pos, l.mainBodyChunk.pos, rad / 4f) || self.room.VisualContact(self.mainBodyChunk.pos, l.mainBodyChunk.pos)))
                 l.HeardSnailClick(self.mainBodyChunk.pos);
         }
     }

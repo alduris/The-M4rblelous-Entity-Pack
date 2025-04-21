@@ -1,8 +1,9 @@
 ﻿using RWCustom;
 using UnityEngine;
+using Watcher;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class MoleSalamander : Lizard
 {
     public bool Black;
@@ -17,6 +18,8 @@ public class MoleSalamander : Lizard
         else
             Black = Random.value < 1f / 3f;
         effectColor = Custom.HSL2RGB(Custom.WrappedRandomVariation(.9f, .15f, .6f), 1f, Custom.ClampedRandomVariation(.4f, .15f, .2f));
+        if (rotModule is LizardRotModule mod && LizardState.rotType != LizardState.RotType.Slight)
+            effectColor = Color.Lerp(effectColor, mod.RotEyeColor, LizardState.rotType == LizardState.RotType.Opossum ? .2f : .8f);
         Random.state = state;
         abstractCreature.HypothermiaImmune = true;
         firstChunk.rad *= 1.15f;

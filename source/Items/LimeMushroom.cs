@@ -5,8 +5,8 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-
-public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
+//CHK
+public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalkState, IHaveAStalk
 {
     public struct StalkPart
     {
@@ -96,7 +96,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHave
         for (var i = 0; i < crits.Count; i++)
         {
             var cr = crits[i];
-            if (cr.realizedCreature is Creature c && c.Consious && c.mainBodyChunk is BodyChunk ch && Custom.DistLess(ch.pos, fc.pos, 70f) && (c is ThornBug or DropBug or TintedBeetle or NeedleWorm or SurfaceSwimmer or EggBug or DivingBeetle or Caterpillar || c.Template.type.value.Contains("Mosquito")))
+            if (abstractPhysicalObject.SameRippleLayer(cr) && cr.realizedCreature is Creature c && c.Consious && c.mainBodyChunk is BodyChunk ch && Custom.DistLess(ch.pos, fc.pos, 70f) && (c is ThornBug or DropBug or TintedBeetle or NeedleWorm or SurfaceSwimmer or EggBug or DivingBeetle or Caterpillar || c.Template.type.value.Contains("Mosquito")))
                 c.mainBodyChunk.vel += Custom.DirVec(fc.pos, ch.pos) * 6f;
         }
         LastDarkness = Darkness;
@@ -106,10 +106,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHave
         {
             Rotation = Custom.PerpendicularVector(Custom.DirVec(fc.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
             Rotation.y = Math.Abs(Rotation.y);
-            if (!AbstrConsumable.isConsumed)
-                AbstrConsumable.Consume();
-            if (GrowPos.HasValue)
-                GrowPos = null;
+            DetatchStalk();
         }
         else if (!GrowPos.HasValue && fc.ContactPoint.y == 0 && fc.ContactPoint.x == 0)
         {
@@ -229,12 +226,7 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHave
     public override void HitByWeapon(Weapon weapon)
     {
         base.HitByWeapon(weapon);
-        if (GrowPos.HasValue)
-        {
-            GrowPos = null;
-            if (!AbstrConsumable.isConsumed)
-                AbstrConsumable.Consume();
-        }
+        DetatchStalk();
     }
 
     public virtual void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
@@ -331,4 +323,12 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHave
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual void DetatchStalk()
+    {
+        if (!AbstrConsumable.isConsumed)
+            AbstrConsumable.Consume();
+        if (GrowPos.HasValue)
+            GrowPos = null;
+    }
 }

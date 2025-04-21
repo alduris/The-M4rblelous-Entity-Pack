@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class ThornBug : InsectoidCreature
 {
     public static Color BugCol = Color.Lerp(Color.red, Color.yellow, .3f);
@@ -312,7 +312,7 @@ public class ThornBug : InsectoidCreature
         if (Consious && !Custom.DistLess(b0.pos, b0.lastPos, 5f))
             RunCycle += RunSpeed * .09f;
         if (num < Mathf.Floor(RunCycle))
-            rm.PlaySound(SoundID.Egg_Bug_Scurry, b0);
+            rm.PlaySound(NewSoundID.M4R_GenericBug_Chip, b0, false, .9f, 1f);
         if (Sitting)
         {
             Vector2 vector2 = default;
@@ -334,8 +334,7 @@ public class ThornBug : InsectoidCreature
         var b0 = bs[0];
         if (Consious && NoJumps <= 0 && room?.aimap is AImap map && (map.TileAccessibleToCreature(b0.pos, Template) || map.TileAccessibleToCreature(bs[1].pos, Template)) && !map.getAItile(bs[1].pos).narrowSpace)
         {
-            room.PlaySound(SoundID.Egg_Bug_Scurry, b0);
-            room.PlaySound(SoundID.Drop_Bug_Voice, b0, false, .6f, 1.2f + Random.value * .1f);
+            room.PlaySound(NewSoundID.M4R_GenericBug_BigChip, b0, false, .9f, 1.2f + Random.value * .1f);
             var vector = Custom.DirVec(targetPoint, (b0.pos + bs[1].pos) / 2f);
             if (!away)
             {

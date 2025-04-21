@@ -4,7 +4,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class ThornBugGraphics : GraphicsModule
 {
     public const float HUE_OFF = .05f;

@@ -2,7 +2,7 @@
 using LizardCosmetics;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class HunterSeekerGraphics : LizardGraphics
 {
     public HunterSeekerGraphics(HunterSeeker ow) : base(ow)

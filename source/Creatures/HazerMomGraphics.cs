@@ -5,7 +5,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class HazerMomGraphics : GraphicsModule
 {
     public const int MESH_SPRITE = 0, BODY_SPRITE = 1;
@@ -135,7 +135,7 @@ public class HazerMomGraphics : GraphicsModule
             {
                 var physicalObject = objsNum[Random.Range(0, objsNum.Count)];
                 chunk = physicalObject.bodyChunks[Random.Range(0, physicalObject.bodyChunks.Length)];
-                if (chunk.owner != Squid && ObjectInterestingScore(chunk) > ObjectInterestingScore(LookAtObj) && Custom.DistLess(Squid.mainBodyChunk.pos, chunk.pos, 400f))
+                if (physicalObject != Squid && physicalObject.NoCamo() && physicalObject.abstractPhysicalObject.SameRippleLayer(Squid.abstractPhysicalObject) && ObjectInterestingScore(chunk) > ObjectInterestingScore(LookAtObj) && Custom.DistLess(Squid.mainBodyChunk.pos, chunk.pos, 400f))
                     LookAtObj = chunk;
             }
         }

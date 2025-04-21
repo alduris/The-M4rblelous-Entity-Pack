@@ -8,7 +8,7 @@ using RWCustom;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 sealed class BlizzorCritob : Critob
 {
     internal BlizzorCritob() : base(CreatureTemplateType.Blizzor)
@@ -110,7 +110,7 @@ sealed class BlizzorCritob : Critob
 
     public override Creature CreateRealizedCreature(AbstractCreature acrit) => new Blizzor(acrit, acrit.world);
 
-    public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new BlizzorAbstractAI(acrit.world, acrit);
+    public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new MirosBirdAbstractAI(acrit.world, acrit);
 
     public override void LoadResources(RainWorld rainWorld) { }
 

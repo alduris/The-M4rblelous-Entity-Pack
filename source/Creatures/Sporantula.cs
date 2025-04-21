@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class Sporantula : BigSpider
 {
     public Sporantula(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
@@ -48,7 +48,7 @@ public class Sporantula : BigSpider
 
     public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos hitAppendage, DamageType type, float damage, float stunBonus)
     {
-        if (source is not null && SporeMemory.TryGetValue(abstractCreature, out var hs))
+        if (source is not null && RippleViolenceCheck(source) && SporeMemory.TryGetValue(abstractCreature, out var hs))
         {
             if (source.owner is Creature c)
                 hs.Add(c.abstractCreature);
@@ -65,8 +65,8 @@ public class Sporantula : BigSpider
         var color = Color.Lerp(new(.9f, 1f, .8f), g.cameras[0].currentPalette.texture.GetPixel(11, 4), .5f);
         var sporeColor = Color.Lerp(color, new(.02f, .1f, .08f), .85f);
         var chunk = mainBodyChunk;
-        rm.AddObject(new SporeCloud(chunk.pos, -chunk.vel * 3f, sporeColor, .7f, abstractCreature, 0, null));
-        rm.PlaySound(SoundID.Puffball_Eplode, chunk.pos, .5f, 1f);
+        rm.AddObject(new SporeCloud(chunk.pos, -chunk.vel * 3f, sporeColor, .7f, abstractCreature, 0, null, abstractPhysicalObject.rippleLayer));
+        rm.PlaySound(SoundID.Puffball_Eplode, chunk, false, .5f, 1f);
     }
 
     public virtual void Explode()
@@ -88,9 +88,9 @@ public class Sporantula : BigSpider
         var sporeColor = Color.Lerp(color, new(.02f, .1f, .08f), .85f);
         var ps = mainBodyChunk.pos;
         for (var j = 0; j < 100; j++)
-            rm.AddObject(new SporeCloud(ps, Custom.RNV() * Random.value * 10f, sporeColor, 1f, abstractCreature, j % 20, smallInsects));
-        rm.AddObject(new SporePuffVisionObscurer(ps));
-        rm.PlaySound(SoundID.Puffball_Eplode, ps);
+            rm.AddObject(new SporeCloud(ps, Custom.RNV() * Random.value * 10f, sporeColor, 1f, abstractCreature, j % 20, smallInsects, abstractPhysicalObject.rippleLayer));
+        rm.AddObject(new SporePuffVisionObscurer(ps, abstractPhysicalObject.rippleLayer));
+        rm.PlaySound(SoundID.Puffball_Eplode, mainBodyChunk);
     }
 
     public override void LoseAllGrasps() => ReleaseGrasp(0);

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class RedHorrorGraphics : CentipedeGraphics
 {
     public RedHorrorGraphics(RedHorror ow) : base(ow)

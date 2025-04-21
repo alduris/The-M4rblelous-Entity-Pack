@@ -1,8 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.VultureHooks;
-using MoreSlugcats;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class VultureHooks
 {
     internal static void On_Vulture_AirBrake(On.Vulture.orig_AirBrake orig, Vulture self, int frames)
@@ -16,7 +15,7 @@ public static class VultureHooks
         var tp = creature.creatureTemplate.type;
         var flag = true;
         if (self.creature.creatureTemplate.type == CreatureTemplateType.FatFireFly)
-            flag = !creature.creatureTemplate.IsVulture && (!ModManager.MSC || tp != MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
+            flag = !creature.creatureTemplate.IsVulture && (!ModManager.DLCShared || tp != DLCSharedEnums.CreatureTemplateType.MirosVulture);
         return flag && tp != CreatureTemplateType.FatFireFly && tp != CreatureTemplateType.FlyingBigEel && tp != CreatureTemplateType.MiniFlyingBigEel && orig(self, creature);
     }
 
@@ -29,7 +28,7 @@ public static class VultureHooks
             return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
         else if (tpl.type == CreatureTemplateType.FatFireFly)
         {
-            if (reprTempl.bodySize > tpl.bodySize / 2f || reprTempl.IsVulture || (ModManager.MSC && reprTempl.type == MoreSlugcatsEnums.CreatureTemplateType.MirosVulture))
+            if (reprTempl.bodySize > tpl.bodySize / 2f || reprTempl.IsVulture || (ModManager.DLCShared && reprTempl.type == DLCSharedEnums.CreatureTemplateType.MirosVulture))
                 return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
             else
             {

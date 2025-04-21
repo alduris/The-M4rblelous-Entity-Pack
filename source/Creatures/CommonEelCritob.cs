@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class CommonEelCritob : Critob, ISandboxHandler
 {
     internal CommonEelCritob() : base(CreatureTemplateType.CommonEel)
@@ -36,7 +36,7 @@ sealed class CommonEelCritob : Critob, ISandboxHandler
 
     public override IEnumerable<string> WorldFileAliases() => ["commoneel", "common eel"];
 
-    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), null, null, null);
+    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.PinkLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.BlueLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.GreenLizard));
 
     public override void EstablishRelationships()
     {
@@ -114,28 +114,31 @@ sealed class CommonEelCritob : Critob, ISandboxHandler
         me.IgnoredBy(CreatureTemplate.Type.KingVulture);
         me.Ignores(CreatureTemplate.Type.Hazer);
         me.FearedBy(CreatureTemplate.Type.Hazer, .5f);
+        if (ModManager.DLCShared)
+        {
+            me.Fears(DLCSharedEnums.CreatureTemplateType.MirosVulture, 1f);
+            me.EatenBy(DLCSharedEnums.CreatureTemplateType.MirosVulture, 1f);
+            me.Ignores(DLCSharedEnums.CreatureTemplateType.SpitLizard);
+            me.IgnoredBy(DLCSharedEnums.CreatureTemplateType.SpitLizard);
+            me.Ignores(DLCSharedEnums.CreatureTemplateType.EelLizard);
+            me.IgnoredBy(DLCSharedEnums.CreatureTemplateType.EelLizard);
+            me.Eats(DLCSharedEnums.CreatureTemplateType.MotherSpider, 1f);
+            me.FearedBy(DLCSharedEnums.CreatureTemplateType.MotherSpider, 1f);
+            me.Ignores(DLCSharedEnums.CreatureTemplateType.AquaCenti);
+            me.IgnoredBy(DLCSharedEnums.CreatureTemplateType.AquaCenti);
+            me.Fears(DLCSharedEnums.CreatureTemplateType.StowawayBug, 1f);
+            me.EatenBy(DLCSharedEnums.CreatureTemplateType.StowawayBug, 1f);
+            me.Ignores(DLCSharedEnums.CreatureTemplateType.Inspector);
+            me.IgnoredBy(DLCSharedEnums.CreatureTemplateType.Inspector);
+            me.Eats(DLCSharedEnums.CreatureTemplateType.Yeek, 1f);
+            me.FearedBy(DLCSharedEnums.CreatureTemplateType.Yeek, 1f);
+            me.Ignores(DLCSharedEnums.CreatureTemplateType.BigJelly);
+            me.IgnoredBy(DLCSharedEnums.CreatureTemplateType.BigJelly);
+        }
         if (ModManager.MSC)
         {
-            me.Fears(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, 1f);
-            me.EatenBy(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, 1f);
-            me.Ignores(MoreSlugcatsEnums.CreatureTemplateType.SpitLizard);
-            me.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.SpitLizard);
-            me.Ignores(MoreSlugcatsEnums.CreatureTemplateType.EelLizard);
-            me.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.EelLizard);
-            me.Eats(MoreSlugcatsEnums.CreatureTemplateType.MotherSpider, 1f);
-            me.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.MotherSpider, 1f);
-            me.Ignores(MoreSlugcatsEnums.CreatureTemplateType.AquaCenti);
-            me.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.AquaCenti);
             me.Eats(MoreSlugcatsEnums.CreatureTemplateType.FireBug, 1f);
             me.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.FireBug, .5f);
-            me.Fears(MoreSlugcatsEnums.CreatureTemplateType.StowawayBug, 1f);
-            me.EatenBy(MoreSlugcatsEnums.CreatureTemplateType.StowawayBug, 1f);
-            me.Ignores(MoreSlugcatsEnums.CreatureTemplateType.Inspector);
-            me.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.Inspector);
-            me.Eats(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
-            me.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
-            me.Ignores(MoreSlugcatsEnums.CreatureTemplateType.BigJelly);
-            me.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.BigJelly);
             me.Eats(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, 1f);
             me.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, 1f);
             me.Ignores(MoreSlugcatsEnums.CreatureTemplateType.TrainLizard);

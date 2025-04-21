@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class Scutigera : Centipede
 {
     public Scutigera(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

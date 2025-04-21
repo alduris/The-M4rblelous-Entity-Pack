@@ -3,7 +3,7 @@ using UnityEngine;
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class CommonEelGraphics : LizardGraphics
 {
     public CommonEelGraphics(CommonEel ow) : base(ow)

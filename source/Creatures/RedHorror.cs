@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class RedHorror : Centipede
 {
     public RedHorror(AbstractCreature abstractCreature, World world) : base(abstractCreature, world) => flying = true;

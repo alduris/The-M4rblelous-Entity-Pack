@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class BouncingBall : Snail
 {
     public float Alpha = 1f, LastAlpha = 1f, Consciousness, Lerper;
@@ -29,7 +29,7 @@ public class BouncingBall : Snail
                 rm.AddObject(new Spark(vector + vector2 * Random.value * 40f, vector2 * Mathf.Lerp(4f, 30f, Random.value), clr, null, 4, 18));
             }
             rm.ScreenMovement(vector, default, .7f);
-            rm.PlaySound(SoundID.Bomb_Explode, vector);
+            rm.PlaySound(SoundID.Bomb_Explode, mainBodyChunk);
         }
         base.Die();
         Destroy();

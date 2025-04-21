@@ -1,4 +1,5 @@
 ﻿global using static LBMergedMods.Hooks.MainHooks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -6,7 +7,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class MainHooks
 {
     [StructLayout(LayoutKind.Sequential)]
@@ -134,18 +135,25 @@ public static class MainHooks
     internal static void On_RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
         orig(self);
-        if (!Futile.atlasManager.DoesContainAtlas("lbmergedmodsspr"))
-            Futile.atlasManager.LoadAtlas("atlases/lbmergedmodsspr");
-        if (!Futile.atlasManager.DoesContainAtlas("BlizzorNeck"))
-            Futile.atlasManager.ActuallyLoadAtlasOrImage("BlizzorNeck", "atlases/BlizzorNeck" + Futile.resourceSuffix, string.Empty);
-        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_fur"))
-            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_fur", "atlases/wwdvb_fur" + Futile.resourceSuffix, string.Empty);
-        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_lh"))
-            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_lh", "atlases/wwdvb_lh" + Futile.resourceSuffix, string.Empty);
-        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_wingw"))
-            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw", "atlases/wwdvb_wingw" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
-        if (!Futile.atlasManager.DoesContainAtlas("wwdvb_wingw2"))
-            Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw2", "atlases/wwdvb_wingw2" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
+        try
+        {
+            if (!Futile.atlasManager.DoesContainAtlas("lbmergedmodsspr"))
+                Futile.atlasManager.LoadAtlas("atlases/lbmergedmodsspr");
+            if (!Futile.atlasManager.DoesContainAtlas("BlizzorNeck"))
+                Futile.atlasManager.ActuallyLoadAtlasOrImage("BlizzorNeck", "atlases/BlizzorNeck" + Futile.resourceSuffix, string.Empty);
+            if (!Futile.atlasManager.DoesContainAtlas("wwdvb_fur"))
+                Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_fur", "atlases/wwdvb_fur" + Futile.resourceSuffix, string.Empty);
+            if (!Futile.atlasManager.DoesContainAtlas("wwdvb_lh"))
+                Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_lh", "atlases/wwdvb_lh" + Futile.resourceSuffix, string.Empty);
+            if (!Futile.atlasManager.DoesContainAtlas("wwdvb_wingw"))
+                Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw", "atlases/wwdvb_wingw" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
+            if (!Futile.atlasManager.DoesContainAtlas("wwdvb_wingw2"))
+                Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw2", "atlases/wwdvb_wingw2" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
+        }
+        catch (Exception ex)
+        {
+            LBMergedModsPlugin.s_logger.LogError("Error while loading atlases: " + ex);
+        }
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.LittleBalloon))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.LittleBalloon);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.ThornyStrawberry))
@@ -186,6 +194,12 @@ public static class MainHooks
             On.CreatureSymbol.ColorOfCreature += On_CreatureSymbol_ColorOfCreature;
             On.CreatureSymbol.SpriteNameOfCreature += On_CreatureSymbol_SpriteNameOfCreature;
             On.CreatureSymbol.SymbolDataFromCreature += On_CreatureSymbol_SymbolDataFromCreature;
+            if (ModManager.DLCShared)
+            {
+                On.MoreSlugcats.BigJellyFish.ValidGrabCreature += On_BigJellyFish_ValidGrabCreature;
+                On.MoreSlugcats.StowawayBugAI.WantToEat += On_StowawayBugAI_WantToEat;
+                IL.MoreSlugcats.InspectorAI.IUseARelationshipTracker_UpdateDynamicRelationship += IL_InspectorAI_IUseARelationshipTracker_UpdateDynamicRelationship;
+            }
             if (ModManager.MSC)
             {
                 SlugFood.ThornyStrawberry = new(nameof(SlugFood.ThornyStrawberry), true);
@@ -204,9 +218,6 @@ public static class MainHooks
                 On.MoreSlugcats.SlugNPCAI.GetFoodType += On_SlugNPCAI_GetFoodType;
                 On.MoreSlugcats.SlugNPCAI.AteFood += On_SlugNPCAI_AteFood;
                 On.MoreSlugcats.SlugNPCAI.WantsToEatThis += On_SlugNPCAI_WantsToEatThis;
-                On.MoreSlugcats.BigJellyFish.ValidGrabCreature += On_BigJellyFish_ValidGrabCreature;
-                On.MoreSlugcats.StowawayBugAI.WantToEat += On_StowawayBugAI_WantToEat;
-                IL.MoreSlugcats.InspectorAI.IUseARelationshipTracker_UpdateDynamicRelationship += IL_InspectorAI_IUseARelationshipTracker_UpdateDynamicRelationship;
                 IL.MoreSlugcats.SlugNPCAI.PassingGrab += IL_SlugNPCAI_PassingGrab;
                 On.MoreSlugcats.SlugNPCAI.LethalWeaponScore += On_SlugNPCAI_LethalWeaponScore;
             }
@@ -249,7 +260,7 @@ public static class MainHooks
 
     internal static void On_SoundLoader_LoadSounds(On.SoundLoader.orig_LoadSounds orig, SoundLoader self)
     {
-        _ = NewSoundID.Hoverfly_Fly_LOOP;
+        _ = NewSoundID.M4R_Hoverfly_Fly_LOOP;
         orig(self);
     }
 }

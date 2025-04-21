@@ -3,7 +3,7 @@ using LizardCosmetics;
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class WaterSpitterGraphics : LizardGraphics
 {
     public WaterSpitterGraphics(WaterSpitter ow) : base(ow)

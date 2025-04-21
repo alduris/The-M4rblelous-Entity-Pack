@@ -1,5 +1,5 @@
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class HoverflyAbstractAI(World world, AbstractCreature parent) : AbstractCreatureAI(world, parent)
 {
     public override void AbstractBehavior(int time)
@@ -8,7 +8,7 @@ public class HoverflyAbstractAI(World world, AbstractCreature parent) : Abstract
         {
             if (path.Count > 0)
                 FollowPath(time);
-            else if (denPosition.HasValue && parent.pos.room != denPosition.Value.room)
+            else if (denPosition is WorldCoordinate w && parent.pos.room != w.room)
                 GoToDen();
         }
     }

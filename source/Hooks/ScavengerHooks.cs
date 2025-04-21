@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class ScavengerHooks
 {
     internal static void On_Scavenger_MeleeGetFree(On.Scavenger.orig_MeleeGetFree orig, Scavenger self, Creature target, bool eu)
@@ -41,7 +41,7 @@ public static class ScavengerHooks
             if (weaponFiltered && self.NeedAWeapon)
                 res = self.WeaponScore(pf, true);
             else
-                res = 2;
+                res = ModManager.Watcher && self.scavenger.room.world.name == "WBLA" ? 4 : 2;
         }
         else if (obj is BlobPiece or Physalis or LimeMushroom or MarineEye or StarLemon)
         {
@@ -57,9 +57,9 @@ public static class ScavengerHooks
         return res;
     }
 
-    internal static int On_ScavengerAI_WeaponScore(On.ScavengerAI.orig_WeaponScore orig, ScavengerAI self, PhysicalObject obj, bool pickupDropInsteadOfWeaponSelection)
+    internal static int On_ScavengerAI_WeaponScore(On.ScavengerAI.orig_WeaponScore orig, ScavengerAI self, PhysicalObject obj, bool pickupDropInsteadOfWeaponSelection, bool reallyWantsSpear)
     {
-        var res = orig(self, obj, pickupDropInsteadOfWeaponSelection);
+        var res = orig(self, obj, pickupDropInsteadOfWeaponSelection, reallyWantsSpear);
         if (obj is ThornyStrawberry st)
         {
             if (st.SpikesRemoved())

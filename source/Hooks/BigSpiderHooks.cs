@@ -8,7 +8,7 @@ using Noise;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class BigSpiderHooks
 {
     internal static bool On_BigSpider_get_CanIBeRevived(Func<BigSpider, bool> orig, BigSpider self) => self is not Sporantula && orig(self);
@@ -319,7 +319,7 @@ public static class BigSpiderHooks
         }
         else if (self.creature.creatureTemplate.type == CreatureTemplate.Type.BigSpider || self.creature.creatureTemplate.type?.value == "MaracaSpider")
         {
-            if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c && self.StaticRelationship(c.abstractCreature).type == CreatureTemplate.Relationship.Type.Eats)
+            if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c && c.abstractPhysicalObject.SameRippleLayer(self.creature) && self.StaticRelationship(c.abstractCreature).type == CreatureTemplate.Relationship.Type.Eats)
             {
                 var grs = c.grasps;
                 if (grs is not null)

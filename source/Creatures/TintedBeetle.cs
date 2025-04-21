@@ -7,7 +7,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class TintedBeetle : InsectoidCreature
 {
     public static Color BugCol = Color.Lerp(Color.red, Color.yellow, .1f);
@@ -92,7 +92,7 @@ public class TintedBeetle : InsectoidCreature
             var physObjs = phys[i];
             for (var j = 0; j < physObjs.Count; j++)
             {
-                if (physObjs[j] is FirecrackerPlant pl)
+                if (physObjs[j] is FirecrackerPlant pl && pl.abstractPhysicalObject.SameRippleLayer(abstractPhysicalObject))
                 {
                     if (Custom.DistLess(pl.firstChunk.pos, b0.pos, 15f))
                     {
@@ -293,7 +293,7 @@ public class TintedBeetle : InsectoidCreature
             rm.AddObject(new Spark(vector + vector2 * Random.value * 40f, vector2 * Mathf.Lerp(4f, 30f, Random.value), clr, null, 4, 18));
         }
         rm.ScreenMovement(vector, default, .7f);
-        rm.PlaySound(SoundID.Bomb_Explode, vector);
+        rm.PlaySound(SoundID.Bomb_Explode, mainBodyChunk);
         Die();
         Smoke = null;
         Destroy();
@@ -430,7 +430,7 @@ public class TintedBeetle : InsectoidCreature
         if (Consious && !Custom.DistLess(b0.pos, b0.lastPos, 5f))
             RunCycle += RunSpeed * .09f;
         if (num < Mathf.Floor(RunCycle))
-            rm.PlaySound(SoundID.Egg_Bug_Scurry, b0, false, 1f, .6f);
+            rm.PlaySound(NewSoundID.M4R_TintedBeetle_Chip, b0, false, 1f, .95f);
         if (Sitting)
         {
             Vector2 vector2 = default;
@@ -601,13 +601,13 @@ public class TintedBeetle : InsectoidCreature
     public override bool Grab(PhysicalObject obj, int graspUsed, int chunkGrabbed, Grasp.Shareability shareability, float dominance, bool overrideEquallyDominant, bool pacifying)
     {
         var res = base.Grab(obj, graspUsed, chunkGrabbed, shareability, dominance, overrideEquallyDominant, pacifying);
-        room.PlaySound(SoundID.Mouse_Squeak, firstChunk, false, 1f, .8f);
+        room.PlaySound(NewSoundID.M4R_TintedBeetle_BigChip, firstChunk, false, 1f, .95f);
         return res;
     }
 
     public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos hitAppendage, DamageType type, float damage, float stunBonus)
     {
-        if (type == DamageType.Explosion)
+        if (RippleViolenceCheck(source) && type == DamageType.Explosion)
         {
             if (damage > .2f && room is Room rm)
             {

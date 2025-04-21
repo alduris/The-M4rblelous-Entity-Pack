@@ -3,7 +3,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class GarbageWormHooks
 {
     internal static Tracker.CreatureRepresentation? On_GarbageWormAI_CreateTrackerRepresentationForCreature(On.GarbageWormAI.orig_CreateTrackerRepresentationForCreature orig, GarbageWormAI self, AbstractCreature otherCreature)

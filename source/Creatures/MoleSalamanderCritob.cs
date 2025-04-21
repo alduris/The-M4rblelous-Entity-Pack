@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class MoleSalamanderCritob : Critob
 {
     internal MoleSalamanderCritob() : base(CreatureTemplateType.MoleSalamander)
@@ -35,7 +35,7 @@ sealed class MoleSalamanderCritob : Critob
 
     public override IEnumerable<string> WorldFileAliases() => ["molesalamander", "mole salamander"];
 
-    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), null, null, null);
+    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.PinkLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.BlueLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.GreenLizard));
 
     public override void EstablishRelationships()
     {

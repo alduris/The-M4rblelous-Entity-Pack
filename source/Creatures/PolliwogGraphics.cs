@@ -2,7 +2,7 @@
 using LizardCosmetics;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 public class PolliwogGraphics : LizardGraphics
 {
     public PolliwogGraphics(Polliwog ow) : base(ow)

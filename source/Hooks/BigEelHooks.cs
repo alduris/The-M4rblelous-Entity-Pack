@@ -8,7 +8,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class BigEelHooks
 {
     public static int _MiniLeviColorA, _MiniLeviColorB, _MiniLeviColorHead, _AMiniLeviColorA, _AMiniLeviColorB, _AMiniLeviColorHead, _GRJLeviathanColorA, _GRJLeviathanColorB, _GRJLeviathanColorHead, _GRJMiniLeviathanColorA, _GRJMiniLeviathanColorB, _GRJMiniLeviathanColorHead;
@@ -104,7 +104,7 @@ public static class BigEelHooks
             s_MatchLdsfld_SoundID_Leviathan_Bite))
         {
             c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((SoundID ID, BigEel self) => self is FlyingBigEel or MiniFlyingBigEel ? NewSoundID.Flying_Leviathan_Bite : ID);
+             .EmitDelegate((SoundID ID, BigEel self) => self is FlyingBigEel or MiniFlyingBigEel ? NewSoundID.M4R_Flying_Leviathan_Bite : ID);
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigEel.JawsSnap!");

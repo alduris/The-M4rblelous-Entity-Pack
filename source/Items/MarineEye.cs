@@ -5,8 +5,8 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-
-public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
+//CHK
+public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalkState, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -276,7 +276,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
         if (fc.submersion > .5f && crits.Count > 0 && grabbedBy.Count == 0)
         {
             var abstractCreature = crits[Random.Range(0, crits.Count)];
-            if (abstractCreature.creatureTemplate.type == CreatureTemplate.Type.JetFish && abstractCreature.realizedCreature is JetFish j && !abstractCreature.realizedCreature.dead && j.AI.goToFood is null && j.AI.WantToEatObject(this))
+            if (abstractPhysicalObject.SameRippleLayer(abstractCreature) && abstractCreature.creatureTemplate.type == CreatureTemplate.Type.JetFish && abstractCreature.realizedCreature is JetFish j && !abstractCreature.realizedCreature.dead && j.AI.goToFood is null && j.AI.WantToEatObject(this))
                 j.AI.goToFood = this;
         }
     }
@@ -312,7 +312,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
             AbstrCons.Consume();
             if (PlayerData.TryGetValue(p.abstractCreature, out var props))
                 props.BlueFaceDuration = 5000;
-            room?.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk.pos);
+            room?.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk);
             var grabbers = grabbedBy;
             for (var i = 0; i < grabbers.Count; i++)
                 grabbers[i]?.Release();
@@ -399,7 +399,7 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
         else if (grasp.grabber is Player p && PlayerData.TryGetValue(p.abstractCreature, out var props))
             props.BlueFaceDuration = Math.Min(props.BlueFaceDuration + 1700, 5000);
         --Bites;
-        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk.pos);
+        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
@@ -410,4 +410,10 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual void DetatchStalk()
+    {
+        if (MyStalk is Stalk st && st.ReleaseCounter == 0)
+            st.ReleaseCounter = 2;
+    }
 }

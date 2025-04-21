@@ -2,7 +2,7 @@
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class FatFireFly : Vulture, IProvideWarmth
 {
     public virtual Room loadedRoom => room;
@@ -40,6 +40,8 @@ public class FatFireFly : Vulture, IProvideWarmth
 
     public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos onAppendagePos, DamageType type, float damage, float stunBonus)
     {
+        if (!RippleViolenceCheck(source))
+            return;
         var baseStun = stun;
         if (type == DamageType.Explosion)
             return;
@@ -59,7 +61,7 @@ public class FatFireFly : Vulture, IProvideWarmth
 
     public override void Collide(PhysicalObject otherObject, int myChunk, int otherChunk)
     {
-        if (!dead && otherObject is Creature c and not FatFireFly and not MirosBird and not BigEel and not JetFish && (!ModManager.MSC || c.Template.type != MoreSlugcatsEnums.CreatureTemplateType.MirosVulture))
+        if (!dead && otherObject is Creature c and not FatFireFly and not MirosBird and not BigEel and not JetFish && (!ModManager.DLCShared || c.Template.type != DLCSharedEnums.CreatureTemplateType.MirosVulture))
             c.Stun(25);
         base.Collide(otherObject, myChunk, otherChunk);
         if (!Snapping || myChunk != 4 || grasps[0] is not null)
@@ -73,8 +75,10 @@ public class FatFireFly : Vulture, IProvideWarmth
 
     public override bool Grab(PhysicalObject obj, int graspUsed, int chunkGrabbed, Grasp.Shareability shareability, float dominance, bool overrideEquallyDominant, bool pacifying)
     {
+        if (obj is FatFireFly)
+            return false;
         var res = base.Grab(obj, graspUsed, chunkGrabbed, shareability, dominance, overrideEquallyDominant, pacifying);
-        if (obj is Creature c && c.CanBeGrabbed(this))
+        if (res && obj is Creature c)
         {
             if (AI?.StaticRelationship(c.abstractCreature).type == CreatureTemplate.Relationship.Type.Eats)
                 c.Die();

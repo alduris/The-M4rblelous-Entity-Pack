@@ -4,15 +4,16 @@ using RWCustom;
 using System;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class BodyPartHooks
 {
     internal static void On_BodyPart_ConnectToPoint(On.BodyPart.orig_ConnectToPoint orig, BodyPart self, Vector2 pnt, float connectionRad, bool push, float elasticMovement, Vector2 hostVel, float adaptVel, float exaggerateVel)
     {
         if (self.owner is SporantulaGraphics g && g.bug is BigSpider b && connectionRad == 12f)
         {
-            var pos0 = b.bodyChunks[0].pos;
-            var pos1 = b.bodyChunks[1].pos;
+            var chs = b.bodyChunks;
+            var pos0 = chs[0].pos;
+            var pos1 = chs[1].pos;
             orig(self, pos1 + Custom.DirVec(pos0, pos1) * 42f + Custom.PerpendicularVector(pos0, pos1) * g.flip * 15f, 25f, push, elasticMovement, hostVel, adaptVel, exaggerateVel);
         }
         else
@@ -123,7 +124,20 @@ public static class BodyPartHooks
 
     public static void PushBugLimbOutOfTerrain(this BodyPart self, Room room)
     {
+        if (room.terrain is not null && self.owner.owner.Buried)
+            return;
         self.terrainContact = false;
+        if (room.terrain is TerrainCurve terrain)
+        {
+            var vect = terrain.SnapToTerrain(self.pos, self.rad);
+            if (vect.y > self.pos.y)
+            {
+                self.terrainContact = true;
+                self.pos = vect;
+                self.vel.y = 0f;
+                self.vel.x *= self.surfaceFric;
+            }
+        }
         Vector2 vector;
         for (var i = 0; i < 9; i++)
         {

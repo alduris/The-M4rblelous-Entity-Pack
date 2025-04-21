@@ -8,36 +8,11 @@ using System.Runtime.CompilerServices;
 using RWCustom;
 using System.Collections.Generic;
 using CoralBrain;
-using MonoMod.Cil;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class RoomHooks
 {
-    internal static int On_AImap_ExitDistanceForCreatureAndCheckNeighbours(On.AImap.orig_ExitDistanceForCreatureAndCheckNeighbours orig, AImap self, IntVector2 pos, int creatureSpecificExitIndex, CreatureTemplate crit)
-    {
-        if (crit.PreBakedPathingIndex < 0 || crit.PreBakedPathingIndex >= self.creatureSpecificAImaps?.Length)
-            return -1;
-        return orig(self, pos, creatureSpecificExitIndex, crit);
-    }
-
-    internal static void On_LightSource_InitiateSprites(On.LightSource.orig_InitiateSprites orig, LightSource self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
-    {
-        orig(self, sLeaser, rCam);
-        if (self.tiedToObject is StarLemon && self.flat)
-            sLeaser.sprites[0].shader = Custom.rainWorld.Shaders["FlatLightBehindTerrain"];
-    }
-
-    internal static void IL_MeltLights_Update(ILContext il)
-    {
-        var c = new ILCursor(il);
-        if (c.TryGotoNext(MoveType.After,
-            s_MatchIsinst_Fly))
-            c.EmitDelegate((Fly fly) => (fly?.room?.world?.name == "NP" && fly.IsSeed()) ? null : fly);
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook MeltLights.Update!");
-    }
-
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)
     {
         if (LBMergedModsPlugin.Bundle is null && self.game is RainWorldGame g)
@@ -91,19 +66,19 @@ public static class RoomHooks
                         self.AddObject(game.session is StoryGameSession session && session.saveState?.deathPersistentSaveData?.GetScoreTokenCollected(data.ID) is false ? new ScoreToken(self, pObj) : new ScoreToken.TokenStalk(self, pObj.pos, pObj.pos + data.handlePos, null));
                     }
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.ThornyStrawberry && (game.session is not StoryGameSession session || !session.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.ThornyStrawberry, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.ThornyStrawberry, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.LittleBalloon && (game.session is not StoryGameSession session2 || !session2.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LittleBalloon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LittleBalloon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.BouncingMelon && (game.session is not StoryGameSession session3 || !session3.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.BouncingMelon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.BouncingMelon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.LimeMushroom && (game.session is not StoryGameSession session13 || !session13.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LimeMushroom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LimeMushroom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.MarineEye && (game.session is not StoryGameSession session14 || !session14.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MarineEye, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MarineEye, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.StarLemon && (game.session is not StoryGameSession session15 || !session15.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.SporeProjectile && (game.session is not StoryGameSession session133 || !session133.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.SporeProjectile, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.SporeProjectile, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.DendriticNeuron && (game.session is not StoryGameSession session16 || !session16.saveState.ItemConsumed(self.world, false, arm.index, i)))
                     {
                         var flag = true;
@@ -118,7 +93,7 @@ public static class RoomHooks
                         }
                         if (flag)
                             self.AddObject(new CoralNeuronSystem());
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DendriticNeuron, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DendriticNeuron, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                         self.waitToEnterAfterFullyLoaded = Math.Max(self.waitToEnterAfterFullyLoaded, 80);
                     }
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.MiniFruitBranch && (game.session is not StoryGameSession session23 || !session23.saveState.ItemConsumed(self.world, false, arm.index, i)))
@@ -127,7 +102,8 @@ public static class RoomHooks
                         AbstractConsumable spawner;
                         arm.entities.Add(spawner = new AbstractConsumable(self.world, AbstractObjectType.MiniFruitSpawner, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, data)
                         {
-                            isConsumed = false
+                            isConsumed = false,
+                            placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
                         });
                         if (MiniFruitSpawners.TryGetValue(spawner, out var props))
                         {
@@ -141,7 +117,8 @@ public static class RoomHooks
                             {
                                 arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.MiniBlueFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
                                 {
-                                    isConsumed = false
+                                    isConsumed = false,
+                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
                                 });
                                 if (MiniFruits.TryGetValue(fruit, out var fprops))
                                 {
@@ -164,7 +141,8 @@ public static class RoomHooks
                         AbstractConsumable plant;
                         arm.entities.Add(plant = new AbstractConsumable(self.world, AbstractObjectType.RubberBlossom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, (pObj.data as PlacedObject.ConsumableObjectData)!)
                         {
-                            isConsumed = false
+                            isConsumed = false,
+                            placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
                         });
                         if (StationPlant.TryGetValue(plant, out var props))
                         {
@@ -206,7 +184,8 @@ public static class RoomHooks
                             {
                                 arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.GummyAnther, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
                                 {
-                                    isConsumed = false
+                                    isConsumed = false,
+                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
                                 });
                                 if (StationFruit.TryGetValue(fruit, out var fprops))
                                     fprops.Plant = plant;
@@ -219,7 +198,7 @@ public static class RoomHooks
                         if (game.session is not StoryGameSession session7 || !session7.saveState.ItemConsumed(self.world, false, arm.index, i))
                         {
                             if (firstTimeRealized)
-                                arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.Physalis, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false });
+                                arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.Physalis, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                             else
                                 self.AddObject(new Physalis.Stem(pObj.pos, self, false));
                         }
@@ -233,7 +212,8 @@ public static class RoomHooks
                             var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.HazerMom), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
                             {
                                 superSizeMe = pObj.type == PlacedObjectType.HazerMom || pObj.type == PlacedObjectType.DeadHazerMom,
-                                spawnData = "{AlternateForm}"
+                                spawnData = "{AlternateForm}",
+                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
                             };
                             var state = (abstractCreature.state as HazerMomState)!;
                             state.OrigRoom = arm.index;
@@ -249,7 +229,8 @@ public static class RoomHooks
                         {
                             var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.Hazer), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
                             {
-                                spawnData = "{albinoform}"
+                                spawnData = "{albinoform}",
+                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
                             };
                             if (Albino.TryGetValue(abstractCreature, out var props))
                                 props.Value = true;
@@ -290,25 +271,8 @@ public static class RoomHooks
             orig(self, placedObj);
     }
 
-    internal static AbstractRoomNode On_World_GetNode(On.World.orig_GetNode orig, World self, WorldCoordinate c)
-    {
-        if (c.abstractNode < 0 || self.GetAbstractRoom(c.room)?.nodes is not AbstractRoomNode[] nds || c.abstractNode >= nds.Length)
-            return new(new("UnregisteredNodeType"), 0, 0, false, 0, 0);
-        return orig(self, c);
-    }
-
-    internal static int On_World_TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom(On.World.orig_TotalShortCutLengthBetweenTwoConnectedRooms_AbstractRoom_AbstractRoom orig, World self, AbstractRoom room1, AbstractRoom room2)
-    {
-        if (room1?.nodes is AbstractRoomNode[] nds1 && room2?.nodes is AbstractRoomNode[] nds2 && (room1.ExitIndex(room2.index) >= nds1.Length || room2.ExitIndex(room1.index) >= nds2.Length))
-            return -1;
-        return orig(self, room1, room2);
-    }
-
     [SuppressMessage(null, "IDE0060"), MethodImpl(MethodImplOptions.NoInlining)]
     public static int DefaultWaterLevel(this Room self, IntVector2 pos) => self.defaultWaterLevel;
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static float FloatWaterLevel(this Room self, Vector2 pos) => self.FloatWaterLevel(pos.x);
 
     public static bool ContainsClosePosition(this List<Vector2> self, Vector2 pos, float dist)
     {

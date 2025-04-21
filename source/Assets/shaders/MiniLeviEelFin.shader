@@ -7,7 +7,7 @@ Shader "MiniLeviEelFin"
 
 	Category
 	{
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		Fog { Color(0.0, 0.0, 0.0, 0.0) }
@@ -30,11 +30,12 @@ Shader "MiniLeviEelFin"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				//#include "_ShaderFix.cginc" -> unused code
 				sampler2D _MainTex;
 				sampler2D _NoiseTex;
-				uniform half4 _MiniLeviColorA;
-				uniform half4 _MiniLeviColorB;
-				uniform half4 _MiniLeviColorHead;
+				uniform float4 _MiniLeviColorA;
+				uniform float4 _MiniLeviColorB;
+				uniform float4 _MiniLeviColorHead;
 				float4 _MainTex_ST;
 
 				struct v2f
@@ -55,13 +56,11 @@ Shader "MiniLeviEelFin"
 					return o;
 				}
 
-				half4 frag(v2f i) : SV_Target
+				float4 frag(v2f i) : SV_Target
 				{
-					half n = tex2D(_NoiseTex, half2(i.clr.y, i.uv.y * lerp(1.0, 3.0, i.clr.x) * 3.0));
-					n = min(1.0, n + 0.1);
-					n -= pow(i.uv.x, 1.5);
+					float n = min(1.0, tex2D(_NoiseTex, float2(i.clr.y, i.uv.y * lerp(1.0, 3.0, i.clr.x) * 3.0)) + 0.1) - pow(i.uv.x, 1.5);
 					if (n <= 0.0)
-						return half4(0.0, 0.0, 0.0, 0.0);
+						return float4(0.0, 0.0, 0.0, 0.0);
 					return lerp(lerp(_MiniLeviColorHead, _MiniLeviColorA, i.clr.z), _MiniLeviColorB, pow(i.uv.y, 2.0));
 				}
 				ENDCG

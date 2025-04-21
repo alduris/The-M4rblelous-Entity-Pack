@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class CommonEelAI : LizardAI
 {
     public CommonEelAI(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

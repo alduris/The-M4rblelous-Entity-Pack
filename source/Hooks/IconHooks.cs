@@ -6,7 +6,7 @@ using HUD;
 using Fisobs.Core;
 
 namespace LBMergedMods.Hooks;
-
+// CHK
 public static class IconHooks
 {
     public static Color BalloonColor = new(.5f, .1f, .35f),
@@ -44,13 +44,32 @@ public static class IconHooks
                 return new(1f, .65f, .05f);
             if (tp == CreatureTemplateType.FatFireFly)
                 return Color.white;
+            if (tp == CreatureTemplateType.NoodleEater)
+                return new(138f / 255f, 245f / 255f, 0f);
         }
-        else if (dt == M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
-            return new(.05f, .3f, .7f);
+        else if (dt == M4R_DATA_NUMBER3)
+        {
+            if (tp == CreatureTemplate.Type.TubeWorm)
+                return new(.05f, .3f, .7f);
+            if (tp == CreatureTemplateType.NoodleEater)
+                return new(138f / 255f, 245f / 255f, 0f);
+        }
         return orig(iconData);
     }
 
     internal static bool On_CreatureSymbol_DoesCreatureEarnATrophy(On.CreatureSymbol.orig_DoesCreatureEarnATrophy orig, CreatureTemplate.Type creature) => creature != CreatureTemplateType.MiniScutigera && orig(creature);
+
+    internal static string On_CreatureSymbol_LizardSpriteName(On.CreatureSymbol.orig_LizardSpriteName orig, string defaultSpriteName, int intData)
+    {
+        if (defaultSpriteName == "Kill_NoodleEater")
+        {
+            if (intData == M4R_DATA_NUMBER3)
+                return "Kill_ProtoLizard";
+            if (intData == M4R_DATA_NUMBER2)
+                return "Kill_RotLizard";
+        }
+        return orig(defaultSpriteName, intData);
+    }
 
     internal static string On_CreatureSymbol_SpriteNameOfCreature(On.CreatureSymbol.orig_SpriteNameOfCreature orig, IconSymbol.IconSymbolData iconData)
     {
@@ -58,9 +77,12 @@ public static class IconHooks
         var dt = iconData.intData;
         if (dt == M4R_DATA_NUMBER && tp == CreatureTemplate.Type.Fly)
             return "Kill_SeedBat";
-        else if (dt is M4R_DATA_NUMBER or M4R_DATA_NUMBER2 or M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
+        if (dt is M4R_DATA_NUMBER or M4R_DATA_NUMBER2 or M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
             return "Kill_Bigrub";
-        return orig(iconData);
+        var res = orig(iconData);
+        if (tp == CreatureTemplateType.NoodleEater || tp == CreatureTemplateType.SilverLizard || tp == CreatureTemplateType.WaterSpitter || tp == CreatureTemplateType.MoleSalamander || tp == CreatureTemplateType.Polliwog || tp == CreatureTemplateType.HunterSeeker)
+            res = CreatureSymbol.LizardSpriteName(res, iconData.intData);
+        return res;
     }
 
     internal static IconSymbol.IconSymbolData On_CreatureSymbol_SymbolDataFromCreature(On.CreatureSymbol.orig_SymbolDataFromCreature orig, AbstractCreature creature)
@@ -76,8 +98,21 @@ public static class IconHooks
         }
         else if ((tp == CreatureTemplate.Type.Fly && creature.IsSeed()) ||
             ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar) && Albino.TryGetValue(creature, out var props) && props.Value) ||
-            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.NoodleEater || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle) && creature.superSizeMe))
+            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle) && creature.superSizeMe))
             res.intData = M4R_DATA_NUMBER;
+        else if (tp == CreatureTemplateType.NoodleEater)
+        {
+            if (!ModManager.Watcher || creature.state is not LizardState ls || ls.rotType == LizardState.RotType.None)
+            {
+                if (creature.superSizeMe)
+                    res.intData = M4R_DATA_NUMBER;
+            }
+            else
+            {
+                if (creature.superSizeMe)
+                    res.intData = ls.rotType != LizardState.RotType.Full ? M4R_DATA_NUMBER2 : M4R_DATA_NUMBER3;
+            }
+        }
         else if (tp == CreatureTemplate.Type.TubeWorm && creature.IsBig(out var prop))
             res.intData = prop.NormalLook ? M4R_DATA_NUMBER3 : (creature.superSizeMe ? M4R_DATA_NUMBER2 : M4R_DATA_NUMBER);
         return res;

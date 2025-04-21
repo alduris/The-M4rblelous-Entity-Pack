@@ -4,14 +4,14 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-
+//CHK
 public class BlobPiece : PlayerCarryableItem, IPlayerEdible, IDrawable
 {
     public class AbstractBlobPiece(World world, PhysicalObject? obj, WorldCoordinate pos, EntityID ID, float color) : AbstractPhysicalObject(world, Enums.AbstractObjectType.BlobPiece, obj, pos, ID)
     {
         public float Color = color;
 
-        public override string ToString() => SaveUtils.AppendUnrecognizedStringAttrs(string.Format(CultureInfo.InvariantCulture, "{0}<oA>{1}<oA>{2}<oA>{3}", ID.ToString(), type.ToString(), pos.SaveToString(), Color.ToString()), "<oA>", unrecognizedAttributes);
+        public override string ToString() => SaveUtils.AppendUnrecognizedStringAttrs(string.Format(CultureInfo.InvariantCulture, "{0}<oA>{1}<oA>{2}<oA>{3}", IDAndRippleLayerString, type.ToString(), pos.SaveToString(), Color.ToString()), "<oA>", unrecognizedAttributes);
     }
 
     public float Prop, LastProp, PropSpeed, Darkness, LastDarkness, Plop, LastPlop;
@@ -76,7 +76,7 @@ public class BlobPiece : PlayerCarryableItem, IPlayerEdible, IDrawable
         if (fch.submersion > .5f && crits.Count > 0 && grabbedBy?.Count == 0)
         {
             var abstractCreature = crits[Random.Range(0, crits.Count)];
-            if (abstractCreature.realizedCreature is JetFish c && !c.dead && c.AI is JetFishAI ai && ai.goToFood is null && ai.WantToEatObject(this))
+            if (abstractPhysicalObject.SameRippleLayer(abstractCreature) && abstractCreature.creatureTemplate.type == CreatureTemplate.Type.JetFish && abstractCreature.realizedCreature is JetFish c && !c.dead && c.AI is JetFishAI ai && ai.goToFood is null && ai.WantToEatObject(this))
                 ai.goToFood = this;
         }
     }
@@ -155,7 +155,7 @@ public class BlobPiece : PlayerCarryableItem, IPlayerEdible, IDrawable
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
         --Bites;
-        room?.PlaySound(Bites != 0 ? SoundID.Slugcat_Bite_Water_Nut : SoundID.Slugcat_Eat_Water_Nut, firstChunk.pos);
+        room?.PlaySound(Bites != 0 ? SoundID.Slugcat_Bite_Water_Nut : SoundID.Slugcat_Eat_Water_Nut, firstChunk);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {

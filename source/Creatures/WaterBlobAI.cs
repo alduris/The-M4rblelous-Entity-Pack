@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class WaterBlobAI : ArtificialIntelligence, IUseARelationshipTracker
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)
@@ -106,7 +106,7 @@ public class WaterBlobAI : ArtificialIntelligence, IUseARelationshipTracker
                     JumpUrgency = 10;
                     break;
             }
-            if (Behav == Behavior.Hunting && Prey?.realizedCreature is Creature c && Vector2.Distance(blob.firstChunk.pos, c.firstChunk.pos) <= 15f)
+            if (Behav == Behavior.Hunting && Prey is AbstractCreature acr && acr.SameRippleLayer(creature) && acr.realizedCreature is Creature c && Vector2.Distance(blob.firstChunk.pos, c.firstChunk.pos) <= 15f)
                 blob.EatSomething(c);
         }
     }

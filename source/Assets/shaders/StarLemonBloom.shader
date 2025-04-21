@@ -7,7 +7,7 @@ Shader "StarLemonBloom"
 
 	Category
 	{
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		Fog { Color(0.0, 0.0, 0.0, 0.0) }
@@ -32,6 +32,7 @@ Shader "StarLemonBloom"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				//#include "_ShaderFix.cginc" -> unused code
 				sampler2D _MainTex;
 				sampler2D _LevelTex;
 				sampler2D _NoiseTex;
@@ -63,48 +64,37 @@ Shader "StarLemonBloom"
 					return o;
 				}
 
-				half4 frag(v2f i) : SV_Target
+				float4 frag(v2f i) : SV_Target
 				{
 					if (tex2D(_MainTex, i.uv).w == 0.0)
-						return half4(0.0, 0.0, 0.0, 0.0);
-					float2 textCoord = i.scrPos;
-					textCoord.x -= _spriteRect.x;
-					textCoord.y -= _spriteRect.y;
-					textCoord.x /= _spriteRect.z - _spriteRect.x;
-					textCoord.y /= _spriteRect.w - _spriteRect.y;
-					half2 screenPos = half2(i.scrPos.x, i.scrPos.y);
-					half4 getCol = half4(0.0, 0.0, 0.0, 1.0);
-					half4 texcol = half4(0.0, 0.0, 0.0, 1.0);
-					half4 goalColor = half4(1.0, 0.0, 0.0, 1.0);
+						return float4(0.0, 0.0, 0.0, 0.0);
+					float2 screenPos = i.scrPos.xy;
+					float4 getCol = float4(0.0, 0.0, 0.0, 1.0);
+					float4 texcol = float4(0.0, 0.0, 0.0, 1.0);
 					float div = 0.0;
 					float coef = 1.0;
 					float fI = 0.0;
-					float blurAmount = 0.0024;
 					float horFac = _screenSize.y / _screenSize.x;
-				    half add = 0.0;
+					// blurAmount = 0.0024
 					for (int j = 0; j < 4; j++)
 					{
 						fI++;
 						coef *= 0.92;
-						texcol = tex2D(_GrabTexture, float2(screenPos.x, screenPos.y + fI * blurAmount)) * coef;
+						texcol = tex2D(_GrabTexture, float2(screenPos.x, screenPos.y + fI * 0.0024)) * coef;
 						getCol += texcol;
-						texcol = tex2D(_GrabTexture, float2(screenPos.x - fI * blurAmount * horFac, screenPos.y)) * coef;
+						texcol = tex2D(_GrabTexture, float2(screenPos.x - fI * 0.0024 * horFac, screenPos.y)) * coef;
 						getCol += texcol;
-						texcol = tex2D(_GrabTexture, float2(screenPos.x + fI * blurAmount * horFac, screenPos.y)) * coef;
+						texcol = tex2D(_GrabTexture, float2(screenPos.x + fI * 0.0024 * horFac, screenPos.y)) * coef;
 						getCol += texcol;
-						texcol = tex2D(_GrabTexture, float2(screenPos.x, screenPos.y - fI * blurAmount)) * coef;
+						texcol = tex2D(_GrabTexture, float2(screenPos.x, screenPos.y - fI * 0.0024)) * coef;
 						getCol += texcol;
 						div += 4.0 * coef;
 					}
 					 getCol /= div;
-					 getCol *= i.clr.w * lerp(1.0, 0.5, distance(i.uv, half2(0.5, 0.5)) * 2.0);
-					 half4 grabCol = tex2D(_GrabTexture, float2(screenPos.x, screenPos.y));
-					 grabCol.x = max(grabCol.x, getCol.x);
-					 grabCol.y = max(grabCol.y, getCol.y);
-					 grabCol.z = max(grabCol.z, getCol.z);
-					 getCol.x = pow(getCol.x, 1.5);
-					 getCol.y = pow(getCol.y, 1.5);
-					 getCol.z = pow(getCol.z, 1.5);
+					 getCol *= i.clr.w * lerp(1.0, 0.5, distance(i.uv, float2(0.5, 0.5)) * 2.0);
+					 float4 grabCol = tex2D(_GrabTexture, screenPos.xy);
+					 grabCol.xyz = max(grabCol.xyz, getCol.xyz);
+					 getCol.xyz = pow(getCol.xyz, float3(1.5, 1.5, 1.5));
 					 return grabCol + getCol;
 				}
 				ENDCG

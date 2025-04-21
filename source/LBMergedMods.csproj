@@ -6,10 +6,6 @@
     <Company>M4rbleL1ne, Wrayk, Thrithralas, snoodle, the one who screams I guess</Company>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>Refs\PUBLIC-Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="BepInEx">
       <HintPath>Refs\BepInEx.dll</HintPath>
       <Private>false</Private>
@@ -33,6 +29,9 @@
     <Reference Include="MonoMod.Utils">
       <HintPath>Refs\MonoMod.Utils.dll</HintPath>
       <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>Refs\PUBLIC-Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics">
       <HintPath>Refs\Unity.Mathematics.dll</HintPath>

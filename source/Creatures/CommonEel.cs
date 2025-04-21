@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class CommonEel : Lizard
 {
     public static Color EelCol = Color.Lerp(new(46f / 51f, .05490196f, .05490196f), Color.gray, .2f);
@@ -13,7 +13,6 @@ public class CommonEel : Lizard
         buoyancy = .92f;
         effectColor = Custom.HSL2RGB(abstractCreature.superSizeMe ? Custom.WrappedRandomVariation(225f / 360f, .02f, .6f) : Custom.WrappedRandomVariation(.0025f, .02f, .6f), 1f, Custom.ClampedRandomVariation(.5f, .15f, .1f));
         abstractCreature.HypothermiaImmune = true;
-        voice.myPitch *= .7f;
         var chs = bodyChunks;
         for (var i = 0; i < chs.Length; i++)
         {
@@ -21,6 +20,8 @@ public class CommonEel : Lizard
             c.rad *= .75f;
             c.mass *= .75f;
         }
+        LizardState.rotType = LizardState.RotType.None;
+        rotModule = null;
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new CommonEelGraphics(this);

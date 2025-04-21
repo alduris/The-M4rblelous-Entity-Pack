@@ -7,10 +7,9 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Random = UnityEngine.Random;
 using UnityEngine;
-using RWCustom;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class AbstractPhysicalObjectHooks
 {
     public static ConditionalWeakTable<AbstractCreature, BigrubProperties> Big = new();
@@ -121,26 +120,6 @@ public static class AbstractPhysicalObjectHooks
         return res;
     }
 
-    internal static void IL_AbstractCreature_InitiateAI(ILContext il)
-    {
-        var c = new ILCursor(il);
-        if (c.TryGotoNext(MoveType.After,
-            s_MatchLdsfld_CreatureTemplate_Type_Slugcat,
-            s_MatchCall_Any))
-        {
-            c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((bool flag, AbstractCreature self) => flag || CreatureTemplateType.s_M4RCreatureList.Contains(self.creatureTemplate.type));
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.InitiateAI!");
-    }
-
-    internal static void On_AbstractCreature_MSCInitiateAI(On.AbstractCreature.orig_MSCInitiateAI orig, AbstractCreature self)
-    {
-        if (!CreatureTemplateType.s_M4RCreatureList.Contains(self.creatureTemplate.type))
-            orig(self);
-    }
-
     internal static void IL_AbstractCreature_OpportunityToEnterDen(ILContext il)
     {
         var c = new ILCursor(il);
@@ -228,17 +207,6 @@ public static class AbstractPhysicalObjectHooks
             self.remainInDenCounter = 0;
     }
 
-    internal static void On_Spear_Update(On.Spear.orig_Update orig, Spear self, bool eu)
-    {
-        orig(self, eu);
-        if (self.mode == Weapon.Mode.StuckInCreature && !self.stuckInWall.HasValue && self.stuckInObject is ChipChop ch && !ch.slatedForDeletetion && ch.graphicsModule is ChipChopGraphics gr)
-        {
-            var ang = self.stuckRotation * (Mathf.PI / 180f);
-            var newAng = (ang + Mathf.Atan2(-gr.BodyDir.x, gr.BodyDir.y)) % (2f * Mathf.PI);
-            self.setRotation = new(Mathf.Cos(newAng), Mathf.Sin(newAng));
-        }
-    }
-
     internal static void On_AbstractCreature_IsEnteringDen(On.AbstractCreature.orig_IsEnteringDen orig, AbstractCreature self, WorldCoordinate den)
     {
         var tp = self.creatureTemplate.type;
@@ -278,12 +246,21 @@ public static class AbstractPhysicalObjectHooks
         orig(self);
         if (self.Room is not AbstractRoom rm)
             return;
-        if ((!ModManager.MSC || rm.world.game.session is not ArenaGameSession sess || sess.arenaSitting.gameTypeSetup.gameType != MoreSlugcatsEnums.GameTypeID.Challenge) && self.spawnData is string s && s.Length > 1 && s[0] == '{')
+        if (!ModManager.MSC || rm.world.game.session is not ArenaGameSession sess || sess.arenaSitting.gameTypeSetup.gameType != MoreSlugcatsEnums.GameTypeID.Challenge)
         {
-            var array = s.Substring(1, s.Length - 2).Split(',');
-            for (var i = 0; i < array.Length; i++)
+            var list = new List<string>();
+            if (rm.world.region is Region reg)
             {
-                var ari = array[i];
+                var prms = reg.regionParams;
+                list.AddRange(prms.globalCreatureFlags_All);
+                if (prms.globalCreatureFlags_Specific.TryGetValue(self.creatureTemplate.type, out var value))
+                    list.AddRange(value);
+            }
+            if (self.spawnData is string s && s.Length > 1 && s[0] == '{')
+                list.AddRange(s.Substring(1, s.Length - 2).Split(',', '|'));
+            for (var i = 0; i < list.Count; i++)
+            {
+                var ari = list[i];
                 if (ari.Length > 0)
                 {
                     var nm = ari.Split(':')[0];
@@ -355,10 +332,13 @@ public static class AbstractPhysicalObjectHooks
     {
         if ((self.realizedCreature is MiniLeech l && l.fleeFromRain) || (self.realizedCreature is ChipChop c && c.DenMovement == 1))
             return true;
-        var res = orig(self);
-        if (res && ModManager.MSC && self.creatureTemplate.type == CreatureTemplateType.ChipChop && !self.state.dead && (self.state as HealthState)!.health >= .6f && (self.world.rainCycle.TimeUntilRain >= (!self.world.game.IsStorySession ? 600 : 2400) || self.nightCreature || self.ignoreCycle) && (!self.preCycle || self.world.rainCycle.maxPreTimer > 0) && self.Room.world.rainCycle.preTimer <= 0)
-            res = false;
-        return res;
+        return orig(self);
+    }
+
+    internal static void On_AbstractCreature_WatcherInitiateAI(On.AbstractCreature.orig_WatcherInitiateAI orig, AbstractCreature self)
+    {
+        if (!CreatureTemplateType.M4RCreatureList.Contains(self.creatureTemplate.type))
+            orig(self);
     }
 
     internal static void On_AbstractPhysicalObject_Realize(On.AbstractPhysicalObject.orig_Realize orig, AbstractPhysicalObject self)
@@ -452,4 +432,12 @@ public static class AbstractPhysicalObjectHooks
                 cons.RemoveAt(num);
         }
     }
+
+    public static bool SameRippleLayer(this AbstractPhysicalObject self, AbstractPhysicalObject other) => self.IsSameRippleLayer(other.rippleLayer) || other.rippleBothSides;
+
+    public static bool NoCamo(this AbstractPhysicalObject self) => self.realizedObject is not PhysicalObject robj || robj.NoCamo();
+
+    public static bool NoCamo(this PhysicalObject self) => (self is not Player p || !p.isCamo) &&
+        (self is not Lizard l || !l.Camouflaged()) &&
+        (self is not Hazer h || !h.Camouflaged());
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class FoodItemTracker(ArtificialIntelligence AI, int maxRememberedItems, float persistanceBias, float sureToGetItemDistance, float sureToLoseItemDistance) : AIModule(AI)
 {
     public class TrackedItem(FoodItemTracker owner, FoodItemRepresentation itemRep)
@@ -24,10 +24,9 @@ public class FoodItemTracker(ArtificialIntelligence AI, int maxRememberedItems, 
                     return 0f;
                 var giveUp = Owner.GiveUpOnUnreachableItem;
                 var num = giveUp >= 0 ? Mathf.InverseLerp(giveUp, 0f, UnreachableCounter) * Mathf.InverseLerp(200f, 100f, AtPositionButCantSeeCounter) : 1f;
-                var critType = crit.creatureTemplate.type;
                 var world = crit.world;
-                var num2 = world.GetAbstractRoom(guessPos).AttractionValueForCreature(critType);
-                if (num2 < world.GetAbstractRoom(critPos).AttractionValueForCreature(critType))
+                var num2 = world.GetAbstractRoom(guessPos).AttractionValueForCreature(crit);
+                if (num2 < world.GetAbstractRoom(critPos).AttractionValueForCreature(crit))
                     num *= .5f;
                 return num;
             }
@@ -107,7 +106,7 @@ public class FoodItemTracker(ArtificialIntelligence AI, int maxRememberedItems, 
             num *= ItemRep.EstimatedChanceOfFinding;
             num *= Reachable;
             if (guessPos.room != critPos.room)
-                num *= Mathf.InverseLerp(0f, .5f, crit.world.GetAbstractRoom(guessPos).AttractionValueForCreature(crit.creatureTemplate.type));
+                num *= Mathf.InverseLerp(0f, .5f, crit.world.GetAbstractRoom(guessPos).AttractionValueForCreature(crit));
             num /= f;
             var giveUpGh = Owner.GiveUpOnGhostGeneration;
             return num * Mathf.InverseLerp(giveUpGh, giveUpGh / 2, ItemRep.LowestGenerationAvailable);

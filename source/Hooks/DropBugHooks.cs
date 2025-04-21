@@ -1,13 +1,13 @@
 ﻿global using static LBMergedMods.Hooks.DropBugHooks;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class DropBugHooks
 {
     internal static CreatureTemplate.Relationship On_DropBugAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.DropBugAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, DropBugAI self, RelationshipTracker.DynamicRelationship dRelation)
     {
         var result = orig(self, dRelation);
-        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c)
+        if (dRelation.trackerRep?.representedCreature?.realizedCreature is Creature c && c.abstractPhysicalObject.SameRippleLayer(self.creature))
         {
             var grs = c.grasps;
             if (grs is not null)

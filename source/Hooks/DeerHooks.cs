@@ -1,7 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.DeerHooks;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class DeerHooks
 {
     internal static void On_DeerAI_NewRoom(On.DeerAI.orig_NewRoom orig, DeerAI self, Room newRoom)

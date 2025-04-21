@@ -4,7 +4,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class TintedBeetleGraphics : GraphicsModule
 {
     public const float LEG_LENGTH = 30f;

@@ -2,7 +2,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class WaterBlobGraphics : GraphicsModule
 {
     public Color Color, DarkColor, BlackColor;

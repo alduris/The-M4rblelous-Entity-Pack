@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class SporantulaCritob : Critob
 {
     internal SporantulaCritob() : base(CreatureTemplateType.Sporantula)

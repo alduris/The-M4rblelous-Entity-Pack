@@ -6,7 +6,7 @@ using UnityEngine;
 using Fisobs.Sandbox;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class PolliwogCritob : Critob
 {
     internal PolliwogCritob() : base(CreatureTemplateType.Polliwog)
@@ -32,7 +32,7 @@ sealed class PolliwogCritob : Critob
         RoomAttractivenessPanel.Category.Swimming
     ];
 
-    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(CreatureTemplateType.Polliwog, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), null, null, null);
+    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.PinkLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.BlueLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.GreenLizard));
 
     public override void EstablishRelationships()
     {

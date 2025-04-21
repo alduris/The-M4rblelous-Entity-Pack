@@ -1,5 +1,5 @@
 ﻿namespace LBMergedMods.Creatures;
-
+//CHK
 public class WaterSpitterAI : LizardAI
 {
     public WaterSpitterAI(AbstractCreature creature, World world) : base(creature, world) => AddModule(redSpitAI = new(this));

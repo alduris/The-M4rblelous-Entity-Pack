@@ -5,7 +5,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
 {
     public record struct IndividualVariations(float BodyBonus, float SoundPitchBonus, float DefaultWingDeployment, float SmallWingBonus, float BigWingBonus, int WingVar, Color Color);
@@ -141,7 +141,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                             var objs = physobs[j];
                             for (var k = 0; k < objs.Count; k++)
                             {
-                                if (objs[k] is DangleFruit f && Custom.DistLess(firstChunk.pos, f.firstChunk.pos, f.firstChunk.rad * 2f))
+                                if (objs[k] is DangleFruit f && f.abstractPhysicalObject.SameRippleLayer(abstractPhysicalObject) && Custom.DistLess(firstChunk.pos, f.firstChunk.pos, f.firstChunk.rad * 2f))
                                     TryToGrabPrey(f);
                             }
                         }
@@ -149,7 +149,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                     else if (lastInputWithDiagonals.HasValue && !lastInputWithDiagonals.Value.pckp && grasps[0]?.grabbed is DangleFruit da)
                     {
                         --da.bites;
-                        room.PlaySound(da.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, da.firstChunk.pos, 1.25f, 1f);
+                        room.PlaySound(da.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, da.firstChunk, false, 1.25f, 1f);
                         if (da.bites < 1)
                         {
                             grasps[0].Release();
@@ -207,7 +207,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                 Flying = true;
         }
         if (AtSitDestination)
-            firstChunk.vel += Vector2.ClampMagnitude(BodySitPosOffset(AI.pathFinder.GetDestination.Tile) - firstChunk.pos, 10f) / 10f * .5f;
+            firstChunk.vel += Vector2.ClampMagnitude(BodySitPosOffset(room, AI.pathFinder.GetDestination.Tile) - firstChunk.pos, 10f) / 10f * .5f;
         if (movementConnection != default)
         {
             if (movementConnection.destinationCoord.x < movementConnection.startCoord.x)
@@ -298,21 +298,22 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
             ReleaseGrasp(0);
             return;
         }
-        var num = Vector2.Distance(firstChunk.pos, d.firstChunk.pos);
+        var dfch = d.firstChunk;
+        var num = Vector2.Distance(firstChunk.pos, dfch.pos);
         if (num > 50f)
         {
             ReleaseGrasp(0);
             return;
         }
-        var vector = Custom.DirVec(firstChunk.pos, d.firstChunk.pos);
-        var num2 = firstChunk.rad / 2f + d.firstChunk.rad;
-        d.firstChunk.pos += (num2 - num) * vector;
-        d.firstChunk.vel += (num2 - num) * vector;
-        d.firstChunk.HardSetPosition(firstChunk.pos with { y = firstChunk.pos.y - 10f });
+        var vector = Custom.DirVec(firstChunk.pos, dfch.pos);
+        var num2 = firstChunk.rad / 2f + dfch.rad;
+        dfch.pos += (num2 - num) * vector;
+        dfch.vel += (num2 - num) * vector;
+        dfch.HardSetPosition(firstChunk.pos with { y = firstChunk.pos.y - 10f });
         if (HoverflyData.TryGetValue(abstractCreature, out var data) && data.BiteWait == 0)
         {
             --d.bites;
-            room.PlaySound(d.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, d.firstChunk.pos, 1.25f, 1f);
+            room.PlaySound(d.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, dfch, false, 1.25f, 1f);
             if (d.bites < 1)
             {
                 grasps[0].Release();
@@ -340,13 +341,16 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
     public virtual bool TryToGrabPrey(DangleFruit prey)
     {
         var res = Grab(prey, 0, 0, Grasp.Shareability.CanOnlyShareWithNonExclusive, 1f, true, false);
-        if (HoverflyData.TryGetValue(abstractCreature, out var d))
-            d.BiteWait = 1000;
-        if (AI is HoverflyAI ai && ai.SwooshToPos.HasValue)
+        if (res)
         {
-            if (!safariControlled)
-                firstChunk.vel += Custom.DirVec(ai.SwooshToPos.Value, firstChunk.pos) * 40f;
-            ai.SwooshToPos = null;
+            if (HoverflyData.TryGetValue(abstractCreature, out var d))
+                d.BiteWait = 1000;
+            if (AI is HoverflyAI ai && ai.SwooshToPos.HasValue)
+            {
+                if (!safariControlled)
+                    firstChunk.vel += Custom.DirVec(ai.SwooshToPos.Value, firstChunk.pos) * 40f;
+                ai.SwooshToPos = null;
+            }
         }
         return res;
     }
@@ -362,7 +366,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
             var eightDir = Custom.eightDirections[i];
             for (var j = 0; j < 3; j++)
             {
-                var terrainProximity = room.aimap.getTerrainProximity(abstractCreature.pos.Tile + eightDir * j);
+                var terrainProximity = room.aimap.getTerrainProximity(abstractPhysicalObject.pos.Tile + eightDir * j);
                 num += terrainProximity;
                 b = eightDir.ToVector2() * terrainProximity;
             }
@@ -381,42 +385,42 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
         room.PlaySound(SoundID.Fly_Wing_Flap, firstChunk, false, 1.25f, 1f + IVars.SoundPitchBonus);
     }
 
-    public virtual Vector2 BodySitPosOffset(IntVector2 pos)
+    public virtual Vector2 BodySitPosOffset(Room rm, IntVector2 pos)
     {
-        if (room.GetTile(pos + new IntVector2(FlipH, 0)).Solid)
+        if (rm.GetTile(pos + new IntVector2(FlipH, 0)).Solid)
         {
             SitDirection = new IntVector2(FlipH, 0);
-            return room.MiddleOfTile(pos) + new Vector2(FlipH * -2f, 0f);
+            return rm.MiddleOfTile(pos) + new Vector2(FlipH * -2f, 0f);
         }
-        if (room.GetTile(pos + new IntVector2(-FlipH, 0)).Solid)
+        if (rm.GetTile(pos + new IntVector2(-FlipH, 0)).Solid)
         {
             SitDirection = new IntVector2(-FlipH, 0);
-            return room.MiddleOfTile(pos) + new Vector2(-FlipH * -2f, 0f);
+            return rm.MiddleOfTile(pos) + new Vector2(-FlipH * -2f, 0f);
         }
-        if (room.GetTile(pos + new IntVector2(0, 1)).Solid)
+        if (rm.GetTile(pos + new IntVector2(0, 1)).Solid)
         {
             SitDirection = new IntVector2(0, 1);
-            return room.MiddleOfTile(pos) + new Vector2(0f, -2f);
+            return rm.MiddleOfTile(pos) + new Vector2(0f, -2f);
         }
-        if (room.GetTile(pos + new IntVector2(0, -1)).Solid)
+        if (rm.GetTile(pos + new IntVector2(0, -1)).Solid)
         {
             SitDirection = new IntVector2(0, -1);
-            return room.MiddleOfTile(pos) + new Vector2(0f, 2f);
+            return rm.MiddleOfTile(pos) + new Vector2(0f, 2f);
         }
-        if (room.GetTile(pos).verticalBeam)
+        if (rm.GetTile(pos).verticalBeam)
         {
-            if (!room.GetTile(pos + new IntVector2(FlipH, 0)).Solid)
+            if (!rm.GetTile(pos + new IntVector2(FlipH, 0)).Solid)
             {
                 SitDirection = new IntVector2(-FlipH, 0);
-                return room.MiddleOfTile(pos) + new Vector2(FlipH * 7f, 0f);
+                return rm.MiddleOfTile(pos) + new Vector2(FlipH * 7f, 0f);
             }
-            if (!room.GetTile(pos + new IntVector2(-FlipH, 0)).Solid)
+            if (!rm.GetTile(pos + new IntVector2(-FlipH, 0)).Solid)
             {
                 SitDirection = new IntVector2(FlipH, 0);
-                return room.MiddleOfTile(pos) + new Vector2(-FlipH * 7f, 0f);
+                return rm.MiddleOfTile(pos) + new Vector2(-FlipH * 7f, 0f);
             }
         }
-        return room.MiddleOfTile(pos);
+        return rm.MiddleOfTile(pos);
     }
 
     public override void Collide(PhysicalObject otherObject, int myChunk, int otherChunk)
@@ -486,7 +490,7 @@ public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
                     g.EyeFearCounter = 30;
                 }
                 if (Random.value > .5f)
-                    room?.PlaySound(NewSoundID.Hoverfly_Startle, firstChunk, false, 1.25f, 1f + IVars.SoundPitchBonus);
+                    room?.PlaySound(NewSoundID.M4R_Hoverfly_Startle, firstChunk, false, 1.25f, 1f + IVars.SoundPitchBonus);
                 if (!Flying || DodgeDelay > 0)
                     return;
                 DodgeDelay = 10;

@@ -3,7 +3,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class JellyGraphics(PhysicalObject ow) : DaddyGraphics(ow), DaddyGraphics.DaddyBubbleOwner
 {
     public float Consious, Lerper, LastRot, Rot, LastAlpha, Alpha;
@@ -32,27 +32,21 @@ public class JellyGraphics(PhysicalObject ow) : DaddyGraphics(ow), DaddyGraphics
         base.InitiateSprites(sLeaser, rCam);
         if (daddy is DaddyLongLegs d)
         {
-            var sprites = sLeaser.sprites;
-            sprites[BodySprite(0)].isVisible = false;
-            sprites[BodySprite(0)].RemoveFromContainer();
-            sprites[EyeSprite(0, 0)].isVisible = false;
-            sprites[EyeSprite(0, 0)].RemoveFromContainer();
-            sprites[EyeSprite(0, 1)].isVisible = false;
-            sprites[EyeSprite(0, 1)].RemoveFromContainer();
-            sprites[BodySprite(0)] = new("JellyLLGraf")
+            var eye = eyes[0];
+            var spr0 = sLeaser.sprites[eye.firstSprite];
+            spr0.element = Futile.atlasManager.GetElementWithName("JellyLLGraf");
+            spr0.scale = (d.firstChunk.rad * 1.1f + 2f) / 64f;
+            spr0.alpha = 1f;
+            var spr1 = sLeaser.sprites[eye.firstSprite + 1];
+            spr1.isVisible = false;
+            spr1.RemoveFromContainer();
+            spr0.container.AddChild(sLeaser.sprites[eye.firstSprite + 1] = new("JellyLLGrad")
             {
-                scale = (d.bodyChunks[0].rad * 1.1f + 2f) / 64f,
-                shader = Custom.rainWorld.Shaders["Basic"],
-                alpha = 1f
-            };
-            sprites[BodySprite(0) + 1] = new("JellyLLGrad")
-            {
-                scale = (d.bodyChunks[0].rad * 1.1f + 2f) / 64f,
-                shader = Custom.rainWorld.Shaders["Basic"],
-                alpha = 1f
-            };
+                scale = (d.firstChunk.rad * 1.1f + 2f) / 64f,
+                alpha = 1f,
+                shader = spr0.shader = RainWorld.TryGetRippleMaskedShaderVariant(d.abstractPhysicalObject, "RippleBasic")
+            });
         }
-        AddToContainer(sLeaser, rCam, null);
     }
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
@@ -60,20 +54,24 @@ public class JellyGraphics(PhysicalObject ow) : DaddyGraphics(ow), DaddyGraphics
         base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
         if (!culled && daddy is DaddyLongLegs d)
         {
-            var vector2 = Vector2.Lerp(d.bodyChunks[0].lastPos, d.bodyChunks[0].pos, timeStacker) + Custom.RNV() * digesting * 4f * Random.value;
-            var sRot = Mathf.Lerp(LastRot, Rot, timeStacker);
-            var sAlpha = Mathf.Lerp(LastAlpha, Alpha, timeStacker);
-            sLeaser.sprites[BodySprite(0)].rotation = sRot;
-            var s = sLeaser.sprites[BodySprite(0) + 1];
-            s.x = vector2.x - camPos.x;
-            s.y = vector2.y - camPos.y;
-            s.rotation = sRot;
-            s.color = d.eyeColor;
-            s.alpha = sAlpha;
+            var eye = eyes[0];
+            var spr0 = sLeaser.sprites[eye.firstSprite];
+            var spr1 = sLeaser.sprites[eye.firstSprite + 1];
+            spr1.rotation = spr0.rotation = Mathf.Lerp(LastRot, Rot, timeStacker);
+            spr1.SetPosition(spr0.GetPosition());
+            spr1.color = d.eyeColor;
+            spr1.alpha = Mathf.Lerp(LastAlpha, Alpha, timeStacker);
+            spr1.isVisible = true;
+            spr1.MoveInFrontOfOtherNode(spr0);
+            spr1.scaleX = spr0.scaleX;
+            spr1.scaleY = spr0.scaleY;
+            sLeaser.sprites[eye.firstSprite + 2].isVisible = false;
         }
     }
 
     public virtual Color GetColor() => daddy.effectColor;
 
     public virtual Vector2 GetPosition() => daddy.firstChunk.pos;
+
+    public virtual Color GetEyeColor() => EffectColor;
 }

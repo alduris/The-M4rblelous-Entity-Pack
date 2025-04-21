@@ -2,7 +2,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 {
 	public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)
@@ -163,7 +163,7 @@ public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 		var cnt = tracker.CreaturesCount;
         for (var i = 0; i < cnt; i++)
 		{
-			if (tracker.GetRep(i).representedCreature.realizedCreature is Caterpillar ctp && ctp.abstractCreature.Room == creature.Room && ctp.AI is CaterpillarAI ai && ai.Run > 0f == Run > 0f)
+			if (tracker.GetRep(i).representedCreature.realizedCreature is Caterpillar ctp && ctp.abstractPhysicalObject.SameRippleLayer(creature) && ctp.abstractCreature.Room == creature.Room && ctp.AI is CaterpillarAI ai && ai.Run > 0f == Run > 0f)
 			{
 				num2 += ai.Run;
 				++num;
@@ -197,6 +197,8 @@ public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 
 	public virtual bool DoIWantToEatCreature(AbstractCreature critter)
 	{
+		if (!critter.SameRippleLayer(creature) || !critter.NoCamo())
+			return false;
 		if (Crit.safariControlled)
 			return StaticRelationship(critter).type == CreatureTemplate.Relationship.Type.Eats;
 		if (AnnoyingCollisions < 150 && (Behav == Behavior.Flee || Behav == Behavior.EscapeRain) && CurrentUtility > .1f)
@@ -257,7 +259,7 @@ public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
             }
             var grs = c.grasps;
 			var glowing = Crit.Glowing;
-            if (grs is not null)
+            if (grs is not null && c.abstractPhysicalObject.SameRippleLayer(creature))
             {
                 for (var i = 0; i < grs.Length; i++)
                 {

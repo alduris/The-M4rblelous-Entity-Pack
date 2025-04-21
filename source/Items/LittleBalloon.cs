@@ -6,8 +6,8 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-
-public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
+//CHK
+public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalkState, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -262,7 +262,7 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
             var pos = firstChunk.pos + direction.ToVector2() * firstChunk.rad;
             for (var i = 0; i < Mathf.RoundToInt(Custom.LerpMap(speed, 1.2f, 6f, 2f, 5f, 1.2f)); i++)
                 room.AddObject(new WaterDrip(pos, Custom.RNV() * (2f + speed) * Random.value * .5f + -direction.ToVector2() * (3f + speed) * .35f, false));
-            room.PlaySound(SoundID.Swollen_Water_Nut_Terrain_Impact, pos, Custom.LerpMap(speed, 1.2f, 6f, .2f, 1f), 1.3f);
+            room.PlaySound(SoundID.Swollen_Water_Nut_Terrain_Impact, firstChunk, false, Custom.LerpMap(speed, 1.2f, 6f, .2f, 1f), 1.3f);
             Pop();
         }
     }
@@ -301,7 +301,7 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
     {
         var flag = result.obj is Creature && result.chunk is BodyChunk b && (b.vel.magnitude > .8f || firstChunk.vel.magnitude > .8f);
         var res = base.HitSomething(result, eu);
-        if (flag)
+        if (flag && res)
             PopHard();
         return res;
     }
@@ -317,7 +317,7 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
             var vector = Vector2.Lerp(fs.pos, fs.lastPos, .35f);
             room.AddObject(new ExplosionSpikes(room, vector, 14, 20f, 9f, 6f, 20f, BalloonColor));
             room.AddObject(new ShockWave(vector, 150f, .005f, 5));
-            room.PlaySound(SoundID.Water_Nut_Swell, vector, 1.2f, 1.3f);
+            room.PlaySound(SoundID.Water_Nut_Swell, fs, false, 1.2f, 1.3f);
             var stu = abstractPhysicalObject.stuckObjects;
             for (var m = 0; m < stu.Count; m++)
                 stu[m].Deactivate();
@@ -335,7 +335,7 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
         room.AddObject(new ShockWave(vector, 200f, .01f, 5));
         for (var l = 0; l < 4; l++)
             room.AddObject(new ScavengerBomb.BombFragment(vector, Custom.DegToVec((l + Random.value) / 6f * 360f) * Mathf.Lerp(18f, 38f, Random.value)));
-        room.PlaySound(SoundID.Water_Nut_Swell, vector, 1.2f, 1.3f);
+        room.PlaySound(SoundID.Water_Nut_Swell, fs, false, 1.2f, 1.3f);
         var stu = abstractPhysicalObject.stuckObjects;
         for (var m = 0; m < stu.Count; m++)
             stu[m].Deactivate();
@@ -398,7 +398,7 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
         --Bites;
-        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Water_Nut : SoundID.Slugcat_Bite_Water_Nut, firstChunk.pos);
+        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Water_Nut : SoundID.Slugcat_Bite_Water_Nut, firstChunk);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
@@ -410,4 +410,17 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalk
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual void DetatchStalk()
+    {
+        if (MyStalk is Stalk st)
+        {
+            if (st.Balloon is LittleBalloon b)
+            {
+                b.AbstrCons.Consume();
+                st.Balloon = null;
+            }
+            MyStalk = null;
+        }
+    }
 }

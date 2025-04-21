@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using RWCustom;
 using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class ChipChopGraphics : GraphicsModule
 {
     public const int TOTAL_SPRITES = 11;
@@ -69,7 +70,7 @@ public class ChipChopGraphics : GraphicsModule
                 lh.setPos = fc.pos;
                 lh.setRad = 200f * LightLife;
                 lh.setAlpha = .8f * Mathf.Pow(LightLife, .5f);
-                lh.color = Custom.HSL2RGB(Bug.Hue * 2f + 20f / 360f, Bug.Saturation, .5f);
+                lh.color = Custom.HSL2RGB(Bug.Hue * 2f + 20f / 360f, Bug.Saturation, Bug.Lightness);
                 if (lh.slatedForDeletetion || darkness == 0f)
                     LightSource = null;
             }
@@ -271,7 +272,7 @@ public class ChipChopGraphics : GraphicsModule
     {
         var h = Bug.Hue;
         var sat = Bug.Saturation;
-        var light = .5f - palette.darkness * (1f - LightLife) * .3f;
+        var light = Math.Max(0f, Bug.Lightness - palette.darkness * (1f - LightLife) * .3f);
         var eyeColor = Custom.HSL2RGB(h, sat, light);
         var bodyColor = Color.Lerp(eyeColor, palette.blackColor, .92f);
         var sprites = sLeaser.sprites;

@@ -8,7 +8,7 @@ using DevInterface;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class DivingBeetleCritob : Critob
 {
     internal DivingBeetleCritob() : base(CreatureTemplateType.DivingBeetle)
@@ -150,15 +150,16 @@ sealed class DivingBeetleCritob : Critob
         dvb.EatenBy(CreatureTemplate.Type.BigEel, 1f);
         dvb.FearedBy(CreatureTemplate.Type.EggBug, 1f);
         dvb.Ignores(CreatureTemplate.Type.Overseer);
-        if (ModManager.MSC)
+        if (ModManager.DLCShared)
         {
-            dvb.Fears(MoreSlugcatsEnums.CreatureTemplateType.StowawayBug, .9f);
-            dvb.Fears(MoreSlugcatsEnums.CreatureTemplateType.BigJelly, .2f);
-            dvb.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, .5f);
-            dvb.EatenBy(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, .4f);
-            dvb.Fears(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, 1f);
-            dvb.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
+            dvb.Fears(DLCSharedEnums.CreatureTemplateType.StowawayBug, .9f);
+            dvb.Fears(DLCSharedEnums.CreatureTemplateType.BigJelly, .2f);
+            dvb.EatenBy(DLCSharedEnums.CreatureTemplateType.MirosVulture, .4f);
+            dvb.Fears(DLCSharedEnums.CreatureTemplateType.MirosVulture, 1f);
+            dvb.FearedBy(DLCSharedEnums.CreatureTemplateType.Yeek, 1f);
         }
+        if (ModManager.MSC)
+            dvb.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, .5f);
     }
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new DivingBeetleAI(acrit, acrit.world);

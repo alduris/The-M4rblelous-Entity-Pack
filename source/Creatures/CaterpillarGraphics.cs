@@ -4,7 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class CaterpillarGraphics : GraphicsModule
 {
     public const int TUBE_SPRITE = 0;
@@ -144,9 +144,10 @@ public class CaterpillarGraphics : GraphicsModule
             SoundLoop.Volume = 0f;
         else
         {
-            SoundLoop.sound = SoundID.Centipede_Crawl_LOOP;
-            SoundLoop.Volume = !Crit.Moving ? 0f : Mathf.InverseLerp(Vector2.Distance(Crit.mainBodyChunk.lastPos, Crit.mainBodyChunk.pos), .5f, 2f) * 1.2f;
-            SoundLoop.Pitch = .3f;
+            SoundLoop.sound = NewSoundID.M4R_Caterpillar_Crawl_LOOP;
+            var mc = Crit.mainBodyChunk;
+            SoundLoop.Volume = !Crit.Moving ? 0f : Mathf.InverseLerp(Vector2.Distance(mc.lastPos, mc.pos), .5f, 2f) * 1.2f;
+            SoundLoop.Pitch = .95f;
         }
         if (Crit.Moving && Crit.Consious)
             WalkCycle -= 1f / 10f;

@@ -70,7 +70,7 @@ public static class RoomEffectType
 
 public static class CreatureTemplateType
 {
-    internal static HashSet<CreatureTemplate.Type> s_M4RCreatureList;
+    public static HashSet<CreatureTemplate.Type> M4RCreatureList;
     public static CreatureTemplate.Type SilverLizard = new(nameof(SilverLizard), true),
         ThornBug = new(nameof(ThornBug), true),
         NoodleEater = new(nameof(NoodleEater), true),
@@ -103,7 +103,7 @@ public static class CreatureTemplateType
 
     static CreatureTemplateType()
     {
-        s_M4RCreatureList = [SilverLizard,
+        M4RCreatureList = [SilverLizard,
             ThornBug,
             NoodleEater,
             SurfaceSwimmer,
@@ -286,6 +286,7 @@ public static class CreatureTemplateType
 
 public static class SandboxUnlockID
 {
+    public static HashSet<MultiplayerUnlocks.SandboxUnlockID> M4RUnlockList;
     public static MultiplayerUnlocks.SandboxUnlockID ThornyStrawberry = new(nameof(ThornyStrawberry), true),
         SilverLizard = new(nameof(SilverLizard), true),
         ThornBug = new(nameof(ThornBug), true),
@@ -327,6 +328,51 @@ public static class SandboxUnlockID
         SporeProjectile = new(nameof(SporeProjectile), true),
         ChipChop = new(nameof(ChipChop), true),
         MiniScutigera = new(nameof(MiniScutigera), true);
+
+    static SandboxUnlockID()
+    {
+        M4RUnlockList = [ThornyStrawberry,
+            SilverLizard,
+            ThornBug,
+            NoodleEater,
+            SurfaceSwimmer,
+            SeedBat,
+            Scutigera,
+            RedHorrorCenti,
+            Bigrub,
+            Polliwog,
+            MiniLeviathan,
+            Hoverfly,
+            FatFireFly,
+            BouncingBall,
+            Sporantula,
+            WaterSpitter,
+            WaterBlob,
+            HunterSeeker,
+            FlyingBigEel,
+            MiniFlyingBigEel,
+            LittleBalloon,
+            BouncingMelon,
+            HazerMom,
+            TintedBeetle,
+            Physalis,
+            LimeMushroom,
+            Blizzor,
+            MoleSalamander,
+            MarineEye,
+            MiniBlackLeech,
+            StarLemon,
+            Denture,
+            DendriticNeuron,
+            CommonEel,
+            DivingBeetle,
+            Killerpillar,
+            Glowpillar,
+            MiniBlueFruit,
+            SporeProjectile,
+            ChipChop,
+            MiniScutigera];
+    }
 
     public static void UnregisterValues()
     {
@@ -656,6 +702,7 @@ public static class PlacedObjectType
 
 public static class AbstractObjectType
 {
+    public static HashSet<AbstractPhysicalObject.AbstractObjectType> M4RItemList;
     public static AbstractPhysicalObject.AbstractObjectType ThornyStrawberry = new(nameof(ThornyStrawberry), true),
         SporeProjectile = new(nameof(SporeProjectile), true),
         BlobPiece = new(nameof(BlobPiece), true),
@@ -670,6 +717,24 @@ public static class AbstractObjectType
         DendriticNeuron = new(nameof(DendriticNeuron), true),
         MiniBlueFruit = new(nameof(MiniBlueFruit), true),
         MiniFruitSpawner = new(nameof(MiniFruitSpawner), true);
+
+    static AbstractObjectType()
+    {
+        M4RItemList = [ThornyStrawberry,
+            SporeProjectile,
+            BlobPiece,
+            LittleBalloon,
+            BouncingMelon,
+            Physalis,
+            LimeMushroom,
+            RubberBlossom,
+            GummyAnther,
+            MarineEye,
+            StarLemon,
+            DendriticNeuron,
+            MiniBlueFruit,
+            MiniFruitSpawner];
+    }
 
     public static void UnregisterValues()
     {
@@ -943,32 +1008,122 @@ public static class SlugFood
 
 public static class NewSoundID
 {
-    public static SoundID Hoverfly_Startle = new(nameof(Hoverfly_Startle), true),
-        Hoverfly_Idle = new(nameof(Hoverfly_Idle), true),
-        Hoverfly_Fly_LOOP = new(nameof(Hoverfly_Fly_LOOP), true),
-        Flying_Leviathan_Bite = new(nameof(Flying_Leviathan_Bite), true);
+    public static SoundID M4R_Hoverfly_Startle = new(nameof(M4R_Hoverfly_Startle), true),
+        M4R_Hoverfly_Idle = new(nameof(M4R_Hoverfly_Idle), true),
+        M4R_Hoverfly_Fly_LOOP = new(nameof(M4R_Hoverfly_Fly_LOOP), true),
+        M4R_Flying_Leviathan_Bite = new(nameof(M4R_Flying_Leviathan_Bite), true),
+        M4R_WaterSpitter_Voice_A = new(nameof(M4R_WaterSpitter_Voice_A), true),
+        M4R_WaterSpitter_Voice_B = new(nameof(M4R_WaterSpitter_Voice_B), true),
+        M4R_WaterSpitter_Voice_C = new(nameof(M4R_WaterSpitter_Voice_C), true),
+        M4R_CommonEel_Voice = new(nameof(M4R_CommonEel_Voice), true),
+        M4R_CommonEel_Hiss = new(nameof(M4R_CommonEel_Hiss), true),
+        M4R_CommonEel_BigHiss = new(nameof(M4R_CommonEel_BigHiss), true),
+        M4R_Xylo_Swallow = new(nameof(M4R_Xylo_Swallow), true),
+        M4R_Xylo_Swell = new(nameof(M4R_Xylo_Swell), true),
+        M4R_ChipChop_Chip = new(nameof(M4R_ChipChop_Chip), true),
+        M4R_TintedBeetle_Chip = new(nameof(M4R_TintedBeetle_Chip), true),
+        M4R_TintedBeetle_BigChip = new(nameof(M4R_TintedBeetle_BigChip), true),
+        M4R_Caterpillar_Crawl_LOOP = new(nameof(M4R_Caterpillar_Crawl_LOOP), true),
+        M4R_SurfaceSwimmer_Chip = new(nameof(M4R_SurfaceSwimmer_Chip), true),
+        M4R_GenericBug_BigChip = new(nameof(M4R_GenericBug_BigChip), true),
+        M4R_GenericBug_Chip = new(nameof(M4R_GenericBug_Chip), true);
 
     public static void UnregisterValues()
     {
-        if (Hoverfly_Startle is not null)
+        if (M4R_Hoverfly_Startle is not null)
         {
-            Hoverfly_Startle.Unregister();
-            Hoverfly_Startle = null!;
+            M4R_Hoverfly_Startle.Unregister();
+            M4R_Hoverfly_Startle = null!;
         }
-        if (Hoverfly_Idle is not null)
+        if (M4R_Hoverfly_Idle is not null)
         {
-            Hoverfly_Idle.Unregister();
-            Hoverfly_Idle = null!;
+            M4R_Hoverfly_Idle.Unregister();
+            M4R_Hoverfly_Idle = null!;
         }
-        if (Hoverfly_Fly_LOOP is not null)
+        if (M4R_Hoverfly_Fly_LOOP is not null)
         {
-            Hoverfly_Fly_LOOP.Unregister();
-            Hoverfly_Fly_LOOP = null!;
+            M4R_Hoverfly_Fly_LOOP.Unregister();
+            M4R_Hoverfly_Fly_LOOP = null!;
         }
-        if (Flying_Leviathan_Bite is not null)
+        if (M4R_Flying_Leviathan_Bite is not null)
         {
-            Flying_Leviathan_Bite.Unregister();
-            Flying_Leviathan_Bite = null!;
+            M4R_Flying_Leviathan_Bite.Unregister();
+            M4R_Flying_Leviathan_Bite = null!;
+        }
+        if (M4R_WaterSpitter_Voice_A is not null)
+        {
+            M4R_WaterSpitter_Voice_A.Unregister();
+            M4R_WaterSpitter_Voice_A = null!;
+        }
+        if (M4R_WaterSpitter_Voice_B is not null)
+        {
+            M4R_WaterSpitter_Voice_B.Unregister();
+            M4R_WaterSpitter_Voice_B = null!;
+        }
+        if (M4R_WaterSpitter_Voice_C is not null)
+        {
+            M4R_WaterSpitter_Voice_C.Unregister();
+            M4R_WaterSpitter_Voice_C = null!;
+        }
+        if (M4R_CommonEel_Voice is not null)
+        {
+            M4R_CommonEel_Voice.Unregister();
+            M4R_CommonEel_Voice = null!;
+        }
+        if (M4R_CommonEel_Hiss is not null)
+        {
+            M4R_CommonEel_Hiss.Unregister();
+            M4R_CommonEel_Hiss = null!;
+        }
+        if (M4R_CommonEel_BigHiss is not null)
+        {
+            M4R_CommonEel_BigHiss.Unregister();
+            M4R_CommonEel_BigHiss = null!;
+        }
+        if (M4R_Xylo_Swallow is not null)
+        {
+            M4R_Xylo_Swallow.Unregister();
+            M4R_Xylo_Swallow = null!;
+        }
+        if (M4R_Xylo_Swell is not null)
+        {
+            M4R_Xylo_Swell.Unregister();
+            M4R_Xylo_Swell = null!;
+        }
+        if (M4R_ChipChop_Chip is not null)
+        {
+            M4R_ChipChop_Chip.Unregister();
+            M4R_ChipChop_Chip = null!;
+        }
+        if (M4R_TintedBeetle_Chip is not null)
+        {
+            M4R_TintedBeetle_Chip.Unregister();
+            M4R_TintedBeetle_Chip = null!;
+        }
+        if (M4R_TintedBeetle_BigChip is not null)
+        {
+            M4R_TintedBeetle_BigChip.Unregister();
+            M4R_TintedBeetle_BigChip = null!;
+        }
+        if (M4R_Caterpillar_Crawl_LOOP is not null)
+        {
+            M4R_Caterpillar_Crawl_LOOP.Unregister();
+            M4R_Caterpillar_Crawl_LOOP = null!;
+        }
+        if (M4R_SurfaceSwimmer_Chip is not null)
+        {
+            M4R_SurfaceSwimmer_Chip.Unregister();
+            M4R_SurfaceSwimmer_Chip = null!;
+        }
+        if (M4R_GenericBug_Chip is not null)
+        {
+            M4R_GenericBug_Chip.Unregister();
+            M4R_GenericBug_Chip = null!;
+        }
+        if (M4R_GenericBug_BigChip is not null)
+        {
+            M4R_GenericBug_BigChip.Unregister();
+            M4R_GenericBug_BigChip = null!;
         }
     }
 }

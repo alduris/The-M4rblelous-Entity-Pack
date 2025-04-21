@@ -5,7 +5,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class HazerHooks
 {
     internal static void On_Hazer_Collide(On.Hazer.orig_Collide orig, Hazer self, PhysicalObject otherObject, int myChunk, int otherChunk)
@@ -47,4 +47,6 @@ public static class HazerHooks
             }
         }
     }
+
+    public static bool Camouflaged(this Hazer self) => self.graphicsModule is HazerGraphics hgr && hgr.camo >= .5f;
 }

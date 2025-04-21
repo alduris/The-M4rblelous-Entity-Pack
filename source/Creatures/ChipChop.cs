@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Watcher;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class ChipChop : InsectoidCreature
 {
 	[StructLayout(LayoutKind.Sequential)]
@@ -35,6 +36,8 @@ public class ChipChop : InsectoidCreature
 	public virtual float Hue => IVars.Hue + MarineEyeEffectDuration / 70000f;
 
     public virtual float Saturation => 1f - MushroomEffectDuration / 1600f;
+
+    public virtual float Lightness => .5f - .2f * injectedPoison;
 
     public override Vector2 DangerPos => graphicsModule is ChipChopGraphics g ? g.BodyDir * ConnectDistance + firstChunk.pos : firstChunk.pos;
 
@@ -68,7 +71,7 @@ public class ChipChop : InsectoidCreature
 
 	public override void InitiateGraphicsModule() => graphicsModule ??= new ChipChopGraphics(this);
 
-	public override Color ShortCutColor() => Custom.HSL2RGB(Hue * 2f + 20f / 360f, Saturation, .5f);
+	public override Color ShortCutColor() => Custom.HSL2RGB(Hue * 2f + 20f / 360f, Saturation, Lightness);
 
     public override void Update(bool eu)
 	{
@@ -116,10 +119,10 @@ public class ChipChop : InsectoidCreature
                     var list = objs[i];
                     for (var j = 0; j < list.Count; j++)
                     {
-                        if (list[j] is PhysicalObject obj && grasps[0] is null && CanEat(obj) && Custom.DistLess(ps2, obj.firstChunk.pos, Math.Max(obj.firstChunk.rad * 2.1f, 10f)) && (!safariControlled || inputWithDiagonals?.pckp is true))
+                        if (list[j] is PhysicalObject obj && obj.abstractPhysicalObject.SameRippleLayer(abstractPhysicalObject) && grasps[0] is null && CanEat(obj) && Custom.DistLess(ps2, obj.firstChunk.pos, Math.Max(obj.firstChunk.rad * 2.1f, 10f)) && (!safariControlled || inputWithDiagonals?.pckp is true))
                         {
                             if (Grab(obj, 0, 0, Grasp.Shareability.CanNotShare, 1000f + abstractCreature.personality.dominance, true, false))
-                                rm.PlaySound(SoundID.Mouse_Squeak, ps2, 1.4f, .5f);
+                                rm.PlaySound(NewSoundID.M4R_ChipChop_Chip, firstChunk, false, 1.4f, 1f);
                             break;
                         }
                     }
@@ -367,24 +370,21 @@ public class ChipChop : InsectoidCreature
 			Move(FollowingConnection);
 	}
 
-	public virtual bool CanEat(PhysicalObject item) => Hunger > 0 && !item.slatedForDeletetion && item switch
+	public virtual bool CanEat(PhysicalObject item) => Hunger > 0 && !item.slatedForDeletetion && item.abstractPhysicalObject.SameRippleLayer(abstractPhysicalObject) && item switch
 	{
-        ThornyStrawberry t => !t.StalkActive && t.SpikesRemoved(),
-        GooieDuck gd => !gd.StalkActive() && gd.bites < 6,
-        IHaveAStalk st => !st.StalkActive,
-        DendriticNeuron or OracleSwarmer or JellyFish or SwollenWaterNut or EggBugEgg or FireEgg or BlobPiece => true,
-		Hazer h => h.dead,
-        VultureGrub gb => gb.dead,
-		SmallNeedleWorm sw => sw.dead,
-		Centipede ce => ce.Small && ce.dead,
-		Fly f => f.dead,
-        SlimeMold mld => !mld.StalkActive(),
-        Mushroom mush => !mush.StalkActive(),
-        KarmaFlower flower => !flower.StalkActive(),
-        LillyPuck ll => !ll.StalkActive(),
-        GlowWeed gw => !gw.StalkActive(),
-        DangleFruit dangle => !dangle.StalkActive(),
-        DandelionPeach dd => !dd.StalkActive(),
+        GooieDuck gd => !gd.StalkActive() && gd.bites < 6 && gd.Edible,
+        BouncingMelon bm => !bm.StalkActive,
+        IHaveAStalkState st => !st.StalkActive && st is IPlayerEdible ed && ed.Edible,
+        DendriticNeuron or OracleSwarmer or JellyFish or SwollenWaterNut or EggBugEgg or FireEgg or BlobPiece => (item as IPlayerEdible)!.Edible,
+        Creature cr => cr.dead && cr is IPlayerEdible ed && ed.Edible,
+        BoxWorm.Larva box => box.Edible,
+        SlimeMold mld => !mld.StalkActive() && mld.Edible,
+        Mushroom mush => !mush.StalkActive() && mush.Edible,
+        KarmaFlower flower => !flower.StalkActive() && flower.Edible,
+        LillyPuck ll => !ll.StalkActive() && ll.Edible,
+        GlowWeed gw => !gw.StalkActive() && gw.Edible,
+        DangleFruit dangle => !dangle.StalkActive() && dangle.Edible,
+        DandelionPeach dd => !dd.StalkActive() && dd.Edible,
         _ => false
 	};
 
@@ -407,10 +407,18 @@ public class ChipChop : InsectoidCreature
         {
             --d.bites;
             d.AbstrConsumable.Consume();
-            room.PlaySound(d.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, d.firstChunk.pos);
+            room.PlaySound(d.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, d.firstChunk);
             d.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (d.bites < 1)
             {
+                if (d.AbstrConsumable.rotted)
+                {
+                    var value = Random.value;
+                    if (value < .3f)
+                        Stun(120);
+                    else if (value < .65f)
+                        Stun(60);
+                }
                 g0.Release();
                 d.Destroy();
             }
@@ -420,7 +428,7 @@ public class ChipChop : InsectoidCreature
         {
             --gd.bites;
             gd.AbstrConsumable.Consume();
-            room.PlaySound(gd.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, gd.firstChunk.pos);
+            room.PlaySound(gd.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, gd.firstChunk);
             gd.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (gd.bites < 1)
             {
@@ -433,7 +441,7 @@ public class ChipChop : InsectoidCreature
         {
             --wd.bites;
             wd.AbstrConsumable.Consume();
-            room.PlaySound(wd.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, wd.firstChunk.pos);
+            room.PlaySound(wd.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, wd.firstChunk);
             wd.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (wd.bites < 1)
             {
@@ -446,7 +454,7 @@ public class ChipChop : InsectoidCreature
         {
             --mld.bites;
             mld.AbstrConsumable.Consume();
-            room.PlaySound(mld.bites == 0 ? SoundID.Slugcat_Eat_Slime_Mold : SoundID.Slugcat_Bite_Slime_Mold, mld.firstChunk.pos);
+            room.PlaySound(mld.bites == 0 ? SoundID.Slugcat_Eat_Slime_Mold : SoundID.Slugcat_Bite_Slime_Mold, mld.firstChunk);
             mld.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (mld.bites < 1)
             {
@@ -458,7 +466,7 @@ public class ChipChop : InsectoidCreature
         else if (item is Hazer h)
         {
             --h.bites;
-            room.PlaySound(SoundID.Slugcat_Eat_Centipede, h.firstChunk.pos);
+            room.PlaySound(SoundID.Slugcat_Eat_Centipede, h.firstChunk);
             h.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (h.bites < 1)
             {
@@ -470,7 +478,7 @@ public class ChipChop : InsectoidCreature
         else if (item is VultureGrub gb)
         {
             --gb.bites;
-            room.PlaySound(SoundID.Slugcat_Eat_Centipede, gb.firstChunk.pos);
+            room.PlaySound(SoundID.Slugcat_Eat_Centipede, gb.firstChunk);
             gb.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (gb.bites < 1)
             {
@@ -484,7 +492,7 @@ public class ChipChop : InsectoidCreature
             var ps = je.firstChunk.pos;
             --je.bites;
             je.AbstrConsumable.Consume();
-            room.PlaySound(je.bites == 0 ? SoundID.Slugcat_Eat_Jelly_Fish : SoundID.Slugcat_Bite_Jelly_Fish, je.firstChunk.pos);
+            room.PlaySound(je.bites == 0 ? SoundID.Slugcat_Eat_Jelly_Fish : SoundID.Slugcat_Bite_Jelly_Fish, je.firstChunk);
             je.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             var tts = je.tentacles;
             for (var i = 0; i < tts.Length; i++)
@@ -505,7 +513,7 @@ public class ChipChop : InsectoidCreature
         {
             --k.bites;
             k.AbstrConsumable.Consume();
-            room.PlaySound(k.bites == 0 ? SoundID.Slugcat_Eat_Karma_Flower : SoundID.Slugcat_Bite_Karma_Flower, k.firstChunk.pos);
+            room.PlaySound(k.bites == 0 ? SoundID.Slugcat_Eat_Karma_Flower : SoundID.Slugcat_Bite_Karma_Flower, k.firstChunk);
             k.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (k.bites < 1)
             {
@@ -528,7 +536,7 @@ public class ChipChop : InsectoidCreature
         {
             --nut.bites;
             nut.AbstrConsumable.Consume();
-            room.PlaySound(nut.bites == 0 ? SoundID.Slugcat_Eat_Water_Nut : SoundID.Slugcat_Bite_Water_Nut, nut.firstChunk.pos);
+            room.PlaySound(nut.bites == 0 ? SoundID.Slugcat_Eat_Water_Nut : SoundID.Slugcat_Bite_Water_Nut, nut.firstChunk);
             nut.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (nut.bites < 1)
             {
@@ -542,7 +550,7 @@ public class ChipChop : InsectoidCreature
         else if (item is EggBugEgg egg)
         {
             --egg.bites;
-            room.PlaySound(egg.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, egg.firstChunk.pos);
+            room.PlaySound(egg.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, egg.firstChunk);
             egg.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             egg.liquid = 1f;
             if (egg.bites < 1)
@@ -555,7 +563,7 @@ public class ChipChop : InsectoidCreature
         else if (item is FireEgg fgg)
         {
             --fgg.bites;
-            room.PlaySound(fgg.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, fgg.firstChunk.pos);
+            room.PlaySound(fgg.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, fgg.firstChunk);
             fgg.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             fgg.liquid = 1f;
             if (fgg.bites < 1)
@@ -570,7 +578,7 @@ public class ChipChop : InsectoidCreature
             --f.bites;
             if (!f.dead)
                 f.Die();
-            room.PlaySound(f.bites == 0 ? SoundID.Slugcat_Final_Bite_Fly : SoundID.Slugcat_Bite_Fly, f.mainBodyChunk.pos);
+            room.PlaySound(f.bites == 0 ? SoundID.Slugcat_Final_Bite_Fly : SoundID.Slugcat_Bite_Fly, f.mainBodyChunk);
             f.mainBodyChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (f.bites < 1 && f.eaten == 0)
             {
@@ -598,7 +606,7 @@ public class ChipChop : InsectoidCreature
         else if (item is OracleSwarmer sw)
         {
             --sw.bites;
-            room.PlaySound(sw.bites == 0 ? SoundID.Slugcat_Eat_Swarmer : SoundID.Slugcat_Bite_Swarmer, sw.firstChunk.pos);
+            room.PlaySound(sw.bites == 0 ? SoundID.Slugcat_Eat_Swarmer : SoundID.Slugcat_Bite_Swarmer, sw.firstChunk);
             sw.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (sw.bites < 1)
             {
@@ -612,7 +620,7 @@ public class ChipChop : InsectoidCreature
         {
             --lp.AbstrLillyPuck.bites;
             lp.AbstrLillyPuck.Consume();
-            room.PlaySound(lp.AbstrLillyPuck.bites != 0 ? SoundID.Slugcat_Bite_Dangle_Fruit : SoundID.Slugcat_Eat_Dangle_Fruit, lp.firstChunk.pos);
+            room.PlaySound(lp.AbstrLillyPuck.bites != 0 ? SoundID.Slugcat_Bite_Dangle_Fruit : SoundID.Slugcat_Eat_Dangle_Fruit, lp.firstChunk);
             lp.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (lp.AbstrLillyPuck.bites < 1)
             {
@@ -625,7 +633,7 @@ public class ChipChop : InsectoidCreature
         {
             --pc.bites;
             pc.AbstrConsumable.Consume();
-            room.PlaySound(pc.bites != 0 ? SoundID.Slugcat_Bite_Water_Nut : SoundID.Slugcat_Eat_Water_Nut, pc.firstChunk.pos);
+            room.PlaySound(pc.bites != 0 ? SoundID.Slugcat_Bite_Water_Nut : SoundID.Slugcat_Eat_Water_Nut, pc.firstChunk);
             pc.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (pc.bites < 1)
             {
@@ -640,7 +648,7 @@ public class ChipChop : InsectoidCreature
             --ce.bites;
             if (!ce.dead)
                 ce.Die();
-            room.PlaySound(ce.bites == 0 ? SoundID.Slugcat_Eat_Centipede : SoundID.Slugcat_Bite_Centipede, ce.mainBodyChunk.pos);
+            room.PlaySound(ce.bites == 0 ? SoundID.Slugcat_Eat_Centipede : SoundID.Slugcat_Bite_Centipede, ce.mainBodyChunk);
             ce.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
             if (ce.bites < 1)
             {
@@ -648,6 +656,74 @@ public class ChipChop : InsectoidCreature
                 ce.Destroy();
             }
             --Hunger;
+        }
+        else if (item is Rat rat)
+        {
+            --rat.bites;
+            if (!rat.dead)
+                rat.Die();
+            room.PlaySound(rat.bites == 0 ? SoundID.Slugcat_Final_Bite_Fly : SoundID.Slugcat_Bite_Fly, rat.mainBodyChunk);
+            rat.mainBodyChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
+            if (rat.bites < 1 && rat.eaten == 0)
+            {
+                g0.Release();
+                rat.eaten = 3;
+            }
+        }
+        else if (item is BoxWorm.Larva larva)
+        {
+            --larva.bites;
+            if (ModManager.Watcher)
+                room.PlaySound(larva.bites == 0 ? WatcherEnums.WatcherSoundID.Slugcat_Eat_Box_Worm_Larva : WatcherEnums.WatcherSoundID.Slugcat_Bite_Box_Worm_Larva, firstChunk);
+            larva.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
+            if (larva.bites < 1)
+            {
+                g0.Release();
+                larva.Destroy();
+            }
+        }
+        else if (item is Tardigrade td)
+        {
+            var vector = Custom.RGB2HSL(td.BitesLeft == 3 ? td.iVars.secondaryColor : td.iVars.bodyColor);
+            room.AddObject(new PoisonInjecter(this, .22f, (10f + Random.value * 8f) * (td.BitesLeft == 3 ? 1f : 4.4f), new HSLColor(vector.x, Mathf.Lerp(vector.y, 1f, .5f), .5f).rgb));
+            --(td.State as Tardigrade.TardigradeState)!.bites;
+            room.PlaySound(td.BitesLeft == 0 ? SoundID.Slugcat_Eat_Slime_Mold : SoundID.Slugcat_Bite_Slime_Mold, td.firstChunk);
+            td.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
+            if (td.BitesLeft <= 1 && !td.dead)
+                td.Die();
+            if (td.BitesLeft < 1)
+            {
+                g0.Release();
+                td.Destroy();
+            }
+        }
+        else if (item is SandGrub gr)
+        {
+            gr.bodyChunks[3 - gr.BitesLeft].rad *= .5f;
+            bodyChunkConnections[3].active = false;
+            bodyChunkConnections[3 - gr.BitesLeft].distance *= .25f;
+            --gr.BitesLeft;
+            room.PlaySound(SoundID.Slugcat_Eat_Centipede, gr.firstChunk);
+            var chs = gr.bodyChunks;
+            for (var i = 0; i < chs.Length; i++)
+                chs[i].MoveFromOutsideMyUpdate(evenUpdate, Vector2.Lerp(gr.firstChunk.pos, DangerPos, .8f - .15f * i));
+            if (gr.BitesLeft < 1)
+            {
+                g0.Release();
+                gr.abstractPhysicalObject.destroyOnAbstraction = true;
+                gr.abstractCreature.saveCreature = false;
+            }
+        }
+        else if (item is Barnacle b)
+        {
+            --b.bites;
+            b.Die();
+            b.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
+            if (b.bites < 1)
+            {
+                g0.Release();
+                b.Destroy();
+            }
         }
     }
 
@@ -730,7 +806,7 @@ public class ChipChop : InsectoidCreature
             return;
         }
         var abstractItem = items[Random.Range(0, items.Count)];
-        if (abstractItem is AbstractPhysicalObject aobj && aobj.realizedObject is PhysicalObject obj && !abstractItem.slatedForDeletion)
+        if (abstractItem is AbstractPhysicalObject aobj && aobj.SameRippleLayer(abstractPhysicalObject) && aobj.realizedObject is PhysicalObject obj && !abstractItem.slatedForDeletion)
 		{
             if (DenMovement == 0 && Prey is null && grasps[0] is null && CanEat(obj) && VisualContact(obj.firstChunk.pos))
             {
@@ -761,10 +837,12 @@ public class ChipChop : InsectoidCreature
 
     public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos hitAppendage, DamageType type, float damage, float stunBonus)
     {
+        if (!RippleViolenceCheck(source))
+            return;
         var bounceEffect = BouncingMelonEffectDuration / 18000f;
         damage = Math.Max(0f, damage - bounceEffect);
         stunBonus = Math.Max(0f, stunBonus - bounceEffect);
-        room?.PlaySound(SoundID.Mouse_Squeak, firstChunk.pos, 1.5f, .4f);
+        room?.PlaySound(NewSoundID.M4R_ChipChop_Chip, firstChunk, false, 1.5f, 1f);
         base.Violence(source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
     }
 

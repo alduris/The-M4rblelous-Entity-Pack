@@ -6,7 +6,7 @@ using Mono.Cecil.Cil;
 using System;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class SlugNPCHooks
 {
     internal static void On_SlugNPCAI_AteFood(On.MoreSlugcats.SlugNPCAI.orig_AteFood orig, SlugNPCAI self, PhysicalObject food)

@@ -1,14 +1,17 @@
 ﻿using RWCustom;
 using UnityEngine;
+using Watcher;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class WaterSpitter : Lizard
 {
     public WaterSpitter(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
     {
         buoyancy = .915f;
         effectColor = Color.white;
+        if (rotModule is LizardRotModule mod && LizardState.rotType != LizardState.RotType.Slight)
+            effectColor = Color.Lerp(effectColor, mod.RotEyeColor, LizardState.rotType == LizardState.RotType.Opossum ? .2f : .8f);
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new WaterSpitterGraphics(this);
@@ -58,7 +61,7 @@ public class WaterSpitter : Lizard
                             EnterAnimation(Animation.Standard, true);
                             ReleaseGrasp(0);
                         }
-                        rm.PlaySound(SoundID.Splashing_Water_Into_Terrain, vector3, 1.6f, 1.2f);
+                        rm.PlaySound(SoundID.Splashing_Water_Into_Terrain, vector3, 1.6f, 1.2f, abstractPhysicalObject);
                         rm.AddObject(new LizardWaterSpit(vector3, vector4 * 28f, this));
                         a.delay = 0;
                         b2.pos -= vector4 * .01f;

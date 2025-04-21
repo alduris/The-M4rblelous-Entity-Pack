@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class DentureCritob : Critob, ISandboxHandler
 {
     internal DentureCritob() : base(CreatureTemplateType.Denture)
@@ -68,6 +68,7 @@ sealed class DentureCritob : Critob, ISandboxHandler
 		t.meatPoints = 0;
 		t.canSwim = false;
 		t.canFly = false;
+        t.daddyCorruptionImmune = true;
         return t;
     }
 
@@ -143,37 +144,40 @@ sealed class DentureCritob : Critob, ISandboxHandler
         dt.IgnoredBy(CreatureTemplate.Type.PoleMimic);
         dt.IgnoredBy(CreatureTemplate.Type.TentaclePlant);
         dt.IgnoredBy(CreatureTemplate.Type.GarbageWorm);
+        if (ModManager.DLCShared)
+        {
+            dt.Eats(DLCSharedEnums.CreatureTemplateType.JungleLeech, 1f);
+            dt.Eats(DLCSharedEnums.CreatureTemplateType.Yeek, 1f);
+            dt.Eats(DLCSharedEnums.CreatureTemplateType.MotherSpider, 1f);
+            dt.Eats(DLCSharedEnums.CreatureTemplateType.JungleLeech, 1f);
+            dt.Eats(DLCSharedEnums.CreatureTemplateType.ZoopLizard, 1f);
+            dt.Eats(DLCSharedEnums.CreatureTemplateType.ScavengerElite, 1f);
+            dt.Attacks(DLCSharedEnums.CreatureTemplateType.EelLizard, 1f);
+            dt.Ignores(DLCSharedEnums.CreatureTemplateType.MirosVulture);
+            dt.FearedBy(DLCSharedEnums.CreatureTemplateType.JungleLeech, 1f);
+            dt.FearedBy(DLCSharedEnums.CreatureTemplateType.Yeek, 1f);
+            dt.FearedBy(DLCSharedEnums.CreatureTemplateType.MotherSpider, 1f);
+            dt.FearedBy(DLCSharedEnums.CreatureTemplateType.JungleLeech, 1f);
+            dt.FearedBy(DLCSharedEnums.CreatureTemplateType.ZoopLizard, 1f);
+            dt.FearedBy(DLCSharedEnums.CreatureTemplateType.ScavengerElite, 1f);
+            dt.FearedBy(DLCSharedEnums.CreatureTemplateType.EelLizard, .5f);
+            dt.IgnoredBy(DLCSharedEnums.CreatureTemplateType.MirosVulture);
+            dt.IgnoredBy(DLCSharedEnums.CreatureTemplateType.AquaCenti);
+            dt.IgnoredBy(DLCSharedEnums.CreatureTemplateType.BigJelly);
+            dt.IgnoredBy(DLCSharedEnums.CreatureTemplateType.Inspector);
+            dt.IgnoredBy(DLCSharedEnums.CreatureTemplateType.TerrorLongLegs);
+            dt.IgnoredBy(DLCSharedEnums.CreatureTemplateType.SpitLizard);
+        }
         if (ModManager.MSC)
         {
-            dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.JungleLeech, 1f);
-            dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
             dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.FireBug, 1f);
-            dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.MotherSpider, 1f);
-            dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.JungleLeech, 1f);
-            dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard, 1f);
             dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, 1f);
-            dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.ScavengerElite, 1f);
             dt.Eats(MoreSlugcatsEnums.CreatureTemplateType.ScavengerKing, 1f);
-            dt.Attacks(MoreSlugcatsEnums.CreatureTemplateType.EelLizard, 1f);
-            dt.Ignores(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
-            dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.JungleLeech, 1f);
-            dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.Yeek, 1f);
             dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.FireBug, 1f);
-            dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.MotherSpider, 1f);
-            dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.JungleLeech, 1f);
-            dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard, 1f);
             dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, 1f);
-            dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.ScavengerElite, 1f);
             dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.ScavengerKing, 1f);
-            dt.FearedBy(MoreSlugcatsEnums.CreatureTemplateType.EelLizard, .5f);
-            dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
             dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.TrainLizard);
-            dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.AquaCenti);
             dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.HunterDaddy);
-            dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.BigJelly);
-            dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.Inspector);
-            dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.TerrorLongLegs);
-            dt.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.SpitLizard);
         }
         dt.Eats(CreatureTemplateType.HazerMom, 1f);
         dt.Eats(CreatureTemplateType.Hoverfly, 1f);

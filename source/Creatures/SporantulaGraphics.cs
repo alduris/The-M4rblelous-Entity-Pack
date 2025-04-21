@@ -5,7 +5,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class SporantulaGraphics : BigSpiderGraphics
 {
     public SporantulaScale[] Scales;
@@ -57,7 +57,7 @@ public class SporantulaGraphics : BigSpiderGraphics
                 dot.Pos = Vector2.Lerp(tailEnd.pos, b1pos, scly) + bse;
             }
         }
-        if (bug is Sporantula spo && spo.dead is false && bug.AI?.preyTracker?.currentPrey?.critRep?.representedCreature is AbstractCreature crit && Random.value < .6f && SporeMemory.TryGetValue(bug.abstractCreature, out var mem) && mem.Contains(crit))
+        if (bug is Sporantula spo && spo.dead is false && bug.AI?.preyTracker?.currentPrey?.critRep?.representedCreature is AbstractCreature crit && crit.SameRippleLayer(spo.abstractPhysicalObject) && crit.NoCamo() && Random.value < .6f && SporeMemory.TryGetValue(bug.abstractCreature, out var mem) && mem.Contains(crit))
             spo.Angry();
     }
 

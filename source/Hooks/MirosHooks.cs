@@ -2,9 +2,10 @@
 using UnityEngine;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using System;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class MirosHooks
 {
     internal static void On_BirdLeg_RunMode(On.MirosBird.BirdLeg.orig_RunMode orig, MirosBird.BirdLeg self)
@@ -15,6 +16,39 @@ public static class MirosHooks
             self.springPower = Mathf.Lerp(self.springPower, 0f, .5f);
             self.forwardPower = Mathf.Lerp(self.forwardPower, 0f, .5f);
         }
+    }
+
+    internal static void On_MirosBirdAbstractAI_PopulateAllowedNodes(On.MirosBirdAbstractAI.orig_PopulateAllowedNodes orig, MirosBirdAbstractAI self, World world)
+    {
+        if (self.parent is AbstractCreature cr && cr.creatureTemplate.type == CreatureTemplateType.Blizzor && !world.singleRoomWorld)
+        {
+            var allowNds = self.allowedNodes;
+            allowNds.Clear();
+            var mytp = cr.creatureTemplate.type;
+            var firstRoomIndex = world.firstRoomIndex;
+            var totRooms = firstRoomIndex + (world.NumberOfRooms - 1);
+            for (var i = firstRoomIndex; i < totRooms; i++)
+            {
+                var rm = world.GetAbstractRoom(i);
+                var attr = rm.AttractionForCreature(mytp);
+                if (attr == AbstractRoom.CreatureRoomAttraction.Like || attr == AbstractRoom.CreatureRoomAttraction.Stay || Array.IndexOf(MirosBirdAbstractAI.UGLYHARDCODEDALLOWEDROOMS, rm.name) >= 0)
+                {
+                    var nodes = rm.nodes;
+                    for (var k = 0; k < nodes.Length; k++)
+                    {
+                        ref readonly var node = ref nodes[k];
+                        if (node.type == AbstractRoomNode.Type.SideExit && node.entranceWidth >= 5)
+                        {
+                            var nd = new WorldCoordinate(rm.index, -1, -1, k);
+                            if (!allowNds.Contains(nd))
+                                allowNds.Add(nd);
+                        }
+                    }
+                }
+            }
+        }
+        else
+            orig(self, world);
     }
 
     internal static void On_MirosBird_Act(On.MirosBird.orig_Act orig, MirosBird self)

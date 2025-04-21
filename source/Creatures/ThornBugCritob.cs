@@ -9,7 +9,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class ThornBugCritob : Critob, ISandboxHandler
 {
     internal ThornBugCritob() : base(CreatureTemplateType.ThornBug)

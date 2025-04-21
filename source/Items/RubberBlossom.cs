@@ -1,10 +1,9 @@
-﻿using RWCustom;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Items;
-
+//CHK
 public class RubberBlossom : PhysicalObject, IDrawable
 {
     public const float BASESIZE = .5f;
@@ -16,6 +15,8 @@ public class RubberBlossom : PhysicalObject, IDrawable
     public Color Color;
 
     public virtual AbstractConsumable AbstrCons => (abstractPhysicalObject as AbstractConsumable)!;
+
+    public override bool SandstormImmune => true;
 
     public RubberBlossom(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
     {
@@ -34,6 +35,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
         gravity = 0f;
         bounce = 0f;
         surfaceFriction = 0f;
+        burrowFriction = 0f;
         collisionLayer = 0;
         waterFriction = 0f;
         buoyancy = 0f;

@@ -7,7 +7,7 @@ using RWCustom;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class CentipedeHooks
 {
     internal static bool On_Centipede_get_Centiwing(Func<Centipede, bool> orig, Centipede self) => self is RedHorror || orig(self);
@@ -185,7 +185,7 @@ public static class CentipedeHooks
     internal static bool On_CentipedeAI_DoIWantToShockCreature(On.CentipedeAI.orig_DoIWantToShockCreature orig, CentipedeAI self, AbstractCreature critter)
     {
         var result = orig(self, critter);
-        if (self.centipede is Scutigera ce && critter.realizedCreature is Creature c && c is not Centipede)
+        if (self.centipede is Scutigera ce && critter.realizedCreature is Creature c && c is not Centipede && c.abstractPhysicalObject.SameRippleLayer(self.creature) && c.NoCamo())
         {
             if (c.dead || c.grasps is not Creature.Grasp[] ar)
                 result = false;

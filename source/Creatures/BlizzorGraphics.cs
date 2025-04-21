@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class BlizzorGraphics : MirosBirdGraphics
 {
     public BlizzorGraphics(Blizzor ow) : base(ow)

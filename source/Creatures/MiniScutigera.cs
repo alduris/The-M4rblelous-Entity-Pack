@@ -3,7 +3,7 @@ using RWCustom;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class MiniScutigera(AbstractCreature abstractCreature, World world) : Centipede(abstractCreature, world)
 {
     public override void InitiateGraphicsModule() => graphicsModule ??= new MiniScutigeraGraphics(this);
@@ -25,7 +25,7 @@ public class MiniScutigera(AbstractCreature abstractCreature, World world) : Cen
             {
                 var grabber = grabbedBy[0].grabber;
                 Shock(grabber);
-                if (grabber is Player p && p.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Saint)
+                if (ModManager.MSC && grabber is Player p && p.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Saint)
                     p.SaintStagger(680);
                 Stun(11);
                 for (var j = 0; j < cAr.Length; j++)
@@ -34,7 +34,7 @@ public class MiniScutigera(AbstractCreature abstractCreature, World world) : Cen
             var mbc = mainBodyChunk;
             if (mbc.submersion > .1f)
             {
-                rm.PlaySound(SoundID.Centipede_Shock, mbc.pos);
+                rm.PlaySound(SoundID.Centipede_Shock, mbc);
                 rm.AddObject(new UnderwaterShock(rm, this, mbc.pos, 14, 600f, .35f, this, new(.7f, 1f, .7f)));
                 Die();
             }

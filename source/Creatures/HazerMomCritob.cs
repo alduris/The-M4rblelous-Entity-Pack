@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class HazerMomCritob : Critob, ISandboxHandler
 {
 	internal HazerMomCritob() : base(CreatureTemplateType.HazerMom)

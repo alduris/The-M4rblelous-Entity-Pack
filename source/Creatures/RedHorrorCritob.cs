@@ -8,7 +8,7 @@ using static PathCost.Legality;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class RedHorrorCritob : Critob
 {
     internal RedHorrorCritob() : base(CreatureTemplateType.RedHorrorCenti)

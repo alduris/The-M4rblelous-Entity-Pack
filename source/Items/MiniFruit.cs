@@ -5,8 +5,8 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-
-public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk
+//CHK
+public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalkState, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -223,7 +223,7 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
         if (fc.submersion > .5f && crits.Count > 0 && grabbedBy.Count == 0)
 		{
 			var crit = crits[Random.Range(0, crits.Count)];
-			if (crit.creatureTemplate.type == CreatureTemplate.Type.JetFish && crit.realizedCreature is JetFish j && !j.dead && j.AI.goToFood is null && j.AI.WantToEatObject(this))
+			if (abstractPhysicalObject.SameRippleLayer(crit) && crit.creatureTemplate.type == CreatureTemplate.Type.JetFish && crit.realizedCreature is JetFish j && !j.dead && j.AI.goToFood is null && j.AI.WantToEatObject(this))
 				j.AI.goToFood = this;
 		}
 	}
@@ -311,7 +311,7 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
 
 	public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
 	{
-		room.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk.pos);
+		room.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk);
 		firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         (grasp.grabber as Player)?.ObjectEaten(this);
         grasp.Release();
@@ -326,4 +326,17 @@ public class MiniFruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual void DetatchStalk()
+    {
+        if (MyStalk is Stalk st)
+        {
+            if (st.Fruit is MiniFruit fr)
+            {
+                fr.AbstrCons.Consume();
+                st.Fruit = null;
+            }
+            MyStalk = null;
+        }
+    }
 }

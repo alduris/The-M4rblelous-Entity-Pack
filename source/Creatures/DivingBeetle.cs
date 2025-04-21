@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class DivingBeetle : InsectoidCreature
 {
     [AllowNull] public DivingBeetleAI AI;
@@ -41,9 +41,9 @@ public class DivingBeetle : InsectoidCreature
     {
         var bs = bodyChunks =
         [
-            new(this, 0, Vector2.zero, 7f, 1.6f * .4f),
-            new(this, 1, Vector2.zero, 9f, 1.6f * .4f),
-            new(this, 2, Vector2.zero, 7f, 1.6f * .2f)
+            new(this, 0, default, 7f, 1.6f * .4f),
+            new(this, 1, default, 9f, 1.6f * .4f),
+            new(this, 2, default, 7f, 1.6f * .2f)
         ];
         bodyChunkConnections =
         [
@@ -70,8 +70,9 @@ public class DivingBeetle : InsectoidCreature
     public override void Update(bool eu)
     {
         var chs = bodyChunks;
+        var fch = chs[0];
         if (Submersion < 1f && !safariControlled)
-            chs[0].vel.y -= 1.75f;
+            fch.vel.y -= 1.75f;
         LastBurstSpeed = BurstSpeed;
         if (Consious && (Footing && Swimming || safariControlled))
         {
@@ -91,7 +92,7 @@ public class DivingBeetle : InsectoidCreature
             buoyancy = Footing && Swimming && !safariControlled ? .45f : .5f;
         if (room.game.devToolsActive && Input.GetKey("b") && room.game.cameras[0].room == room)
         {
-            chs[0].vel += Custom.DirVec(chs[0].pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 14f;
+            fch.vel += Custom.DirVec(fch.pos, (Vector2)Futile.mousePosition + room.game.cameras[0].pos) * 14f;
             Stun(12);
         }
         if (!dead)
@@ -104,12 +105,12 @@ public class DivingBeetle : InsectoidCreature
                 State.health = Mathf.Min(1f, State.health + 1f / Mathf.Lerp(550f, 70f, State.health));
             if (!Consious && Random.value < .05f)
                 chs[1].vel += Custom.RNV() * Random.value * 3f;
-            if (stun < 35 && grabbedBy.Count > 0 && grabbedBy[0].grabber is not Vulture && grabbedBy[0].grabber is not Leech)
+            if (stun < 35 && grabbedBy.Count > 0 && grabbedBy[0].grabber is Creature c && c is not Vulture and not Leech)
             {
                 ++GrabbedCounter;
                 if (GrabbedCounter == 25 && Random.value < .85f * State.health)
                 {
-                    Slash(grabbedBy[0].grabber, null);
+                    Slash(c, null);
                     if (grabbedBy.Count == 0)
                         stun = 0;
                 }
@@ -131,7 +132,7 @@ public class DivingBeetle : InsectoidCreature
         Sitting = false;
         if (Consious)
         {
-            if (rm.aimap.TileAccessibleToCreature(chs[0].pos, Template) || rm.aimap.TileAccessibleToCreature(chs[1].pos, Template))
+            if (rm.aimap.TileAccessibleToCreature(fch.pos, Template) || rm.aimap.TileAccessibleToCreature(chs[1].pos, Template))
                 ++FootingCounter;
             Act();
         }
@@ -154,8 +155,8 @@ public class DivingBeetle : InsectoidCreature
             CarryObjectMass = 0f;
         if (Consious && Submersion >= .5f)
         {
-            chs[2].vel -= chs[0].vel * .16f + Custom.DirVec(chs[2].pos, chs[0].pos);
-            chs[0].vel += Custom.DirVec(chs[2].pos, chs[0].pos);
+            chs[2].vel -= fch.vel * .16f + Custom.DirVec(chs[2].pos, fch.pos);
+            fch.vel += Custom.DirVec(chs[2].pos, fch.pos);
         }
         if (Submersion < .2f)
         {
@@ -163,7 +164,7 @@ public class DivingBeetle : InsectoidCreature
                 AirLungs -= .002f;
             if (Consious)
             {
-                chs[0].pos += Custom.RNV() * 2f;
+                fch.pos += Custom.RNV() * 2f;
                 chs[1].pos += Custom.RNV() * 2f;
                 chs[2].pos += Custom.RNV() * 2f;
                 StuckShake += .2f;
@@ -173,7 +174,7 @@ public class DivingBeetle : InsectoidCreature
             AirLungs = 1f;
         lungs = 1f;
         StuckShake *= .5f;
-        var ps = new Vector2(chs[0].pos.x, chs[0].pos.y + 20f);
+        var ps = new Vector2(fch.pos.x, fch.pos.y + 20f);
         if (Consious && !safariControlled && (Submersion is > .1f and < 1f || Submersion >= 1f && !rm.PointSubmerged(ps)))
         {
             for (var i = 1; i < chs.Length; i++)
@@ -195,23 +196,24 @@ public class DivingBeetle : InsectoidCreature
             return;
         }
         var chs = bodyChunks;
+        var fch = chs[0];
         CarryObjectMass = cr.TotalMass;
         if (CarryObjectMass <= TotalMass * 1.1f)
             CarryObjectMass /= 2f;
         else if (CarryObjectMass <= TotalMass / 5f)
             CarryObjectMass = 0f;
         var chGrabbed = cr.bodyChunks[grasps[0].chunkGrabbed];
-        var num = chs[0].rad + chGrabbed.rad;
-        var vector = -Custom.DirVec(chs[0].pos, chGrabbed.pos) * (num - Vector2.Distance(chs[0].pos, chGrabbed.pos));
-        var num2 = chGrabbed.mass / (chs[0].mass + chGrabbed.mass);
+        var num = fch.rad + chGrabbed.rad;
+        var vector = -Custom.DirVec(fch.pos, chGrabbed.pos) * (num - Vector2.Distance(fch.pos, chGrabbed.pos));
+        var num2 = chGrabbed.mass / (fch.mass + chGrabbed.mass);
         num2 *= .2f * (1f - AI.stuckTracker.Utility());
-        chs[0].pos += vector * num2;
-        chs[0].vel += vector * num2;
+        fch.pos += vector * num2;
+        fch.vel += vector * num2;
         chGrabbed.pos -= vector * (1f - num2);
         chGrabbed.vel -= vector * (1f - num2);
-        Vector2 vector2 = chs[0].pos + Custom.DirVec(chs[1].pos, chs[0].pos) * num,
-            vector3 = chGrabbed.vel - chs[0].vel;
-        chGrabbed.vel = chs[0].vel;
+        Vector2 vector2 = fch.pos + Custom.DirVec(chs[1].pos, fch.pos) * num,
+            vector3 = chGrabbed.vel - fch.vel;
+        chGrabbed.vel = fch.vel;
         if (!enteringShortCut.HasValue && (vector3.magnitude * chGrabbed.mass > 30f || !Custom.DistLess(vector2, chGrabbed.pos, 70f + chGrabbed.rad)))
             ReleaseGrasp(0);
         else
@@ -306,8 +308,9 @@ public class DivingBeetle : InsectoidCreature
     {
         AI.Update();
         var chs = bodyChunks;
-        if (Random.value < .005f && Consious)
-            room.PlaySound(SoundID.Drop_Bug_Voice, chs[0], false, .8f, 1.2f);
+        var fch = chs[0];
+        if (Random.value < .005f && !dead)
+            room.PlaySound(NewSoundID.M4R_GenericBug_Chip, fch, false, 1f, 1f);
         if (Submersion > .3f)
         {
             Swim();
@@ -338,16 +341,16 @@ public class DivingBeetle : InsectoidCreature
         }
         else
         {
-            if (!room.aimap.TileAccessibleToCreature(chs[0].pos, Template) && !room.aimap.TileAccessibleToCreature(chs[1].pos, Template))
+            if (!room.aimap.TileAccessibleToCreature(fch.pos, Template) && !room.aimap.TileAccessibleToCreature(chs[1].pos, Template))
                 FootingCounter = Custom.IntClamp(FootingCounter - 3, 0, 35);
-            else if ((room.GetWorldCoordinate(chs[0].pos) == AI.pathFinder.GetDestination || room.GetWorldCoordinate(chs[1].pos) == AI.pathFinder.GetDestination) && AI.threatTracker.Utility() < .5f && !safariControlled)
+            else if ((room.GetWorldCoordinate(fch.pos) == AI.pathFinder.GetDestination || room.GetWorldCoordinate(chs[1].pos) == AI.pathFinder.GetDestination) && AI.threatTracker.Utility() < .5f && !safariControlled)
             {
                 Sitting = true;
                 GoThroughFloors = false;
             }
             else
             {
-                var movementConnection = (AI.pathFinder as StandardPather)!.FollowPath(room.GetWorldCoordinate(chs[0].pos), true);
+                var movementConnection = (AI.pathFinder as StandardPather)!.FollowPath(room.GetWorldCoordinate(fch.pos), true);
                 if (movementConnection == default)
                     movementConnection = (AI.pathFinder as StandardPather)!.FollowPath(room.GetWorldCoordinate(chs[2].pos), true);
                 if (movementConnection == default)
@@ -358,10 +361,10 @@ public class DivingBeetle : InsectoidCreature
                     if (inputWithDiagonals.HasValue)
                     {
                         var type = MovementConnection.MovementType.Standard;
-                        if (room.GetTile(chs[0].pos).Terrain == Room.Tile.TerrainType.ShortcutEntrance)
+                        if (room.GetTile(fch.pos).Terrain == Room.Tile.TerrainType.ShortcutEntrance)
                             type = MovementConnection.MovementType.ShortCut;
-                        if (inputWithDiagonals.Value.AnyDirectionalInput && (Footing || chs[0].submersion != 0f))
-                            movementConnection = new(type, room.GetWorldCoordinate(chs[0].pos), room.GetWorldCoordinate(chs[0].pos + new Vector2(inputWithDiagonals.Value.x, inputWithDiagonals.Value.y) * 40f), 2);
+                        if (inputWithDiagonals.Value.AnyDirectionalInput && (Footing || fch.submersion != 0f))
+                            movementConnection = new(type, room.GetWorldCoordinate(fch.pos), room.GetWorldCoordinate(fch.pos + new Vector2(inputWithDiagonals.Value.x, inputWithDiagonals.Value.y) * 40f), 2);
                         if (inputWithDiagonals.Value.thrw && lastInputWithDiagonals?.thrw is false or null)
                             ReleaseGrasp(0);
                         if (inputWithDiagonals.Value.y < 0)
@@ -376,10 +379,10 @@ public class DivingBeetle : InsectoidCreature
                     GoThroughFloors = false;
             }
         }
-        if (Consious && !Custom.DistLess(chs[0].pos, chs[0].lastPos, 2f))
+        if (Consious && !Custom.DistLess(fch.pos, fch.lastPos, 2f))
             RunCycle += .125f;
         if (RunCycle < Mathf.Floor(RunCycle))
-            room.PlaySound(SoundID.Drop_Bug_Step, chs[0]);
+            room.PlaySound(SoundID.Drop_Bug_Step, fch);
         if (Footing)
         {
             for (var i = 0; i < chs.Length; i++)
@@ -589,9 +592,11 @@ public class DivingBeetle : InsectoidCreature
 
     public override void Violence(BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, Appendage.Pos hitAppendage, DamageType type, float damage, float stunBonus)
     {
+        if (!RippleViolenceCheck(source))
+            return;
         damage = hitChunk.index != 0 ? damage * Mathf.Lerp(.9f, 1.1f, Random.value) : damage * Mathf.Lerp(.975f, 1.25f, Random.value);
         if (!dead && (damage > .1f || stunBonus > 20f) && Random.value < Custom.LerpMap(damage, .3f, 1f, .4f, .95f) && (VoiceSound is null || VoiceSound.slatedForDeletetion))
-            VoiceSound = room.PlaySound(SoundID.Drop_Bug_Voice, bodyChunks[0], false, 1f, 1.2f);
+            VoiceSound = room.PlaySound(NewSoundID.M4R_GenericBug_BigChip, bodyChunks[0], false, .95f, .9f);
         base.Violence(source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
         if (Random.value < .5f && State.health < 0f)
             Die();

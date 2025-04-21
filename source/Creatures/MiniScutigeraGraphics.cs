@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class MiniScutigeraGraphics : CentipedeGraphics
 {
     public MiniScutigeraGraphics(MiniScutigera ow) : base(ow)

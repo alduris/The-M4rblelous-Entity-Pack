@@ -7,7 +7,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class CreatureHooks
 {
     public static Action<ArtificialIntelligence, bool, FoodItemRepresentation>? OnFoodItemSpotted;
@@ -66,7 +66,7 @@ public static class CreatureHooks
              .Emit(OpCodes.Ldloc, vars[s_loc2])
              .EmitDelegate((InspectorAI self, RelationshipTracker.DynamicRelationship dRelation, CreatureTemplate.Relationship currentRelationship, Creature realizedCreature, int i) =>
              {
-                 if (realizedCreature.grasps[i].grabbed is DendriticNeuron swarmer && swarmer.Bites < 5)
+                 if (realizedCreature.grasps[i].grabbed is DendriticNeuron swarmer && swarmer.abstractPhysicalObject.SameRippleLayer(self.creature) && swarmer.Bites < 5)
                  {
                      currentRelationship.type = CreatureTemplate.Relationship.Type.Eats;
                      currentRelationship.intensity = 1f;

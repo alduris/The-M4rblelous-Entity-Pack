@@ -3,7 +3,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class ThornBugAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)
@@ -173,8 +173,9 @@ public class ThornBugAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
             num += 50f;
         num += threatTracker.ThreatOfTile(coord, true) * 1000f;
         num += threatTracker.ThreatOfTile(Bug.room.GetWorldCoordinate((Bug.room.MiddleOfTile(coord) + Bug.room.MiddleOfTile(creature.pos)) / 2f), true) * 1000f;
-        for (var i = 0; i < noiseTracker.sources.Count; i++)
-            num += Custom.LerpMap(Vector2.Distance(Bug.room.MiddleOfTile(coord), noiseTracker.sources[i].pos), 40f, 400f, 100f, 0f);
+        var sources = noiseTracker.sources;
+        for (var i = 0; i < sources.Count; i++)
+            num += Custom.LerpMap(Vector2.Distance(Bug.room.MiddleOfTile(coord), sources[i].pos), 40f, 400f, 100f, 0f);
         return num;
     }
 

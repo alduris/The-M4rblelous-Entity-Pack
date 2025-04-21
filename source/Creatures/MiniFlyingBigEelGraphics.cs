@@ -4,7 +4,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class MiniFlyingBigEelGraphics : BigEelGraphics
 {
     public MiniFlyingBigEelGraphics(MiniFlyingBigEel ow) : base(ow)

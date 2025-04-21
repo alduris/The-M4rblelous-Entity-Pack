@@ -1,12 +1,12 @@
 ﻿global using static LBMergedMods.Hooks.SaveHooks;
 using System;
 using UnityEngine;
-using System.Text.RegularExpressions;
 using System.Text;
 using System.Runtime.CompilerServices;
+using System.Globalization;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class SaveHooks
 {
     public static ConditionalWeakTable<DeathPersistentSaveData, DeathPersistentScoreData> ScoreData = new();
@@ -76,12 +76,24 @@ public static class SaveHooks
     {
         try
         {
-            var array = Regex.Split(objString, "<oA>");
+            var array = objString.Split(["<oA>"], StringSplitOptions.None);
             if (new AbstractPhysicalObject.AbstractObjectType(array[1]) == AbstractObjectType.BlobPiece)
             {
-                var apo = new BlobPiece.AbstractBlobPiece(world, null, WorldCoordinate.FromString(array[2]), EntityID.FromString(array[0]), .5f)
+                var rippleLayer = 0;
+                EntityID iD;
+                var ar0 = array[0];
+                if (ar0.Contains("<oB>"))
                 {
-                    unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 4)
+                    var array2 = ar0.Split(["<oB>"], StringSplitOptions.None);
+                    iD = EntityID.FromString(array2[0]);
+                    int.TryParse(array2[1], NumberStyles.Any, CultureInfo.InvariantCulture, out rippleLayer);
+                }
+                else
+                    iD = EntityID.FromString(ar0);
+                var apo = new BlobPiece.AbstractBlobPiece(world, null, WorldCoordinate.FromString(array[2]), iD, .5f)
+                {
+                    unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 4),
+                    rippleLayer = rippleLayer
                 };
                 float.TryParse(array[3], out apo.Color);
                 return apo;

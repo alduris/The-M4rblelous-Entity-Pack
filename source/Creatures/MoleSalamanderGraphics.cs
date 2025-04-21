@@ -5,7 +5,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class MoleSalamanderGraphics : LizardGraphics
 {
     public MoleSalamanderGraphics(MoleSalamander ow) : base(ow)
@@ -20,16 +20,9 @@ public class MoleSalamanderGraphics : LizardGraphics
 
     public override void Update()
     {
-        if (lizard.bubble > 0)
-            blackLizardLightUpHead = Mathf.Min(blackLizardLightUpHead + .1f, 1f);
-        else
-            blackLizardLightUpHead *= .9f;
         base.Update();
-        if (lightSource is LightSource l)
-        {
+        if (lightSource is LightSource l && HeadLightsUpFromNoise)
             l.color = Color.white;
-            l.setAlpha = .35f * blackLizardLightUpHead;
-        }
     }
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
@@ -48,7 +41,7 @@ public class MoleSalamanderGraphics : LizardGraphics
                 sprites[m + 9].color = !blackSalamander ? effectColor : palette.blackColor;
                 sprites[m + 9].alpha = !blackSalamander ? (m % 2 != 1 ? .3f : Mathf.Lerp(.3f, .1f, Math.Abs(Mathf.Lerp(lastDepthRotation, depthRotation, timeStacker)))) : Mathf.Sin(whiteCamoColorAmount * Mathf.PI) * .3f;
             }
-            if (blackSalamander)
+            if (blackSalamander && HeadLightsUpFromNoise)
                 sprites[13].color = Color.Lerp(palette.blackColor, new(.5f, .5f, .5f), Mathf.Pow(blackLizardLightUpHead, 1f - .95f * num2));
             sprites[15].isVisible = false;
         }

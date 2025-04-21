@@ -4,7 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class FatFireFlyGraphics : VultureGraphics
 {
     public Fire[][]? Fires;
@@ -209,7 +209,7 @@ public class FatFireFlyGraphics : VultureGraphics
 
             public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
             {
-                sLeaser.sprites = [new("deerEyeB")];
+                sLeaser.sprites = [new("deerEyeB") { shader = Custom.rainWorld.Shaders["RippleBasic"] }];
                 AddToContainer(sLeaser, rCam, null);
             }
 
@@ -296,7 +296,7 @@ public class FatFireFlyGraphics : VultureGraphics
             if (fl)
             {
                 rm.AddObject(new FireSprite(f.pos, altForm));
-                rm.PlaySound(SoundID.Firecracker_Burn, f.pos, .14f, 1.5f);
+                rm.PlaySound(SoundID.Firecracker_Burn, f.pos, .14f, 1.5f, t.owner?.abstractPhysicalObject);
             }
         }
 

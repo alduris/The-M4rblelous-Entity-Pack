@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class BouncingBallAI(AbstractCreature creature, World world) : SnailAI(creature, world)
 {
     public int ShuffleDestination;

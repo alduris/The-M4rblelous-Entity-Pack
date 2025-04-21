@@ -8,7 +8,7 @@ using UnityEngine;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class MiniScutigeraCritob : Critob
 {
     internal MiniScutigeraCritob() : base(CreatureTemplateType.MiniScutigera)

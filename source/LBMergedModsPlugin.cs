@@ -19,7 +19,7 @@ using Fisobs.Sandbox;
 namespace LBMergedMods;
 
 [
-    BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "1.1.9"),
+    BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "10.0.0"),
     BepInDependency("io.github.dual.fisobs"),
     BepInDependency("com.rainworldgame.lizardcustomizer.plugin", BepInDependency.DependencyFlags.SoftDependency),
     BepInDependency("slime-cubed.devconsole", BepInDependency.DependencyFlags.SoftDependency)
@@ -106,7 +106,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.BigSpider.Act += IL_BigSpider_Act;
         On.BigSpider.InitiateJump += On_BigSpider_InitiateJump;
         On.Creature.Abstractize += On_Creature_Abstractize;
-        On.CollectToken.AvailableToPlayer += On_CollectToken_AvailableToPlayer;
         IL.Leech.Swim += IL_Leech_Swim;
         IL.SnailAI.TileIdleScore += IL_SnailAI_TileIdleScore;
         On.Snail.Click += On_Snail_Click;
@@ -147,9 +146,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.Menu.MultiplayerMenu.ctor += IL_MultiplayerMenu_ctor;
         IL.DaddyLongLegs.ctor += IL_DaddyLongLegs_ctor;
         On.DaddyLongLegs.InitiateGraphicsModule += On_DaddyLongLegs_InitiateGraphicsModule;
-        On.DaddyGraphics.RenderSlits += On_DaddyGraphics_RenderSlits;
+        On.DaddyGraphics.Eye.RenderSlits += On_Eye_RenderSlits;
         IL.DaddyGraphics.ReactToNoise += IL_DaddyGraphics_ReactToNoise;
-        On.DaddyTentacle.ctor += On_DaddyTentacle_ctor;
         On.DaddyTentacle.CollideWithCreature += On_DaddyTentacle_CollideWithCreature;
         On.DaddyLongLegs.ShortCutColor += On_DaddyLongLegs_ShortCutColor;
         On.Menu.SandboxSettingsInterface.DefaultKillScores += On_SandboxSettingsInterface_DefaultKillScores;
@@ -204,6 +202,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.EggBug.DropEggs += On_EggBug_DropEggs;
         On.EggBugAI.IdleScore += On_EggBugAI_IdleScore;
         IL.EggBug.Act += IL_EggBug_Act;
+        IL.EggBug.TryJump += IL_EggBug_TryJump;
         IL.EggBugGraphics.Update += IL_EggBugGraphics_Update;
         On.EggBug.Run += On_EggBug_Run;
         On.EggBug.MoveTowards += On_EggBug_MoveTowards;
@@ -251,8 +250,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.PlacedObject.ConsumableObjectData.ctor += On_ConsumableObjectData_ctor;
         On.ShortcutHelper.PopsOutOfDeadShortcuts += On_ShortcutHelper_PopsOutOfDeadShortcuts;
         On.Hazer.Collide += On_Hazer_Collide;
-        IL.AbstractCreature.InitiateAI += IL_AbstractCreature_InitiateAI;
-        On.AbstractCreature.MSCInitiateAI += On_AbstractCreature_MSCInitiateAI;
+        On.AbstractCreature.WatcherInitiateAI += On_AbstractCreature_WatcherInitiateAI;
         On.Player.IsCreatureLegalToHoldWithoutStun += On_Player_IsCreatureLegalToHoldWithoutStun;
         On.HazerGraphics.ctor += On_HazerGraphics_ctor;
         IL.HazerGraphics.ApplyPalette += IL_HazerGraphics_ApplyPalette;
@@ -267,9 +265,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.OverseerCommunicationModule.FoodDelicousScore += IL_OverseerCommunicationModule_FoodDelicousScore;
         On.LizardAI.ReactToNoise += On_LizardAI_ReactToNoise;
         IL.LizardAI.IUseARelationshipTracker_UpdateDynamicRelationship += IL_LizardAI_IUseARelationshipTracker_UpdateDynamicRelationship;
-        On.LizardGraphics.CreatureSpotted += On_LizardGraphics_CreatureSpotted;
         On.LizardCosmetics.LongHeadScales.ctor += On_LongHeadScales_ctor;
         On.MirosBird.BirdLeg.RunMode += On_BirdLeg_RunMode;
+        On.MirosBirdAbstractAI.PopulateAllowedNodes += On_MirosBirdAbstractAI_PopulateAllowedNodes;
         On.MirosBird.Act += On_MirosBird_Act;
         IL.MirosBirdAbstractAI.Raid += IL_MirosBirdAbstractAI_Raid;
         On.JetFishAI.SocialEvent += On_JetFishAI_SocialEvent;
@@ -325,6 +323,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.AbstractCreature.AllowedToExistInRoom += On_AbstractCreature_AllowedToExistInRoom;
         new Hook(typeof(Centipede).GetMethod("get_Small", ALL_FLAGS), On_Centipede_get_Small);
         On.CreatureSymbol.DoesCreatureEarnATrophy += On_CreatureSymbol_DoesCreatureEarnATrophy;
+        new Hook(typeof(LizardGraphics).GetMethod("get_HeadLightsUpFromNoise", ALL_FLAGS), On_LizardGraphics_get_HeadLightsUpFromNoise);
+        On.CreatureSymbol.LizardSpriteName += On_CreatureSymbol_LizardSpriteName;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -376,6 +376,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         ScoreData = null!;
         TrackerScoreData = null!;
         RegionScoreData = null!;
+        CreatureTemplateType.M4RCreatureList = null!;
+        AbstractObjectType.M4RItemList = null!;
+        SandboxUnlockID.M4RUnlockList = null!;
         InternalMatch.Dispose();
     }
 }

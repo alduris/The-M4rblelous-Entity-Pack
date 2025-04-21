@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class GlowpillarCritob : Critob, ISandboxHandler
 {
     internal GlowpillarCritob() : base(CreatureTemplateType.Glowpillar)

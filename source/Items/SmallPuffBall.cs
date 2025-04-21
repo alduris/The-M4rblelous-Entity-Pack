@@ -5,7 +5,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-
+//CHK
 public class SmallPuffBall : Rock
 {
     public Color SporeColor;
@@ -84,7 +84,9 @@ public class SmallPuffBall : Rock
 
     public override bool HitSomething(SharedPhysics.CollisionResult result, bool eu)
     {
-        if (result.chunk is null)
+        if (result.chunk is not BodyChunk ch)
+            return false;
+        if (!abstractPhysicalObject.SameRippleLayer(ch.owner.abstractPhysicalObject))
             return false;
         base.HitSomething(result, eu);
         Explode();
@@ -113,7 +115,7 @@ public class SmallPuffBall : Rock
     public override void Thrown(Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
         base.Thrown(thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
-        room.AddObject(new SporeCloud(firstChunk.pos, Custom.RNV() * Random.value + throwDir.ToVector2() * 10f, SporeColor, .25f, null, -1, null));
+        room.AddObject(new SporeCloud(firstChunk.pos, Custom.RNV() * Random.value + throwDir.ToVector2() * 10f, SporeColor, .25f, null, -1, null, abstractPhysicalObject.rippleLayer));
         room.PlaySound(SoundID.Slugcat_Throw_Puffball, firstChunk);
     }
 
@@ -131,7 +133,7 @@ public class SmallPuffBall : Rock
             room.AddObject(new WaterDrip(pos, dir * Random.value * 15f + Custom.RNV() * Random.value * 5f, false));
         color = Color.Lerp(new(.9f, 1f, .8f), g.cameras[0].currentPalette.texture.GetPixel(11, 4), .5f);
         SporeColor = Color.Lerp(color, new(.02f, .1f, .08f), .85f);
-        room.AddObject(new SporeCloud(firstChunk.pos, Custom.RNV() * Random.value + dir * 10f, SporeColor, 1f, null, -1, null));
+        room.AddObject(new SporeCloud(firstChunk.pos, Custom.RNV() * Random.value + dir * 10f, SporeColor, 1f, null, -1, null, abstractPhysicalObject.rippleLayer));
         room.PlaySound(SoundID.Slugcat_Throw_Puffball, firstChunk);
         changeDirCounter = 3;
         ChangeOverlap(true);
@@ -180,11 +182,11 @@ public class SmallPuffBall : Rock
         }
         var ps = firstChunk.pos;
         for (var j = 0; j < 40; j++)
-            room.AddObject(new SporeCloud(ps, Custom.RNV() * Random.value * 10f, SporeColor, 1f, thrownBy?.abstractCreature, j % 20, smallInsects));
-        room.AddObject(new SporePuffVisionObscurer(ps));
+            room.AddObject(new SporeCloud(ps, Custom.RNV() * Random.value * 10f, SporeColor, 1f, thrownBy?.abstractCreature, j % 20, smallInsects, abstractPhysicalObject.rippleLayer));
+        room.AddObject(new SporePuffVisionObscurer(ps, abstractPhysicalObject.rippleLayer));
         for (var k = 0; k < 4; k++)
             room.AddObject(new PuffBallSkin(ps, Custom.RNV() * Random.value * 16f, color, Color.Lerp(color, SporeColor, .5f)));
-        room.PlaySound(SoundID.Puffball_Eplode, ps);
+        room.PlaySound(SoundID.Puffball_Eplode, firstChunk);
         Destroy();
     }
 

@@ -7,7 +7,7 @@ using static PathCost.Legality;
 using Fisobs.Sandbox;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class MiniLeechCritob : Critob
 {
     internal MiniLeechCritob() : base(CreatureTemplateType.MiniBlackLeech)

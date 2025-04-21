@@ -4,7 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)
@@ -91,7 +91,7 @@ public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         var trk = tracker;
         for (var i = 0; i < crits.Count; i++)
         {
-            if (crits[i] is AbstractCreature cr && cr.realizedCreature?.grasps is Creature.Grasp[] ar)
+            if (crits[i] is AbstractCreature cr && cr.SameRippleLayer(creature) && cr.realizedCreature?.grasps is Creature.Grasp[] ar)
             {
                 for (var j = 0; j < ar.Length; j++)
                 {
@@ -248,7 +248,7 @@ public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             result.intensity *= Mathf.InverseLerp(.1f, 1.5f, dRelation.trackerRep.representedCreature.creatureTemplate.bodySize);
             if (TargetCreature is not null)
                 result.intensity = Mathf.Pow(result.intensity, dRelation.trackerRep.representedCreature == TargetCreature ? .1f : 3f);
-            if (dRelation.trackerRep.representedCreature.realizedCreature?.grasps is Creature.Grasp[] ar)
+            if (dRelation.trackerRep.representedCreature.realizedCreature is Creature cre && cre.abstractPhysicalObject.SameRippleLayer(creature) && cre.grasps is Creature.Grasp[] ar)
             {
                 for (var i = 0; i < ar.Length; i++)
                 {
@@ -262,7 +262,7 @@ public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
         }
         if (result.type == CreatureTemplate.Relationship.Type.Afraid && !dRelation.state.alive)
             result.intensity = 0f;
-        if (dRelation.trackerRep.representedCreature.realizedCreature is Creature cr)
+        if (dRelation.trackerRep.representedCreature.realizedCreature is Creature cr && cr.abstractPhysicalObject.SameRippleLayer(creature))
         {
             if (cr.grasps is Creature.Grasp[] grs)
             {

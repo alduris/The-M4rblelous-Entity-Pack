@@ -7,7 +7,7 @@ Shader "AMiniLeviEelBody"
 
 	Category
 	{
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		Fog { Color(0.0, 0.0, 0.0, 0.0) }
@@ -30,11 +30,12 @@ Shader "AMiniLeviEelBody"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				//#include "_ShaderFix.cginc" -> unused code
 				sampler2D _MainTex;
 				sampler2D _NoiseTex;
-				uniform half4 _AMiniLeviColorA;
-				uniform half4 _AMiniLeviColorB;
-				uniform half4 _AMiniLeviColorHead;
+				uniform float4 _AMiniLeviColorA;
+				uniform float4 _AMiniLeviColorB;
+				uniform float4 _AMiniLeviColorHead;
 				float4 _MainTex_ST;
 
 				struct v2f
@@ -55,22 +56,16 @@ Shader "AMiniLeviEelBody"
 					return o;
 				}
 
-				half4 frag(v2f i) : SV_Target
+				float4 frag(v2f i) : SV_Target
 				{
-					half n = tex2D(_NoiseTex, half2(lerp(i.uv.x * lerp(3.0, 1.0, i.uv.y), 0.5, pow(i.uv.y, 0.15)), (i.uv.y + i.clr.w) * 30.0));
-					n = 0.5 - sin(n * 3.14 * 6.0) * 0.5;
-					n = pow(n, 4.0);
-					n -= pow(abs(i.uv.x - 0.5) * 2.0, 5.0);
-					n = lerp(n, 1.0 - abs(i.uv.x - 0.5) * 2.0, pow(i.uv.y, 0.75));
+					float n = lerp(pow(0.5 - sin(tex2D(_NoiseTex, float2(lerp(i.uv.x * lerp(3.0, 1.0, i.uv.y), 0.5, pow(i.uv.y, 0.15)), (i.uv.y + i.clr.w) * 30.0)) * 3.14 * 6.0) * 0.5, 4.0) - pow(abs(i.uv.x - 0.5) * 2.0, 5.0), 1.0 - abs(i.uv.x - 0.5) * 2.0, pow(i.uv.y, 0.75));
 					if (i.uv.y > 0.3)
 						n -= (i.uv.y - 0.3) * 5.0;
 					if (n > 0.7) 
-						return half4(i.clr.xyz, 1.0);
-					half jagg = 0;
-					jagg = tex2D(_NoiseTex, half2(i.uv.y * 20.0 + i.clr.w * (i.uv.x < 0.5 ? -1.0 : 1.0) * 0.2, ((i.uv.y * lerp(3.0, 1.0, pow(i.uv.y, 0.5))) + i.clr.w) * 30.0)) * min(i.uv.y + 0.1, 1.0);
-					jagg -= pow(1.0 - abs(i.uv.x - 0.5) * 2.0, 1.0);
+						return float4(i.clr.xyz, 1.0);
+					float jagg = tex2D(_NoiseTex, float2(i.uv.y * 20.0 + i.clr.w * (i.uv.x < 0.5 ? -1.0 : 1.0) * 0.2, ((i.uv.y * lerp(3.0, 1.0, pow(i.uv.y, 0.5))) + i.clr.w) * 30.0)) * min(i.uv.y + 0.1, 1.0) - pow(1.0 - abs(i.uv.x - 0.5) * 2.0, 1.0);
 					if (jagg > 0.0)
-						return half4(0.0, 0.0, 0.0, 0.0);
+						return float4(0.0, 0.0, 0.0, 0.0);
 					return lerp(_AMiniLeviColorHead, lerp(_AMiniLeviColorA, _AMiniLeviColorB, pow(i.uv.y, 2)), clamp((i.uv.y - 0.015) * 60.0, 0.0, 1.0));
 				}
 				ENDCG

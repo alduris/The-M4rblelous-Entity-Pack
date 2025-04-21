@@ -2,7 +2,7 @@
 using LizardCosmetics;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class SilverLizardGraphics : LizardGraphics
 {
     public SilverLizardGraphics(SilverLizard ow) : base(ow)

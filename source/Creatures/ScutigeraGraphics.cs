@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class ScutigeraGraphics : CentipedeGraphics
 {
     public ScutigeraGraphics(Scutigera ow) : base(ow)

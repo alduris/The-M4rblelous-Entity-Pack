@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
 
-public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalk, IProvideWarmth
+public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalkState, IProvideWarmth, IHaveAStalk
 {
     public class Stalk : UpdatableAndDeletable, IDrawable
     {
@@ -423,7 +423,7 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
         --Bites;
-        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk.pos);
+        room.PlaySound(Bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, firstChunk);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
         {
@@ -442,4 +442,10 @@ public class StarLemon : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
     public virtual void ThrowByPlayer() { }
 
     public virtual Vector2 Position() => firstChunk.pos;
+
+    public virtual void DetatchStalk()
+    {
+        if (MyStalk is Stalk st && st.ReleaseCounter == 0)
+            st.ReleaseCounter = 2;
+    }
 }

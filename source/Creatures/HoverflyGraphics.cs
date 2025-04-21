@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 {
     public enum HeadState
@@ -155,13 +155,13 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
             else
             {
                 ChirpCounter = Random.Range(400, 701);
-                rm.PlaySound(NewSoundID.Hoverfly_Idle, f.firstChunk, false, 1.25f, 1f + IVars.SoundPitchBonus);
+                rm.PlaySound(NewSoundID.M4R_Hoverfly_Idle, f.firstChunk, false, 1.25f, 1f + IVars.SoundPitchBonus);
             }
         }
 		num = Mathf.Pow(num, 1.4f) * 1.25f;
 		var soundID = SoundID.None;
 		if (flag && num > 0f)
-			soundID = NewSoundID.Hoverfly_Fly_LOOP;
+			soundID = NewSoundID.M4R_Hoverfly_Fly_LOOP;
 		if (soundID != CurrentLoop)
 		{
 			if (LoopSoundEmitter is not null)
@@ -182,7 +182,7 @@ public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 		{
             snd.alive = true;
             snd.volume = num;
-			if (CurrentLoop == NewSoundID.Hoverfly_Fly_LOOP)
+			if (CurrentLoop == NewSoundID.M4R_Hoverfly_Fly_LOOP)
                 snd.pitch = (1f + IVars.SoundPitchBonus) * (.85f + .3f * Mathf.Pow(Mathf.InverseLerp(-1f, 1f, Vector2.Dot(default, ZRotation.normalized)), 2f));
 			else
                 snd.pitch = 1f + IVars.SoundPitchBonus;

@@ -3,9 +3,11 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class NoodleEaterGraphics : LizardGraphics
 {
+    public int PupilSprite = -1;
+
     public NoodleEaterGraphics(NoodleEater ow) : base(ow)
     {
         var state = Random.state;
@@ -37,10 +39,11 @@ public class NoodleEaterGraphics : LizardGraphics
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
         base.InitiateSprites(sLeaser, rCam);
+        if (debugVisualization)
+            return;
         if (tongue is GenericBodyPart[] t)
         {
-            var sprites = sLeaser.sprites;
-            var tg = sprites[SpriteTongueStart];
+            var tg = sLeaser.sprites[SpriteTongueStart];
             tg.isVisible = false;
             var cont = tg.container;
             var tlm1 = t.Length - 1;
@@ -52,9 +55,27 @@ public class NoodleEaterGraphics : LizardGraphics
                     array[num + num2] = new(num + num2, num + num2 + 1, num + num2 + 2);
             }
             array[tlm1 * 4] = new(tlm1 * 4, tlm1 * 4 + 1, tlm1 * 4 + 2);
-            cont.AddChild(sprites[SpriteTongueStart] = new TriangleMesh("Futile_White", array, true));
-            sprites[SpriteTongueStart].MoveBehindOtherNode(tg);
+            cont.AddChild(sLeaser.sprites[SpriteTongueStart] = new TriangleMesh("Futile_White", array, true));
+            sLeaser.sprites[SpriteTongueStart].MoveBehindOtherNode(tg);
             tg.RemoveFromContainer();
+        }
+        Array.Resize(ref sLeaser.sprites, sLeaser.sprites.Length + 1);
+        sLeaser.sprites[SpriteHeadStart + 4].container.AddChild(sLeaser.sprites[PupilSprite = sLeaser.sprites.Length - 1] = new("pixel")
+        {
+            anchorY = .7f
+        });
+    }
+
+    public override void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
+    {
+        base.AddToContainer(sLeaser, rCam, newContainer);
+        if (!debugVisualization && PupilSprite >= 0 && PupilSprite < sLeaser.sprites.Length)
+        {
+            if (sLeaser.sprites[PupilSprite] is FSprite spr)
+            {
+                spr.RemoveFromContainer();
+                newContainer.AddChild(spr);
+            }
         }
     }
 
@@ -65,7 +86,8 @@ public class NoodleEaterGraphics : LizardGraphics
         {
             var sprites = sLeaser.sprites;
             var eye = sprites[SpriteHeadStart + 4];
-            eye.element = Futile.atlasManager.GetElementWithName((liz.Consious ? "NoodleEaterEye" : "NoodleEaterEyeDead") + (3 - (int)(Math.Abs(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, timeStacker)) * 3.9f)).ToString());
+            var stre = (3 - (int)(Math.Abs(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, timeStacker)) * 3.9f)).ToString();
+            eye.element = Futile.atlasManager.GetElementWithName("NoodleEaterEyeDead" + stre);
             eye.color = liz.Consious ? effectColor : palette.blackColor;
             var num8 = SpriteLimbsColorStart - SpriteLimbsStart;
             for (var l = SpriteLimbsStart; l < SpriteLimbsEnd; l++)
@@ -76,6 +98,19 @@ public class NoodleEaterGraphics : LizardGraphics
                 var verts = (sprites[SpriteTongueStart] as TriangleMesh)!.verticeColors;
                 for (var num18 = 0; num18 < verts.Length; num18++)
                     verts[num18] = effectColor;
+            }
+            if (PupilSprite >= 0 && PupilSprite < sprites.Length)
+            {
+                var pupil = sprites[PupilSprite];
+                pupil.MoveInFrontOfOtherNode(eye);
+                pupil.SetPosition(eye.GetPosition());
+                pupil.rotation = eye.rotation;
+                pupil.scaleX = eye.scaleX;
+                pupil.scaleY = eye.scaleY;
+                pupil.color = Color.black;
+                pupil.alpha = .7490196f; // 1f - 64f / 255f
+                pupil.isVisible = liz.Consious;
+                pupil.element = Futile.atlasManager.GetElementWithName("WB64NoodleEaterEye" + stre);
             }
         }
     }

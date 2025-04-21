@@ -4,9 +4,10 @@ using MoreSlugcats;
 using RWCustom;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using Watcher;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class ShortcutHooks
 {
     internal static bool On_ShortcutHelper_PopsOutOfDeadShortcuts(On.ShortcutHelper.orig_PopsOutOfDeadShortcuts orig, ShortcutHelper self, PhysicalObject physicalObject) => (physicalObject.grabbedBy.Count == 0 && physicalObject is HazerMom) || orig(self, physicalObject);
@@ -14,11 +15,13 @@ public static class ShortcutHooks
     internal static Color On_ShortcutGraphics_ShortCutColor(On.ShortcutGraphics.orig_ShortCutColor orig, ShortcutGraphics self, Creature crit, IntVector2 pos)
     {
         var color = orig(self, crit, pos);
-        if (crit is WaterSpitter)
+        if (crit is WaterSpitter ws)
         {
             if (((!ModManager.MMF || !MMF.cfgShowUnderwaterShortcuts.Value) && self.room is Room rm && rm.water && pos.y < rm.DefaultWaterLevel(pos) && rm.GetTile(pos).Terrain != Room.Tile.TerrainType.ShortcutEntrance && (self.DisplayLayer(pos.x, pos.y) > 0 || rm.waterInFrontOfTerrain)) || (ModManager.MMF && color.grayscale < .15f))
                 return color;
             color = Color.Lerp(self.palette.waterSurfaceColor1, Color.white, .1f);
+            if (ws.rotModule is LizardRotModule mod && ws.LizardState is LizardState st && st.rotType != LizardState.RotType.Slight)
+                color = Color.Lerp(color, mod.RotEyeColor, st.rotType == LizardState.RotType.Opossum ? .2f : .8f);
         }
         return color;
     }

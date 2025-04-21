@@ -4,7 +4,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class DivingBeetleGraphics : GraphicsModule
 {
     public const int HEAD_SPRITE = 8, MESH_SPRITE = 9, SHINE_MESH_SPRITE = 10, TOTAL_SPRITES = 27;

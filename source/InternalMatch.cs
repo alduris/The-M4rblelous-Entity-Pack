@@ -189,6 +189,7 @@ static class InternalMatch
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorA = MatchLdsfld_RainWorld_ShadPropLeviathanColorA,
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorB = MatchLdsfld_RainWorld_ShadPropLeviathanColorB,
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorHead = MatchLdsfld_RainWorld_ShadPropLeviathanColorHead,
+        s_MatchLdsfld_SoundID_Egg_Bug_Scurry = MatchLdsfld_SoundID_Egg_Bug_Scurry,
         s_MatchLdsfld_SoundID_Leviathan_Bite = MatchLdsfld_SoundID_Leviathan_Bite,
         s_MatchLdstr__txt = MatchLdstr__txt,
         s_MatchMul = MatchMul,
@@ -392,6 +393,7 @@ static class InternalMatch
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorA = null!;
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorB = null!;
         s_MatchLdsfld_RainWorld_ShadPropLeviathanColorHead = null!;
+        s_MatchLdsfld_SoundID_Egg_Bug_Scurry = null!;
         s_MatchLdsfld_SoundID_Leviathan_Bite = null!;
         s_MatchLdstr__txt = null!;
         s_MatchMul = null!;
@@ -745,6 +747,8 @@ static class InternalMatch
     internal static bool MatchLdsfld_RainWorld_ShadPropLeviathanColorB(Instruction x) => x.MatchLdsfld<RainWorld>("ShadPropLeviathanColorB");
 
     internal static bool MatchLdsfld_RainWorld_ShadPropLeviathanColorHead(Instruction x) => x.MatchLdsfld<RainWorld>("ShadPropLeviathanColorHead");
+
+    internal static bool MatchLdsfld_SoundID_Egg_Bug_Scurry(Instruction x) => x.MatchLdsfld<SoundID>("Egg_Bug_Scurry");
 
     internal static bool MatchLdsfld_SoundID_Leviathan_Bite(Instruction x) => x.MatchLdsfld<SoundID>("Leviathan_Bite");
 

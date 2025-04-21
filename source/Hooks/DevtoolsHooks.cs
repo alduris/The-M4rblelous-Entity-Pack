@@ -6,7 +6,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class DevtoolsHooks
 {
     internal static void On_ConsumableObjectData_ctor(On.PlacedObject.ConsumableObjectData.orig_ctor orig, PlacedObject.ConsumableObjectData self, PlacedObject owner)

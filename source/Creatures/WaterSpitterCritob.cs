@@ -4,10 +4,9 @@ using Fisobs.Sandbox;
 using DevInterface;
 using UnityEngine;
 using System.Collections.Generic;
-using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class WaterSpitterCritob : Critob
 {
     internal WaterSpitterCritob() : base(CreatureTemplateType.WaterSpitter)
@@ -33,7 +32,7 @@ sealed class WaterSpitterCritob : Critob
         RoomAttractivenessPanel.Category.Swimming
     ];
 
-    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), null, null, null);
+    public override CreatureTemplate CreateTemplate() => LizardBreeds.BreedTemplate(Type, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.LizardTemplate), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.PinkLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.BlueLizard), StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.GreenLizard));
 
     public override void EstablishRelationships()
     {
@@ -93,10 +92,10 @@ sealed class WaterSpitterCritob : Critob
         w.IgnoredBy(CreatureTemplate.Type.GarbageWorm);
         w.FearedBy(CreatureTemplate.Type.VultureGrub, 1f);
         w.FearedBy(CreatureTemplate.Type.Slugcat, .9f);
-        if (ModManager.MSC)
+        if (ModManager.DLCShared)
         {
-            w.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
-            w.Ignores(MoreSlugcatsEnums.CreatureTemplateType.ZoopLizard);
+            w.IgnoredBy(DLCSharedEnums.CreatureTemplateType.ZoopLizard);
+            w.Ignores(DLCSharedEnums.CreatureTemplateType.ZoopLizard);
         }
     }
 

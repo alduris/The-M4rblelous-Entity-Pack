@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class SurfaceSwimmerGraphics : EggBugGraphics
 {
     public SurfaceSwimmerGraphics(SurfaceSwimmer ow) : base(ow) => legLength *= 2f;
@@ -17,7 +17,8 @@ public class SurfaceSwimmerGraphics : EggBugGraphics
             head.scaleY *= 2f;
             var ants = antennas;
             var lgt = ants.GetLength(1);
-            var vector = Vector2.Lerp(bug.mainBodyChunk.lastPos, bug.mainBodyChunk.pos, timeStacker);
+            var mbc = bug.mainBodyChunk;
+            var vector = Vector2.Lerp(mbc.lastPos, mbc.pos, timeStacker);
             for (var m = 0; m < 2; m++)
             {
                 var vector7 = vector;

@@ -9,7 +9,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class TintedBeetleCritob : Critob, ISandboxHandler
 {
     internal TintedBeetleCritob() : base(CreatureTemplateType.TintedBeetle)

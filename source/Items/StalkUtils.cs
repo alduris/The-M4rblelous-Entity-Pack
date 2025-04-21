@@ -1,7 +1,7 @@
 ﻿using MoreSlugcats;
 
 namespace LBMergedMods.Items;
-
+//CHK
 public static class StalkUtils
 {
     public static bool StalkActive(this BubbleGrass self) => self.growPos.HasValue;
@@ -35,4 +35,8 @@ public static class StalkUtils
     public static bool StalkActive(this SporePlant self) => self.stalk is SporePlant.Stalk st && st.sporePlant is not null && !st.slatedForDeletetion;
 
     public static bool StalkActive(this WaterNut self) => self.stalk is WaterNut.Stalk st && st.nut is not null && !st.slatedForDeletetion;
+
+    public static bool StalkActive(this SkyDandelions.SkyDandelion self) => self.stuck;
+
+    public static bool StalkActive(this Pomegranate self) => !self.disconnected;
 }

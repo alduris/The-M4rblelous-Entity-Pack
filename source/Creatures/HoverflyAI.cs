@@ -5,7 +5,7 @@ using Noise;
 using System.Collections.Generic;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction
 {
     public class FlyBehavior(string value, bool register = false) : ExtEnum<FlyBehavior>(value, register)
@@ -23,7 +23,6 @@ public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
     public WorldCoordinate IdleSitSpot, ForbiddenIdleSitSpot;
     public int IdleSitCounter, HuntAttackCounter, TiredOfHuntingCounter;
     public AbstractPhysicalObject? TiredOfHuntingItem;
-    public Creature? PanicFleeCrit;
     public Tracker.CreatureRepresentation? FocusCreature;
     public FoodItemRepresentation? FocusItem;
     public FoodItemTracker FoodTracker;
@@ -78,22 +77,15 @@ public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
     {
         FocusCreature = null;
         base.Update();
-        if (creature is null)
+        if (creature is not AbstractCreature ow)
             return;
-        if (ModManager.MSC && Fly.LickedByPlayer is Player p)
+        if (Fly.LickedByPlayer is Player p)
             tracker.SeeCreature(p.abstractCreature);
-        if (PanicFleeCrit is Creature cre)
-        {
-            SwooshToPos = Fly.firstChunk.pos - Custom.DirVec(Fly.firstChunk.pos, cre.firstChunk.pos) * 100f;
-            if (!Custom.DistLess(Fly.firstChunk.pos, cre.firstChunk.pos, 300f) || Fly.firstChunk.ContactPoint.x != 0 || Fly.firstChunk.ContactPoint.y != 0)
-                PanicFleeCrit = null;
-            return;
-        }
-        if (HoverflyData.TryGetValue(creature, out var data1) && data1.CanEat && creature.Room?.entities is List<AbstractWorldEntity> l && creature.Room?.realizedRoom is Room ro)
+        if (HoverflyData.TryGetValue(ow, out var data1) && data1.CanEat && ow.Room is AbstractRoom arm && arm.entities is List<AbstractWorldEntity> l && arm.realizedRoom is Room ro)
         {
             for (var i = 0; i < l.Count; i++)
             {
-                if (l[i] is AbstractPhysicalObject obj && obj.type == AbstractPhysicalObject.AbstractObjectType.DangleFruit && obj.realizedObject is DangleFruit dan && (ro.GetTile(dan.firstChunk.pos with { y = dan.firstChunk.pos.y - 20f })?.Solid is true || data1.CanEatRoot))
+                if (l[i] is AbstractPhysicalObject obj && obj.SameRippleLayer(ow) && obj.type == AbstractPhysicalObject.AbstractObjectType.DangleFruit && obj.realizedObject is DangleFruit dan && (ro.GetTile(dan.firstChunk.pos with { y = dan.firstChunk.pos.y - 20f })?.Solid is true || data1.CanEatRoot))
                     FoodTracker.AddItem(this.CreateTrackerRepresentationForItem(obj));
             }
         }
@@ -123,11 +115,11 @@ public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
         stuckTracker.satisfiedWithThisPosition = !Fly.AtSitDestination;
         if (Behavior == FlyBehavior.Idle)
         {
-            if (denFinder.GetDenPosition() is WorldCoordinate w && w.room != creature.pos.room)
-                creature.abstractAI.SetDestination(w);
+            if (denFinder.GetDenPosition() is WorldCoordinate w && w.room != ow.pos.room)
+                ow.abstractAI.SetDestination(w);
             if (!IdleSitSpot.TileDefined || IdleSitSpot.room != Fly.room.abstractRoom.index || !Fly.Climbable(IdleSitSpot.Tile))
                 IdleSitSpot = Fly.room.GetWorldCoordinate(new IntVector2(Random.Range(0, Fly.room.TileWidth), Random.Range(0, Fly.room.TileHeight)));
-            creature.abstractAI.SetDestination(IdleSitSpot);
+            ow.abstractAI.SetDestination(IdleSitSpot);
             --IdleSitCounter;
             if (IdleSitCounter < 1 || Fly.room.aimap.getAItile(IdleSitSpot).narrowSpace)
             {
@@ -143,23 +135,23 @@ public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
         }
         else if (Behavior == FlyBehavior.Flee)
         {
-            var destination = threatTracker.FleeTo(creature.pos, 1, 30, CurrentUtility > .3f);
+            var destination = threatTracker.FleeTo(ow.pos, 1, 30, CurrentUtility > .3f);
             if (threatTracker.mostThreateningCreature is Tracker.CreatureRepresentation cr)
                 FocusCreature = cr;
             FocusItem = null;
-            creature.abstractAI.SetDestination(destination);
+            ow.abstractAI.SetDestination(destination);
         }
         else if (Behavior == FlyBehavior.EscapeRain)
         {
             if (denFinder.GetDenPosition() is WorldCoordinate w)
-                creature.abstractAI.SetDestination(w);
+                ow.abstractAI.SetDestination(w);
         }
         else if (Behavior == FlyBehavior.Hunt && Fly.grasps is Creature.Grasp[] g && g[0]?.grabbed is null)
         {
             FocusCreature = null;
             FocusItem = FoodTracker.MostAttractiveItem;
-            creature.abstractAI.SetDestination(FocusItem!.BestGuessForPosition());
-            if (Fly.room is Room rm && FocusItem.GetVisualContact && FocusItem.RepresentedItem.realizedObject is DangleFruit d && HoverflyData.TryGetValue(creature, out var data) && (rm.GetTile(d.firstChunk.pos with { y = d.firstChunk.pos.y - 20f })?.Solid is true && data.CanEat || data.CanEatRoot) && d.grabbedBy?.Count == 0 && Custom.DistLess(d.firstChunk.pos, Fly.firstChunk.pos, Fly.firstChunk.rad * 7.5f) && Custom.InsideRect(FocusItem.BestGuessForPosition().Tile, new(-30, -30, rm.TileWidth + 30, rm.TileHeight + 30)))
+            ow.abstractAI.SetDestination(FocusItem!.BestGuessForPosition());
+            if (Fly.room is Room rm && FocusItem.GetVisualContact && FocusItem.RepresentedItem.realizedObject is DangleFruit d && d.abstractPhysicalObject.SameRippleLayer(ow) && HoverflyData.TryGetValue(ow, out var data) && (rm.GetTile(d.firstChunk.pos with { y = d.firstChunk.pos.y - 20f })?.Solid is true && data.CanEat || data.CanEatRoot) && d.grabbedBy?.Count == 0 && Custom.DistLess(d.firstChunk.pos, Fly.firstChunk.pos, Fly.firstChunk.rad * 7.5f) && Custom.InsideRect(FocusItem.BestGuessForPosition().Tile, new(-30, -30, rm.TileWidth + 30, rm.TileHeight + 30)))
             {
                 if (HuntAttackCounter < 50)
                 {
@@ -184,7 +176,7 @@ public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
             }
         }
         else if (Behavior == FlyBehavior.GetUnstuck)
-            creature.abstractAI.SetDestination(stuckTracker.getUnstuckPosCalculator.unstuckGoalPosition);
+            ow.abstractAI.SetDestination(stuckTracker.getUnstuckPosCalculator.unstuckGoalPosition);
     }
 
     public override float VisualScore(Vector2 lookAtPoint, float targetSpeed) => base.VisualScore(lookAtPoint, targetSpeed) - Mathf.InverseLerp(1f, -.3f, Vector2.Dot(default, (Fly.firstChunk.pos - lookAtPoint).normalized));
@@ -212,7 +204,7 @@ public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
             if (fly.graphicsModule is HoverflyGraphics g && Custom.DistLess(noise.pos, fly.firstChunk.pos, fly.firstChunk.rad * 10f) && noise.strength > .25f && noise.interesting > 0f)
                 g.EyeFearCounter = 30;
             if (Random.value > .5f)
-                fly.room?.PlaySound(NewSoundID.Hoverfly_Startle, fly.firstChunk, false, 1.25f, 1f + fly.IVars.SoundPitchBonus);
+                fly.room?.PlaySound(NewSoundID.M4R_Hoverfly_Startle, fly.firstChunk, false, 1.25f, 1f + fly.IVars.SoundPitchBonus);
         }
     }
 
@@ -224,7 +216,7 @@ public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAIN
             if (fly.graphicsModule is HoverflyGraphics g && Custom.DistLess(noise.pos, fly.firstChunk.pos, fly.firstChunk.rad * 10f) && noise.strength > .25f && noise.interesting > 0f)
                 g.EyeFearCounter = 30;
             if (Random.value > .5f)
-                fly.room?.PlaySound(NewSoundID.Hoverfly_Startle, fly.firstChunk, false, 1.25f, 1f + fly.IVars.SoundPitchBonus);
+                fly.room?.PlaySound(NewSoundID.M4R_Hoverfly_Startle, fly.firstChunk, false, 1.25f, 1f + fly.IVars.SoundPitchBonus);
         }
     }
 

@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class MiniLeech : Leech
 {
     public MiniLeech(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
@@ -23,7 +23,7 @@ public class MiniLeech : Leech
         {
             if (grasps[0] is null)
             {
-                if (huntPrey is Creature c && c.Submersion > 0f)
+                if (huntPrey is Creature c && c.Submersion > 0f && c.abstractPhysicalObject.SameRippleLayer(abstractPhysicalObject) && c.NoCamo())
                 {
                     var flag = false;
                     if (c.grasps is Grasp[] grs)
@@ -66,7 +66,7 @@ public class MiniLeech : Leech
                     var crits = room.abstractRoom.creatures;
                     for (var i = 0; i < crits.Count; i++)
                     {
-                        if (crits[i]?.realizedCreature is Creature cr && !cr.dead && cr.Submersion >= .5f && cr.mainBodyChunk is BodyChunk b && Custom.DistLess(b.pos, firstChunk.pos, 250f + b.rad) && Template.CreatureRelationship(cr).type == CreatureTemplate.Relationship.Type.Afraid)
+                        if (crits[i] is AbstractCreature acr && acr.SameRippleLayer(abstractPhysicalObject) && acr.realizedCreature is Creature cr && cr.NoCamo() && !cr.dead && cr.Submersion >= .5f && cr.mainBodyChunk is BodyChunk b && Custom.DistLess(b.pos, firstChunk.pos, 250f + b.rad) && Template.CreatureRelationship(cr).type == CreatureTemplate.Relationship.Type.Afraid)
                         {
                             flag = true;
                             break;

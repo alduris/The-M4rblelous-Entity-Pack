@@ -6,12 +6,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using DevInterface;
 using RWCustom;
-using MoreSlugcats;
 using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-
+// CHK
 sealed class FatFireFlyCritob : Critob, ISandboxHandler
 {
     internal FatFireFlyCritob() : base(CreatureTemplateType.FatFireFly)
@@ -122,10 +121,10 @@ sealed class FatFireFlyCritob : Critob, ISandboxHandler
         fff.Fears(CreatureTemplate.Type.Leech, .4f);
         fff.EatenBy(CreatureTemplate.Type.BigEel, 1f);
         fff.IgnoredBy(CreatureTemplate.Type.MirosBird);
-        if (ModManager.MSC)
+        if (ModManager.DLCShared)
         {
-            fff.Ignores(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
-            fff.IgnoredBy(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture);
+            fff.Ignores(DLCSharedEnums.CreatureTemplateType.MirosVulture);
+            fff.IgnoredBy(DLCSharedEnums.CreatureTemplateType.MirosVulture);
         }
         fff.Ignores(Type);
     }

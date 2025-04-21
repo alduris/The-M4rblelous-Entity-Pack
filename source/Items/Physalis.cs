@@ -3,8 +3,8 @@ using RWCustom;
 using MoreSlugcats;
 
 namespace LBMergedMods.Items;
-
-public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable, IHaveAStalk
+//CHK
+public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable, IHaveAStalkState, IHaveAStalk
 {
     public class Stem : UpdatableAndDeletable, IDrawable
     {
@@ -418,7 +418,7 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable, IHaveASta
 
     public virtual void BitByPlayer(Creature.Grasp grasp, bool eu)
     {
-        room.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk.pos, 1f, 1.2f);
+        room.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk, false, 1f, 1.2f);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         (grasp.grabber as Player)?.ObjectEaten(this);
         grasp.Release();
@@ -432,4 +432,17 @@ public class Physalis : PlayerCarryableItem, IPlayerEdible, IDrawable, IHaveASta
     }
 
     public virtual void ThrowByPlayer() { }
+
+    public virtual void DetatchStalk()
+    {
+        if (MyStalk is Stalk st)
+        {
+            if (st.Fruit is Physalis ph)
+            {
+                ph.AbstrCons.Consume();
+                st.Fruit = null;
+            }
+            MyStalk = null;
+        }
+    }
 }

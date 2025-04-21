@@ -1,7 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.OracleHooks;
 
 namespace LBMergedMods.Hooks;
-
+//CHK
 public static class OracleHooks
 {
     internal static void On_MoonConversation_AddEvents(On.SLOracleBehaviorHasMark.MoonConversation.orig_AddEvents orig, SLOracleBehaviorHasMark.MoonConversation self)

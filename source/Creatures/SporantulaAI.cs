@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class SporantulaAI : BigSpiderAI
 {
     public SporantulaAI(AbstractCreature creature, World world) : base(creature, world)
@@ -24,7 +24,7 @@ public class SporantulaAI : BigSpiderAI
             for (var i = 0; i < crits.Count; i++)
             {
                 var cr = crits[i];
-                if (!mem.Contains(cr))
+                if (cr.SameRippleLayer(creature) && cr.NoCamo() && !mem.Contains(cr))
                 {
                     var tp = StaticRelationship(cr).type;
                     if ((tp == CreatureTemplate.Relationship.Type.Attacks || tp == CreatureTemplate.Relationship.Type.Eats || tp == CreatureTemplate.Relationship.Type.Ignores) && DoIWantToKill(cr))
@@ -44,7 +44,7 @@ public class SporantulaAI : BigSpiderAI
 
     public virtual bool DoIWantToKill(AbstractCreature cr)
     {
-        if (cr.creatureTemplate.type != CreatureTemplateType.Sporantula)
+        if (cr.SameRippleLayer(creature) && cr.NoCamo() && cr.creatureTemplate.type != CreatureTemplateType.Sporantula)
         {
             if (cr.realizedCreature is InsectoidCreature)
                 return true;

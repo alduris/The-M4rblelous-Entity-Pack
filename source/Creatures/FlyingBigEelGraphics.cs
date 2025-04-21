@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-
+//CHK
 public class FlyingBigEelGraphics : BigEelGraphics
 {
     public FlyingBigEelGraphics(FlyingBigEel ow) : base(ow)
