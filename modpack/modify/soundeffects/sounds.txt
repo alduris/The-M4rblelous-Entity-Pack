@@ -1,0 +1,19 @@
+[ADD]M4R_Hoverfly_Idle : hvflyidle1/vol=0.075, hvflyidle2/vol=0.075, hvflyidle3/vol=0.075, hvflyidle4/vol=0.075, hvflyidle5/vol=0.075, hvflyidle6/vol=0.075, hvflyidle7/vol=0.075
+[ADD]M4R_Hoverfly_Startle : hvflystartle1/vol=0.075, hvflystartle2/vol=0.075, hvflystartle3/vol=0.075
+[ADD]M4R_Hoverfly_Fly_LOOP : hvflyFlap2B/vol=0.3, hvflyFlap2H/vol=0.3
+[ADD]M4R_Flying_Leviathan_Bite : bigClankA/vol=0.4
+[ADD]M4R_WaterSpitter_Voice_A : M4RDRDR3/vol=0.6/pitch=0.7
+[ADD]M4R_WaterSpitter_Voice_B : M4RDRDR2/vol=0.6/pitch=0.85
+[ADD]M4R_WaterSpitter_Voice_C : M4RDRDR3/vol=0.6/pitch=0.85
+[ADD]M4R_CommonEel_Voice : M4RHSH1/vol=0.85/pitch=0.6, M4RHSH2/vol=0.85/pitch=0.6, M4RHSH3/vol=0.85/pitch=0.6, M4RHSH4/vol=0.85/pitch=0.6
+[ADD]M4R_CommonEel_Hiss : M4RHSS2/vol=0.85/pitch=0.6
+[ADD]M4R_CommonEel_BigHiss : M4RSSS1/vol=0.85/pitch=0.6, M4RSSS2/vol=0.85/pitch=0.6
+[ADD]M4R_Xylo_Swallow : M4RDRROUP1/vol=0.2, M4RDRROUP2/vol=0.2, M4RDRROUP3/vol=0.2, M4RDRROUP4/vol=0.2, M4RDRROUP5/vol=0.2, M4RDRROUP6/vol=0.2
+[ADD]M4R_Xylo_Swell : M4RDRROUP7/vol=0.25
+[ADD]M4R_ChipChop_Chip : M4RFFT1/vol=0.3/pitch=0.9
+[ADD]M4R_TintedBeetle_Chip : M4RFIU1/vol=0.6/pitch=0.9, M4RFIU3/vol=0.6/pitch=0.9, M4RFIU4/vol=0.6/pitch=0.9, M4RFIU6/vol=0.6/pitch=0.9
+[ADD]M4R_TintedBeetle_BigChip : M4RFIU5/vol=0.6/pitch=0.9, M4RFIUFIU5/vol=0.6/pitch=0.9, M4RFIUFIU6/vol=0.6/pitch=0.9, M4RFIUFIUFIU1/vol=0.6/pitch=0.9
+[ADD]M4R_Caterpillar_Crawl_LOOP : M4RFROUCHLOOP/vol=0.81
+[ADD]M4R_SurfaceSwimmer_Chip : M4RFUW1/vol=0.5/pitch=0.5, M4RFUW2/vol=0.5/pitch=0.5
+[ADD]M4R_GenericBug_BigChip : M4RTCH1/vol=0.22, M4RTCH4/vol=0.22, M4RTCH6/vol=0.22, M4RTCH7/vol=0.22
+[ADD]M4R_GenericBug_Chip : M4RTCH4/vol=0.15/pitch=0.9, M4RTCH6/vol=0.15/pitch=0.9, M4RTCH7/vol=0.15/pitch=0.9

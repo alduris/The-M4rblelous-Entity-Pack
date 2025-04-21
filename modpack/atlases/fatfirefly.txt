@@ -1,0 +1,108 @@
+{"frames": {
+
+"FFFBody.png":
+{
+	"frame": {"x":2,"y":2,"w":126,"h":88},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":126,"h":88},
+	"sourceSize": {"w":126,"h":88}
+},
+"FFFBodyColor.png":
+{
+	"frame": {"x":130,"y":2,"w":126,"h":88},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":126,"h":88},
+	"sourceSize": {"w":126,"h":88}
+},
+"FFFEyes0.png":
+{
+	"frame": {"x":258,"y":2,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes1.png":
+{
+	"frame": {"x":321,"y":2,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes2.png":
+{
+	"frame": {"x":384,"y":2,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes3.png":
+{
+	"frame": {"x":2,"y":92,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes4.png":
+{
+	"frame": {"x":65,"y":92,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes5.png":
+{
+	"frame": {"x":128,"y":92,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes6.png":
+{
+	"frame": {"x":191,"y":92,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes7.png":
+{
+	"frame": {"x":254,"y":92,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"FFFEyes8.png":
+{
+	"frame": {"x":317,"y":92,"w":61,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":61},
+	"sourceSize": {"w":61,"h":61}
+},
+"icon_FatFireFly.png":
+{
+	"frame": {"x":380,"y":92,"w":17,"h":24},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":17,"h":24},
+	"sourceSize": {"w":17,"h":24}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "fatfirefly.png",
+	"format": "RGBA8888",
+	"size": {"w":447,"h":155},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:54e66ffc19805c99c05d42f0c8752877:abccd9bd17abe8db26ba29eef2614ea5:c04bfeb5b5326fc3b1b1928115304d81$"
+}
+}

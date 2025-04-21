@@ -1,0 +1,44 @@
+{"frames": {
+
+"BoBShellA.png":
+{
+	"frame": {"x":2,"y":2,"w":27,"h":27},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":27},
+	"sourceSize": {"w":27,"h":27}
+},
+"BoBShellB.png":
+{
+	"frame": {"x":31,"y":2,"w":27,"h":27},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":27},
+	"sourceSize": {"w":27,"h":27}
+},
+"BoBShellC.png":
+{
+	"frame": {"x":60,"y":2,"w":27,"h":27},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":27},
+	"sourceSize": {"w":27,"h":27}
+},
+"icon_BouncingBall.png":
+{
+	"frame": {"x":89,"y":2,"w":19,"h":20},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":19,"h":20},
+	"sourceSize": {"w":19,"h":20}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "bouncingball.png",
+	"format": "RGBA8888",
+	"size": {"w":110,"h":31},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ba6e721ed2ed429860dd2121b40554e0:a4114140832c745dd35ed826764532dd:ab5ffdde0eed4f363cdebcf683518d99$"
+}
+}
