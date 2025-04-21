@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using DevConsole;
 using DevConsole.Commands;
@@ -18,7 +17,7 @@ namespace LBMergedMods
     internal static class DevConsoleCommands
     {
         private static readonly Regex s_EntityID = new(@"^ID\.-?\d+\.-?\d+(\.-?\d+)?$");
-        private static readonly string[] s_AllTags = ["Voidsea", "Winter", "Ignorecycle", "TentacleImmune", "Lavasafe", "AlternateForm", "PreCycle", "Night", "AlbinoForm", "DestroyOnAbstract", "DontSave"];
+        private static readonly string[] s_AllTags = ["Voidsea", "Winter", "Ignorecycle", "TentacleImmune", "Lavasafe", "AlternateForm", "PreCycle", "Night", "Ripple", "AlbinoForm", "DestroyOnAbstract", "DontSave"];
         private const string s_HintPrefix = "help-";
 
         private static HashSet<ObjType> s_ObjectTypes = [];
@@ -30,23 +29,14 @@ namespace LBMergedMods
             return Custom.MakeWorldCoordinate(Room.StaticGetTilePosition(pos), self.index);
         }
 
-        public static HashSet<T> GetEnumTypes<T>(Type C)
-        {
-            return C.GetFields(BindingFlags.Static | BindingFlags.Public)
-                .Where(x => x.FieldType == typeof(T) && x.GetValue(null) != null)
-                .Select(x => x.GetValue(null))
-                .Cast<T>()
-                .ToHashSet();
-        }
-
         public static void RegisterDevConsole()
         {
             try
             {
-                // Collect information using reflection so we don't have to worry about collecting it later when it inevitably changes lmao
-                s_ObjectTypes = GetEnumTypes<ObjType>(typeof(AbstractObjectType));
-                s_CritterTypes = CreatureTemplateType.s_M4RCreatureList.Union([new CritType("Bigrub", false), new CritType("Bigworm", false), new CritType("SeedBat", false), new CritType("JellyLongLegs", false)]).ToHashSet();
-                s_SandboxUnlocks = GetEnumTypes<SandboxUnlock>(typeof(SandboxUnlockID));
+                // Collect copies of types so we can add our own stuff if wanted
+                s_ObjectTypes = [.. AbstractObjectType.M4RItemList];
+                s_CritterTypes = [.. CreatureTemplateType.M4RCreatureList.Union([new CritType("Bigrub", false), new CritType("Bigworm", false), new CritType("SeedBat", false), new CritType("JellyLongLegs", false)])];
+                s_SandboxUnlocks = [.. SandboxUnlockID.M4RUnlockList]; // creating a copy
 
                 // Shrembly
                 if (ModManager.ActiveMods.Any(x => x.id == "com.rainworldgame.shroudedassembly.plugin"))
@@ -331,10 +321,13 @@ namespace LBMergedMods
                     }
 
                     // Show arguments specific to creature
-                    if (StaticWorld.GetCreatureTemplate(critType).TopAncestor().type == CritType.LizardTemplate && foundFloats == 0)
+                    if (StaticWorld.GetCreatureTemplate(critType).TopAncestor().type == CritType.LizardTemplate)
                     {
                         // Lizard-specific
-                        yield return s_HintPrefix + "mean: float";
+                        if (foundFloats == 0)
+                            yield return s_HintPrefix + "mean: float";
+                        if (!args.Any(x => x.StartsWith("RotType:")))
+                            yield return s_HintPrefix + "RotType:(int)";
                     }
                     else if (critType.value == "Bigrub" && foundBools == 0)
                     {

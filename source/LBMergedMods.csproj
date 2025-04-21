@@ -4,6 +4,10 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <Company>M4rbleL1ne, Wrayk, Thrithralas, snoodle, the one who screams I guess</Company>
+	<!-- Build output location -->
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<OutputPath>../modpack/newest/plugins</OutputPath>
+	<PathMap>$(MSBuildProjectDirectory)=/$(SolutionName)</PathMap>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BepInEx">
@@ -32,6 +36,7 @@
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>Refs\PUBLIC-Assembly-CSharp.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="Unity.Mathematics">
       <HintPath>Refs\Unity.Mathematics.dll</HintPath>
