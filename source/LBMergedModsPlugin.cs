@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using MonoMod.RuntimeDetour;
 using Fisobs.Sandbox;
+using Watcher;
 
 #pragma warning disable CS0618 // ignore false message
 [module: UnverifiableCode]
@@ -325,6 +326,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.CreatureSymbol.DoesCreatureEarnATrophy += On_CreatureSymbol_DoesCreatureEarnATrophy;
         new Hook(typeof(LizardGraphics).GetMethod("get_HeadLightsUpFromNoise", ALL_FLAGS), On_LizardGraphics_get_HeadLightsUpFromNoise);
         On.CreatureSymbol.LizardSpriteName += On_CreatureSymbol_LizardSpriteName;
+        new Hook(typeof(LizardRotGraphics).GetMethod("get_ApplyPaletteInDraw", ALL_FLAGS), On_LizardRotGraphics_get_ApplyPaletteInDraw);
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
