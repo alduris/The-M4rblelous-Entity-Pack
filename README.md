@@ -56,4 +56,8 @@ Don't forget to recompile shaders and to redraw some sprites because the shader 
 
 Shrouded and seer will be the next ones.
 
+## Shrouded
+# Utils -> GONE
+# Items V
+
 CW CODE and CENTI MAKER UPDATED YAY!
