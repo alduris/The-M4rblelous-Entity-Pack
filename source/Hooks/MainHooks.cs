@@ -113,6 +113,8 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.ChipChop);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.MiniScutigera))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.MiniScutigera);
+                /*if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Xylo))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Xylo);*/
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();

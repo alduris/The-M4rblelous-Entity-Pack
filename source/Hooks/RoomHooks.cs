@@ -242,6 +242,20 @@ public static class RoomHooks
                                 state.Die();
                         }
                     }
+                    /*else if (firstTimeRealized && pObj.type == PlacedObjectType.PlacedXylo)
+                    {
+                        if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        {
+                            var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.Xylo), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                            {
+                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
+                            };
+                            var state = (abstractCreature.state as HazerMomState)!;
+                            state.OrigRoom = arm.index;
+                            state.PlacedObjectIndex = i;
+                            arm.AddEntity(abstractCreature);
+                        }
+                    }*/
                 }
             }
         }

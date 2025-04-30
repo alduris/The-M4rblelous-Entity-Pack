@@ -350,7 +350,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new MiniLeviathanCritob(),
                         new MiniFlyingBigEelCritob(),
                         new FlyingBigEelCritob(),
-                        new DentureCritob());
+                        new DentureCritob()/*,
+                        new XyloCritob(),
+                        new XyloWormCritob()*/);
     }
 
     public void OnDisable()

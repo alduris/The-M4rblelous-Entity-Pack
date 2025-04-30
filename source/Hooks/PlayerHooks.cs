@@ -32,7 +32,7 @@ public static class PlayerHooks
 
     internal static Player.ObjectGrabability On_Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
     {
-        if (obj is ThornyStrawberry or BlobPiece or BouncingMelon or LittleBalloon or TintedBeetle or Physalis or LimeMushroom or GummyAnther or MarineEye or SmallPuffBall or DendriticNeuron or MiniFruit)
+        if (obj is ThornyStrawberry or BlobPiece or BouncingMelon or LittleBalloon or TintedBeetle or Physalis or LimeMushroom or GummyAnther or MarineEye or SmallPuffBall or DendriticNeuron or MiniFruit/* or XyloWorm*/)
             return Player.ObjectGrabability.OneHand;
         if (obj is RubberBlossom or MiniFruitSpawner)
             return Player.ObjectGrabability.CantGrab;

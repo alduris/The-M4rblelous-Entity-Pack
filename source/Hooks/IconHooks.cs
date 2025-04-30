@@ -57,7 +57,7 @@ public static class IconHooks
         return orig(iconData);
     }
 
-    internal static bool On_CreatureSymbol_DoesCreatureEarnATrophy(On.CreatureSymbol.orig_DoesCreatureEarnATrophy orig, CreatureTemplate.Type creature) => creature != CreatureTemplateType.MiniScutigera && orig(creature);
+    internal static bool On_CreatureSymbol_DoesCreatureEarnATrophy(On.CreatureSymbol.orig_DoesCreatureEarnATrophy orig, CreatureTemplate.Type creature) => creature != CreatureTemplateType.MiniScutigera/* && creature != CreatureTemplateType.XyloWorm*/ && orig(creature);
 
     internal static string On_CreatureSymbol_LizardSpriteName(On.CreatureSymbol.orig_LizardSpriteName orig, string defaultSpriteName, int intData)
     {

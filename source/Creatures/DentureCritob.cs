@@ -52,7 +52,6 @@ sealed class DentureCritob : Critob, ISandboxHandler
         t.throughSurfaceVision = 1f;
         t.dangerousToPlayer = .5f;
         t.communityInfluence = .05f;
-        t.wormGrassImmune = true;
         t.waterRelationship = CreatureTemplate.WaterRelationship.Amphibious;
         t.BlizzardWanderer = true;
 		t.countsAsAKill = 0;

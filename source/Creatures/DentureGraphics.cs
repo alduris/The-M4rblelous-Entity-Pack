@@ -39,12 +39,14 @@ public class DentureGraphics : GraphicsModule
             new("DentureJawPart")
             {
                 anchorX = 23f / 66f,
-                anchorY = 13f / 201f
+                anchorY = 13f / 201f,
+                scale = 0f
             },
             new("DentureJawPart")
             {
                 anchorX = 23f / 66f,
-                anchorY = 13f / 201f
+                anchorY = 13f / 201f,
+                scale = 0f
             }
         ];
         AddToContainer(sLeaser, rCam, null);
@@ -108,14 +110,11 @@ public class DentureGraphics : GraphicsModule
             for (var i = 0; i < sprs.Length; i++)
             {
                 var spr = sprs[i];
-                spr.isVisible = spr.scaleY >= .28f;
+                spr.isVisible = spr.scaleY >= .08f;
                 spr.color = clr;
             }
         }
-        if (owner.slatedForDeletetion || owner.room != rCam.room || dispose)
-            sLeaser.CleanSpritesAndRemove();
-        if (jaw1.isVisible == culled)
-            body2.isVisible = body3.isVisible = jaw2.isVisible = jaw1.isVisible = body.isVisible = !culled;
+        base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
     }
 
     public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette) => BlackColor = palette.blackColor;

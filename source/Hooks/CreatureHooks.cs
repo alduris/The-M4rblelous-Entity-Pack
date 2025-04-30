@@ -99,28 +99,20 @@ public static class CreatureHooks
         return res;
     }
 
-    internal static void On_SporePlant_HitByWeapon(On.SporePlant.orig_HitByWeapon orig, SporePlant self, Weapon weapon)
-    {
-        if (weapon is not SmallPuffBall)
-            orig(self, weapon);
-    }
-
-    internal static bool On_SporePlant_SporePlantInterested(On.SporePlant.orig_SporePlantInterested orig, CreatureTemplate.Type tp) => tp != CreatureTemplateType.Denture && orig(tp);
-
     internal static bool On_StowawayBugAI_WantToEat(On.MoreSlugcats.StowawayBugAI.orig_WantToEat orig, StowawayBugAI self, CreatureTemplate.Type input) => input != CreatureTemplateType.Denture && input != CreatureTemplateType.MiniLeviathan && input != CreatureTemplateType.FatFireFly && input != CreatureTemplateType.FlyingBigEel && input != CreatureTemplateType.MiniFlyingBigEel && input != CreatureTemplateType.Blizzor && orig(self, input);
-
-    public static FoodItemRepresentation CreateTrackerRepresentationForItem(this ArtificialIntelligence self, AbstractPhysicalObject item)
-    {
-        var res = new FoodItemRepresentation(self.tracker, item, 0f, true);
-        OnResultAction?.Invoke(self, item, res);
-        return res;
-    }
 
     internal static float On_ThreatDetermination_ThreatOfCreature(On.ThreatDetermination.orig_ThreatOfCreature orig, ThreatDetermination self, Creature creature, Player player)
     {
         if ((creature is Sporantula spore && (spore.dead || (spore.AI is SporantulaAI sporeAI && !sporeAI.DoIWantToKill(player.abstractCreature)))) || (creature is Scutigera centi && (centi.dead || (centi.AI is ScutigeraAI centiAI && !centiAI.DoIWantToShockCreature(player.abstractCreature)))))
             return 0f;
         return orig(self, creature, player);
+    }
+
+    public static FoodItemRepresentation CreateTrackerRepresentationForItem(this ArtificialIntelligence self, AbstractPhysicalObject item)
+    {
+        var res = new FoodItemRepresentation(self.tracker, item, 0f, true);
+        OnResultAction?.Invoke(self, item, res);
+        return res;
     }
 
     public static void FoodItemSpotted(this ArtificialIntelligence self, bool firstSpot, FoodItemRepresentation item) => OnFoodItemSpotted?.Invoke(self, firstSpot, item);
