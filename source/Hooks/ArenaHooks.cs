@@ -60,7 +60,7 @@ public static class ArenaHooks
              .EmitDelegate((bool flag, List<AbstractCreature> challengeKillList, int l) =>
              {
                  var tp = challengeKillList[l].creatureTemplate.type;
-                 return flag && tp != CreatureTemplateType.MiniBlackLeech && tp != CreatureTemplateType.MiniScutigera;
+                 return flag && tp != CreatureTemplateType.MiniBlackLeech && tp != CreatureTemplateType.MiniScutigera && tp != CreatureTemplateType.XyloWorm;
              });
         }
         else
@@ -281,5 +281,5 @@ public static class ArenaHooks
         killScores[(int)SandboxUnlockID.Bigrub] = 2;
     }
 
-    internal static bool On_SandboxSettingsInterface_IsThisSandboxUnlockVisible(On.Menu.SandboxSettingsInterface.orig_IsThisSandboxUnlockVisible orig, MultiplayerUnlocks.SandboxUnlockID sandboxUnlockID) => sandboxUnlockID != SandboxUnlockID.SeedBat && sandboxUnlockID != SandboxUnlockID.Bigrub && sandboxUnlockID != SandboxUnlockID.MiniBlackLeech && orig(sandboxUnlockID);
+    internal static bool On_SandboxSettingsInterface_IsThisSandboxUnlockVisible(On.Menu.SandboxSettingsInterface.orig_IsThisSandboxUnlockVisible orig, MultiplayerUnlocks.SandboxUnlockID sandboxUnlockID) => sandboxUnlockID != SandboxUnlockID.SeedBat && sandboxUnlockID != SandboxUnlockID.Bigrub && sandboxUnlockID != SandboxUnlockID.MiniBlackLeech && sandboxUnlockID != SandboxUnlockID.XyloWorm && orig(sandboxUnlockID);
 }

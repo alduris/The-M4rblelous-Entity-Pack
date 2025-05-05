@@ -30,6 +30,7 @@ Shader "MiniLeviEelFin"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				#include "_RippleClip.cginc"
 				//#include "_ShaderFix.cginc" -> unused code
 				sampler2D _MainTex;
 				sampler2D _NoiseTex;
@@ -58,6 +59,7 @@ Shader "MiniLeviEelFin"
 
 				float4 frag(v2f i) : SV_Target
 				{
+					rippleClip(i.scrPos);
 					float n = min(1.0, tex2D(_NoiseTex, float2(i.clr.y, i.uv.y * lerp(1.0, 3.0, i.clr.x) * 3.0)) + 0.1) - pow(i.uv.x, 1.5);
 					if (n <= 0.0)
 						return float4(0.0, 0.0, 0.0, 0.0);

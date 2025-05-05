@@ -24,18 +24,17 @@ public static class VultureHooks
         var repr = dRelation.trackerRep.representedCreature;
         var reprTempl = repr.creatureTemplate;
         var tpl = self.creature.creatureTemplate;
+        if (tpl.type?.value == "Joust" && reprTempl.type == CreatureTemplateType.XyloWorm)
+            return new(CreatureTemplate.Relationship.Type.Eats, 1f);
         if (reprTempl.type == CreatureTemplateType.FatFireFly)
             return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
-        else if (tpl.type == CreatureTemplateType.FatFireFly)
+        if (tpl.type == CreatureTemplateType.FatFireFly)
         {
             if (reprTempl.bodySize > tpl.bodySize / 2f || reprTempl.IsVulture || (ModManager.DLCShared && reprTempl.type == DLCSharedEnums.CreatureTemplateType.MirosVulture))
                 return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
-            else
-            {
-                var staticRel = self.StaticRelationship(repr);
-                staticRel.intensity *= .1f;
-                return staticRel;
-            }
+            var staticRel = self.StaticRelationship(repr);
+            staticRel.intensity *= .1f;
+            return staticRel;
         }
         return orig(self, dRelation);
     }

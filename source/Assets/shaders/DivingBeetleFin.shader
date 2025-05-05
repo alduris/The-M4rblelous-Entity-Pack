@@ -30,6 +30,7 @@ Shader "DivingBeetleFin"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				#include "_RippleClip.cginc"
 				//#include "_ShaderFix.cginc" -> unused code
 				sampler2D _MainTex;
 				float4 _MainTex_ST;
@@ -57,6 +58,7 @@ Shader "DivingBeetleFin"
 
 				float4 frag(v2f i) : SV_Target
 				{
+				    rippleClip(i.scrPos);
 					float4 texCol = tex2D(_MainTex, i.uv);
 					return float4(texCol.xyz * i.clr.xyz, texCol.w);
 				}

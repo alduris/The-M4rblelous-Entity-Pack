@@ -12,7 +12,7 @@ public class BouncingBall : Snail
 
     public override void Die()
     {
-        if (room is Room rm)
+        if (room is Room rm && killTag?.creatureTemplate.type != CreatureTemplateType.Xylo)
         {
             var vector = mainBodyChunk.pos;
             var clr = shellColor[1];

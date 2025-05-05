@@ -114,6 +114,17 @@ public static class ScavengerHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ScavengerAI.IUseARelationshipTracker.UpdateDynamicRelationship! (part 2)");
     }
 
+    internal static void On_ScavengerBomb_Explode(On.ScavengerBomb.orig_Explode orig, ScavengerBomb self, BodyChunk hitChunk)
+    {
+        if (hitChunk?.owner is Xylo)
+        {
+            self.smoke?.Destroy();
+            self.Destroy();
+        }
+        else
+            orig(self, hitChunk);
+    }
+
     internal static void On_ScavengerOutpost_FeeRecieved(On.ScavengerOutpost.orig_FeeRecieved orig, ScavengerOutpost self, Player player, AbstractPhysicalObject item, int value)
     {
         if (self.worldOutpost is ScavengersWorldAI.Outpost outpost && item.type == AbstractObjectType.Physalis)

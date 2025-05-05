@@ -1,33 +1,19 @@
-﻿/*using Noise;
+﻿using MoreSlugcats;
+using Noise;
 using RWCustom;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace LBMergedMods.Creatures;*/
+namespace LBMergedMods.Creatures;
 /*TODO:
  * NVst port + finish
  * 
  * SDv make
  * 
- * MDLz port
- * 
  * Entity Pack:
  * Merge Aluris PR
- * 
- * Xylo + Xylo Worm:
- * relationships
- * add black teetch to worms
- * add colored smoke
- * rework root sprite
- * change container after that
- * fix some items not being swallowed
- * make worms spawnable
- * make living worms attach the player or other creatures and slow them down slightly
- * make icons (reuse black leech icon for worm)
- * implement non-trypo mode
- * prevent some creatures from being swallowed
  */
-/*
+
 public class Xylo : Creature
 {
     public const float BASE_RAD = 70f;
@@ -35,16 +21,17 @@ public class Xylo : Creature
     public Color EffectColor;
     public Vector2 RootPos;
     public float Lerper;
-    public int Worms;
-    public bool LerpUp = true;
+    public int Worms, RottenWorms;
+    public bool LerpUp = true, NoHolesMode;
 
     public new HazerMomState State => (base.State as HazerMomState)!;
 
     public override bool SandstormImmune => true;
 
-    public Xylo(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
+    public Xylo(AbstractCreature abstractCreature, World world, bool noHolesMode = false) : base(abstractCreature, world)
     {
-        bodyChunks = [new(this, 0, default, BASE_RAD, .5f)];
+        NoHolesMode = noHolesMode;
+        bodyChunks = [new(this, 0, default, BASE_RAD, 3f)];
         bodyChunkConnections = [];
         abstractCreature.tentacleImmune = true;
         abstractCreature.HypothermiaImmune = true;
@@ -59,78 +46,84 @@ public class Xylo : Creature
         buoyancy = .01f;
         var state = Random.state;
         Random.InitState(abstractPhysicalObject.ID.RandomSeed);
+        RottenWorms = Random.Range(4, 6);
         Worms = Random.Range(3, 6);
-        EffectColor = new(Random.Range(82f / 255f, 119f / 255f), 3f / 255f, 252f / 255f);
+        EffectColor = abstractCreature.superSizeMe ? new(Random.Range(102f / 255f, 139f / 255f), 6f / 255f, 6f / 255f) : new(Random.Range(82f / 255f, 119f / 255f), 3f / 255f, 252f / 255f);
         Random.state = state;
     }
 
     public override void InitiateGraphicsModule() => graphicsModule ??= new XyloGraphics(this);
 
-    public override void Update(bool eu)
+    public virtual void Swallow(PhysicalObject obj)
     {
-        base.Update(eu);
-        var speed = .1f * (2.5f - State.ClampedHealth * 1.5f);
-        Lerper = Mathf.Clamp(Lerper + (LerpUp ? speed * 2.5f : -speed), -2f, 1f);
-        if (Lerper >= 1f)
+        room?.PlaySound(NewSoundID.M4R_Xylo_Swallow, firstChunk);
+        if (obj is Creature cr)
         {
-            room?.PlaySound(NewSoundID.M4R_Xylo_Swell, firstChunk);
-            LerpUp = false;
+            cr.killTag = abstractCreature;
+            cr.Die();
         }
-        else if (Lerper <= -2f)
-            LerpUp = true;
-        firstChunk.rad = BASE_RAD * Mathf.Clamp(1f + Lerper * .1f, 1f, 1.25f);
-        firstChunk.HardSetPosition(RootPos);
+        if (obj is Weapon w)
+        {
+            if (w is ExplosiveSpear s)
+                s.exploded = true;
+            killTag = w.thrownBy?.abstractCreature;
+            State.health -= .225f;
+        }
+        obj.Destroy();
+        if (graphicsModule is XyloGraphics gr)
+            gr.LightUp = .5f;
     }
-
-    public override void Stun(int st) { }
 
     public override void Collide(PhysicalObject otherObject, int myChunk, int otherChunk)
     {
-        if (otherObject is not null)
-        {
-            var radSum = 0f;
-            var chs = otherObject.bodyChunks;
-            for (var i = 0; i < chs.Length; i++)
-                radSum += chs[i].rad;
-            if (radSum <= 10f)
-            {
-                room?.PlaySound(NewSoundID.M4R_Xylo_Swallow, firstChunk);
-                if (otherObject is Creature cr)
-                {
-                    cr.killTag = abstractCreature;
-                    cr.Die();
-                }
-                if (otherObject is Weapon w)
-                {
-                    killTag = w.thrownBy?.abstractCreature;
-                    State.health -= .275f;
-                }
-                otherObject.Destroy();
-                if (graphicsModule is XyloGraphics gr)
-                    gr.LightUp = .5f;
-            }
-        }
+        base.Collide(otherObject, myChunk, otherChunk);
+        if (otherObject is not null && CanBeSwallowed(otherObject))
+            Swallow(otherObject);
     }
 
     public override void HitByWeapon(Weapon weapon)
     {
-        if (weapon is not null)
+        base.HitByWeapon(weapon);
+        if (weapon is not null && CanBeSwallowed(weapon))
+            Swallow(weapon);
+    }
+
+    public override void Update(bool eu)
+    {
+        base.Update(eu);
+        if (room is not Room rm)
+            return;
+        var speed = .1f * (2.5f - State.ClampedHealth * 1.5f);
+        var fch = firstChunk;
+        var objs = rm.physicalObjects;
+        for (var i = 0; i < objs.Length; i++)
         {
-            var radSum = 0f;
-            var chs = weapon.bodyChunks;
-            for (var i = 0; i < chs.Length; i++)
-                radSum += chs[i].rad;
-            if (radSum <= 10f)
+            var list = objs[i];
+            for (var j = 0; j < list.Count; j++)
             {
-                room?.PlaySound(NewSoundID.M4R_Xylo_Swallow, firstChunk);
-                killTag = weapon.thrownBy?.abstractCreature;
-                State.health -= .2f;
-                weapon.Destroy();
-                if (graphicsModule is XyloGraphics gr)
-                    gr.LightUp = .5f;
+                if (list[j] is PhysicalObject obj && obj.firstChunk is BodyChunk b && Denture.DistLess(b.pos, fch.pos, b.rad + fch.rad + 5f) && CanBeSwallowed(obj))
+                    Swallow(obj);
             }
         }
+        Lerper = Mathf.Clamp(Lerper + (LerpUp ? speed * 2.5f : -speed), -2f, 1f);
+        if (Lerper >= 1f)
+        {
+            rm.PlaySound(NewSoundID.M4R_Xylo_Swell, fch);
+            LerpUp = false;
+        }
+        else if (Lerper <= -2f)
+            LerpUp = true;
+        fch.rad = BASE_RAD * Mathf.Clamp(1f + Lerper * .1f, 1f, 1.25f);
+        fch.HardSetPosition(RootPos);
+        if (!dead && State.health < 0f)
+            Die();
     }
+
+    public override void Stun(int st) { }
+
+    public virtual bool CanBeSwallowed(PhysicalObject item) => 
+        (item is Creature c && Template.CreatureRelationship(c).type == CreatureTemplate.Relationship.Type.Eats) ||
+        (item.bodyChunks.Length == 1 && item.firstChunk.rad <= 10f && item is not KarmaFlower and not FlyLure and not FirecrackerPlant and not BubbleGrass and not SingularityBomb and not JokeRifle and not VultureMask and not MoonCloak and not EnergyCell and not Pomegranate and not DendriticNeuron and not StarLemon && (item is not Lantern l || l.stick is null) && item.grabbedBy?.Count == 0);
 
     public override void HitByExplosion(float hitFac, Explosion explosion, int hitChunk) { }
 
@@ -156,7 +149,7 @@ public class Xylo : Creature
         if (room is Room rm)
         {
             var vector = firstChunk.pos;
-            rm.AddObject(new SootMark(rm, vector, 80f, true));
+            rm.AddObject(new SootMark(rm, vector, 400f, true));
             rm.AddObject(new Explosion(rm, this, vector, 5, 250f, 14f, 1.6f, 80f, .6f, this, .8f, 0f, .8f));
             for (var i = 0; i < 14; i++)
                 rm.AddObject(new Explosion.ExplosionSmoke(vector, Custom.RNV() * 5f * Random.value, 1f));
@@ -178,7 +171,7 @@ public class Xylo : Creature
                 rm.abstractRoom.AddEntity(abstractWorm = new(rm.world, wormTpl, null, abstractPhysicalObject.pos, rm.game.GetNewID()));
                 abstractWorm.RealizeInRoom();
                 worm = (abstractWorm.realizedObject as XyloWorm)!;
-                worm.firstChunk.HardSetPosition(rm.MiddleOfTile(firstChunk.pos));
+                worm.firstChunk.HardSetPosition(rm.MiddleOfTile(vector));
             }
             rm.abstractRoom.AddEntity(abstractWorm = new(rm.world, wormTpl, null, abstractPhysicalObject.pos, rm.game.GetNewID())
             {
@@ -186,7 +179,17 @@ public class Xylo : Creature
             });
             abstractWorm.RealizeInRoom();
             worm = (abstractWorm.realizedObject as XyloWorm)!;
-            worm.firstChunk.HardSetPosition(rm.MiddleOfTile(firstChunk.pos));
+            worm.firstChunk.HardSetPosition(rm.MiddleOfTile(vector));
+            for (; RottenWorms > 0; RottenWorms--)
+            {
+                rm.abstractRoom.AddEntity(abstractWorm = new(rm.world, wormTpl, null, abstractPhysicalObject.pos, rm.game.GetNewID()));
+                abstractWorm.RealizeInRoom();
+                worm = (abstractWorm.realizedObject as XyloWorm)!;
+                if (Albino.TryGetValue(abstractWorm, out var box))
+                    box.Value = true;
+                worm.Rotten = true;
+                worm.firstChunk.HardSetPosition(rm.MiddleOfTile(vector));
+            }
         }
         Destroy();
     }
@@ -224,4 +227,4 @@ public class Xylo : Creature
     }
 
     public override void PushOutOf(Vector2 pos, float rad, int exceptedChunk) { }
-}*/
+}

@@ -1,4 +1,4 @@
-﻿/*using RWCustom;
+﻿using RWCustom;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System;
@@ -7,29 +7,43 @@ namespace LBMergedMods.Creatures;
 
 public class XyloWorm : Creature, IPlayerEdible
 {
+    public PlacedObject? PlacedObj;
     public Vector2 LookDir, BodyDir;
     public IntVector2 LastAirTile;
     public float Lungs, Wiggle, Swallowed;
-    public int Bites = 2;
-    public bool Big;
+    public int Bites, StunCounter;
+    public bool Big, Rotten;
 
     public virtual int BitesLeft => Bites;
 
-    public virtual int FoodPoints => Big ? 2 : 1;
+    public virtual int FoodPoints => Rotten ? 0 : (Big ? 2 : 1);
 
     public virtual bool Edible => true;
 
     public virtual bool AutomaticPickUp => true;
 
+    public override Vector2 DangerPos
+    {
+        get
+        {
+            var ch0 = ChunkInOrder(0);
+            var ch1 = ChunkInOrder(1);
+            return Vector2.Lerp(ch0.pos + Custom.DirVec(ch1.pos, ch0.pos) * 5f, ch1.pos, Swallowed * .9f);
+        }
+    }
+
+    public virtual new VultureGrub.VultureGrubState State => (base.State as VultureGrub.VultureGrubState)!;
+
     public XyloWorm(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
     {
         Big = abstractCreature.superSizeMe;
+        Bites = Big ? 3 : 2;
         var fac = Big ? 2.5f : 1f;
         var chs = bodyChunks =
         [
-            new(this, 1, default, 3f * fac, .0625f * fac),
-            new(this, 0, default, 3.5f * fac, .0625f * fac),
-            new(this, 2, default, 3f * fac, .0625f * fac)
+            new(this, 1, default, 3f * fac, .0625f + .001f * (fac - 1f)),
+            new(this, 0, default, 3.5f * fac, .0625f + .001f * (fac - 1f)),
+            new(this, 2, default, 3f * fac, .0625f + .001f * (fac - 1f))
         ];
         bodyChunkConnections =
         [
@@ -46,6 +60,7 @@ public class XyloWorm : Creature, IPlayerEdible
         buoyancy = .95f;
         LookDir = Custom.RNV() * Random.value;
         BodyDir = Custom.RNV() * Random.value;
+        Rotten = Albino.TryGetValue(abstractCreature, out var box) && box.Value;
     }
 
     public BodyChunk ChunkInOrder(int i) => bodyChunks[i switch
@@ -55,40 +70,112 @@ public class XyloWorm : Creature, IPlayerEdible
         _ => 2,
     }];
 
+    public override void PlaceInRoom(Room placeRoom)
+    {
+        base.PlaceInRoom(placeRoom);
+        var state = State;
+        if (state.origRoom > -1 && state.origRoom == placeRoom.abstractRoom.index && state.placedObjectIndex >= 0 && state.placedObjectIndex < placeRoom.roomSettings.placedObjects.Count)
+            PlacedObj = placeRoom.roomSettings.placedObjects[state.placedObjectIndex];
+    }
+
+    public override void LoseAllGrasps()
+    {
+        ReleaseGrasp(0);
+        StunCounter = 0;
+    }
+
     public override void InitiateGraphicsModule() => graphicsModule ??= new XyloWormGraphics(this);
+
+    public override void Collide(PhysicalObject otherObject, int myChunk, int otherChunk)
+    {
+        base.Collide(otherObject, myChunk, otherChunk);
+        if (grasps[0] is null && Consious && otherObject is Creature c && Template.CreatureRelationship(c).type == CreatureTemplate.Relationship.Type.Eats && Grab(otherObject, 0, otherChunk, Grasp.Shareability.NonExclusive, 1f, false, false))
+            room?.PlaySound(SoundID.Rock_Hit_Creature, otherObject.bodyChunks[otherChunk], false, .55f, .85f);
+    }
 
     public override void Update(bool eu)
     {
+        if (Rotten && !dead)
+            Die();
+        var chs = bodyChunks;
+        var ch0 = chs[0];
+        if (Consious && grasps[0]?.grabbedChunk is BodyChunk b && b.owner is Creature obj && !obj.inShortcut && obj.abstractPhysicalObject.SameRippleLayer(abstractPhysicalObject))
+        {
+            var odr0 = ChunkInOrder(0);
+            var vector2 = b.pos;
+            if (obj.evenUpdate != evenUpdate)
+                vector2 += b.vel;
+            var vector3 = Custom.DirVec(odr0.pos, vector2);
+            var fvec = vector3 * Vector2.Distance(odr0.pos, vector2) * (1f - odr0.mass / (odr0.mass + b.mass));
+            odr0.vel += fvec;
+            odr0.pos += fvec - b.vel.normalized * 7f;
+            for (var i = 0; i < chs.Length; i++)
+            {
+                var ch = chs[i];
+                ch.vel = Vector2.Lerp(ch.vel, b.vel * .5f, .4f);
+            }
+            if (StunCounter < (Big ? 160 : 200))
+                ++StunCounter;
+            else
+            {
+                StunCounter = 0;
+                obj.Violence(odr0, null, b, null, DamageType.Bite, .01f, 0f);
+                obj.Stun(Big ? 70 : 60);
+                room.PlaySound(SoundID.Rock_Hit_Creature, b, false, .55f, .75f);
+            }
+            if ((obj is Player pl && pl.animation == Player.AnimationIndex.Roll) || !Custom.DistLess(b.pos, odr0.pos, 30f))
+            {
+                Stun(40);
+                LoseAllGrasps();
+            }
+        }
+        else
+            LoseAllGrasps();
         var flag1 = grabbedBy.Count == 0;
+        if (!flag1)
+            LoseAllGrasps();
         CollideWithTerrain = flag1;
         GoThroughFloors = !flag1;
         CollideWithObjects = flag1;
-        var chs = bodyChunks;
         WeightedPush(1, 2, Custom.DirVec(chs[2].pos, chs[1].pos), Custom.LerpMap(Vector2.Distance(chs[2].pos, chs[1].pos), 3.5f, 8f, 1f, 0f));
-        if (!room.GetTile(chs[0].pos).Solid)
-            LastAirTile = room.GetTilePosition(chs[0].pos);
+        if (!room.GetTile(ch0.pos).Solid)
+            LastAirTile = room.GetTilePosition(ch0.pos);
         else
         {
             for (var i = 0; i < chs.Length; i++)
                 chs[i].HardSetPosition(room.MiddleOfTile(LastAirTile) + Custom.RNV());
+        }
+        if (PlacedObj is PlacedObject pObj)
+        {
+            if (grabbedBy.Count == 0 && Mathf.Abs(ch0.pos.x - pObj.pos.x) > 10f)
+                ch0.vel.x += (Mathf.Abs(ch0.pos.x - pObj.pos.x) - 10f) / (4f * (ch0.pos.x < pObj.pos.x ? 1f : -1f));
+            if (!Custom.DistLess(ch0.pos, pObj.pos, 50f) || grabbedBy.Count > 0)
+            {
+                if (room.game.session is StoryGameSession sess)
+                {
+                    var data = (pObj.data as PlacedObject.ConsumableObjectData)!;
+                    sess.saveState.ReportConsumedItem(room.world, false, State.origRoom, State.placedObjectIndex, Random.Range(data.minRegen, data.maxRegen));
+                }
+                PlacedObj = null;
+            }
         }
         base.Update(eu);
         if (room is not Room rm)
             return;
         if (rm.game.devToolsActive && Input.GetKey("b") && rm.game.cameras[0].room == rm)
         {
-            chs[0].vel += Custom.DirVec(chs[0].pos, (Vector2)Futile.mousePosition + rm.game.cameras[0].pos) * 14f;
+            ch0.vel += Custom.DirVec(ch0.pos, (Vector2)Futile.mousePosition + rm.game.cameras[0].pos) * 14f;
             Stun(12);
         }
         if (grabbedBy.Count > 0)
         {
-            var dir = Custom.PerpendicularVector(Custom.DirVec(chs[0].pos, grabbedBy[0].grabber.mainBodyChunk.pos));
+            var dir = Custom.PerpendicularVector(Custom.DirVec(ch0.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
             dir.y = Mathf.Abs(dir.y);
             WeightedPush(1, 2, dir, 4f);
         }
         if (!dead)
             Act();
-        if (!dead && chs[0].submersion > .5f)
+        if (!dead && ch0.submersion > .5f)
         {
             Lungs = Mathf.Max(Lungs - 1f / 180f, 0f);
             if (Lungs == 0f)
@@ -197,6 +284,7 @@ public class XyloWorm : Creature, IPlayerEdible
         --Bites;
         if (!dead)
             Die();
+        LoseAllGrasps();
         room.PlaySound(SoundID.Slugcat_Eat_Centipede, firstChunk);
         firstChunk.MoveFromOutsideMyUpdate(eu, grasp.grabber.mainBodyChunk.pos);
         if (Bites < 1)
@@ -207,5 +295,11 @@ public class XyloWorm : Creature, IPlayerEdible
         }
     }
 
+    public override void Stun(int st)
+    {
+        base.Stun(st);
+        LoseAllGrasps();
+    }
+
     public virtual void ThrowByPlayer() { }
-}*/
+}

@@ -30,6 +30,7 @@ Shader "MiniLeviEelBody"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				#include "_RippleClip.cginc"
 				//#include "_ShaderFix.cginc" -> unused code
 				sampler2D _MainTex;
 				sampler2D _NoiseTex;
@@ -58,6 +59,7 @@ Shader "MiniLeviEelBody"
 
 				float4 frag(v2f i) : SV_Target
 				{
+					rippleClip(i.scrPos);
 					float n = lerp(pow(0.5 - sin(tex2D(_NoiseTex, float2(lerp(i.uv.x * lerp(3.0, 1.0, i.uv.y), 0.5, pow(i.uv.y, 0.15)), (i.uv.y + i.clr.w) * 30.0)) * 3.14 * 6.0) * 0.5, 4.0) - pow(abs(i.uv.x - 0.5) * 2.0, 5.0), 1.0 - abs(i.uv.x - 0.5) * 2.0, pow(i.uv.y, 0.75));
 					if (i.uv.y > 0.3)
 						n -= (i.uv.y - 0.3) * 5.0;

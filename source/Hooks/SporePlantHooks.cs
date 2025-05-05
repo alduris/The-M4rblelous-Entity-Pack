@@ -10,5 +10,5 @@ public static class SporePlantHooks
             orig(self, weapon);
     }
 
-    internal static bool On_SporePlant_SporePlantInterested(On.SporePlant.orig_SporePlantInterested orig, CreatureTemplate.Type tp) => tp != CreatureTemplateType.Denture && orig(tp);
+    internal static bool On_SporePlant_SporePlantInterested(On.SporePlant.orig_SporePlantInterested orig, CreatureTemplate.Type tp) => tp != CreatureTemplateType.Xylo && tp != CreatureTemplateType.Denture && orig(tp);
 }
