@@ -326,6 +326,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         new Hook(typeof(LizardRotGraphics).GetMethod("get_ApplyPaletteInDraw", ALL_FLAGS), On_LizardRotGraphics_get_ApplyPaletteInDraw);
         IL.Player.EatMeatUpdate += On_Player_EatMeatUpdate;
         On.ScavengerBomb.Explode += On_ScavengerBomb_Explode;
+        IL.Spear.HitSomething += IL_Spear_HitSomething;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
