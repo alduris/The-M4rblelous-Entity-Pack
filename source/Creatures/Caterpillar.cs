@@ -218,6 +218,13 @@ public class Caterpillar : InsectoidCreature, IProvideWarmth
             chs[j].vel += Custom.DirVec(chs[j].pos, chs[j - 1].pos) * .3f;
     }
 
+    public override void HitByWeapon(Weapon weapon)
+    {
+        base.HitByWeapon(weapon);
+		if (Glowing && weapon is Spear s && s.IsNeedle && s.Spear_NeedleCanFeed() && s.thrownBy is Player p)
+			p.glowing = true;
+    }
+
     public virtual void Act()
 	{
 		AI!.Update();
