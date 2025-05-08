@@ -1,4 +1,5 @@
-﻿using Noise;
+﻿using Watcher;
+using Noise;
 using RWCustom;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ public class Denture : Creature
     public override float VisibilityBonus => -JawOpen * .8f;
 
     public override bool SandstormImmune => true;
+
+    public virtual bool Camouflaged => JawOpen <= .2f;
 
     public Denture(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
     {
@@ -229,7 +232,7 @@ public class Denture : Creature
                     c.Destroy();
                     if (c is Player)
                         playerCrush = true;
-                    else if (c is ThornBug or Sporantula or Hazer or HazerMom || (ModManager.DLCShared && c is BigSpider spider && spider.Template.type == DLCSharedEnums.CreatureTemplateType.MotherSpider))
+                    else if (c is ThornBug or Sporantula or Hazer or HazerMom or Tardigrade || (ModManager.DLCShared && c is BigSpider spider && spider.Template.type == DLCSharedEnums.CreatureTemplateType.MotherSpider))
                         badFood = true;
                 }
                 CreatureEaten = 8;

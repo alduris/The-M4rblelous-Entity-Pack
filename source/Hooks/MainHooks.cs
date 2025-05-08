@@ -114,6 +114,12 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.ChipChop);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.MiniScutigera))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.MiniScutigera);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Xylo))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.Xylo);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.XyloWorm))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.XyloWorm);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.BigXyloWorm))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.BigXyloWorm);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();
@@ -141,6 +147,8 @@ public static class MainHooks
                 Futile.atlasManager.LoadAtlas("atlases/lbmergedmodsspr");
             if (!Futile.atlasManager.DoesContainAtlas("BlizzorNeck"))
                 Futile.atlasManager.ActuallyLoadAtlasOrImage("BlizzorNeck", "atlases/BlizzorNeck" + Futile.resourceSuffix, string.Empty);
+            if (!Futile.atlasManager.DoesContainAtlas("XyloDarkness"))
+                Futile.atlasManager.ActuallyLoadAtlasOrImage("XyloDarkness", "atlases/XyloDarkness" + Futile.resourceSuffix, string.Empty);
             if (!Futile.atlasManager.DoesContainAtlas("wwdvb_fur"))
                 Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_fur", "atlases/wwdvb_fur" + Futile.resourceSuffix, string.Empty);
             if (!Futile.atlasManager.DoesContainAtlas("wwdvb_lh"))
@@ -212,6 +220,7 @@ public static class MainHooks
                 SlugFood.DendriticNeuron = new(nameof(SlugFood.DendriticNeuron), true);
                 SlugFood.MiniBlueFruit = new(nameof(SlugFood.MiniBlueFruit), true);
                 SlugFood.MiniScutigera = new(nameof(SlugFood.MiniScutigera), true);
+                SlugFood.XyloWorm = new(nameof(SlugFood.XyloWorm), true);
                 ResizeGourmandCombos();
                 InitGourmandCombos();
                 On.MoreSlugcats.GourmandCombos.InitCraftingLibrary += On_GourmandCombos_InitCraftingLibrary;
@@ -254,6 +263,8 @@ public static class MainHooks
             Futile.atlasManager.UnloadAtlas("wwdvb_fur");
         if (Futile.atlasManager.DoesContainAtlas("wwdvb_spr"))
             Futile.atlasManager.UnloadAtlas("wwdvb_spr");
+        if (Futile.atlasManager.DoesContainAtlas("XyloDarkness"))
+            Futile.atlasManager.UnloadAtlas("XyloDarkness");
         LBMergedModsPlugin.Bundle?.Unload(true);
         LBMergedModsPlugin.Bundle = null;
     }

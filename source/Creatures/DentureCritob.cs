@@ -7,6 +7,7 @@ using DevInterface;
 using MoreSlugcats;
 using Random = UnityEngine.Random;
 using System;
+using Watcher;
 
 namespace LBMergedMods.Creatures;
 // CHK
@@ -52,7 +53,6 @@ sealed class DentureCritob : Critob, ISandboxHandler
         t.throughSurfaceVision = 1f;
         t.dangerousToPlayer = .5f;
         t.communityInfluence = .05f;
-        t.wormGrassImmune = true;
         t.waterRelationship = CreatureTemplate.WaterRelationship.Amphibious;
         t.BlizzardWanderer = true;
 		t.countsAsAKill = 0;
@@ -75,7 +75,6 @@ sealed class DentureCritob : Critob, ISandboxHandler
 	public override void EstablishRelationships()
 	{
 		var dt = new Relationships(Type);
-        dt.Ignores(CreatureTemplate.Type.Overseer);
         dt.Eats(CreatureTemplate.Type.Slugcat, 1f);
         dt.Eats(CreatureTemplate.Type.LanternMouse, 1f);
         dt.Eats(CreatureTemplate.Type.BlueLizard, 1f);
@@ -223,7 +222,29 @@ sealed class DentureCritob : Critob, ISandboxHandler
         dt.IgnoredBy(CreatureTemplateType.CommonEel);
         dt.IgnoredBy(CreatureTemplateType.Killerpillar);
         dt.IgnoredBy(CreatureTemplateType.Glowpillar);
-        dt.Ignores(Type);
+        if (ModManager.Watcher)
+        {
+            dt.Eats(WatcherEnums.CreatureTemplateType.FireSprite, 1f);
+            dt.Eats(WatcherEnums.CreatureTemplateType.Frog, 1f);
+            dt.Eats(WatcherEnums.CreatureTemplateType.Rat, 1f);
+            dt.Eats(WatcherEnums.CreatureTemplateType.Tardigrade, 1f);
+            dt.Attacks(WatcherEnums.CreatureTemplateType.Barnacle, 1f);
+            dt.Attacks(WatcherEnums.CreatureTemplateType.SmallMoth, 1f);
+            dt.FearedBy(WatcherEnums.CreatureTemplateType.FireSprite, 1f);
+            dt.FearedBy(WatcherEnums.CreatureTemplateType.Frog, 1f);
+            dt.FearedBy(WatcherEnums.CreatureTemplateType.Rat, 1f);
+            dt.FearedBy(WatcherEnums.CreatureTemplateType.Tardigrade, 1f);
+            dt.FearedBy(WatcherEnums.CreatureTemplateType.Barnacle, .5f);
+            dt.FearedBy(WatcherEnums.CreatureTemplateType.SmallMoth, .5f);
+            dt.FearedBy(WatcherEnums.CreatureTemplateType.BigMoth, .25f);
+            dt.IgnoredBy(WatcherEnums.CreatureTemplateType.Loach);
+            dt.IgnoredBy(WatcherEnums.CreatureTemplateType.SandGrub);
+            dt.IgnoredBy(WatcherEnums.CreatureTemplateType.BigSandGrub);
+            dt.IgnoredBy(WatcherEnums.CreatureTemplateType.Rattler);
+            dt.IgnoredBy(WatcherEnums.CreatureTemplateType.BoxWorm);
+            dt.IgnoredBy(WatcherEnums.CreatureTemplateType.DrillCrab);
+            dt.IgnoredBy(WatcherEnums.CreatureTemplateType.SkyWhale);
+        }
     }
 
 	public override ArtificialIntelligence? CreateRealizedAI(AbstractCreature acrit) => null;

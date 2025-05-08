@@ -32,6 +32,7 @@ Shader "StarLemonBloom"
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
+				#include "_RippleClip.cginc"
 				//#include "_ShaderFix.cginc" -> unused code
 				sampler2D _MainTex;
 				sampler2D _LevelTex;
@@ -66,6 +67,7 @@ Shader "StarLemonBloom"
 
 				float4 frag(v2f i) : SV_Target
 				{
+					rippleClip(i.scrPos);
 					if (tex2D(_MainTex, i.uv).w == 0.0)
 						return float4(0.0, 0.0, 0.0, 0.0);
 					float2 screenPos = i.scrPos.xy;

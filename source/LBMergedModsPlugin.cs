@@ -11,6 +11,7 @@ using System.Reflection;
 using MonoMod.RuntimeDetour;
 using Fisobs.Sandbox;
 using Watcher;
+using System.IO;
 
 #pragma warning disable CS0618 // ignore false message
 [module: UnverifiableCode]
@@ -19,17 +20,13 @@ using Watcher;
 
 namespace LBMergedMods;
 
-[
-    BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "10.0.0"),
-    BepInDependency("io.github.dual.fisobs"),
-    BepInDependency("com.rainworldgame.lizardcustomizer.plugin", BepInDependency.DependencyFlags.SoftDependency),
-    BepInDependency("slime-cubed.devconsole", BepInDependency.DependencyFlags.SoftDependency)
-]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "10.0.2"), BepInDependency("io.github.dual.fisobs"), BepInDependency("com.rainworldgame.lizardcustomizer.plugin", BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
     public const BindingFlags ALL_FLAGS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic;
     [AllowNull] internal static ManualLogSource s_logger;
+    public static bool NoXyloHoles = File.Exists("noXyloHoles.txt");
 
     public void OnEnable()
     {
@@ -327,6 +324,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         new Hook(typeof(LizardGraphics).GetMethod("get_HeadLightsUpFromNoise", ALL_FLAGS), On_LizardGraphics_get_HeadLightsUpFromNoise);
         On.CreatureSymbol.LizardSpriteName += On_CreatureSymbol_LizardSpriteName;
         new Hook(typeof(LizardRotGraphics).GetMethod("get_ApplyPaletteInDraw", ALL_FLAGS), On_LizardRotGraphics_get_ApplyPaletteInDraw);
+        IL.Player.EatMeatUpdate += On_Player_EatMeatUpdate;
+        On.ScavengerBomb.Explode += On_ScavengerBomb_Explode;
+        IL.Spear.HitSomething += IL_Spear_HitSomething;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -355,7 +355,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new MiniLeviathanCritob(),
                         new MiniFlyingBigEelCritob(),
                         new FlyingBigEelCritob(),
-                        new DentureCritob());
+                        new DentureCritob(),
+                        new XyloCritob(),
+                        new XyloWormCritob());
     }
 
     public void OnDisable()

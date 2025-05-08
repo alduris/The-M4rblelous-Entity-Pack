@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using RWCustom;
 using System.Collections.Generic;
 using CoralBrain;
+using JetBrains.Annotations;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -19,7 +20,7 @@ public static class RoomHooks
         {
             try
             {
-                LBMergedModsPlugin.Bundle = AssetBundle.LoadFromFile(AssetManager.ResolveFilePath("assetbundles" + Path.DirectorySeparatorChar + "lbmodpack_shaders"));
+                LBMergedModsPlugin.Bundle = AssetBundle.LoadFromFile(AssetManager.ResolveFilePath("newassetbundles" + Path.DirectorySeparatorChar + "lbmodpack_shaders"));
                 var shaders = g.rainWorld.Shaders;
                 shaders["MiniLeviEelBody"] = FShader.CreateShader("MiniLeviEelBody", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "MiniLeviEelBody.shader"));
                 shaders["MiniLeviEelFin"] = FShader.CreateShader("MiniLeviEelFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "MiniLeviEelFin.shader"));
@@ -205,7 +206,7 @@ public static class RoomHooks
                         else
                             self.AddObject(new Physalis.Stem(pObj.pos, self, true));
                     }
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.HazerMom || pObj.type == PlacedObjectType.DeadHazerMom || pObj.type == PlacedObjectType.AlbinoHazerMom || pObj.type == PlacedObjectType.DeadAlbinoHazerMom)
+                    else if (firstTimeRealized && (pObj.type == PlacedObjectType.HazerMom || pObj.type == PlacedObjectType.DeadHazerMom || pObj.type == PlacedObjectType.AlbinoHazerMom || pObj.type == PlacedObjectType.DeadAlbinoHazerMom))
                     {
                         if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
                         {
@@ -223,7 +224,7 @@ public static class RoomHooks
                                 state.Die();
                         }
                     }
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.AlbinoFormHazer || pObj.type == PlacedObjectType.DeadAlbinoFormHazer)
+                    else if (firstTimeRealized && (pObj.type == PlacedObjectType.AlbinoFormHazer || pObj.type == PlacedObjectType.DeadAlbinoFormHazer))
                     {
                         if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
                         {
@@ -239,6 +240,42 @@ public static class RoomHooks
                             state.placedObjectIndex = i;
                             arm.AddEntity(abstractCreature);
                             if (pObj.type == PlacedObjectType.DeadAlbinoFormHazer)
+                                state.Die();
+                        }
+                    }
+                    else if (firstTimeRealized && (pObj.type == PlacedObjectType.XyloNest || pObj.type == PlacedObjectType.AltXyloNest))
+                    {
+                        if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        {
+                            var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.Xylo), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                            {
+                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i),
+                                superSizeMe = pObj.type == PlacedObjectType.AltXyloNest
+                            };
+                            if (abstractCreature.superSizeMe)
+                                abstractCreature.spawnData = "{AlternateForm}";
+                            var state = (abstractCreature.state as HazerMomState)!;
+                            state.OrigRoom = arm.index;
+                            state.PlacedObjectIndex = i;
+                            arm.AddEntity(abstractCreature);
+                        }
+                    }
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.XyloWorm || pObj.type == PlacedObjectType.BigXyloWorm || pObj.type == PlacedObjectType.DeadXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm)
+                    {
+                        if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        {
+                            var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.XyloWorm), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                            {
+                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i),
+                                superSizeMe = pObj.type == PlacedObjectType.BigXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm
+                            };
+                            if (abstractCreature.superSizeMe)
+                                abstractCreature.spawnData = "{AlternateForm}";
+                            var state = (abstractCreature.state as VultureGrub.VultureGrubState)!;
+                            state.origRoom = arm.index;
+                            state.placedObjectIndex = i;
+                            arm.AddEntity(abstractCreature);
+                            if (pObj.type == PlacedObjectType.DeadXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm)
                                 state.Die();
                         }
                     }

@@ -37,6 +37,8 @@ public static class IconHooks
                 return new(80f / 255f, 167f / 255f, 233f / 255f);
             if (tp == CreatureTemplateType.CommonEel)
                 return new(0f, 72f / 255f, 1f);
+            if (tp == CreatureTemplateType.Xylo)
+                return new(.2f, .05f, .05f);
         }
         else if (dt == M4R_DATA_NUMBER2)
         {
@@ -57,7 +59,7 @@ public static class IconHooks
         return orig(iconData);
     }
 
-    internal static bool On_CreatureSymbol_DoesCreatureEarnATrophy(On.CreatureSymbol.orig_DoesCreatureEarnATrophy orig, CreatureTemplate.Type creature) => creature != CreatureTemplateType.MiniScutigera && orig(creature);
+    internal static bool On_CreatureSymbol_DoesCreatureEarnATrophy(On.CreatureSymbol.orig_DoesCreatureEarnATrophy orig, CreatureTemplate.Type creature) => creature != CreatureTemplateType.MiniScutigera && creature != CreatureTemplateType.XyloWorm && orig(creature);
 
     internal static string On_CreatureSymbol_LizardSpriteName(On.CreatureSymbol.orig_LizardSpriteName orig, string defaultSpriteName, int intData)
     {
@@ -75,9 +77,16 @@ public static class IconHooks
     {
         var tp = iconData.critType;
         var dt = iconData.intData;
-        if (dt == M4R_DATA_NUMBER && tp == CreatureTemplate.Type.Fly)
-            return "Kill_SeedBat";
-        if (dt is M4R_DATA_NUMBER or M4R_DATA_NUMBER2 or M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
+        if (dt == M4R_DATA_NUMBER)
+        {
+            if (tp == CreatureTemplate.Type.Fly)
+                return "Kill_SeedBat";
+            if (tp == CreatureTemplateType.XyloWorm)
+                return "Kill_BigXyloWorm";
+            if (tp == CreatureTemplate.Type.TubeWorm)
+                return "Kill_Bigrub";
+        }
+        if (dt is M4R_DATA_NUMBER2 or M4R_DATA_NUMBER3 && tp == CreatureTemplate.Type.TubeWorm)
             return "Kill_Bigrub";
         var res = orig(iconData);
         if (tp == CreatureTemplateType.NoodleEater || tp == CreatureTemplateType.SilverLizard || tp == CreatureTemplateType.WaterSpitter || tp == CreatureTemplateType.MoleSalamander || tp == CreatureTemplateType.Polliwog || tp == CreatureTemplateType.HunterSeeker)
@@ -98,7 +107,7 @@ public static class IconHooks
         }
         else if ((tp == CreatureTemplate.Type.Fly && creature.IsSeed()) ||
             ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar) && Albino.TryGetValue(creature, out var props) && props.Value) ||
-            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle) && creature.superSizeMe))
+            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle || tp == CreatureTemplateType.Xylo || tp == CreatureTemplateType.XyloWorm) && creature.superSizeMe))
             res.intData = M4R_DATA_NUMBER;
         else if (tp == CreatureTemplateType.NoodleEater)
         {

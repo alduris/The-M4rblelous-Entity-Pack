@@ -30,9 +30,25 @@ public static class PlayerHooks
         return orig(self, testObj);
     }
 
+    internal static void On_Player_EatMeatUpdate(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdsfld_ModManager_MSC)
+         && c.TryGotoNext(MoveType.After,
+            s_MatchLdsfld_ModManager_MSC))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .Emit(OpCodes.Ldarg_1)
+             .EmitDelegate((bool flag, Player self, int graspIndex) => flag && self.grasps[graspIndex].grabbed is not SurfaceSwimmer and not HazerMom);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Player.EatMeatUpdate!");
+    }
+
     internal static Player.ObjectGrabability On_Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
     {
-        if (obj is ThornyStrawberry or BlobPiece or BouncingMelon or LittleBalloon or TintedBeetle or Physalis or LimeMushroom or GummyAnther or MarineEye or SmallPuffBall or DendriticNeuron or MiniFruit)
+        if (obj is ThornyStrawberry or BlobPiece or BouncingMelon or LittleBalloon or TintedBeetle or Physalis or LimeMushroom or GummyAnther or MarineEye or SmallPuffBall or DendriticNeuron or MiniFruit or XyloWorm)
             return Player.ObjectGrabability.OneHand;
         if (obj is RubberBlossom or MiniFruitSpawner)
             return Player.ObjectGrabability.CantGrab;
@@ -752,6 +768,50 @@ public static class PlayerHooks
         GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.MiniScutigera], GourmandCombos.objectsLibrary[AbstractObjectType.GummyAnther], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
         GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.MiniScutigera], GourmandCombos.objectsLibrary[AbstractObjectType.LittleBalloon], 1, AbstractPhysicalObject.AbstractObjectType.SporePlant, null);
         GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.MiniScutigera], GourmandCombos.objectsLibrary[AbstractObjectType.MiniBlueFruit], 1, AbstractPhysicalObject.AbstractObjectType.SporePlant, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.Rock], 1, AbstractPhysicalObject.AbstractObjectType.Lantern, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.FlareBomb], 1, AbstractPhysicalObject.AbstractObjectType.Lantern, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.VultureMask], 1, DLCSharedEnums.AbstractObjectType.Seed, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.PuffBall], 1, AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.SporeProjectile], 1, AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.DangleFruit], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.ThornyStrawberry], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.MarineEye], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.GummyAnther], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.LittleBalloon], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.MiniBlueFruit], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.SSOracleSwarmer], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.DataPearl], 1, null, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.WaterNut], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.BlobPiece], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.JellyFish], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.Lantern], 1, AbstractPhysicalObject.AbstractObjectType.DataPearl, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.KarmaFlower], 1, AbstractPhysicalObject.AbstractObjectType.VultureMask, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.Mushroom], 1, DLCSharedEnums.AbstractObjectType.GooieDuck, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.LimeMushroom], 1, DLCSharedEnums.AbstractObjectType.GooieDuck, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant], 1, AbstractPhysicalObject.AbstractObjectType.SporePlant, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.SlimeMold], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractObjectType.Physalis], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.FlyLure], 1, AbstractPhysicalObject.AbstractObjectType.Mushroom, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.ScavengerBomb], 1, AbstractPhysicalObject.AbstractObjectType.FirecrackerPlant, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.SporePlant], 1, AbstractPhysicalObject.AbstractObjectType.FlareBomb, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.EggBugEgg], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.NeedleEgg], 1, DLCSharedEnums.AbstractObjectType.Seed, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.BubbleGrass], 1, DLCSharedEnums.AbstractObjectType.GlowWeed, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[AbstractPhysicalObject.AbstractObjectType.OverseerCarcass], 1, AbstractPhysicalObject.AbstractObjectType.DataPearl, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[DLCSharedEnums.AbstractObjectType.SingularityBomb], 1, MoreSlugcatsEnums.AbstractObjectType.FireEgg, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[MoreSlugcatsEnums.AbstractObjectType.FireEgg], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[DLCSharedEnums.AbstractObjectType.Seed], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[DLCSharedEnums.AbstractObjectType.GooieDuck], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[DLCSharedEnums.AbstractObjectType.LillyPuck], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[DLCSharedEnums.AbstractObjectType.GlowWeed], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.objectsLibrary[DLCSharedEnums.AbstractObjectType.DandelionPeach], 1, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplate.Type.Fly], GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], 2, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.critsLibrary[CreatureTemplate.Type.VultureGrub], 2, null, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], 2, null, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.critsLibrary[CreatureTemplate.Type.SmallCentipede], 2, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.critsLibrary[CreatureTemplateType.MiniScutigera], 2, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.critsLibrary[CreatureTemplate.Type.SmallNeedleWorm], 2, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
+        GourmandCombos.SetLibraryData(GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm], GourmandCombos.critsLibrary[CreatureTemplate.Type.Hazer], 2, AbstractPhysicalObject.AbstractObjectType.DangleFruit, null);
     }
 
     internal static void ResizeGourmandCombos()
@@ -787,6 +847,8 @@ public static class PlayerHooks
         GourmandCombos.craftingGrid_ObjectsOnly = arrayNew;
         var cnt2 = GourmandCombos.critsLibrary.Count;
         GourmandCombos.critsLibrary[CreatureTemplateType.MiniScutigera] = cnt2;
+        ++cnt2;
+        GourmandCombos.critsLibrary[CreatureTemplateType.XyloWorm] = cnt2;
         ++cnt2;
         arrayOrig = GourmandCombos.craftingGrid_CrittersOnly;
         arrayNew = new GourmandCombos.CraftDat[cnt2, cnt2];

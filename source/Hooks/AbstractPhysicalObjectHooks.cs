@@ -6,7 +6,6 @@ using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Random = UnityEngine.Random;
-using UnityEngine;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -201,7 +200,7 @@ public static class AbstractPhysicalObjectHooks
             Big.Add(self, new());
         else if (tp == CreatureTemplateType.Hoverfly && !HoverflyData.TryGetValue(self, out _))
             HoverflyData.Add(self, new());
-        else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar || tp == CreatureTemplateType.FatFireFly) && !Albino.TryGetValue(self, out _))
+        else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar || tp == CreatureTemplateType.FatFireFly || tp == CreatureTemplateType.XyloWorm) && !Albino.TryGetValue(self, out _))
             Albino.Add(self, new());
         if (tp == CreatureTemplateType.Denture)
             self.remainInDenCounter = 0;
@@ -439,5 +438,7 @@ public static class AbstractPhysicalObjectHooks
 
     public static bool NoCamo(this PhysicalObject self) => (self is not Player p || !p.isCamo) &&
         (self is not Lizard l || !l.Camouflaged()) &&
-        (self is not Hazer h || !h.Camouflaged());
+        (self is not Hazer h || !h.Camouflaged()) &&
+        (self is not PoleMimic po || !po.Camouflaged()) &&
+        (self is not Denture d || !d.Camouflaged);
 }

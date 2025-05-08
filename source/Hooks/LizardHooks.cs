@@ -1437,5 +1437,5 @@ public static class LizardHooks
         orig(self, index);
     }
 
-    public static bool Camouflaged(this Lizard self) => (!ModManager.DLCShared || self.Template.type != DLCSharedEnums.CreatureTemplateType.ZoopLizard) && self.graphicsModule is LizardGraphics gr && gr.Camouflaged >= .5f;
+    public static bool Camouflaged(this Lizard self) => (!ModManager.DLCShared || self.Template.type != DLCSharedEnums.CreatureTemplateType.ZoopLizard) && self.graphicsModule is LizardGraphics gr && gr.Camouflaged >= .8f;
 }

@@ -375,7 +375,7 @@ public class ChipChop : InsectoidCreature
         GooieDuck gd => !gd.StalkActive() && gd.bites < 6 && gd.Edible,
         BouncingMelon bm => !bm.StalkActive,
         IHaveAStalkState st => !st.StalkActive && st is IPlayerEdible ed && ed.Edible,
-        DendriticNeuron or OracleSwarmer or JellyFish or SwollenWaterNut or EggBugEgg or FireEgg or BlobPiece => (item as IPlayerEdible)!.Edible,
+        DendriticNeuron or OracleSwarmer or JellyFish or SwollenWaterNut or EggBugEgg or FireEgg or BlobPiece/* or XyloWorm*/ => (item as IPlayerEdible)!.Edible,
         Creature cr => cr.dead && cr is IPlayerEdible ed && ed.Edible,
         BoxWorm.Larva box => box.Edible,
         SlimeMold mld => !mld.StalkActive() && mld.Edible,
@@ -390,7 +390,7 @@ public class ChipChop : InsectoidCreature
 
     public virtual void BiteItem(PhysicalObject item, Grasp g0)
 	{
-        if (item is Physalis or StarLemon or GummyAnther or MiniFruit or LittleBalloon or LimeMushroom or ThornyStrawberry or DendriticNeuron or BouncingMelon or MarineEye)
+        if (item is Physalis or StarLemon or GummyAnther or MiniFruit or LittleBalloon or LimeMushroom or ThornyStrawberry or DendriticNeuron or BouncingMelon or MarineEye/* or XyloWorm*/)
         {
             (item.abstractPhysicalObject as AbstractConsumable)!.Consume();
             (item as IPlayerEdible)!.BitByPlayer(g0, evenUpdate);

@@ -25,6 +25,8 @@ public static class SlugNPCHooks
             self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.Neuron.index]);
         else if (food is MiniScutigera)
             self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.SmallCentipede.index]);
+        else if (food is XyloWorm)
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.VultureGrub.index]);
         else
             orig(self, food);
     }
@@ -51,6 +53,8 @@ public static class SlugNPCHooks
             return SlugFood.MiniBlueFruit!;
         if (food is MiniScutigera)
             return SlugFood.MiniScutigera!;
+        if (food is XyloWorm)
+            return SlugFood.XyloWorm!;
         return orig(self, food);
     }
 

@@ -9,7 +9,7 @@
 [ADD]M4R_CommonEel_Hiss : M4RHSS2/vol=0.85/pitch=0.6
 [ADD]M4R_CommonEel_BigHiss : M4RSSS1/vol=0.85/pitch=0.6, M4RSSS2/vol=0.85/pitch=0.6
 [ADD]M4R_Xylo_Swallow : M4RDRROUP1/vol=0.2, M4RDRROUP2/vol=0.2, M4RDRROUP3/vol=0.2, M4RDRROUP4/vol=0.2, M4RDRROUP5/vol=0.2, M4RDRROUP6/vol=0.2
-[ADD]M4R_Xylo_Swell : M4RDRROUP7/vol=0.25
+[ADD]M4R_Xylo_Swell : M4RDRROUP7/vol=0.5
 [ADD]M4R_ChipChop_Chip : M4RFFT1/vol=0.3/pitch=0.9
 [ADD]M4R_TintedBeetle_Chip : M4RFIU1/vol=0.6/pitch=0.9, M4RFIU3/vol=0.6/pitch=0.9, M4RFIU4/vol=0.6/pitch=0.9, M4RFIU6/vol=0.6/pitch=0.9
 [ADD]M4R_TintedBeetle_BigChip : M4RFIU5/vol=0.6/pitch=0.9, M4RFIUFIU5/vol=0.6/pitch=0.9, M4RFIUFIU6/vol=0.6/pitch=0.9, M4RFIUFIUFIU1/vol=0.6/pitch=0.9

@@ -48,5 +48,5 @@ public static class HazerHooks
         }
     }
 
-    public static bool Camouflaged(this Hazer self) => self.graphicsModule is HazerGraphics hgr && hgr.camo >= .5f;
+    public static bool Camouflaged(this Hazer self) => self.graphicsModule is HazerGraphics hgr && hgr.camo >= .8f;
 }

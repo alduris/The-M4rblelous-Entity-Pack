@@ -99,7 +99,9 @@ public static class CreatureTemplateType
         Killerpillar = new(nameof(Killerpillar), true),
         Glowpillar = new(nameof(Glowpillar), true),
         ChipChop = new(nameof(ChipChop), true),
-        MiniScutigera = new(nameof(MiniScutigera), true);
+        MiniScutigera = new(nameof(MiniScutigera), true),
+        Xylo = new(nameof(Xylo), true),
+        XyloWorm = new(nameof(XyloWorm), true);
 
     static CreatureTemplateType()
     {
@@ -131,7 +133,9 @@ public static class CreatureTemplateType
             Killerpillar,
             Glowpillar,
             ChipChop,
-            MiniScutigera];
+            MiniScutigera,
+            Xylo,
+            XyloWorm];
     }
 
     public static void UnregisterValues()
@@ -281,6 +285,16 @@ public static class CreatureTemplateType
             MiniScutigera.Unregister();
             MiniScutigera = null!;
         }
+        if (Xylo is not null)
+        {
+            Xylo.Unregister();
+            Xylo = null!;
+        }
+        if (XyloWorm is not null)
+        {
+            XyloWorm.Unregister();
+            XyloWorm = null!;
+        }
     }
 }
 
@@ -327,7 +341,10 @@ public static class SandboxUnlockID
         MiniBlueFruit = new(nameof(MiniBlueFruit), true),
         SporeProjectile = new(nameof(SporeProjectile), true),
         ChipChop = new(nameof(ChipChop), true),
-        MiniScutigera = new(nameof(MiniScutigera), true);
+        MiniScutigera = new(nameof(MiniScutigera), true),
+        Xylo = new(nameof(Xylo), true),
+        XyloWorm = new(nameof(XyloWorm), true),
+        BigXyloWorm = new(nameof(BigXyloWorm), true);
 
     static SandboxUnlockID()
     {
@@ -371,7 +388,10 @@ public static class SandboxUnlockID
             MiniBlueFruit,
             SporeProjectile,
             ChipChop,
-            MiniScutigera];
+            MiniScutigera,
+            Xylo,
+            XyloWorm,
+            BigXyloWorm];
     }
 
     public static void UnregisterValues()
@@ -581,6 +601,21 @@ public static class SandboxUnlockID
             MiniScutigera.Unregister();
             MiniScutigera = null!;
         }
+        if (Xylo is not null)
+        {
+            Xylo.Unregister();
+            Xylo = null!;
+        }
+        if (XyloWorm is not null)
+        {
+            XyloWorm.Unregister();
+            XyloWorm = null!;
+        }
+        if (BigXyloWorm is not null)
+        {
+            BigXyloWorm.Unregister();
+            BigXyloWorm = null!;
+        }
     }
 }
 
@@ -603,7 +638,13 @@ public static class PlacedObjectType
         DendriticNeuron = new(nameof(DendriticNeuron), true),
         MiniFruitBranch = new(nameof(MiniFruitBranch), true),
         BonusScoreToken = new(nameof(BonusScoreToken), true),
-        SporeProjectile = new(nameof(SporeProjectile), true);
+        SporeProjectile = new(nameof(SporeProjectile), true),
+        XyloNest = new(nameof(XyloNest), true),
+        AltXyloNest = new(nameof(AltXyloNest), true),
+        XyloWorm = new(nameof(XyloWorm), true),
+        BigXyloWorm = new(nameof(BigXyloWorm), true),
+        DeadXyloWorm = new(nameof(DeadXyloWorm), true),
+        DeadBigXyloWorm = new(nameof(DeadBigXyloWorm), true);
 
     public static void UnregisterValues()
     {
@@ -696,6 +737,36 @@ public static class PlacedObjectType
         {
             SporeProjectile.Unregister();
             SporeProjectile = null!;
+        }
+        if (XyloNest is not null)
+        {
+            XyloNest.Unregister();
+            XyloNest = null!;
+        }
+        if (AltXyloNest is not null)
+        {
+            AltXyloNest.Unregister();
+            AltXyloNest = null!;
+        }
+        if (XyloWorm is not null)
+        {
+            XyloWorm.Unregister();
+            XyloWorm = null!;
+        }
+        if (BigXyloWorm is not null)
+        {
+            BigXyloWorm.Unregister();
+            BigXyloWorm = null!;
+        }
+        if (DeadXyloWorm is not null)
+        {
+            DeadXyloWorm.Unregister();
+            DeadXyloWorm = null!;
+        }
+        if (DeadBigXyloWorm is not null)
+        {
+            DeadBigXyloWorm.Unregister();
+            DeadBigXyloWorm = null!;
         }
     }
 }
@@ -949,7 +1020,7 @@ public static class MiscItemType
 
 public static class SlugFood
 {
-    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron, MiniBlueFruit, MiniScutigera;
+    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron, MiniBlueFruit, MiniScutigera, XyloWorm;
 
     public static void UnregisterValues()
     {
@@ -1002,6 +1073,11 @@ public static class SlugFood
         {
             MiniScutigera.Unregister();
             MiniScutigera = null;
+        }
+        if (XyloWorm is not null)
+        {
+            XyloWorm.Unregister();
+            XyloWorm = null;
         }
     }
 }
