@@ -384,6 +384,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         ScoreData = null!;
         TrackerScoreData = null!;
         RegionScoreData = null!;
+        RottenMode = null!;
         CreatureTemplateType.M4RCreatureList = null!;
         AbstractObjectType.M4RItemList = null!;
         SandboxUnlockID.M4RUnlockList = null!;

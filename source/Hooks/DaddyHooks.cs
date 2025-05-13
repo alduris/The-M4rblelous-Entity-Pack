@@ -119,6 +119,8 @@ public static class DaddyHooks
                      self.colorClass = true;
                      self.JellyColor(abstractCreature, world);
                      j.Color = self.effectColor;
+                     if (j.DevSpawnColor is Color clr)
+                         j.Color = self.effectColor = self.eyeColor = clr;
                      var num = self.SizeClass ? 12f : 8f;
                      if (ModManager.DLCShared && abstractCreature.superSizeMe)
                          num = 18f;
@@ -189,10 +191,10 @@ public static class DaddyHooks
                     }
                 }
                 JLLRooms[nm] = new(0f, 0f, -1f);
-                self.eyeColor = self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.MSC && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
+                self.eyeColor = self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.DLCShared && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
             }
             else if (col.b < 0f)
-                self.eyeColor = self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.MSC && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
+                self.eyeColor = self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.DLCShared && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
             else
                 self.eyeColor = self.effectColor = col;
         }

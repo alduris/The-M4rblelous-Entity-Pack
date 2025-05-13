@@ -8,5 +8,6 @@ public sealed class JellyProperties
 {
     public Color Color;
     public float IconRadBonus;
+    public Color? DevSpawnColor;
     public bool IsJelly, Born;
 }

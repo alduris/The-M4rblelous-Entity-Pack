@@ -60,7 +60,7 @@ public class XyloWorm : Creature, IPlayerEdible
         buoyancy = .95f;
         LookDir = Custom.RNV() * Random.value;
         BodyDir = Custom.RNV() * Random.value;
-        Rotten = Albino.TryGetValue(abstractCreature, out var box) && box.Value;
+        Rotten = RottenMode.TryGetValue(abstractCreature, out var box) && box.Value;
     }
 
     public BodyChunk ChunkInOrder(int i) => bodyChunks[i switch
@@ -137,6 +137,7 @@ public class XyloWorm : Creature, IPlayerEdible
         CollideWithTerrain = flag1;
         GoThroughFloors = !flag1;
         CollideWithObjects = flag1;
+        CollideWithSlopes = flag1;
         WeightedPush(1, 2, Custom.DirVec(chs[2].pos, chs[1].pos), Custom.LerpMap(Vector2.Distance(chs[2].pos, chs[1].pos), 3.5f, 8f, 1f, 0f));
         if (!room.GetTile(ch0.pos).Solid)
             LastAirTile = room.GetTilePosition(ch0.pos);
@@ -170,8 +171,8 @@ public class XyloWorm : Creature, IPlayerEdible
         if (grabbedBy.Count > 0)
         {
             var dir = Custom.PerpendicularVector(Custom.DirVec(ch0.pos, grabbedBy[0].grabber.mainBodyChunk.pos));
-            dir.y = Mathf.Abs(dir.y);
-            WeightedPush(1, 2, dir, 4f);
+            WeightedPush(1, 2, dir with { y = Mathf.Abs(dir.y) }, 4f);
+            Stun(10);
         }
         if (!dead)
             Act();

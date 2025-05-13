@@ -193,32 +193,33 @@ public class GummyAnther : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveA
         base.PlaceInRoom(placeRoom);
         Rotation = Custom.RNV();
         LastRotation = Rotation;
+        var fc = firstChunk;
         if (!AbstrCons.isConsumed && StationFruit.TryGetValue(AbstrCons, out var fprops) && fprops.Plant is AbstractConsumable cons)
         {
             if (cons.placedObjectIndex >= 0 && cons.placedObjectIndex < placeRoom.roomSettings.placedObjects.Count)
             {
                 var obj = placeRoom.roomSettings.placedObjects[cons.placedObjectIndex];
                 PObjPos = obj.pos;
-                firstChunk.HardSetPosition(new(PObjPos.x + (Random.value - Random.value) * 15f, PObjPos.y + 70f + Random.value * 40f - Random.value * 20f));
+                fc.HardSetPosition(new(PObjPos.x + (Random.value - Random.value) * 15f, PObjPos.y + 70f + Random.value * 40f - Random.value * 20f));
                 var i = 0;
-                while (placeRoom.GetTile(firstChunk.pos).Solid && i < 3)
-                    firstChunk.HardSetPosition(firstChunk.pos with { y = firstChunk.pos.y - 20f });
+                while (placeRoom.GetTile(fc.pos).Solid && i < 3)
+                    fc.HardSetPosition(fc.pos with { y = fc.pos.y - 20f });
             }
             else if (StationPlant.TryGetValue(cons, out var flowerData) && flowerData.DevSpawn)
             {
                 // Extra shenanigans since dev console integration throws things for a loop
-                PObjPos = room.MiddleOfTile(cons.pos);
-                firstChunk.HardSetPosition(new(PObjPos.x + (Random.value - Random.value) * 15f, PObjPos.y + 70f + Random.value * 40f - Random.value * 20f));
+                PObjPos = placeRoom.MiddleOfTile(cons.pos);
+                fc.HardSetPosition(new(PObjPos.x + (Random.value - Random.value) * 15f, PObjPos.y + 70f + Random.value * 40f - Random.value * 20f));
                 var i = 0;
-                while (placeRoom.GetTile(firstChunk.pos).Solid && i < 3)
-                    firstChunk.HardSetPosition(firstChunk.pos with { y = firstChunk.pos.y - 20f });
+                while (placeRoom.GetTile(fc.pos).Solid && i < 3)
+                    fc.HardSetPosition(fc.pos with { y = fc.pos.y - 20f });
             }
             else
-                firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
+                fc.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
             placeRoom.AddObject(MyStalk = new(this, placeRoom));
         }
         else
-            firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
+            fc.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
     }
 
     public virtual void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
