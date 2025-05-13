@@ -30,7 +30,7 @@ public static class ScavengerHooks
             else
                 res = st.SpikesRemoved() ? 1 : 3;
         }
-        else if (obj is SmallPuffBall pf)
+        else if (obj is FumeFruit or Durian)
         {
             if (self.scavenger.room is Room rm)
             {
@@ -39,9 +39,22 @@ public static class ScavengerHooks
                     return 0;
             }
             if (weaponFiltered && self.NeedAWeapon)
-                res = self.WeaponScore(pf, true);
+                res = self.WeaponScore(obj, true);
             else
-                res = ModManager.Watcher && self.scavenger.room.world.name == "WBLA" ? 4 : 2;
+                res = obj is Durian ? 3 : 2;
+        }
+        else if (obj is SmallPuffBall)
+        {
+            if (self.scavenger.room is Room rm)
+            {
+                var ownedItemOnGround = rm.socialEventRecognizer.ItemOwnership(obj);
+                if (ownedItemOnGround is not null && ownedItemOnGround.offeredTo is not null && ownedItemOnGround.offeredTo != self.scavenger)
+                    return 0;
+            }
+            if (weaponFiltered && self.NeedAWeapon)
+                res = self.WeaponScore(obj, true);
+            else
+                res = ModManager.Watcher && self.scavenger.room?.world.name == "WBLA" ? 4 : 2;
         }
         else if (obj is BlobPiece or Physalis or LimeMushroom or MarineEye or StarLemon)
         {
@@ -72,8 +85,10 @@ public static class ScavengerHooks
                     res = 3;
             }
         }
-        else if (obj is SmallPuffBall)
+        else if (obj is SmallPuffBall or FumeFruit)
             res = 2;
+        else if (obj is Durian)
+            res = self.targetedBodyChunk is BodyChunk b && b.owner is Lizard and not CommonEel && b.index == 0 ? 6 : 3;
         return res;
     }
 

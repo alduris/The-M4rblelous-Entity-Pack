@@ -197,6 +197,17 @@ public static class LizardHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior! (part 3)");
     }
 
+    internal static void On_LizardAI_BitCreature(On.LizardAI.orig_BitCreature orig, LizardAI self, BodyChunk chunk)
+    {
+        orig(self, chunk);
+        if (chunk?.owner is Player p && p.objectInStomach is AbstractPhysicalObject obj && obj.type == AbstractObjectType.FumeFruit)
+        {
+            FumeFruit.Explode(p);
+            obj.Destroy();
+            p.objectInStomach = null;
+        }
+    }
+
     internal static bool On_LizardAI_ComfortableIdlePosition(On.LizardAI.orig_ComfortableIdlePosition orig, LizardAI self) => orig(self) || (self is PolliwogAI or WaterSpitterAI or MoleSalamanderAI or CommonEelAI && self.lizard is Lizard l && l.room.GetTile(l.firstChunk.pos).AnyWater);
 
     internal static bool On_LizardAI_FallRisk(On.LizardAI.orig_FallRisk orig, LizardAI self, IntVector2 tile) => (self is not CommonEelAI || !self.lizard.room.GetTile(self.lizard.room.aimap.getAItile(tile).fallRiskTile).AnyWater) && orig(self, tile);

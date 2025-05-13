@@ -22,7 +22,7 @@ public static class ArenaHooks
     {
         var data = (placedObj.data as PlacedObject.MultiplayerItemData)!;
         var dataTp = data.type;
-        if (dataTp != MultiplayerItemType.ThornyStrawberry && dataTp != MultiplayerItemType.LittleBalloon && dataTp != MultiplayerItemType.BouncingMelon && dataTp != MultiplayerItemType.Physalis && dataTp != MultiplayerItemType.LimeMushroom && dataTp != MultiplayerItemType.MarineEye && dataTp != MultiplayerItemType.StarLemon && dataTp != MultiplayerItemType.SporeProjectile)
+        if (dataTp != MultiplayerItemType.ThornyStrawberry && dataTp != MultiplayerItemType.LittleBalloon && dataTp != MultiplayerItemType.BouncingMelon && dataTp != MultiplayerItemType.Physalis && dataTp != MultiplayerItemType.LimeMushroom && dataTp != MultiplayerItemType.MarineEye && dataTp != MultiplayerItemType.StarLemon && dataTp != MultiplayerItemType.SporeProjectile && dataTp != MultiplayerItemType.FumeFruit && dataTp != MultiplayerItemType.Durian && dataTp != MultiplayerItemType.DarkGrub)
             orig(self, room, placedObj);
         else if (self.SpawnDefaultRoomItems && Random.value <= data.chance)
         {
@@ -158,7 +158,7 @@ public static class ArenaHooks
 
     internal static void On_SandboxEditor_GetPerformanceEstimate(On.ArenaBehaviors.SandboxEditor.orig_GetPerformanceEstimate orig, SandboxEditor.PlacedIcon placedIcon, ref float exponentialPart, ref float linearPart)
     {
-        if (placedIcon is SandboxEditor.CreatureOrItemIcon i && (i.iconData.itemType == AbstractObjectType.LittleBalloon || i.iconData.itemType == AbstractObjectType.Physalis || i.iconData.itemType == AbstractObjectType.MiniBlueFruit))
+        if (placedIcon is SandboxEditor.CreatureOrItemIcon i && (i.iconData.itemType == AbstractObjectType.LittleBalloon || i.iconData.itemType == AbstractObjectType.Physalis || i.iconData.itemType == AbstractObjectType.MiniBlueFruit || i.iconData.itemType == AbstractObjectType.FumeFruit))
             linearPart += .6f;
         else
             orig(placedIcon, ref exponentialPart, ref linearPart);

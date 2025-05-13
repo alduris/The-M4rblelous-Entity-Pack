@@ -100,7 +100,7 @@ public static class OverseerHooks
 
     internal static float On_OverseerCommunicationModule_FoodDelicousScore(On.OverseerCommunicationModule.orig_FoodDelicousScore orig, OverseerCommunicationModule self, AbstractPhysicalObject foodObject, Player player)
     {
-        if (foodObject?.realizedObject is PhysicalObject obj && (obj is ThornyStrawberry or BouncingMelon or LittleBalloon or Physalis or MarineEye or StarLemon or MiniFruit) && !foodObject.slatedForDeletion && foodObject.Room == player.abstractCreature.Room)
+        if (foodObject?.realizedObject is PhysicalObject obj && (obj is ThornyStrawberry or BouncingMelon or LittleBalloon or Physalis or MarineEye or StarLemon or MiniFruit or DarkGrub) && !foodObject.slatedForDeletion && foodObject.Room == player.abstractCreature.Room)
         {
             var num = Mathf.InverseLerp(1100f, 400f, Vector2.Distance(obj.firstChunk.pos, player.DangerPos));
             if (num == 0f)

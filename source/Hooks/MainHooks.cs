@@ -53,6 +53,12 @@ public static class MainHooks
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.DendriticNeuron);
                 if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.SporeProjectile))
                     MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.SporeProjectile);
+                if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.FumeFruit))
+                    MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.FumeFruit);
+                if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.Durian))
+                    MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.Durian);
+                if (MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.DarkGrub))
+                    MultiplayerUnlocks.ItemUnlockList.Remove(SandboxUnlockID.DarkGrub);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.NoodleEater))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.NoodleEater);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SilverLizard))
@@ -165,6 +171,10 @@ public static class MainHooks
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.LittleBalloon);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.ThornyStrawberry))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.ThornyStrawberry);
+        if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.Durian))
+            MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.Durian);
+        if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.FumeFruit))
+            MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.FumeFruit);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.BouncingMelon))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.BouncingMelon);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.MiniBlueFruit))
@@ -181,6 +191,8 @@ public static class MainHooks
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.StarLemon);
         if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.DendriticNeuron))
             MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.DendriticNeuron);
+        if (!MultiplayerUnlocks.ItemUnlockList.Contains(SandboxUnlockID.DarkGrub))
+            MultiplayerUnlocks.ItemUnlockList.Add(SandboxUnlockID.DarkGrub);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SeedBat))
             MultiplayerUnlocks.CreatureUnlockList.Add(SandboxUnlockID.SeedBat);
         if (!MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.Bigrub))
@@ -220,6 +232,7 @@ public static class MainHooks
                 SlugFood.MiniBlueFruit = new(nameof(SlugFood.MiniBlueFruit), true);
                 SlugFood.MiniScutigera = new(nameof(SlugFood.MiniScutigera), true);
                 SlugFood.XyloWorm = new(nameof(SlugFood.XyloWorm), true);
+                SlugFood.DarkGrub = new(nameof(SlugFood.DarkGrub), true);
                 ResizeGourmandCombos();
                 InitGourmandCombos();
                 On.MoreSlugcats.GourmandCombos.InitCraftingLibrary += On_GourmandCombos_InitCraftingLibrary;

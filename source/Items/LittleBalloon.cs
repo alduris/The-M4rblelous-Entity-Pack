@@ -131,8 +131,10 @@ public class LittleBalloon : Rock, IPlayerEdible, IHaveAStalkState, IHaveAStalk
             for (var i = 0; i < segments.Length; i++)
             {
                 var segment = segments[i];
-                Vector2 vector2 = Vector2.Lerp(segment[1], segment[0], timeStacker), normalized = (vector2 - vector).normalized, vector3 = Custom.PerpendicularVector(normalized);
-                float num = Vector2.Distance(vector2, vector) / 4f;
+                Vector2 vector2 = Vector2.Lerp(segment[1], segment[0], timeStacker),
+                    normalized = (vector2 - vector).normalized,
+                    vector3 = Custom.PerpendicularVector(normalized);
+                var num = Vector2.Distance(vector2, vector) / 4f;
                 s0.MoveVertice(i * 4, vector - vector3 * .8f + normalized * num - camPos);
                 s0.MoveVertice(i * 4 + 1, vector + vector3 * .8f + normalized * num - camPos);
                 s0.MoveVertice(i * 4 + 2, vector2 - vector3 * .8f - normalized * num - camPos);

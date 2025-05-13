@@ -5,6 +5,7 @@ using System;
 using MoreSlugcats;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using UnityEngine;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -20,6 +21,17 @@ public static class CreatureHooks
         orig(self);
         if (self is BigSpider && SporeMemory.TryGetValue(self.abstractCreature, out var mem))
             mem.Clear();
+    }
+
+    internal static void On_Creature_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus)
+    {
+        if (self is Player p && self.RippleViolenceCheck(source) && p.objectInStomach is AbstractPhysicalObject obj && obj.type == AbstractObjectType.FumeFruit && ((type == Creature.DamageType.Bite && source?.owner is not null and not Lizard) || type == Creature.DamageType.Electric || type == Creature.DamageType.Explosion || type == Creature.DamageType.Stab))
+        {
+            FumeFruit.Explode(p);
+            obj.Destroy();
+            p.objectInStomach = null;
+        }
+        orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
     }
 
     internal static void On_FriendTracker_ItemOffered(On.FriendTracker.orig_ItemOffered orig, FriendTracker self, Tracker.CreatureRepresentation subjectRep, PhysicalObject involvedItem)
