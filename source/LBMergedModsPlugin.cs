@@ -40,6 +40,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.Player.CanBeSwallowed += On_Player_CanBeSwallowed;
         On.Player.Update += On_Player_Update;
         IL.Player.TerrainImpact += IL_Player_TerrainImpact;
+        On.Player.Stun += On_Player_Stun;
         On.Player.SwallowObject += On_Player_SwallowObject;
         IL.Player.GrabUpdate += IL_Player_GrabUpdate;
         IL.PlayerGraphics.Update += IL_PlayerGraphics_Update;
@@ -327,6 +328,9 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.Player.EatMeatUpdate += On_Player_EatMeatUpdate;
         On.ScavengerBomb.Explode += On_ScavengerBomb_Explode;
         IL.Spear.HitSomething += IL_Spear_HitSomething;
+        On.Creature.Violence += On_Creature_Violence;
+        On.LizardAI.BitCreature += On_LizardAI_BitCreature;
+        On.PlayerGraphics.Update += On_PlayerGraphics_Update;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

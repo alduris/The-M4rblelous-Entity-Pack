@@ -70,7 +70,7 @@ Shader "StarLemonBloom"
 					rippleClip(i.scrPos);
 					if (tex2D(_MainTex, i.uv).w == 0.0)
 						return float4(0.0, 0.0, 0.0, 0.0);
-					float2 screenPos = i.scrPos.xy;
+					float2 screenPos = i.scrPos;
 					float4 getCol = float4(0.0, 0.0, 0.0, 1.0);
 					float4 texcol = float4(0.0, 0.0, 0.0, 1.0);
 					float div = 0.0;
@@ -94,7 +94,7 @@ Shader "StarLemonBloom"
 					}
 					 getCol /= div;
 					 getCol *= i.clr.w * lerp(1.0, 0.5, distance(i.uv, float2(0.5, 0.5)) * 2.0);
-					 float4 grabCol = tex2D(_GrabTexture, screenPos.xy);
+					 float4 grabCol = tex2D(_GrabTexture, screenPos);
 					 grabCol.xyz = max(grabCol.xyz, getCol.xyz);
 					 getCol.xyz = pow(getCol.xyz, float3(1.5, 1.5, 1.5));
 					 return grabCol + getCol;

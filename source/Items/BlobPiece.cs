@@ -55,8 +55,8 @@ public class BlobPiece : PlayerCarryableItem, IPlayerEdible, IDrawable
         if (room is not Room rm)
             return;
         var fch = firstChunk;
-        if (rm.game.devToolsActive && Input.GetKey("b"))
-            fch.vel += Custom.DirVec(fch.pos, Input.mousePosition) * 3f;
+        if (rm.game.devToolsActive && Input.GetKey("b") && rm.game.cameras[0].room == rm)
+            fch.vel += Custom.DirVec(fch.pos, (Vector2)Futile.mousePosition + rm.game.cameras[0].pos) * 3f;
         if (fch.ContactPoint.y < 0)
             fch.vel.x *= .8f;
         LastProp = Prop;

@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using RWCustom;
 using System.Collections.Generic;
 using CoralBrain;
-using JetBrains.Annotations;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -31,6 +30,8 @@ public static class RoomHooks
                 shaders["StarLemonBloom"] = FShader.CreateShader("StarLemonBloom", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "StarLemonBloom.shader"));
                 shaders["DivingBeetleFin"] = FShader.CreateShader("DivingBeetleFin", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DivingBeetleFin.shader"));
                 shaders["DivingBeetleFin2"] = FShader.CreateShader("DivingBeetleFin2", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DivingBeetleFin2.shader"));
+                shaders["FumeFruitHaze"] = FShader.CreateShader("FumeFruitHaze", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "FumeFruitHaze.shader"));
+                shaders["DarkGrubVision"] = FShader.CreateShader("DarkGrubVision", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DarkGrubVision.shader"));
                 _MiniLeviColorA = Shader.PropertyToID("_MiniLeviColorA");
                 _MiniLeviColorB = Shader.PropertyToID("_MiniLeviColorB");
                 _MiniLeviColorHead = Shader.PropertyToID("_MiniLeviColorHead");
@@ -80,6 +81,12 @@ public static class RoomHooks
                         arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.SporeProjectile && (game.session is not StoryGameSession session133 || !session133.saveState.ItemConsumed(self.world, false, arm.index, i)))
                         arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.SporeProjectile, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.FumeFruit && (game.session is not StoryGameSession session134 || !session134.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.FumeFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.Durian && (game.session is not StoryGameSession session135 || !session135.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.Durian, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                    else if (firstTimeRealized && pObj.type == PlacedObjectType.DarkGrub && (game.session is not StoryGameSession session136 || !session136.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DarkGrub, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
                     else if (firstTimeRealized && pObj.type == PlacedObjectType.DendriticNeuron && (game.session is not StoryGameSession session16 || !session16.saveState.ItemConsumed(self.world, false, arm.index, i)))
                     {
                         var flag = true;
@@ -298,7 +305,7 @@ public static class RoomHooks
     internal static void On_Room_SpawnMultiplayerItem(On.Room.orig_SpawnMultiplayerItem orig, Room self, PlacedObject placedObj)
     {
         var data = (placedObj.data as PlacedObject.MultiplayerItemData)!;
-        if (data.type == MultiplayerItemType.ThornyStrawberry || data.type == MultiplayerItemType.LittleBalloon || data.type == MultiplayerItemType.BouncingMelon || data.type == MultiplayerItemType.Physalis || data.type == MultiplayerItemType.LimeMushroom || data.type == MultiplayerItemType.MarineEye || data.type == MultiplayerItemType.StarLemon || data.type == MultiplayerItemType.SporeProjectile)
+        if (data.type == MultiplayerItemType.ThornyStrawberry || data.type == MultiplayerItemType.LittleBalloon || data.type == MultiplayerItemType.BouncingMelon || data.type == MultiplayerItemType.Physalis || data.type == MultiplayerItemType.LimeMushroom || data.type == MultiplayerItemType.MarineEye || data.type == MultiplayerItemType.StarLemon || data.type == MultiplayerItemType.SporeProjectile || data.type == MultiplayerItemType.FumeFruit || data.type == MultiplayerItemType.Durian || data.type == MultiplayerItemType.DarkGrub)
         {
             var tp = new AbstractPhysicalObject.AbstractObjectType(data.type.value);
             if (tp.Index >= 0 && Random.value <= data.chance)

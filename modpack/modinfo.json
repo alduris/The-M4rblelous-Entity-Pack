@@ -1,8 +1,8 @@
 {
   "id": "lb-fgf-m4r-ik.modpack",
   "name": "The M4rblelous Entity Pack",
-  "version": "10.0.1",
-  "authors": "LB/M4rbleL1ne, with some work from Wrayk, Thrithralas, snoodle and the one who screams I guess.",
+  "version": "10.0.2",
+  "authors": "M4rbleL1ne, Wrayk, Thrithralas, Alduris, the one who screams I guess and many other asset and concept contributors.",
   "description": "A creature and item pack to use as a dependency for other mods.",
   "requirements": [ "fisobs" ],
   "requirements_names": [ "Fisobs" ],

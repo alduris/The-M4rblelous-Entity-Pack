@@ -6,7 +6,7 @@ public static class SporePlantHooks
 {
     internal static void On_SporePlant_HitByWeapon(On.SporePlant.orig_HitByWeapon orig, SporePlant self, Weapon weapon)
     {
-        if (weapon is not SmallPuffBall)
+        if (weapon is not SmallPuffBall or FumeFruit)
             orig(self, weapon);
     }
 

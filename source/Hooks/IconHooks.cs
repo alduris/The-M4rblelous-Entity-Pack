@@ -153,8 +153,14 @@ public static class IconHooks
             return Ext.MenuGrey;
         if (itemType == AbstractObjectType.MiniBlueFruit)
             return Color.blue;
+        if (itemType == AbstractObjectType.FumeFruit)
+            return new(251f / 255f, 231f / 255f, 14f / 255f);
+        if (itemType == AbstractObjectType.Durian)
+            return new(121f / 255f, 130f / 255f, 15f / 255f);
         if (itemType == AbstractObjectType.MiniFruitSpawner)
             return default;
+        if (itemType == AbstractObjectType.DarkGrub)
+            return Color.green;
         return orig(itemType, intData);
     }
 
@@ -186,6 +192,12 @@ public static class IconHooks
             return "Symbol_DendriticNeuron";
         if (itemType == AbstractObjectType.MiniBlueFruit)
             return "Symbol_MiniBlueFruit";
+        if (itemType == AbstractObjectType.FumeFruit)
+            return "Symbol_FumeFruit";
+        if (itemType == AbstractObjectType.Durian)
+            return "Symbol_Durian";
+        if (itemType == AbstractObjectType.DarkGrub)
+            return "Symbol_DarkGrub";
         if (itemType == AbstractObjectType.MiniFruitSpawner)
             return "1x1TPX4";
         return orig(itemType, intData);

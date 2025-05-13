@@ -344,7 +344,10 @@ public static class SandboxUnlockID
         MiniScutigera = new(nameof(MiniScutigera), true),
         Xylo = new(nameof(Xylo), true),
         XyloWorm = new(nameof(XyloWorm), true),
-        BigXyloWorm = new(nameof(BigXyloWorm), true);
+        BigXyloWorm = new(nameof(BigXyloWorm), true),
+        FumeFruit = new(nameof(FumeFruit), true),
+        Durian = new(nameof(Durian), true),
+        DarkGrub = new(nameof(DarkGrub), true);
 
     static SandboxUnlockID()
     {
@@ -391,7 +394,10 @@ public static class SandboxUnlockID
             MiniScutigera,
             Xylo,
             XyloWorm,
-            BigXyloWorm];
+            BigXyloWorm,
+            FumeFruit,
+            Durian,
+            DarkGrub];
     }
 
     public static void UnregisterValues()
@@ -616,6 +622,21 @@ public static class SandboxUnlockID
             BigXyloWorm.Unregister();
             BigXyloWorm = null!;
         }
+        if (FumeFruit is not null)
+        {
+            FumeFruit.Unregister();
+            FumeFruit = null!;
+        }
+        if (Durian is not null)
+        {
+            Durian.Unregister();
+            Durian = null!;
+        }
+        if (DarkGrub is not null)
+        {
+            DarkGrub.Unregister();
+            DarkGrub = null!;
+        }
     }
 }
 
@@ -644,7 +665,10 @@ public static class PlacedObjectType
         XyloWorm = new(nameof(XyloWorm), true),
         BigXyloWorm = new(nameof(BigXyloWorm), true),
         DeadXyloWorm = new(nameof(DeadXyloWorm), true),
-        DeadBigXyloWorm = new(nameof(DeadBigXyloWorm), true);
+        DeadBigXyloWorm = new(nameof(DeadBigXyloWorm), true),
+        FumeFruit = new(nameof(FumeFruit), true),
+        Durian = new(nameof(Durian), true),
+        DarkGrub = new(nameof(DarkGrub), true);
 
     public static void UnregisterValues()
     {
@@ -768,6 +792,21 @@ public static class PlacedObjectType
             DeadBigXyloWorm.Unregister();
             DeadBigXyloWorm = null!;
         }
+        if (FumeFruit is not null)
+        {
+            FumeFruit.Unregister();
+            FumeFruit = null!;
+        }
+        if (Durian is not null)
+        {
+            Durian.Unregister();
+            Durian = null!;
+        }
+        if (DarkGrub is not null)
+        {
+            DarkGrub.Unregister();
+            DarkGrub = null!;
+        }
     }
 }
 
@@ -787,7 +826,10 @@ public static class AbstractObjectType
         StarLemon = new(nameof(StarLemon), true),
         DendriticNeuron = new(nameof(DendriticNeuron), true),
         MiniBlueFruit = new(nameof(MiniBlueFruit), true),
-        MiniFruitSpawner = new(nameof(MiniFruitSpawner), true);
+        MiniFruitSpawner = new(nameof(MiniFruitSpawner), true),
+        FumeFruit = new(nameof(FumeFruit), true),
+        Durian = new(nameof(Durian), true),
+        DarkGrub = new(nameof(DarkGrub), true);
 
     static AbstractObjectType()
     {
@@ -804,7 +846,10 @@ public static class AbstractObjectType
             StarLemon,
             DendriticNeuron,
             MiniBlueFruit,
-            MiniFruitSpawner];
+            MiniFruitSpawner,
+            FumeFruit,
+            Durian,
+            DarkGrub];
     }
 
     public static void UnregisterValues()
@@ -879,6 +924,21 @@ public static class AbstractObjectType
             MiniFruitSpawner.Unregister();
             MiniFruitSpawner = null!;
         }
+        if (FumeFruit is not null)
+        {
+            FumeFruit.Unregister();
+            FumeFruit = null!;
+        }
+        if (Durian is not null)
+        {
+            Durian.Unregister();
+            Durian = null!;
+        }
+        if (DarkGrub is not null)
+        {
+            DarkGrub.Unregister();
+            DarkGrub = null!;
+        }
     }
 }
 
@@ -891,7 +951,10 @@ public static class MultiplayerItemType
         LimeMushroom = new(nameof(LimeMushroom), true),
         MarineEye = new(nameof(MarineEye), true),
         StarLemon = new(nameof(StarLemon), true),
-        SporeProjectile = new(nameof(SporeProjectile), true);
+        SporeProjectile = new(nameof(SporeProjectile), true),
+        FumeFruit = new(nameof(FumeFruit), true),
+        Durian = new(nameof(Durian), true),
+        DarkGrub = new(nameof(DarkGrub), true);
 
     public static void UnregisterValues()
     {
@@ -935,6 +998,21 @@ public static class MultiplayerItemType
             SporeProjectile.Unregister();
             SporeProjectile = null!;
         }
+        if (FumeFruit is not null)
+        {
+            FumeFruit.Unregister();
+            FumeFruit = null!;
+        }
+        if (Durian is not null)
+        {
+            Durian.Unregister();
+            Durian = null!;
+        }
+        if (DarkGrub is not null)
+        {
+            DarkGrub.Unregister();
+            DarkGrub = null!;
+        }
     }
 }
 
@@ -951,7 +1029,10 @@ public static class MiscItemType
         StarLemon = new(nameof(StarLemon), true),
         SporeProjectile = new(nameof(SporeProjectile), true),
         DendriticNeuron = new(nameof(DendriticNeuron), true),
-        MiniBlueFruit = new(nameof(MiniBlueFruit), true);
+        MiniBlueFruit = new(nameof(MiniBlueFruit), true),
+        FumeFruit = new(nameof(FumeFruit), true),
+        Durian = new(nameof(Durian), true),
+        DarkGrub = new(nameof(DarkGrub), true);
 
     public static void UnregisterValues()
     {
@@ -1015,12 +1096,27 @@ public static class MiscItemType
             MiniBlueFruit.Unregister();
             MiniBlueFruit = null!;
         }
+        if (FumeFruit is not null)
+        {
+            FumeFruit.Unregister();
+            FumeFruit = null!;
+        }
+        if (Durian is not null)
+        {
+            Durian.Unregister();
+            Durian = null!;
+        }
+        if (DarkGrub is not null)
+        {
+            DarkGrub.Unregister();
+            DarkGrub = null!;
+        }
     }
 }
 
 public static class SlugFood
 {
-    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron, MiniBlueFruit, MiniScutigera, XyloWorm;
+    public static SlugNPCAI.Food? ThornyStrawberry, BlobPiece, LittleBalloon, Physalis, GummyAnther, MarineEye, StarLemon, DendriticNeuron, MiniBlueFruit, MiniScutigera, XyloWorm, DarkGrub;
 
     public static void UnregisterValues()
     {
@@ -1078,6 +1174,11 @@ public static class SlugFood
         {
             XyloWorm.Unregister();
             XyloWorm = null;
+        }
+        if (DarkGrub is not null)
+        {
+            DarkGrub.Unregister();
+            DarkGrub = null;
         }
     }
 }

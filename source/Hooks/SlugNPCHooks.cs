@@ -27,6 +27,8 @@ public static class SlugNPCHooks
             self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.SmallCentipede.index]);
         else if (food is XyloWorm)
             self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.VultureGrub.index]);
+        else if (food is DarkGrub)
+            self.DefaultFoodReaction(self.foodPreference[SlugNPCAI.Food.EggBugEgg.index]);
         else
             orig(self, food);
     }
@@ -55,6 +57,8 @@ public static class SlugNPCHooks
             return SlugFood.MiniScutigera!;
         if (food is XyloWorm)
             return SlugFood.XyloWorm!;
+        if (food is DarkGrub)
+            return SlugFood.DarkGrub!;
         return orig(self, food);
     }
 
@@ -62,8 +66,12 @@ public static class SlugNPCHooks
     {
         if (obj is PuffBall or FlareBomb && target is Sporantula)
             return 0f;
+        if (obj is Durian)
+            return target is Lizard and not CommonEel ? 2f : .3f;
+        if (obj is FumeFruit)
+            return target is InsectoidCreature ? (target is Sporantula ? .3f : 5f) : .3f;
         if (obj is SmallPuffBall)
-            return target is InsectoidCreature ? (target is Sporantula ? 0f : 5.3f) : .3f;
+            return target is InsectoidCreature ? (target is Sporantula ? .3f : 5.3f) : .3f;
         if (obj is ThornyStrawberry st)
             return st.SpikesRemoved() ? 0f : .75f;
         if (obj is LittleBalloon)
@@ -82,7 +90,7 @@ public static class SlugNPCHooks
                 s_MatchBrtrue_OutLabel))
             {
                 c.Emit(OpCodes.Ldloc, s_loc1)
-                 .EmitDelegate((PhysicalObject realizedObject) => realizedObject is SmallPuffBall || realizedObject is LittleBalloon || (realizedObject is ThornyStrawberry st && !st.SpikesRemoved()));
+                 .EmitDelegate((PhysicalObject realizedObject) => realizedObject is SmallPuffBall or LittleBalloon or FumeFruit or Durian || (realizedObject is ThornyStrawberry st && !st.SpikesRemoved()));
                 c.Emit(OpCodes.Brtrue, s_label);
             }
             else

@@ -89,8 +89,8 @@ sealed class XyloCritob : Critob, ISandboxHandler
         self.FearedBy(CreatureTemplate.Type.SmallCentipede, 1f);
         self.Eats(CreatureTemplate.Type.SmallNeedleWorm, 1f);
         self.FearedBy(CreatureTemplate.Type.SmallNeedleWorm, 1f);
-        self.Eats(CreatureTemplate.Type.Leech, 1f);
-        self.FearedBy(CreatureTemplate.Type.Leech, 1f);
+        self.Eats(CreatureTemplate.Type.BigNeedleWorm, 1f);
+        self.FearedBy(CreatureTemplate.Type.BigNeedleWorm, .5f);
         self.Eats(CreatureTemplate.Type.Fly, 1f);
         self.FearedBy(CreatureTemplate.Type.Fly, 1f);
         self.Eats(CreatureTemplate.Type.Hazer, 1f);

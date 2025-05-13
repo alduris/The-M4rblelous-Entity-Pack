@@ -1,4 +1,5 @@
 ﻿global using static LBMergedMods.Hooks.OracleHooks;
+using MoreSlugcats;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -41,6 +42,27 @@ public static class OracleHooks
             }
             else if (item == MiscItemType.MiniBlueFruit)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It's a fragile little chrysalis.<LINE>Eat it quickly please, I find this kind of thing quite disgusting."), 0));
+            else if (item == MiscItemType.FumeFruit)
+            {
+                if (ModManager.MSC && self.myBehavior?.oracle?.ID == MoreSlugcatsEnums.OracleID.DM)
+                {
+                    self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Fascinating.<LINE>This fruit seems to be filled to the brim with some kind of dense gas."), 0));
+                    self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("A quick scan reveals some seeds hidden within.<LINE>Perhaps the gas acts as a long-distance carrier?"), 0));
+                    self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Either way, you should be careful handling this.<LINE>It looks like it could burst at any second,<LINE>and I imagine the gas inside wouldn’t be very pleasant"), 0));
+                }
+                else
+                {
+                    self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("Fascinating.<LINE>This fruit seems to be filled to the brim with some kind of dense gas.<LINE>Perhaps a defense mechanism of some kind?"), 0));
+                    self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("You should be careful handling this.<LINE>It looks like it could burst at any second,<LINE>and I imagine the gas inside wouldn’t be very pleasant!"), 0));
+                }
+            }
+            else if (item == MiscItemType.Durian)
+            {
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("What an interesting find!<LINE>This fruit is not only sharp on the outside, but awfully smelly on the inside,<LINE>judging by its already pungent odor..."), 0));
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("While I wouldn't think it pleasant to eat, it might have some use as a deterrent."), 0));
+            }
+            else if (item == MiscItemType.DarkGrub)
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It seems like some kind of... grub?<LINE>The glowing would suggest that it's well adapted to dark environments."), 0));
         }
     }
 
@@ -82,6 +104,12 @@ public static class OracleHooks
             return MiscItemType.DendriticNeuron;
         if (testItem is MiniFruit)
             return MiscItemType.MiniBlueFruit;
+        if (testItem is FumeFruit)
+            return MiscItemType.FumeFruit;
+        if (testItem is Durian)
+            return MiscItemType.Durian;
+        if (testItem is DarkGrub)
+            return MiscItemType.DarkGrub;
         return orig(self, testItem);
     }
 
