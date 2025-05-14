@@ -312,7 +312,12 @@ public class MarineEye : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveASt
             AbstrCons.Consume();
             if (PlayerData.TryGetValue(p.abstractCreature, out var props))
                 props.BlueFaceDuration = 5000;
-            room?.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk);
+            if (room is Room rm)
+            {
+                rm.PlaySound(SoundID.Slugcat_Eat_Dangle_Fruit, firstChunk);
+                for (var i = 0; i < 10; i++)
+                    rm.AddObject(new Spark(firstChunk.pos, Custom.RNV(), color, null, 30, 2));
+            }
             var grabbers = grabbedBy;
             for (var i = 0; i < grabbers.Count; i++)
                 grabbers[i]?.Release();

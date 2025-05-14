@@ -13,6 +13,7 @@ public static class AbstractPhysicalObjectHooks
 {
     public static ConditionalWeakTable<AbstractCreature, BigrubProperties> Big = new();
     public static ConditionalWeakTable<AbstractCreature, StrongBox<bool>> Albino = new();
+    public static ConditionalWeakTable<AbstractCreature, StrongBox<bool>> RottenMode = new();
     public static ConditionalWeakTable<AbstractCreature, HVFlyData> HoverflyData = new();
     public static ConditionalWeakTable<AbstractCreature, JellyProperties> Jelly = new();
     public static ConditionalWeakTable<AbstractCreature, PlayerCustomData> PlayerData = new();
@@ -186,7 +187,7 @@ public static class AbstractPhysicalObjectHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook AbstractCreature.AbstractBehavior!");
     }
 
-    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || type == AbstractObjectType.StarLemon || type == AbstractObjectType.DendriticNeuron || type == AbstractObjectType.MiniBlueFruit || type == AbstractObjectType.MiniFruitSpawner || type == AbstractObjectType.SporeProjectile || orig(type);
+    internal static bool On_AbstractConsumable_IsTypeConsumable(On.AbstractConsumable.orig_IsTypeConsumable orig, AbstractPhysicalObject.AbstractObjectType type) => type == AbstractObjectType.BouncingMelon || type == AbstractObjectType.ThornyStrawberry || type == AbstractObjectType.LittleBalloon || type == AbstractObjectType.Physalis || type == AbstractObjectType.LimeMushroom || type == AbstractObjectType.RubberBlossom || type == AbstractObjectType.GummyAnther || type == AbstractObjectType.MarineEye || type == AbstractObjectType.StarLemon || type == AbstractObjectType.DendriticNeuron || type == AbstractObjectType.MiniBlueFruit || type == AbstractObjectType.MiniFruitSpawner || type == AbstractObjectType.SporeProjectile || type == AbstractObjectType.FumeFruit || type == AbstractObjectType.Durian || type == AbstractObjectType.DarkGrub || orig(type);
 
     internal static void On_AbstractCreature_ctor(On.AbstractCreature.orig_ctor orig, AbstractCreature self, World world, CreatureTemplate creatureTemplate, Creature realizedCreature, WorldCoordinate pos, EntityID ID)
     {
@@ -200,8 +201,10 @@ public static class AbstractPhysicalObjectHooks
             Big.Add(self, new());
         else if (tp == CreatureTemplateType.Hoverfly && !HoverflyData.TryGetValue(self, out _))
             HoverflyData.Add(self, new());
-        else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar || tp == CreatureTemplateType.FatFireFly || tp == CreatureTemplateType.XyloWorm) && !Albino.TryGetValue(self, out _))
+        else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar || tp == CreatureTemplateType.FatFireFly) && !Albino.TryGetValue(self, out _))
             Albino.Add(self, new());
+        else if ((tp == CreatureTemplateType.XyloWorm) && !RottenMode.TryGetValue(self, out _))
+            RottenMode.Add(self, new());
         if (tp == CreatureTemplateType.Denture)
             self.remainInDenCounter = 0;
     }
@@ -282,6 +285,8 @@ public static class AbstractPhysicalObjectHooks
                     }
                     else if (string.Equals(nm, "albinoform", StringComparison.OrdinalIgnoreCase) && Albino.TryGetValue(self, out var props4))
                         props4.Value = true;
+                    else if (string.Equals(nm, "rottenmode", StringComparison.OrdinalIgnoreCase) && RottenMode.TryGetValue(self, out var props5))
+                        props5.Value = true;
                 }
             }
         }
@@ -374,6 +379,12 @@ public static class AbstractPhysicalObjectHooks
                 self.realizedObject = new MiniFruit(self);
             else if (type == AbstractObjectType.MiniFruitSpawner)
                 self.realizedObject = new MiniFruitSpawner(self);
+            else if (type == AbstractObjectType.FumeFruit)
+                self.realizedObject = new FumeFruit(self);
+            else if (type == AbstractObjectType.Durian)
+                self.realizedObject = new Durian(self);
+            else if (type == AbstractObjectType.DarkGrub)
+                self.realizedObject = new DarkGrub(self);
         }
     }
 

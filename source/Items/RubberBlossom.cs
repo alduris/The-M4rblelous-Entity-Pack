@@ -74,9 +74,10 @@ public class RubberBlossom : PhysicalObject, IDrawable
         room = placeRoom;
         var ind = AbstrCons.placedObjectIndex;
         var ftrl = StationPlant.TryGetValue(AbstrCons, out var props) && props.FirstTimeRealized;
-        if (ind >= 0 && ind < placeRoom.roomSettings.placedObjects.Count)
+        var pObjs = placeRoom.roomSettings.placedObjects;
+        if (ind >= 0 && ind < pObjs.Count)
         {
-            var obj = placeRoom.roomSettings.placedObjects[ind];
+            var obj = pObjs[ind];
             firstChunk.HardSetPosition(obj.pos);
             if (obj.data is RubberBlossomData data)
             {
@@ -102,10 +103,33 @@ public class RubberBlossom : PhysicalObject, IDrawable
                 MaxUpwardVel = 20f;
             }
         }
+        else if (props is not null && props.DevSpawn)
+        {
+            // Have to do some extra shenanigans since we're not placing in as a placed object
+            firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
+            Color = props.ForceColor;
+            MaxUpwardVel = props.ForceMaxVel;
+            Open = props.Open;
+            // That includes manually spawning our anthers
+            if (Open)
+            {
+                for (var i = 0; i < props.NumberOfFruits; i++)
+                {
+                    var anther = new AbstractConsumable(placeRoom.world, AbstractObjectType.GummyAnther, null, abstractPhysicalObject.pos, placeRoom.game.GetNewID(), -1, -1, null)
+                    {
+                        isConsumed = false
+                    };
+                    if (StationFruit.TryGetValue(anther, out var antherProps))
+                        antherProps.Plant = AbstrCons;
+                    placeRoom.abstractRoom.AddEntity(anther);
+                    anther.RealizeInRoom();
+                }
+            }
+        }
         else
         {
             if (ftrl)
-                props.Open = !AbstrCons.isConsumed;
+                props!.Open = !AbstrCons.isConsumed;
             firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
             Color = StationPlantCol;
             MaxUpwardVel = 20f;
@@ -114,7 +138,7 @@ public class RubberBlossom : PhysicalObject, IDrawable
         RootPos = firstChunk.pos;
         if (ftrl)
         {
-            props.FirstTimeRealized = false;
+            props!.FirstTimeRealized = false;
             AbstrCons.Consume();
         }
         if (props is not null)
