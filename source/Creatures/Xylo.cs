@@ -8,10 +8,7 @@ namespace LBMergedMods.Creatures;
 /*TODO:
  * NVst port + finish
  * 
- * SDv make
- * 
- * Entity Pack:
- * Merge Aluris PR
+ * SDv make + echo color fix
  */
 
 public class Xylo : Creature

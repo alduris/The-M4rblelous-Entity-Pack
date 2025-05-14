@@ -32,6 +32,7 @@ public static class RoomHooks
                 shaders["DivingBeetleFin2"] = FShader.CreateShader("DivingBeetleFin2", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DivingBeetleFin2.shader"));
                 shaders["FumeFruitHaze"] = FShader.CreateShader("FumeFruitHaze", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "FumeFruitHaze.shader"));
                 shaders["DarkGrubVision"] = FShader.CreateShader("DarkGrubVision", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DarkGrubVision.shader"));
+                shaders["XyloRoot"] = FShader.CreateShader("XyloRoot", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "XyloRoot.shader"));
                 _MiniLeviColorA = Shader.PropertyToID("_MiniLeviColorA");
                 _MiniLeviColorB = Shader.PropertyToID("_MiniLeviColorB");
                 _MiniLeviColorHead = Shader.PropertyToID("_MiniLeviColorHead");

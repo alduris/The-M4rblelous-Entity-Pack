@@ -45,7 +45,7 @@ public class XyloGraphics : GraphicsModule
         {
             scale = Xylo.BASE_RAD / 94f,
             rotation = MainRootRotation,
-            shader = Custom.rainWorld.Shaders["BlackGoo"]
+            shader = Custom.rainWorld.Shaders["XyloRoot"]
         };
         sprites[MAIN_ROOT_DANGLER_SPRITE] = new("XyloRootDangler" + DanglerVar)
         {
