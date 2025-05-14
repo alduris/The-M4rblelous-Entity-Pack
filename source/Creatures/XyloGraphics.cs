@@ -7,7 +7,7 @@ namespace LBMergedMods.Creatures;
 
 public class XyloGraphics : GraphicsModule
 {
-    public const int MAIN_ROOT_SPRITE = 0, MAIN_ROOT_DANGLER_SPRITE = 1, BODY_SPRITE = 2, GRADIENT_SPRITE = 3, LIGHT_SPRITE = 4, HOLES_SPRITE = 5;
+    public const int MAIN_ROOT_SPRITE = 0, MAIN_ROOT_DANGLER_SPRITE = 1, BODY_SPRITE = 2, GRADIENT_SPRITE = 3, LIGHT_SPRITE = 4, SMALL_HOLES_SPRITE = 5, BIG_HOLES_SPRITE = 6;
     public int DanglerVar;
     public float Rotation, MainRootRotation, LightUp;
     public bool InvertX, InvertY, InvertDangler;
@@ -40,7 +40,7 @@ public class XyloGraphics : GraphicsModule
 
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
-        var sprites = sLeaser.sprites = new FSprite[HOLES_SPRITE + 1];
+        var sprites = sLeaser.sprites = new FSprite[BIG_HOLES_SPRITE + 1];
         sprites[MAIN_ROOT_SPRITE] = new("XyloDarkness")
         {
             scale = Xylo.BASE_RAD / 94f,
@@ -58,7 +58,7 @@ public class XyloGraphics : GraphicsModule
             scaleX = InvertX ? -1f : 1f,
             scaleY = InvertY ? -1f : 1f
         };
-        sprites[GRADIENT_SPRITE] = new("XyloGrad")
+        sprites[GRADIENT_SPRITE] = new("XyloGrad2")
         {
             rotation = Rotation,
             scaleX = InvertX ? -1f : 1f,
@@ -71,7 +71,13 @@ public class XyloGraphics : GraphicsModule
             scaleX = InvertX ? -1f : 1f,
             scaleY = InvertY ? -1f : 1f
         };
-        sprites[HOLES_SPRITE] = new("XyloHoles")
+        sprites[SMALL_HOLES_SPRITE] = new("XyloSmallHoles")
+        {
+            rotation = Rotation,
+            scaleX = InvertX ? -1f : 1f,
+            scaleY = InvertY ? -1f : 1f
+        };
+        sprites[BIG_HOLES_SPRITE] = new("XyloBigHoles")
         {
             rotation = Rotation,
             scaleX = InvertX ? -1f : 1f,
@@ -100,7 +106,8 @@ public class XyloGraphics : GraphicsModule
         var sprs = sLeaser.sprites;
         FSprite body = sprs[BODY_SPRITE],
             root = sprs[MAIN_ROOT_SPRITE],
-            holes = sprs[HOLES_SPRITE],
+            smallHoles = sprs[SMALL_HOLES_SPRITE],
+            bigHoles = sprs[BIG_HOLES_SPRITE],
             grad = sprs[GRADIENT_SPRITE],
             dangler = sprs[MAIN_ROOT_DANGLER_SPRITE],
             light = sprs[LIGHT_SPRITE];
@@ -113,19 +120,22 @@ public class XyloGraphics : GraphicsModule
             var rd = fc.rad / 110f + .025f;
             dangler.scaleX = rd * (InvertDangler ? -1f : 1f);
             root.SetPosition(tweakedPos);
-            holes.SetPosition(tweakedPos);
+            smallHoles.SetPosition(tweakedPos);
+            bigHoles.SetPosition(tweakedPos);
             body.SetPosition(tweakedPos);
             grad.SetPosition(tweakedPos);
             light.SetPosition(tweakedPos);
-            holes.color = Color.Lerp(rCam.currentPalette.blackColor, ow.EffectColor, .25f + LightUp);
-            dangler.scaleY = light.scale = grad.scale = body.scale = holes.scale = rd;
+            bigHoles.color = smallHoles.color = Color.Lerp(rCam.currentPalette.blackColor, ow.EffectColor, .25f + LightUp);
+            dangler.scaleY = grad.scale = body.scale = smallHoles.scale = rd;
+            light.scale = bigHoles.scale = ow.RadUp / 110f + .025f;
             light.alpha = LightUp * .585f;
         }
         base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
         if (Creature?.NoHolesMode is true)
         {
             root.isVisible = false;
-            holes.isVisible = false;
+            smallHoles.isVisible = false;
+            bigHoles.isVisible = false;
             grad.isVisible = false;
             light.isVisible = false;
         }

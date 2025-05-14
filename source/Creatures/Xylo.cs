@@ -20,7 +20,7 @@ public class Xylo : Creature
     public PlacedObject? PlacedObj;
     public Color EffectColor;
     public Vector2 RootPos;
-    public float Lerper;
+    public float Lerper, RadUp;
     public int Worms, RottenWorms;
     public bool LerpUp = true, NoHolesMode;
 
@@ -114,6 +114,7 @@ public class Xylo : Creature
         else if (Lerper <= -2f)
             LerpUp = true;
         fch.rad = BASE_RAD * Mathf.Clamp(1f + Lerper * .1f, 1f, 1.25f);
+        RadUp = BASE_RAD * Mathf.Clamp(1f + Lerper * .15f, 1f, 1.8f);
         fch.HardSetPosition(RootPos);
         if (!dead && State.health < 0f)
             Die();
