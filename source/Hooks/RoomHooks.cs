@@ -57,233 +57,240 @@ public static class RoomHooks
         {
             var exped = ModManager.Expedition && game.rainWorld.ExpeditionMode;
             var objs = self.roomSettings.placedObjects;
-            for (var i = 0; i < objs.Count; i++)
+            for (var rl = 1; rl <= 2; rl++)
             {
-                var pObj = objs[i];
-                if (pObj.active)
+                if (rl == 2 && self.warpPoints.Count > 0)
+                    continue;
+                for (var i = 0; i < objs.Count; i++)
                 {
-                    if (pObj.type == PlacedObjectType.BonusScoreToken && !exped)
+                    var pObj = objs[i];
+                    if ((rl == 1 && pObj.deactivatedByWarpFilter) || (rl == 2 && !pObj.deactivatedByWarpFilter))
+                        continue;
+                    if (pObj.active)
                     {
-                        var data = (pObj.data as ScoreTokenData)!;
-                        self.AddObject(game.session is StoryGameSession session && session.saveState?.deathPersistentSaveData?.GetScoreTokenCollected(data.ID) is false ? new ScoreToken(self, pObj) : new ScoreToken.TokenStalk(self, pObj.pos, pObj.pos + data.handlePos, null));
-                    }
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.ThornyStrawberry && (game.session is not StoryGameSession session || !session.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.ThornyStrawberry, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.LittleBalloon && (game.session is not StoryGameSession session2 || !session2.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LittleBalloon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.BouncingMelon && (game.session is not StoryGameSession session3 || !session3.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.BouncingMelon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.LimeMushroom && (game.session is not StoryGameSession session13 || !session13.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LimeMushroom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.MarineEye && (game.session is not StoryGameSession session14 || !session14.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MarineEye, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.StarLemon && (game.session is not StoryGameSession session15 || !session15.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.SporeProjectile && (game.session is not StoryGameSession session133 || !session133.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.SporeProjectile, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.FumeFruit && (game.session is not StoryGameSession session134 || !session134.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.FumeFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.Durian && (game.session is not StoryGameSession session135 || !session135.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.Durian, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.DarkGrub && (game.session is not StoryGameSession session136 || !session136.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DarkGrub, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.DendriticNeuron && (game.session is not StoryGameSession session16 || !session16.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                    {
-                        var flag = true;
-                        var uads = self.updateList;
-                        for (var t = 0; t < uads.Count; t++)
+                        if (pObj.type == PlacedObjectType.BonusScoreToken && !exped)
                         {
-                            if (uads[t] is CoralNeuronSystem)
-                            {
-                                flag = false;
-                                break;
-                            }
+                            var data = (pObj.data as ScoreTokenData)!;
+                            self.AddObject(game.session is StoryGameSession session && session.saveState?.deathPersistentSaveData?.GetScoreTokenCollected(data.ID) is false ? new ScoreToken(self, pObj) : new ScoreToken.TokenStalk(self, pObj.pos, pObj.pos + data.handlePos, null));
                         }
-                        if (flag)
-                            self.AddObject(new CoralNeuronSystem());
-                        arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DendriticNeuron, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
-                        self.waitToEnterAfterFullyLoaded = Math.Max(self.waitToEnterAfterFullyLoaded, 80);
-                    }
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.MiniFruitBranch && (game.session is not StoryGameSession session23 || !session23.saveState.ItemConsumed(self.world, false, arm.index, i)))
-                    {
-                        var data = (pObj.data as MiniFruitSpawnerData)!;
-                        AbstractConsumable spawner;
-                        arm.entities.Add(spawner = new AbstractConsumable(self.world, AbstractObjectType.MiniFruitSpawner, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, data)
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.ThornyStrawberry && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session || !session.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.ThornyStrawberry, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.LittleBalloon && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session2 || !session2.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LittleBalloon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.BouncingMelon && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session3 || !session3.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.BouncingMelon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.LimeMushroom && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session13 || !session13.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.LimeMushroom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.MarineEye && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session14 || !session14.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.MarineEye, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.StarLemon && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session15 || !session15.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.StarLemon, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.SporeProjectile && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session133 || !session133.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.SporeProjectile, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.FumeFruit && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session134 || !session134.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.FumeFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.Durian && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session135 || !session135.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.Durian, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.DarkGrub && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session136 || !session136.saveState.ItemConsumed(self.world, false, arm.index, i)))
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DarkGrub, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.DendriticNeuron && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session16 || !session16.saveState.ItemConsumed(self.world, false, arm.index, i)))
                         {
-                            isConsumed = false,
-                            placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
-                        });
-                        if (MiniFruitSpawners.TryGetValue(spawner, out var props))
-                        {
-                            props.RootPos = data.RootHandlePos + pObj.pos;
-                            var state = Random.state;
-                            Random.InitState(spawner.ID.RandomSeed);
-                            AbstractConsumable fruit;
-                            List<Vector2> vecs = [];
-                            props.NumberOfFruits = game.session is StoryGameSession ses ? data.FoodAmount - ses.saveState.ConsumedFruits(self.world, arm.index, i) : data.FoodAmount;
-                            for (var j = 1; j <= props.NumberOfFruits; j++)
+                            var flag = true;
+                            var uads = self.updateList;
+                            for (var t = 0; t < uads.Count; t++)
                             {
-                                arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.MiniBlueFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
+                                if (uads[t] is CoralNeuronSystem)
                                 {
-                                    isConsumed = false,
-                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
-                                });
-                                if (MiniFruits.TryGetValue(fruit, out var fprops))
-                                {
-                                    fprops.Spawner = spawner;
-                                    var pos = Random.insideUnitCircle * .95f * data.Rad + pObj.pos;
-                                    var cntUnstuck = 0;
-                                    while (vecs.ContainsClosePosition(pos, 10f) && cntUnstuck < 25)
-                                    {
-                                        pos = Random.insideUnitCircle * .95f * data.Rad + pObj.pos;
-                                        ++cntUnstuck;
-                                    }
-                                    fprops.FruitPos = pos;
+                                    flag = false;
+                                    break;
                                 }
                             }
-                            Random.state = state;
+                            if (flag)
+                                self.AddObject(new CoralNeuronSystem());
+                            arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.DendriticNeuron, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                            self.waitToEnterAfterFullyLoaded = Math.Max(self.waitToEnterAfterFullyLoaded, 80);
                         }
-                    }
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.RubberBlossom)
-                    {
-                        AbstractConsumable plant;
-                        arm.entities.Add(plant = new AbstractConsumable(self.world, AbstractObjectType.RubberBlossom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, (pObj.data as PlacedObject.ConsumableObjectData)!)
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.MiniFruitBranch && !self.CheckForWarpedObjects(i) && (game.session is not StoryGameSession session23 || !session23.saveState.ItemConsumed(self.world, false, arm.index, i)))
                         {
-                            isConsumed = false,
-                            placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
-                        });
-                        if (StationPlant.TryGetValue(plant, out var props))
-                        {
-                            //var consumedFruits = 0;
-                            if (game.session is StoryGameSession ses)
+                            var data = (pObj.data as MiniFruitSpawnerData)!;
+                            AbstractConsumable spawner;
+                            arm.entities.Add(spawner = new AbstractConsumable(self.world, AbstractObjectType.MiniFruitSpawner, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, data)
                             {
-                                //consumedFruits = ses.saveState.ConsumedFruits(self.world, arm.index, i); // removal intended
-                                var (consumed, waitCycles) = ses.saveState.PlantConsumed(self.world, arm.index, i);
-                                if (consumed)
+                                isConsumed = false,
+                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
+                            });
+                            if (MiniFruitSpawners.TryGetValue(spawner, out var props))
+                            {
+                                props.RootPos = data.RootHandlePos + pObj.pos;
+                                var state = Random.state;
+                                Random.InitState(spawner.ID.RandomSeed);
+                                AbstractConsumable fruit;
+                                List<Vector2> vecs = [];
+                                props.NumberOfFruits = game.session is StoryGameSession ses ? data.FoodAmount - ses.saveState.ConsumedFruits(self.world, arm.index, i) : data.FoodAmount;
+                                for (var j = 1; j <= props.NumberOfFruits; j++)
                                 {
-                                    if (waitCycles - 100 <= 0)
+                                    arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.MiniBlueFruit, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
                                     {
-                                        if (props.StartsOpen && !props.AlwaysOpen)
-                                            props.NumberOfFruits = 0;
-                                        props.RemainingOpenCycles = 0;
-                                    }
-                                    else
+                                        isConsumed = false,
+                                        placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
+                                    });
+                                    if (MiniFruits.TryGetValue(fruit, out var fprops))
                                     {
-                                        if (!props.StartsOpen && !props.AlwaysOpen)
-                                            props.NumberOfFruits = 0;
-                                        props.RemainingOpenCycles = (int)Math.Floor(waitCycles * .01f);
+                                        fprops.Spawner = spawner;
+                                        var pos = Random.insideUnitCircle * .95f * data.Rad + pObj.pos;
+                                        var cntUnstuck = 0;
+                                        while (vecs.ContainsClosePosition(pos, 10f) && cntUnstuck < 25)
+                                        {
+                                            pos = Random.insideUnitCircle * .95f * data.Rad + pObj.pos;
+                                            ++cntUnstuck;
+                                        }
+                                        fprops.FruitPos = pos;
                                     }
+                                }
+                                Random.state = state;
+                            }
+                        }
+                        else if (firstTimeRealized && pObj.type == PlacedObjectType.RubberBlossom && !self.CheckForWarpedObjects(i))
+                        {
+                            AbstractConsumable plant;
+                            arm.entities.Add(plant = new AbstractConsumable(self.world, AbstractObjectType.RubberBlossom, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, (pObj.data as PlacedObject.ConsumableObjectData)!)
+                            {
+                                isConsumed = false,
+                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
+                            });
+                            if (StationPlant.TryGetValue(plant, out var props))
+                            {
+                                //var consumedFruits = 0;
+                                if (game.session is StoryGameSession ses)
+                                {
+                                    //consumedFruits = ses.saveState.ConsumedFruits(self.world, arm.index, i); // removal intended
+                                    var (consumed, waitCycles) = ses.saveState.PlantConsumed(self.world, arm.index, i);
+                                    if (consumed)
+                                    {
+                                        if (waitCycles - 100 <= 0)
+                                        {
+                                            if (props.StartsOpen && !props.AlwaysOpen)
+                                                props.NumberOfFruits = 0;
+                                            props.RemainingOpenCycles = 0;
+                                        }
+                                        else
+                                        {
+                                            if (!props.StartsOpen && !props.AlwaysOpen)
+                                                props.NumberOfFruits = 0;
+                                            props.RemainingOpenCycles = (int)Math.Floor(waitCycles * .01f);
+                                        }
+                                    }
+                                    else if (!props.StartsOpen && !props.AlwaysOpen)
+                                        props.NumberOfFruits = 0;
                                 }
                                 else if (!props.StartsOpen && !props.AlwaysOpen)
                                     props.NumberOfFruits = 0;
-                            }
-                            else if (!props.StartsOpen && !props.AlwaysOpen)
-                                props.NumberOfFruits = 0;
-                            if (props.AlwaysClosed)
-                            {
-                                props.NumberOfFruits = 0;
-                                props.RemainingOpenCycles = 0;
-                            }
-                            plant.isConsumed = props.RemainingOpenCycles == 0;
-                            var state = Random.state;
-                            Random.InitState(plant.ID.RandomSeed);
-                            AbstractConsumable fruit;
-                            for (var j = 1; j <= props.NumberOfFruits /* - consumedFruits*/; j++)
-                            {
-                                arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.GummyAnther, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
+                                if (props.AlwaysClosed)
                                 {
-                                    isConsumed = false,
-                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
-                                });
-                                if (StationFruit.TryGetValue(fruit, out var fprops))
-                                    fprops.Plant = plant;
+                                    props.NumberOfFruits = 0;
+                                    props.RemainingOpenCycles = 0;
+                                }
+                                plant.isConsumed = props.RemainingOpenCycles == 0;
+                                var state = Random.state;
+                                Random.InitState(plant.ID.RandomSeed);
+                                AbstractConsumable fruit;
+                                for (var j = 1; j <= props.NumberOfFruits /* - consumedFruits*/; j++)
+                                {
+                                    arm.entities.Add(fruit = new AbstractConsumable(self.world, AbstractObjectType.GummyAnther, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, -10 - i, null)
+                                    {
+                                        isConsumed = false,
+                                        placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
+                                    });
+                                    if (StationFruit.TryGetValue(fruit, out var fprops))
+                                        fprops.Plant = plant;
+                                }
+                                Random.state = state;
                             }
-                            Random.state = state;
                         }
-                    }
-                    else if (pObj.type == PlacedObjectType.Physalis)
-                    {
-                        if (game.session is not StoryGameSession session7 || !session7.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        else if (pObj.type == PlacedObjectType.Physalis && !self.CheckForWarpedObjects(i))
                         {
-                            if (firstTimeRealized)
-                                arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.Physalis, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                            if (game.session is not StoryGameSession session7 || !session7.saveState.ItemConsumed(self.world, false, arm.index, i))
+                            {
+                                if (firstTimeRealized)
+                                    arm.AddEntity(new AbstractConsumable(self.world, AbstractObjectType.Physalis, null, self.GetWorldCoordinate(pObj.pos), game.GetNewID(), arm.index, i, pObj.data as PlacedObject.ConsumableObjectData) { isConsumed = false, placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i) });
+                                else
+                                    self.AddObject(new Physalis.Stem(pObj.pos, self, false));
+                            }
                             else
-                                self.AddObject(new Physalis.Stem(pObj.pos, self, false));
+                                self.AddObject(new Physalis.Stem(pObj.pos, self, true));
                         }
-                        else
-                            self.AddObject(new Physalis.Stem(pObj.pos, self, true));
-                    }
-                    else if (firstTimeRealized && (pObj.type == PlacedObjectType.HazerMom || pObj.type == PlacedObjectType.DeadHazerMom || pObj.type == PlacedObjectType.AlbinoHazerMom || pObj.type == PlacedObjectType.DeadAlbinoHazerMom))
-                    {
-                        if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        else if (firstTimeRealized && (pObj.type == PlacedObjectType.HazerMom || pObj.type == PlacedObjectType.DeadHazerMom || pObj.type == PlacedObjectType.AlbinoHazerMom || pObj.type == PlacedObjectType.DeadAlbinoHazerMom) && !self.CheckForWarpedObjects(i))
                         {
-                            var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.HazerMom), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                            if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
                             {
-                                superSizeMe = pObj.type == PlacedObjectType.HazerMom || pObj.type == PlacedObjectType.DeadHazerMom,
-                                spawnData = "{AlternateForm}",
-                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
-                            };
-                            var state = (abstractCreature.state as HazerMomState)!;
-                            state.OrigRoom = arm.index;
-                            state.PlacedObjectIndex = i;
-                            arm.AddEntity(abstractCreature);
-                            if (pObj.type == PlacedObjectType.DeadHazerMom || pObj.type == PlacedObjectType.DeadAlbinoHazerMom)
-                                state.Die();
+                                var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.HazerMom), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                                {
+                                    superSizeMe = pObj.type == PlacedObjectType.HazerMom || pObj.type == PlacedObjectType.DeadHazerMom,
+                                    spawnData = "{AlternateForm}",
+                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
+                                };
+                                var state = (abstractCreature.state as HazerMomState)!;
+                                state.OrigRoom = arm.index;
+                                state.PlacedObjectIndex = i;
+                                arm.AddEntity(abstractCreature);
+                                if (pObj.type == PlacedObjectType.DeadHazerMom || pObj.type == PlacedObjectType.DeadAlbinoHazerMom)
+                                    state.Die();
+                            }
                         }
-                    }
-                    else if (firstTimeRealized && (pObj.type == PlacedObjectType.AlbinoFormHazer || pObj.type == PlacedObjectType.DeadAlbinoFormHazer))
-                    {
-                        if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        else if (firstTimeRealized && (pObj.type == PlacedObjectType.AlbinoFormHazer || pObj.type == PlacedObjectType.DeadAlbinoFormHazer) && !self.CheckForWarpedObjects(i))
                         {
-                            var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.Hazer), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                            if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
                             {
-                                spawnData = "{albinoform}",
-                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
-                            };
-                            if (Albino.TryGetValue(abstractCreature, out var props))
-                                props.Value = true;
-                            var state = (abstractCreature.state as VultureGrub.VultureGrubState)!;
-                            state.origRoom = arm.index;
-                            state.placedObjectIndex = i;
-                            arm.AddEntity(abstractCreature);
-                            if (pObj.type == PlacedObjectType.DeadAlbinoFormHazer)
-                                state.Die();
+                                var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.Hazer), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                                {
+                                    spawnData = "{albinoform}",
+                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
+                                };
+                                if (Albino.TryGetValue(abstractCreature, out var props))
+                                    props.Value = true;
+                                var state = (abstractCreature.state as VultureGrub.VultureGrubState)!;
+                                state.origRoom = arm.index;
+                                state.placedObjectIndex = i;
+                                arm.AddEntity(abstractCreature);
+                                if (pObj.type == PlacedObjectType.DeadAlbinoFormHazer)
+                                    state.Die();
+                            }
                         }
-                    }
-                    else if (firstTimeRealized && (pObj.type == PlacedObjectType.XyloNest || pObj.type == PlacedObjectType.AltXyloNest))
-                    {
-                        if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        else if (firstTimeRealized && (pObj.type == PlacedObjectType.XyloNest || pObj.type == PlacedObjectType.AltXyloNest) && !self.CheckForWarpedObjects(i))
                         {
-                            var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.Xylo), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                            if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
                             {
-                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i),
-                                superSizeMe = pObj.type == PlacedObjectType.AltXyloNest
-                            };
-                            if (abstractCreature.superSizeMe)
-                                abstractCreature.spawnData = "{AlternateForm}";
-                            var state = (abstractCreature.state as HazerMomState)!;
-                            state.OrigRoom = arm.index;
-                            state.PlacedObjectIndex = i;
-                            arm.AddEntity(abstractCreature);
+                                var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.Xylo), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                                {
+                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i),
+                                    superSizeMe = pObj.type == PlacedObjectType.AltXyloNest
+                                };
+                                if (abstractCreature.superSizeMe)
+                                    abstractCreature.spawnData = "{AlternateForm}";
+                                var state = (abstractCreature.state as HazerMomState)!;
+                                state.OrigRoom = arm.index;
+                                state.PlacedObjectIndex = i;
+                                arm.AddEntity(abstractCreature);
+                            }
                         }
-                    }
-                    else if (firstTimeRealized && pObj.type == PlacedObjectType.XyloWorm || pObj.type == PlacedObjectType.BigXyloWorm || pObj.type == PlacedObjectType.DeadXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm)
-                    {
-                        if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
+                        else if (firstTimeRealized && (pObj.type == PlacedObjectType.XyloWorm || pObj.type == PlacedObjectType.BigXyloWorm || pObj.type == PlacedObjectType.DeadXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm) && !self.CheckForWarpedObjects(i))
                         {
-                            var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.XyloWorm), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                            if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
                             {
-                                placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i),
-                                superSizeMe = pObj.type == PlacedObjectType.BigXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm
-                            };
-                            if (abstractCreature.superSizeMe)
-                                abstractCreature.spawnData = "{AlternateForm}";
-                            var state = (abstractCreature.state as VultureGrub.VultureGrubState)!;
-                            state.origRoom = arm.index;
-                            state.placedObjectIndex = i;
-                            arm.AddEntity(abstractCreature);
-                            if (pObj.type == PlacedObjectType.DeadXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm)
-                                state.Die();
+                                var abstractCreature = new AbstractCreature(self.world, StaticWorld.GetCreatureTemplate(CreatureTemplateType.XyloWorm), null, self.GetWorldCoordinate(pObj.pos), game.GetNewID())
+                                {
+                                    placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i),
+                                    superSizeMe = pObj.type == PlacedObjectType.BigXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm
+                                };
+                                if (abstractCreature.superSizeMe)
+                                    abstractCreature.spawnData = "{AlternateForm}";
+                                var state = (abstractCreature.state as VultureGrub.VultureGrubState)!;
+                                state.origRoom = arm.index;
+                                state.placedObjectIndex = i;
+                                arm.AddEntity(abstractCreature);
+                                if (pObj.type == PlacedObjectType.DeadXyloWorm || pObj.type == PlacedObjectType.DeadBigXyloWorm)
+                                    state.Die();
+                            }
                         }
                     }
                 }
