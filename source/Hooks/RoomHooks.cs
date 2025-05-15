@@ -257,7 +257,7 @@ public static class RoomHooks
                                     state.Die();
                             }
                         }
-                        else if (firstTimeRealized && (pObj.type == PlacedObjectType.XyloNest || pObj.type == PlacedObjectType.AltXyloNest) && !self.CheckForWarpedObjects(i))
+                        else if (firstTimeRealized && (pObj.type == PlacedObjectType.XyloNest || pObj.type == PlacedObjectType.AltXyloNest || pObj.type == PlacedObjectType.YellowXyloNest) && !self.CheckForWarpedObjects(i))
                         {
                             if (game.session is not StoryGameSession sess || !sess.saveState.ItemConsumed(self.world, false, arm.index, i))
                             {
@@ -268,6 +268,8 @@ public static class RoomHooks
                                 };
                                 if (abstractCreature.superSizeMe)
                                     abstractCreature.spawnData = "{AlternateForm}";
+                                if (pObj.type == PlacedObjectType.YellowXyloNest && Albino.TryGetValue(abstractCreature, out var props))
+                                    props.Value = true;
                                 var state = (abstractCreature.state as HazerMomState)!;
                                 state.OrigRoom = arm.index;
                                 state.PlacedObjectIndex = i;

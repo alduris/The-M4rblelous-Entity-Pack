@@ -148,8 +148,11 @@ sealed class XyloCritob : Critob, ISandboxHandler
         abstractCreature.setCustomFlags();
         var state = Random.state;
         Random.InitState(data.ID.RandomSeed);
-        if (Random.value < .1f)
+        var rand = Random.value;
+        if (rand < .1f)
             abstractCreature.superSizeMe = true;
+        else if (rand < .2f && Albino.TryGetValue(abstractCreature, out var props))
+            props.Value = true;
         Random.state = state;
         return abstractCreature;
     }

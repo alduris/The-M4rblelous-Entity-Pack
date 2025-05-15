@@ -201,7 +201,7 @@ public static class AbstractPhysicalObjectHooks
             Big.Add(self, new());
         else if (tp == CreatureTemplateType.Hoverfly && !HoverflyData.TryGetValue(self, out _))
             HoverflyData.Add(self, new());
-        else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar || tp == CreatureTemplateType.FatFireFly) && !Albino.TryGetValue(self, out _))
+        else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Xylo || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar || tp == CreatureTemplateType.FatFireFly) && !Albino.TryGetValue(self, out _))
             Albino.Add(self, new());
         else if ((tp == CreatureTemplateType.XyloWorm) && !RottenMode.TryGetValue(self, out _))
             RottenMode.Add(self, new());

@@ -48,6 +48,8 @@ public static class IconHooks
                 return Color.white;
             if (tp == CreatureTemplateType.NoodleEater)
                 return new(138f / 255f, 245f / 255f, 0f);
+            if (tp == CreatureTemplateType.Xylo)
+                return new(236f / 255f, 1f, .0f);
         }
         else if (dt == M4R_DATA_NUMBER3)
         {
@@ -109,6 +111,8 @@ public static class IconHooks
             ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar) && Albino.TryGetValue(creature, out var props) && props.Value) ||
             ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle || tp == CreatureTemplateType.Xylo || tp == CreatureTemplateType.XyloWorm) && creature.superSizeMe))
             res.intData = M4R_DATA_NUMBER;
+        else if (tp == CreatureTemplateType.Xylo && Albino.TryGetValue(creature, out var box) && box.Value)
+            res.intData = M4R_DATA_NUMBER2;
         else if (tp == CreatureTemplateType.NoodleEater)
         {
             if (!ModManager.Watcher || creature.state is not LizardState ls || ls.rotType == LizardState.RotType.None)

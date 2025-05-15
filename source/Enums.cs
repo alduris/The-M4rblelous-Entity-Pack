@@ -662,6 +662,7 @@ public static class PlacedObjectType
         SporeProjectile = new(nameof(SporeProjectile), true),
         XyloNest = new(nameof(XyloNest), true),
         AltXyloNest = new(nameof(AltXyloNest), true),
+        YellowXyloNest = new(nameof(YellowXyloNest), true),
         XyloWorm = new(nameof(XyloWorm), true),
         BigXyloWorm = new(nameof(BigXyloWorm), true),
         DeadXyloWorm = new(nameof(DeadXyloWorm), true),
@@ -771,6 +772,11 @@ public static class PlacedObjectType
         {
             AltXyloNest.Unregister();
             AltXyloNest = null!;
+        }
+        if (YellowXyloNest is not null)
+        {
+            YellowXyloNest.Unregister();
+            YellowXyloNest = null!;
         }
         if (XyloWorm is not null)
         {

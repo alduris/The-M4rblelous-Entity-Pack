@@ -45,7 +45,7 @@ public class Xylo : Creature
         Random.InitState(abstractPhysicalObject.ID.RandomSeed);
         RottenWorms = Random.Range(4, 6);
         Worms = Random.Range(3, 6);
-        EffectColor = abstractCreature.superSizeMe ? new(Random.Range(102f / 255f, 139f / 255f), 6f / 255f, 6f / 255f) : new(Random.Range(82f / 255f, 119f / 255f), 3f / 255f, 252f / 255f);
+        EffectColor = Albino.TryGetValue(abstractCreature, out var props) && props.Value ? Color.Lerp(new(1f, 193f / 255f, 0f), new(236f / 255f, 1f, 0f), Random.value) : (abstractCreature.superSizeMe ? new(Random.Range(102f / 255f, 139f / 255f), 6f / 255f, 6f / 255f) : new(Random.Range(82f / 255f, 119f / 255f), 3f / 255f, 252f / 255f));
         Random.state = state;
     }
 
