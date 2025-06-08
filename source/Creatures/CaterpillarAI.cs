@@ -27,6 +27,7 @@ public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 	public int AnnoyingCollisions, IdleCounter;
     public float CurrentUtility, Excitement, Run;
 	public WorldCoordinate ForbiddenIdlePos, TempIdlePos;
+	public WorldCoordinate? FleeRoom;
 
 	public CaterpillarAI(AbstractCreature creature, World world) : base(creature, world)
 	{
@@ -154,6 +155,38 @@ public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 		}
 		if (Crit.safariControlled)
 			b = 1f;
+		else if (creature.world is World w && w.region is Region r && w.GetAbstractRoom(creature.pos.room) is AbstractRoom arm)
+		{
+			var attract = arm.AttractionValueForCreature(creature);
+			if (attract <= .25f)
+			{
+				Crit.Moving = true;
+				b = 1f - attract;
+				preyTracker.ForgetAllPrey();
+				if (!FleeRoom.HasValue)
+				{
+					var numb = r.firstRoomIndex + r.numberOfRooms;
+					for (var i = r.firstRoomIndex; i < numb; i++)
+					{
+						if (w.GetAbstractRoom(i) is AbstractRoom rm && rm.AttractionValueForCreature(creature) > .25f)
+						{
+							var nd = rm.RandomRelevantNode(creature.creatureTemplate);
+							if (nd >= 0)
+							{
+								var coord = new WorldCoordinate(rm.index, -1, -1, nd);
+								FleeRoom = coord;
+								SetDestination(coord);
+								break;
+							}
+						}
+					}
+				}
+				else
+					SetDestination(FleeRoom.Value);
+			}
+			else
+				FleeRoom = null;
+        }
 		Excitement = Mathf.Lerp(Excitement, b, .1f);
 		Run -= .25f;
         if (Run < Mathf.Lerp(-10f, -2f, Excitement))
