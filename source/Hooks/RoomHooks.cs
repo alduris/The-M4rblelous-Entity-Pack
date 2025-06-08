@@ -13,6 +13,8 @@ namespace LBMergedMods.Hooks;
 //CHK
 public static class RoomHooks
 {
+    public static AbstractRoomNode.Type UnregisteredNodeType = new("UnregisteredNodeType");
+
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)
     {
         if (LBMergedModsPlugin.Bundle is null && self.game is RainWorldGame g)
@@ -33,6 +35,7 @@ public static class RoomHooks
                 shaders["FumeFruitHaze"] = FShader.CreateShader("FumeFruitHaze", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "FumeFruitHaze.shader"));
                 shaders["DarkGrubVision"] = FShader.CreateShader("DarkGrubVision", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DarkGrubVision.shader"));
                 shaders["XyloRoot"] = FShader.CreateShader("XyloRoot", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "XyloRoot.shader"));
+                shaders["LBRottenTentaclePlant"] = FShader.CreateShader("LBRottenTentaclePlant", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "LBRottenTentaclePlant.shader"));
                 _MiniLeviColorA = Shader.PropertyToID("_MiniLeviColorA");
                 _MiniLeviColorB = Shader.PropertyToID("_MiniLeviColorB");
                 _MiniLeviColorHead = Shader.PropertyToID("_MiniLeviColorHead");
@@ -45,6 +48,7 @@ public static class RoomHooks
                 _GRJMiniLeviathanColorA = Shader.PropertyToID("_GRJMiniLeviathanColorA");
                 _GRJMiniLeviathanColorB = Shader.PropertyToID("_GRJMiniLeviathanColorB");
                 _GRJMiniLeviathanColorHead = Shader.PropertyToID("_GRJMiniLeviathanColorHead");
+                _LBCustom_RottenTentacleBlack = Shader.PropertyToID("_LBCustom_RottenTentacleBlack");
             }
             catch (Exception e)
             {

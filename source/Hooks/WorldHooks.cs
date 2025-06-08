@@ -7,7 +7,7 @@ public static class WorldHooks
     internal static AbstractRoomNode On_World_GetNode(On.World.orig_GetNode orig, World self, WorldCoordinate c)
     {
         if (c.abstractNode < 0 || self.GetAbstractRoom(c.room)?.nodes is not AbstractRoomNode[] nds || c.abstractNode >= nds.Length)
-            return new(new("UnregisteredNodeType"), 0, 0, false, 0, 0);
+            return new(UnregisteredNodeType, 0, 0, false, 0, 0);
         return orig(self, c);
     }
 

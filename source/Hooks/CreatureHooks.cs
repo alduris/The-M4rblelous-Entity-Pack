@@ -6,6 +6,7 @@ using MoreSlugcats;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using UnityEngine;
+using Watcher;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -33,6 +34,8 @@ public static class CreatureHooks
         }
         orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
     }
+
+    internal static bool On_CreatureTemplate_get_IsVulture(Func<CreatureTemplate, bool> orig, CreatureTemplate self) => self.type == CreatureTemplateType.FatFireFly || orig(self);
 
     internal static void On_FriendTracker_ItemOffered(On.FriendTracker.orig_ItemOffered orig, FriendTracker self, Tracker.CreatureRepresentation subjectRep, PhysicalObject involvedItem)
     {
@@ -92,7 +95,22 @@ public static class CreatureHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook InspectorAI.IUseARelationshipTracker.UpdateDynamicRelationship!");
     }
 
-    internal static bool On_CreatureTemplate_get_IsVulture(Func<CreatureTemplate, bool> orig, CreatureTemplate self) => self.type == CreatureTemplateType.FatFireFly || orig(self);
+    internal static void On_Loach_Collide(On.Watcher.Loach.orig_Collide orig, Loach self, PhysicalObject otherObject, int myChunk, int otherChunk)
+    {
+        orig(self, otherObject, myChunk, otherChunk);
+        if (self.eatObjects.Count > 0 && self.eatObjects[self.eatObjects.Count - 1]?.chunk?.owner is TentaclePlant t && RottenMode.TryGetValue(t.abstractCreature, out var box) && box.Value)
+            self.eatObjects.RemoveAt(self.eatObjects.Count - 1);
+    }
+
+    internal static CreatureTemplate.Relationship On_LoachAI_UpdateDynamicRelationship(On.Watcher.LoachAI.orig_UpdateDynamicRelationship orig, LoachAI self, RelationshipTracker.DynamicRelationship dRelation)
+    {
+        if (dRelation.trackerRep?.representedCreature is AbstractCreature crit)
+        {
+            if (crit.creatureTemplate.type == CreatureTemplate.Type.TentaclePlant && RottenMode.TryGetValue(crit, out var box) && box.Value)
+                return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
+        }
+        return orig(self, dRelation);
+    }
 
     internal static bool On_PathFinder_CoordinateReachableAndGetbackable(On.PathFinder.orig_CoordinateReachableAndGetbackable orig, PathFinder self, WorldCoordinate coord)
     {

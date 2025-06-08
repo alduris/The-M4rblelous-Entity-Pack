@@ -16,12 +16,25 @@ public static class DaddyHooks
 {
     public static Dictionary<string, Color> JLLRooms = [];
 
+    internal static void On_DaddyCorruption_Update(On.DaddyCorruption.orig_Update orig, DaddyCorruption self, bool eu)
+    {
+        var eats = self.eatCreatures;
+        for (var i = eats.Count - 1; i >= 0; i--)
+        {
+            if (eats[i].creature is TentaclePlant t && RottenMode.TryGetValue(t.abstractCreature, out var box) && box.Value)
+                eats.RemoveAt(i);
+        }
+        orig(self, eu);
+    }
+
     internal static CreatureTemplate.Relationship On_DaddyAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.DaddyAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, DaddyAI self, RelationshipTracker.DynamicRelationship dRelation)
     {
-        var rel = orig(self, dRelation);
-        if (Jelly.TryGetValue(self.creature, out var j) && j.IsJelly && dRelation.trackerRep?.representedCreature?.realizedCreature is DaddyLongLegs)
-            rel = new(CreatureTemplate.Relationship.Type.Ignores, 0f);
-        return rel;
+        if (dRelation.trackerRep?.representedCreature is AbstractCreature crit)
+        {
+            if ((Jelly.TryGetValue(self.creature, out var j) && j.IsJelly && crit.creatureTemplate.TopAncestor().type == CreatureTemplate.Type.DaddyLongLegs) || (crit.creatureTemplate.type == CreatureTemplate.Type.TentaclePlant && RottenMode.TryGetValue(crit, out var box) && box.Value))
+                return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
+        }
+        return orig(self, dRelation);
     }
 
     internal static void IL_DaddyGraphics_ReactToNoise(ILContext il)

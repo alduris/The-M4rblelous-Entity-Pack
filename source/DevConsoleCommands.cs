@@ -33,7 +33,7 @@ static class DevConsoleCommands
             // Collect copies of types so we can add our own stuff if wanted
             s_objectTypes = [.. AbstractObjectType.M4RItemList];
             s_objectTypes.Remove(AbstractObjectType.MiniFruitSpawner);
-            s_critterTypes = [.. CreatureTemplateType.M4RCreatureList.Union([new("Bigrub"), new("Bigworm"), new("SeedBat"), new("JellyLongLegs"), new("AlbinoHazer")])];
+            s_critterTypes = [.. CreatureTemplateType.M4RCreatureList.Union([new("Bigrub"), new("Bigworm"), new("SeedBat"), new("JellyLongLegs"), new("AlbinoHazer"), new("RottenKelp")])];
             s_sandboxUnlocks = [.. SandboxUnlockID.M4RUnlockList]; // creating a copy
             // Shrembly
             if (ModManager.ActiveMods.Any(x => x.id == "com.rainworldgame.shroudedassembly.plugin"))
@@ -188,12 +188,14 @@ static class DevConsoleCommands
                     actualCritType = CritType.TubeWorm;
                 else if (critType.value == "AlbinoHazer")
                     actualCritType = CritType.Hazer;
+                else if (critType.value == "RottenKelp")
+                    actualCritType = CritType.TentaclePlant;
                 else if (critType.value == "SeedBat")
                     actualCritType = CritType.Fly;
                 else if (critType.value == "JellyLongLegs")
                     actualCritType = CritType.BrotherLongLegs;
                 var template = StaticWorld.GetCreatureTemplate(actualCritType);
-                if (actualCritType == CreatureTemplateType.Denture && GameConsole.TargetPos.Room.realizedRoom is Room rm)
+                if ((actualCritType == CreatureTemplateType.Denture || actualCritType == CritType.TentaclePlant) && GameConsole.TargetPos.Room.realizedRoom is Room rm)
                 {
                     var nds = GameConsole.TargetPos.Room.nodes;
                     var basePos = Room.StaticGetTilePosition(GameConsole.TargetPos.Pos);
@@ -238,6 +240,8 @@ static class DevConsoleCommands
                     tagSet.Add("bigworm");
                 else if (critType.value == "AlbinoHazer")
                     tagSet.Add("albinoform");
+                else if (critType.value == "RottenKelp")
+                    tagSet.Add("rottenmode");
                 else if (critType.value == "SeedBat")
                     tagSet.Add("seedbat");
                 else if (critType.value == "JellyLongLegs")
@@ -299,7 +303,7 @@ static class DevConsoleCommands
             // Realize created object, if there is one
             if (entity is not null)
             {
-                if (entity is AbstractCreature cr && cr.creatureTemplate.type == CreatureTemplateType.Denture && spawnDentureFlag)
+                if (entity is AbstractCreature cr && (cr.creatureTemplate.type == CreatureTemplateType.Denture || cr.creatureTemplate.type == CritType.TentaclePlant) && spawnDentureFlag)
                     GameConsole.TargetPos.Room.entitiesInDens.Add(cr);
                 else
                 {

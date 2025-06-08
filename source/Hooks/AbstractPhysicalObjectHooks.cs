@@ -6,6 +6,9 @@ using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Random = UnityEngine.Random;
+using Mono.Cecil;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -203,10 +206,17 @@ public static class AbstractPhysicalObjectHooks
             HoverflyData.Add(self, new());
         else if ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Xylo || tp == CreatureTemplate.Type.JetFish || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar || tp == CreatureTemplateType.FatFireFly) && !Albino.TryGetValue(self, out _))
             Albino.Add(self, new());
-        else if ((tp == CreatureTemplateType.XyloWorm) && !RottenMode.TryGetValue(self, out _))
+        else if ((tp == CreatureTemplateType.XyloWorm || tp == CreatureTemplate.Type.TentaclePlant) && !RottenMode.TryGetValue(self, out _))
             RottenMode.Add(self, new());
         if (tp == CreatureTemplateType.Denture)
             self.remainInDenCounter = 0;
+    }
+
+    internal static AbstractRoomNode.Type On_AbstractCreature_get_GetNodeType(Func<AbstractCreature, AbstractRoomNode.Type> orig, AbstractCreature self)
+    {
+        if (!self.pos.NodeDefined || self.pos.abstractNode >= self.Room.nodes.Length)
+            return UnregisteredNodeType;
+        return orig(self);
     }
 
     internal static void On_AbstractCreature_IsEnteringDen(On.AbstractCreature.orig_IsEnteringDen orig, AbstractCreature self, WorldCoordinate den)

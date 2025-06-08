@@ -12,6 +12,7 @@ using MonoMod.RuntimeDetour;
 using Fisobs.Sandbox;
 using Watcher;
 using System.IO;
+using Unity.Mathematics;
 
 #pragma warning disable CS0618 // ignore false message
 [module: UnverifiableCode]
@@ -149,6 +150,11 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.DaddyGraphics.ReactToNoise += IL_DaddyGraphics_ReactToNoise;
         On.DaddyTentacle.CollideWithCreature += On_DaddyTentacle_CollideWithCreature;
         On.DaddyLongLegs.ShortCutColor += On_DaddyLongLegs_ShortCutColor;
+        On.TentaclePlantGraphics.InitiateSprites += On_TentaclePlantGraphics_InitiateSprites;
+        On.TentaclePlantGraphics.ApplyPalette += On_TentaclePlantGraphics_ApplyPalette;
+        On.TentaclePlantAI.UpdateDynamicRelationship += On_TentaclePlantAI_UpdateDynamicRelationship;
+        On.TentaclePlant.Collide += On_TentaclePlant_Collide;
+        On.TentaclePlant.Update += On_TentaclePlant_Update;
         On.Menu.SandboxSettingsInterface.DefaultKillScores += On_SandboxSettingsInterface_DefaultKillScores;
         On.TubeWorm.NewRoom += On_TubeWorm_NewRoom;
         On.TubeWorm.Tongue.Shoot += On_Tongue_Shoot;
@@ -331,6 +337,10 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.Creature.Violence += On_Creature_Violence;
         On.LizardAI.BitCreature += On_LizardAI_BitCreature;
         On.PlayerGraphics.Update += On_PlayerGraphics_Update;
+        new Hook(typeof(AbstractCreature).GetMethod("get_GetNodeType", ALL_FLAGS), On_AbstractCreature_get_GetNodeType);
+        On.Watcher.LoachAI.UpdateDynamicRelationship += On_LoachAI_UpdateDynamicRelationship;
+        On.Watcher.Loach.Collide += On_Loach_Collide;
+        On.DaddyCorruption.Update += On_DaddyCorruption_Update;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -385,6 +395,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         TrackerScoreData = null!;
         RegionScoreData = null!;
         RottenMode = null!;
+        UnregisteredNodeType = null!;
         CreatureTemplateType.M4RCreatureList = null!;
         AbstractObjectType.M4RItemList = null!;
         SandboxUnlockID.M4RUnlockList = null!;
