@@ -1,14 +1,14 @@
 ﻿global using static LBMergedMods.Hooks.DaddyHooks;
-using System.Runtime.CompilerServices;
-using UnityEngine;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using Noise;
 using RWCustom;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using Noise;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEngine;
 
 namespace LBMergedMods.Hooks;
 //CHK
@@ -175,16 +175,17 @@ public static class DaddyHooks
     public static void JellyColor(this DaddyLongLegs self, AbstractCreature crit, World world)
     {
         var rm = crit.Room;
-        if (JLLRooms.TryGetValue(rm.name, out var col) && col.r >= 0f)
+        var fileNm = rm.FileName;
+        if (JLLRooms.TryGetValue(fileNm, out var col) && col.r >= 0f)
         {
             if (col.g < 0f)
             {
-                var f1 = AssetManager.ResolveFilePath("levels/" + rm.FileName + "_jellylonglegs.txt");
+                var f1 = AssetManager.ResolveFilePath("levels/" + fileNm + "_jellylonglegs.txt");
                 if (!File.Exists(f1))
                 {
                     if (self.world?.name is string s)
                     {
-                        f1 = AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + rm.FileName + "_jellylonglegs.txt");
+                        f1 = AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + fileNm + "_jellylonglegs.txt");
                         if (!File.Exists(f1))
                             f1 = null;
                     }
@@ -199,11 +200,11 @@ public static class DaddyHooks
                         float.TryParse(colorParams[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var r);
                         float.TryParse(colorParams[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var g);
                         float.TryParse(colorParams[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var b);
-                        JLLRooms[rm.name] = self.eyeColor = self.effectColor = new(r, g, b);
+                        JLLRooms[fileNm] = self.eyeColor = self.effectColor = new(r, g, b);
                         return;
                     }
                 }
-                JLLRooms[rm.name] = new(0f, 0f, -1f);
+                JLLRooms[fileNm] = new(0f, 0f, -1f);
                 self.eyeColor = self.effectColor = Color.Lerp(new(146f / 255f, 33f / 255f, 191f / 255f), Color.blue, ModManager.DLCShared && crit.superSizeMe ? .3f : (self.SizeClass ? .15f : 0f));
             }
             else if (col.b < 0f)
@@ -219,10 +220,10 @@ public static class DaddyHooks
         var nm = self.FileName;
         if (JLLRooms.TryGetValue(nm, out var col))
             return col.r >= 0f;
-        var res = self.name is "reef" or "cavity" or "pump" ||
+        var res = nm is "reef" or "cavity" or "pump" ||
             File.Exists(AssetManager.ResolveFilePath("levels/" + nm + "_jellylonglegs.txt")) ||
             (self.world?.name is string s && (s == "RF" || File.Exists(AssetManager.ResolveFilePath("world/" + s.ToLower() + "-rooms/" + nm + "_jellylonglegs.txt"))));
-        JLLRooms.Add(self.name, new(res ? 0f : -1f, -1f, 0f));
+        JLLRooms.Add(nm, new(res ? 0f : -1f, -1f, 0f));
         return res;
     }
 }
