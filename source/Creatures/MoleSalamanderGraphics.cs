@@ -21,8 +21,13 @@ public class MoleSalamanderGraphics : LizardGraphics
     public override void Update()
     {
         base.Update();
-        if (lightSource is LightSource l && HeadLightsUpFromNoise)
-            l.color = Color.white;
+        if (lightSource is LightSource l)
+        {
+            if (HeadLightsUpFromNoise)
+                l.color = Color.white;
+            else
+                l.setAlpha = 0f;
+        }
     }
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
