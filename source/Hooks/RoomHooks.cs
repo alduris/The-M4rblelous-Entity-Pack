@@ -36,6 +36,7 @@ public static class RoomHooks
                 shaders["DarkGrubVision"] = FShader.CreateShader("DarkGrubVision", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "DarkGrubVision.shader"));
                 shaders["XyloRoot"] = FShader.CreateShader("XyloRoot", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "XyloRoot.shader"));
                 shaders["LBRottenTentaclePlant"] = FShader.CreateShader("LBRottenTentaclePlant", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "LBRottenTentaclePlant.shader"));
+                shaders["LBFFFLight"] = FShader.CreateShader("LBFFFLight", LBMergedModsPlugin.Bundle.LoadAsset<Shader>("Assets" + Path.DirectorySeparatorChar + "LBFFFLight.shader"));
                 _MiniLeviColorA = Shader.PropertyToID("_MiniLeviColorA");
                 _MiniLeviColorB = Shader.PropertyToID("_MiniLeviColorB");
                 _MiniLeviColorHead = Shader.PropertyToID("_MiniLeviColorHead");
@@ -251,8 +252,8 @@ public static class RoomHooks
                                     spawnData = "{albinoform}",
                                     placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(arm.name, i)
                                 };
-                                if (Albino.TryGetValue(abstractCreature, out var props))
-                                    props.Value = true;
+                                if (AbsProps.TryGetValue(abstractCreature, out var props))
+                                    props.Albino = true;
                                 var state = (abstractCreature.state as VultureGrub.VultureGrubState)!;
                                 state.origRoom = arm.index;
                                 state.placedObjectIndex = i;
@@ -272,8 +273,8 @@ public static class RoomHooks
                                 };
                                 if (abstractCreature.superSizeMe)
                                     abstractCreature.spawnData = "{AlternateForm}";
-                                if (pObj.type == PlacedObjectType.YellowXyloNest && Albino.TryGetValue(abstractCreature, out var props))
-                                    props.Value = true;
+                                if (pObj.type == PlacedObjectType.YellowXyloNest && AbsProps.TryGetValue(abstractCreature, out var props))
+                                    props.Albino = true;
                                 var state = (abstractCreature.state as HazerMomState)!;
                                 state.OrigRoom = arm.index;
                                 state.PlacedObjectIndex = i;

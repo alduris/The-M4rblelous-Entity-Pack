@@ -98,7 +98,7 @@ public static class CreatureHooks
     internal static void On_Loach_Collide(On.Watcher.Loach.orig_Collide orig, Loach self, PhysicalObject otherObject, int myChunk, int otherChunk)
     {
         orig(self, otherObject, myChunk, otherChunk);
-        if (self.eatObjects.Count > 0 && self.eatObjects[self.eatObjects.Count - 1]?.chunk?.owner is TentaclePlant t && RottenMode.TryGetValue(t.abstractCreature, out var box) && box.Value)
+        if (self.eatObjects.Count > 0 && self.eatObjects[self.eatObjects.Count - 1]?.chunk?.owner is TentaclePlant t && t.abstractCreature.RottenMode())
             self.eatObjects.RemoveAt(self.eatObjects.Count - 1);
     }
 
@@ -106,7 +106,7 @@ public static class CreatureHooks
     {
         if (dRelation.trackerRep?.representedCreature is AbstractCreature crit)
         {
-            if (crit.creatureTemplate.type == CreatureTemplate.Type.TentaclePlant && RottenMode.TryGetValue(crit, out var box) && box.Value)
+            if (crit.creatureTemplate.type == CreatureTemplate.Type.TentaclePlant && crit.RottenMode())
                 return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
         }
         return orig(self, dRelation);

@@ -1,14 +1,16 @@
-﻿using Fisobs.Creatures;
+﻿using DevInterface;
 using Fisobs.Core;
-using System.Collections.Generic;
+using Fisobs.Creatures;
 using Fisobs.Sandbox;
-using static PathCost.Legality;
+using System.Collections.Generic;
 using UnityEngine;
-using DevInterface;
+using System;
+using Random = UnityEngine.Random;
+using static PathCost.Legality;
 
 namespace LBMergedMods.Creatures;
 // CHK
-sealed class HoverflyCritob : Critob
+sealed class HoverflyCritob : Critob, ISandboxHandler
 {
     internal HoverflyCritob() : base(CreatureTemplateType.Hoverfly)
     {
@@ -112,4 +114,18 @@ sealed class HoverflyCritob : Critob
     public override void LoadResources(RainWorld rainWorld) { }
 
     public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.CicadaB;
+
+    AbstractWorldEntity ISandboxHandler.ParseFromSandbox(World world, EntitySaveData data, SandboxUnlock unlock)
+    {
+        var text = data.CustomData + "SandboxData<cC>" + unlock.Data + "<cB>";
+        var abstractCreature = new AbstractCreature(world, StaticWorld.GetCreatureTemplate(data.Type.CritType), null, data.Pos, data.ID) { pos = data.Pos };
+        abstractCreature.state.LoadFromString(text.Split(["<cB>"], StringSplitOptions.RemoveEmptyEntries));
+        abstractCreature.setCustomFlags();
+        var state = Random.state;
+        Random.InitState(data.ID.RandomSeed);
+        if (Random.value < .1f)
+            abstractCreature.superSizeMe = true;
+        Random.state = state;
+        return abstractCreature;
+    }
 }

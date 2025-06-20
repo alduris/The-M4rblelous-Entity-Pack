@@ -379,7 +379,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         StrawberryData = null!;
         Seed = null!;
         Big = null!;
-        Albino = null!;
+        AbsProps = null!;
         Jelly = null!;
         HoverflyData = null!;
         SporeMemory = null!;
@@ -394,7 +394,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         ScoreData = null!;
         TrackerScoreData = null!;
         RegionScoreData = null!;
-        RottenMode = null!;
         UnregisteredNodeType = null!;
         CreatureTemplateType.M4RCreatureList = null!;
         AbstractObjectType.M4RItemList = null!;

@@ -27,7 +27,7 @@ public class CaterpillarGraphics : GraphicsModule
         Crit = ow;
         if (ow.Glowing)
         {
-            if (Albino.TryGetValue(ow.abstractCreature, out var box) && box.Value)
+            if (ow.abstractCreature.Albino())
                 EffectColor = 2;
             else if (ow.abstractCreature.superSizeMe)
                 EffectColor = 1;

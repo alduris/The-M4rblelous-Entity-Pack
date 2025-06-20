@@ -9,7 +9,7 @@ public static class JetFishHooks
     internal static void On_JetFish_ctor(On.JetFish.orig_ctor orig, JetFish self, AbstractCreature abstractCreature, World world)
     {
         orig(self, abstractCreature, world);
-        self.albino = self.albino || (Albino.TryGetValue(abstractCreature, out var props) && props.Value);
+        self.albino = self.albino || abstractCreature.Albino();
         if (self.albino)
             self.iVars.eyeColor = Color.red;
     }

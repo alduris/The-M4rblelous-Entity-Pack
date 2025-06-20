@@ -39,13 +39,17 @@ public static class IconHooks
                 return new(0f, 72f / 255f, 1f);
             if (tp == CreatureTemplateType.Xylo)
                 return new(.2f, .05f, .05f);
+            if (tp == CreatureTemplate.Type.TentaclePlant)
+                return Menu.Menu.MenuRGB(Menu.Menu.MenuColors.DarkGrey);
+            if (tp == CreatureTemplateType.Hoverfly)
+                return new(46f / 51f, .05490196f, .05490196f);
         }
         else if (dt == M4R_DATA_NUMBER2)
         {
             if (tp == CreatureTemplate.Type.TubeWorm)
                 return new(1f, .65f, .05f);
             if (tp == CreatureTemplateType.FatFireFly)
-                return Color.white;
+                return Color.Lerp(Color.white, Color.red, .1f);
             if (tp == CreatureTemplateType.NoodleEater)
                 return new(138f / 255f, 245f / 255f, 0f);
             if (tp == CreatureTemplateType.Xylo)
@@ -57,6 +61,8 @@ public static class IconHooks
                 return new(.05f, .3f, .7f);
             if (tp == CreatureTemplateType.NoodleEater)
                 return new(138f / 255f, 245f / 255f, 0f);
+            if (tp == CreatureTemplateType.FatFireFly)
+                return Color.Lerp(Color.white, Color.blue, .1f);
         }
         return orig(iconData);
     }
@@ -102,16 +108,17 @@ public static class IconHooks
         var tp = creature.creatureTemplate.type;
         if (tp == CreatureTemplateType.FatFireFly)
         {
-            if (creature.superSizeMe)
-                res.intData = M4R_DATA_NUMBER;
-            else if (Albino.TryGetValue(creature, out var props2) && props2.Value)
+            if (creature.Albino())
+                res.intData = creature.superSizeMe ? M4R_DATA_NUMBER3 : M4R_DATA_NUMBER2;
+            else if (creature.superSizeMe)
                 res.intData = M4R_DATA_NUMBER;
         }
         else if ((tp == CreatureTemplate.Type.Fly && creature.IsSeed()) ||
-            ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar) && Albino.TryGetValue(creature, out var props) && props.Value) ||
-            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle || tp == CreatureTemplateType.Xylo || tp == CreatureTemplateType.XyloWorm) && creature.superSizeMe))
+            (tp == CreatureTemplate.Type.TentaclePlant && creature.RottenMode()) ||
+            ((tp == CreatureTemplate.Type.Hazer || tp == CreatureTemplateType.Denture || tp == CreatureTemplateType.Glowpillar) && creature.Albino()) ||
+            ((tp == CreatureTemplateType.ThornBug || tp == CreatureTemplateType.CommonEel || tp == CreatureTemplateType.HazerMom || tp == CreatureTemplateType.TintedBeetle || tp == CreatureTemplateType.Xylo || tp == CreatureTemplateType.XyloWorm || tp == CreatureTemplateType.Hoverfly) && creature.superSizeMe))
             res.intData = M4R_DATA_NUMBER;
-        else if (tp == CreatureTemplateType.Xylo && Albino.TryGetValue(creature, out var box) && box.Value)
+        else if (tp == CreatureTemplateType.Xylo && creature.Albino())
             res.intData = M4R_DATA_NUMBER2;
         else if (tp == CreatureTemplateType.NoodleEater)
         {

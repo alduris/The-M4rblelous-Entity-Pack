@@ -21,7 +21,7 @@ public static class DaddyHooks
         var eats = self.eatCreatures;
         for (var i = eats.Count - 1; i >= 0; i--)
         {
-            if (eats[i].creature is TentaclePlant t && RottenMode.TryGetValue(t.abstractCreature, out var box) && box.Value)
+            if (eats[i].creature is TentaclePlant t && t.abstractCreature.RottenMode())
                 eats.RemoveAt(i);
         }
         orig(self, eu);
@@ -31,7 +31,7 @@ public static class DaddyHooks
     {
         if (dRelation.trackerRep?.representedCreature is AbstractCreature crit)
         {
-            if ((Jelly.TryGetValue(self.creature, out var j) && j.IsJelly && crit.creatureTemplate.TopAncestor().type == CreatureTemplate.Type.DaddyLongLegs) || (crit.creatureTemplate.type == CreatureTemplate.Type.TentaclePlant && RottenMode.TryGetValue(crit, out var box) && box.Value))
+            if ((Jelly.TryGetValue(self.creature, out var j) && j.IsJelly && crit.creatureTemplate.TopAncestor().type == CreatureTemplate.Type.DaddyLongLegs) || (crit.creatureTemplate.type == CreatureTemplate.Type.TentaclePlant && crit.RottenMode()))
                 return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
         }
         return orig(self, dRelation);

@@ -60,7 +60,7 @@ public class XyloWorm : Creature, IPlayerEdible
         buoyancy = .95f;
         LookDir = Custom.RNV() * Random.value;
         BodyDir = Custom.RNV() * Random.value;
-        Rotten = RottenMode.TryGetValue(abstractCreature, out var box) && box.Value;
+        Rotten = abstractCreature.RottenMode();
     }
 
     public BodyChunk ChunkInOrder(int i) => bodyChunks[i switch

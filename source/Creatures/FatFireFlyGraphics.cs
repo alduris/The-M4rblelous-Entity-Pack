@@ -1,5 +1,5 @@
 ﻿using RWCustom;
-using System.Runtime.InteropServices;
+using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,12 +7,60 @@ namespace LBMergedMods.Creatures;
 //CHK
 public class FatFireFlyGraphics : VultureGraphics
 {
-    public Fire[][]? Fires;
+    public class FireSprite(Vector2 pos, bool altForm) : UpdatableAndDeletable, IDrawable
+    {
+        public Vector2 Pos = pos, LastPos = pos, Vel = Custom.RNV() * 1.5f * Random.value;
+        public float LifeTime = Mathf.Lerp(10f, 40f, Random.value), Life = 1f, LastLife;
+        public bool AltForm = altForm;
+
+        public override void Update(bool eu)
+        {
+            base.Update(eu);
+            Vel *= .8f;
+            Vel.y += .4f;
+            Vel += Custom.RNV() * Random.value * .5f;
+            LastLife = Life;
+            Life -= 1f / LifeTime;
+            if (Life < 0f)
+                Destroy();
+        }
+
+        public virtual void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer? newContainer)
+        {
+            var sprite = sLeaser.sprites[0];
+            sprite.RemoveFromContainer();
+            rCam.ReturnFContainer("Water").AddChild(sprite);
+        }
+
+        public virtual void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
+        {
+            sLeaser.sprites = [new("Futile_White") { shader = Custom.rainWorld.Shaders["LBFFFLight"] }];
+            AddToContainer(sLeaser, rCam, null);
+        }
+
+        public virtual void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+        {
+            var sprites = sLeaser.sprites;
+            var s0 = sprites[0];
+            var life = Mathf.Lerp(LastLife, Life, timeStacker);
+            s0.SetPosition(Vector2.Lerp(LastPos, Pos, timeStacker) - camPos);
+            s0.scale = life * 2.5f;
+            s0.alpha = life * .125f * (.9f + .1f * rCam.currentPalette.darkness);
+            s0.color = Custom.HSL2RGB(AltForm ? Mathf.Lerp(194f / 360f, 250f / 360f, life) : Mathf.Lerp(.01f, .07f, life), 1f, .5f);
+            if (!sLeaser.deleteMeNextFrame && (slatedForDeletetion || room != rCam.room))
+                sLeaser.CleanSpritesAndRemove();
+        }
+
+        public virtual void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette) { }
+    }
+
+    public bool AltForm;
 
     public FatFireFlyGraphics(FatFireFly ow) : base(ow)
     {
-        albino = Albino.TryGetValue(ow.abstractCreature, out var box) && box.Value;
+        albino = ow.abstractCreature.Albino();
         feathersPerWing /= 2;
+        AltForm = ow.abstractCreature.superSizeMe;
         var vgs = wings;
         var w2 = wings = new VultureFeather[2, feathersPerWing];
         for (var i = 0; i < 2; i++)
@@ -20,20 +68,9 @@ public class FatFireFlyGraphics : VultureGraphics
             for (var j = 0; j < feathersPerWing; j++)
                 w2[i, j] = vgs[i, j * 2];
         }
-        var altForm = ow.abstractCreature.superSizeMe;
-        if (ow.room is Room rm)
-        {
-            var fires = Fires = new Fire[w2.GetLength(0)][];
-            for (var i = 0; i < fires.Length; i++)
-            {
-                var fi = fires[i] = new Fire[w2.GetLength(1)];
-                for (var j = 0; j < fi.Length; j++)
-                    fi[j] = new(rm, w2[i, j], altForm);
-            }
-        }
         var state = Random.state;
         Random.InitState(ow.abstractPhysicalObject.ID.RandomSeed);
-        if (altForm)
+        if (AltForm)
         {
             ColorB = new(Mathf.Lerp(.5278f, .5972f, Random.value), Mathf.Lerp(.65f, .7f, 1f - Random.value * Random.value), Mathf.Lerp(.35f, .4f, Random.value * Random.value));
             ColorA = new(ColorB.hue + Mathf.Lerp(-.03f, .03f, Random.value), Mathf.Lerp(.7f, .8f, Random.value), Mathf.Lerp(.4f, .5f, Random.value));
@@ -49,55 +86,29 @@ public class FatFireFlyGraphics : VultureGraphics
     public override void Update()
     {
         base.Update();
-        int i, j;
-        VultureFeather wi;
-        Fire[] fi;
-        if (owner is Vulture v && v.room is Room rm)
+        if (owner is Vulture v && v.room is Room rm && rm.BeingViewed && !v.dead)
         {
-            if (!rm.BeingViewed && Fires is Fire[][] fs)
-            {
-                for (i = 0; i < fs.Length; i++)
-                {
-                    fi = fs[i];
-                    for (j = 0; j < fi.Length; j++)
-                        fi[j].Destroy();
-                }
-            }
             var ws = wings;
-            if (Fires is not Fire[][] fires || fires.Length == 0)
+            var l0 = ws.GetLength(0);
+            var l1 = ws.GetLength(1);
+            for (var i = 0; i < l0; i++)
             {
-                var altForm = v.abstractCreature.superSizeMe;
-                fires = Fires = new Fire[ws.GetLength(0)][];
-                var l1 = ws.GetLength(1);
-                for (i = 0; i < fires.Length; i++)
+                for (var j = 0; j < l1; j++)
                 {
-                    fi = fires[i] = new Fire[l1];
-                    for (j = 0; j < fi.Length; j++)
+                    var wi = ws[i, j];
+                    wi.pos = Vector2.Lerp(wi.pos, wi.ConnectedPos, .75f);
+                    if (Random.value > .35f && wi.wing is VultureTentacle t && t.mode == VultureTentacle.Mode.Fly && IsPositionInsideBoundries(wi.pos, rm) && !rm.PointSubmerged(wi.pos))
                     {
-                        wi = ws[i, j];
-                        wi.pos = Vector2.Lerp(wi.pos, wi.ConnectedPos, .75f);
-                        fi[j] = new(rm, wi, altForm);
-                    }
-                }
-            }
-            else
-            {
-                fires = Fires;
-                for (i = 0; i < fires.Length; i++)
-                {
-                    fi = fires[i];
-                    for (j = 0; j < fi.Length; j++)
-                    {
-                        wi = ws[i, j];
-                        var f = fi[j];
-                        wi.pos = Vector2.Lerp(wi.pos, wi.ConnectedPos, .75f);
-                        f.Feather = wi;
-                        f.Update(v.evenUpdate);
+                        rm.AddObject(new FireSprite(wi.pos, AltForm));
+                        if (Random.value <= .05f)
+                            rm.PlaySound(SoundID.Firecracker_Burn, wi.pos, .25f, 1.5f, t.owner?.abstractPhysicalObject);
                     }
                 }
             }
         }
     }
+
+    public static bool IsPositionInsideBoundries(Vector2 pos, Room rm) => pos.x >= -50f && pos.x <= rm.PixelWidth + 50f && pos.y >= -50f && pos.y <= rm.PixelHeight + 50f;
 
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
@@ -146,15 +157,15 @@ public class FatFireFlyGraphics : VultureGraphics
         bs1.color = bs0.color = Color.white;
         if (vulture is Vulture v && v.dead)
         {
-            bs0.alpha = Mathf.Max(bs0.alpha - .1f, 0f);
-            bs1.alpha = Mathf.Max(bs1.alpha - .1f, 0f);
+            bs0.alpha = Math.Max(bs0.alpha - .1f, 0f);
+            bs1.alpha = Math.Max(bs1.alpha - .1f, 0f);
         }
         else if (spritesInShadowMode)
             bs1.alpha = bs0.alpha = 0f;
         else
         {
-            bs0.alpha = Mathf.Min(bs0.alpha + .1f, 1f);
-            bs1.alpha = Mathf.Min(bs1.alpha + .1f, 1f);
+            bs0.alpha = Math.Min(bs0.alpha + .1f, 1f);
+            bs1.alpha = Math.Min(bs1.alpha + .1f, 1f);
         }
         sprites[FrontShieldSprite(1)].isVisible = false;
     }
@@ -169,137 +180,5 @@ public class FatFireFlyGraphics : VultureGraphics
         bs = sLeaser.sprites[BackShieldSprite(1)];
         bs.RemoveFromContainer();
         newContainer.AddChild(bs);
-    }
-
-    public class Fire : UpdatableAndDeletable
-    {
-        public class FireSprite : CosmeticSprite
-        {
-            public float LifeTime, Life, LastLife;
-            public bool AltForm;
-
-            public FireSprite(Vector2 pos, bool altForm)
-            {
-                base.pos = pos;
-                AltForm = altForm;
-                lastPos = pos;
-                vel = Custom.RNV() * 1.5f * Random.value;
-                Life = 1f;
-                LifeTime = Mathf.Lerp(10f, 40f, Random.value);
-            }
-
-            public override void Update(bool eu)
-            {
-                base.Update(eu);
-                vel *= .8f;
-                vel.y += .4f;
-                vel += Custom.RNV() * Random.value * .5f;
-                LastLife = Life;
-                Life -= 1f / LifeTime;
-                if (Life < 0f)
-                    Destroy();
-            }
-
-            public override void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer? newContainer)
-            {
-                var fSprite = sLeaser.sprites[0];
-                fSprite.RemoveFromContainer();
-                rCam.ReturnFContainer("Midground").AddChild(fSprite);
-            }
-
-            public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
-            {
-                sLeaser.sprites = [new("deerEyeB") { shader = Custom.rainWorld.Shaders["RippleBasic"] }];
-                AddToContainer(sLeaser, rCam, null);
-            }
-
-            public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
-            {
-                var s0 = sLeaser.sprites[0];
-                s0.SetPosition(Vector2.Lerp(lastPos, pos, timeStacker) - camPos);
-                var num = Mathf.Lerp(LastLife, Life, timeStacker);
-                s0.scale = num;
-                s0.color = Custom.HSL2RGB(AltForm ? (Mathf.Lerp(194f / 360f, 250f / 360f, num)) : Mathf.Lerp(.01f, .08f, num), 1f, Mathf.Lerp(.5f, 1f, Mathf.Pow(num, 3f)));
-                base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SpecialLightSource
-        {
-            public LightSource? LightSource;
-            public Vector2 GetToPos;
-            public float GetToRad;
-        }
-
-        public SpecialLightSource[] LightSources = new SpecialLightSource[3];
-        public LightSource? FlatLightSource;
-        public VultureFeather Feather;
-        public bool AltForm;
-
-        public Fire(Room room, VultureFeather feather, bool altForm)
-        {
-            this.room = room;
-            Feather = feather;
-            AltForm = altForm;
-        }
-
-        public override void Update(bool eu)
-        {
-            base.Update(eu);
-            if (Feather is not VultureFeather f || f.wing is not VultureTentacle t || t.room is not Room rm)
-                return;
-            var fl = t.mode == VultureTentacle.Mode.Fly && IsPositionInsideBoundries(f.pos, rm) && t.vulture is Vulture v && !v.dead;
-            var lhs = LightSources;
-            var altForm = AltForm;
-            for (var i = 0; i < lhs.Length; i++)
-            {
-                ref var slh = ref lhs[i];
-                if (Random.value < .2f)
-                    slh.GetToPos = Custom.RNV() * 50f * Random.value;
-                if (Random.value < .2f)
-                    slh.GetToRad = Mathf.Lerp(50f, Mathf.Lerp(400f, 200f, i / 2f), Mathf.Pow(Random.value, .5f));
-                if (slh.LightSource is LightSource li)
-                {
-                    li.stayAlive = true;
-                    li.setPos = Vector2.Lerp(li.Pos, f.pos + slh.GetToPos, .2f);
-                    li.setRad = Mathf.Lerp(li.Rad, slh.GetToRad, .2f);
-                    li.setAlpha = fl ? Mathf.Min(li.Alpha + .05f, .2f) : Mathf.Max(li.Alpha - .05f, 0f);
-                    if (li.slatedForDeletetion)
-                        slh.LightSource = null;
-                }
-                else
-                {
-                    rm.AddObject(slh.LightSource = new(f.pos, false, Custom.HSL2RGB(altForm ? Mathf.Lerp(194f / 360f, 250f / 360f, i / 2f) : Mathf.Lerp(.01f, .07f, i / 2f), 1f, .5f), this)
-                    {
-                        requireUpKeep = true,
-                        setAlpha = fl ? .2f : 0f
-                    });
-                }
-            }
-            if (FlatLightSource is LightSource l)
-            {
-                l.stayAlive = true;
-                l.setAlpha = fl ? Mathf.Min(l.Alpha + .05f, Mathf.Lerp(.1f, .2f, Random.value)) : Mathf.Max(l.Alpha - .05f, 0f);
-                l.setRad = Mathf.Lerp(24f, 33f, Random.value);
-                l.setPos = f.pos;
-                if (l.slatedForDeletetion)
-                    FlatLightSource = null;
-            }
-            else
-                rm.AddObject(FlatLightSource = new(f.pos, false, altForm ? new(.41803923f, .3f, 1f) : new(1f, .5909804f, .3f), this)
-                {
-                    flat = true,
-                    requireUpKeep = true,
-                    setAlpha = fl ? Mathf.Lerp(.1f, .2f, Random.value) : 0f
-                });
-            if (fl)
-            {
-                rm.AddObject(new FireSprite(f.pos, altForm));
-                rm.PlaySound(SoundID.Firecracker_Burn, f.pos, .14f, 1.5f, t.owner?.abstractPhysicalObject);
-            }
-        }
-
-        public static bool IsPositionInsideBoundries(Vector2 pos, Room rm) => pos.x >= -50f && pos.x <= rm.PixelWidth + 50f && pos.y >= -50f && pos.y <= rm.PixelHeight + 50f;
     }
 }
