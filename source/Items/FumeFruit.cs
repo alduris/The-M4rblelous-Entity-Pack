@@ -195,7 +195,7 @@ public class FumeFruit : Weapon, IHaveAStalkState, IHaveAStalk
             Explode();
         LastModeThrown = mode == Mode.Thrown;
         var flag = false;
-        if (mode == Mode.Carried && grabbedBy.Count > 0 && grabbedBy[0].grabber is Player p && p.swallowAndRegurgitateCounter > 50 && p.objectInStomach is null && p.input[0].pckp)
+        if (mode == Mode.Carried && grabbedBy.Count > 0 && grabbedBy[0]?.grabber is Player p && p.swallowAndRegurgitateCounter > 50 && p.objectInStomach is null && p.input[0].pckp)
         {
             var num3 = -1;
             var grs = p.grasps;

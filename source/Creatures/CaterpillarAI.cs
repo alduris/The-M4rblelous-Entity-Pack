@@ -236,15 +236,19 @@ public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 			return StaticRelationship(critter).type == CreatureTemplate.Relationship.Type.Eats;
 		if (AnnoyingCollisions < 150 && (Behav == Behavior.Flee || Behav == Behavior.EscapeRain) && CurrentUtility > .1f)
 			return false;
-		if (critter.realizedCreature is Creature c)
+		if (StaticRelationship(critter).type == CreatureTemplate.Relationship.Type.Eats)
 		{
-			var creatureRepresentation = tracker.RepresentationForObject(c, false);
-			if (AnnoyingCollisions > 150 && (creatureRepresentation?.dynamicRelationship.state is not CaterpillarTrackState st || st.AnnoyingCollisions > (int)Crit.State.health))
-				return true;
-			if (creatureRepresentation is not null)
-				return creatureRepresentation.dynamicRelationship.currentRelationship.type == CreatureTemplate.Relationship.Type.Eats;
-		}
-		return StaticRelationship(critter).type == CreatureTemplate.Relationship.Type.Eats;
+            if (critter.realizedCreature is Creature c)
+            {
+                var creatureRepresentation = tracker.RepresentationForObject(c, false);
+                if (AnnoyingCollisions > 150 && (creatureRepresentation?.dynamicRelationship.state is not CaterpillarTrackState st || st.AnnoyingCollisions > (int)Crit.State.health))
+                    return true;
+                if (creatureRepresentation is not null)
+                    return creatureRepresentation.dynamicRelationship.currentRelationship.type == CreatureTemplate.Relationship.Type.Eats;
+            }
+			return true;
+        }
+		return false;
 	}
 
 	public override bool WantToStayInDenUntilEndOfCycle() => rainTracker.Utility() > .01f;
