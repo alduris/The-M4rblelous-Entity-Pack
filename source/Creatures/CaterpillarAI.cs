@@ -155,7 +155,7 @@ public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 		}
 		if (Crit.safariControlled)
 			b = 1f;
-		else if (creature.world is World w && w.region is Region r && w.GetAbstractRoom(creature.pos.room) is AbstractRoom arm)
+		else if (creature.world is World w && !w.singleRoomWorld && w.region is Region r && w.GetAbstractRoom(creature.pos.room) is AbstractRoom arm)
 		{
 			var attract = arm.AttractionValueForCreature(creature);
 			if (attract <= .25f)
