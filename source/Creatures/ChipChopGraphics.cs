@@ -2,12 +2,24 @@
 using RWCustom;
 using Random = UnityEngine.Random;
 using System;
+using Smoke;
 
 namespace LBMergedMods.Creatures;
 //CHK
 public class ChipChopGraphics : GraphicsModule
 {
+    public class SpeedSmoke(Room room, Vector2 pos, BodyChunk chunk, Color fireColor) : BombSmoke(room, pos, chunk, fireColor)
+    {
+        public class SpeedSmokeSegment : ThickSmokeSegment
+        {
+            public override Color MyColor(float timeStacker) => Color.Lerp(base.MyColor(timeStacker), (owner as BombSmoke)!.fireColor, .5f);
+        }
+
+        public override SmokeSystemParticle CreateParticle() => new SpeedSmokeSegment();
+    }
+
     public const int TOTAL_SPRITES = 11;
+    public SpeedSmoke? Smoke;
     public Limb[][] Limbs;
     public LightSource? LightSource;
     public float[][] LimbGoalDistances;
@@ -59,6 +71,18 @@ public class ChipChopGraphics : GraphicsModule
     {
         base.Update();
         var fc = owner.firstChunk;
+        if (Smoke is SpeedSmoke sm)
+        {
+            sm.setPos = fc.pos;
+            if (sm.slatedForDeletetion || sm.room != Bug.room || Bug.SpeedEffectDuration == 0)
+            {
+                if (!sm.slatedForDeletetion)
+                    sm.Destroy();
+                Smoke = null;
+            }
+        }
+        else if (Bug.SpeedEffectDuration > 0 && Bug.room is Room rm)
+            rm.AddObject(Smoke = new(rm, fc.pos, fc, Color.red));
         if (Bug.Glowing)
         {
             LastLightLife = LightLife;

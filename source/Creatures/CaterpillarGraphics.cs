@@ -146,7 +146,7 @@ public class CaterpillarGraphics : GraphicsModule
         {
             SoundLoop.sound = NewSoundID.M4R_Caterpillar_Crawl_LOOP;
             var mc = Crit.mainBodyChunk;
-            SoundLoop.Volume = !Crit.Moving ? 0f : Mathf.InverseLerp(Vector2.Distance(mc.lastPos, mc.pos), .5f, 2f) * 1.2f;
+            SoundLoop.Volume = !Crit.Moving ? 0f : Mathf.InverseLerp(Vector2.Distance(mc.lastPos, mc.pos), .5f, 2f) * 1.1f;
             SoundLoop.Pitch = .95f;
         }
         if (Crit.Moving && Crit.Consious)

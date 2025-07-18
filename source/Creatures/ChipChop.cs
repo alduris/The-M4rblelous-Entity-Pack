@@ -24,7 +24,8 @@ public class ChipChop : InsectoidCreature
     public MovementConnection LastFollowingConnection, FollowingConnection, LastShortCut;
     public Vector2 DragPos;
     public int OutsideAccessibleCounter, PathCount, ScratchPathCount, IdleCounter, DenMovement, SeenNoObjectCounter,
-        GrabCounter, MarineEyeEffectDuration, BouncingMelonEffectDuration, MushroomEffectDuration, Hunger = 15;
+        GrabCounter, MarineEyeEffectDuration, BouncingMelonEffectDuration, MushroomEffectDuration, SpeedEffectDuration,
+        HiccupsEffectDuration, Hunger = 15;
     public IndividualVariations IVars;
 	public float DeathSpasms = 1f, ConnectDistance, Excitement;
     public WorldCoordinate? DenPos;
@@ -85,6 +86,10 @@ public class ChipChop : InsectoidCreature
                 --MarineEyeEffectDuration;
             if (MushroomEffectDuration > 0)
                 --MushroomEffectDuration;
+            if (SpeedEffectDuration > 0)
+                --SpeedEffectDuration;
+            if (HiccupsEffectDuration > 0)
+                --HiccupsEffectDuration;
         }
         if (safariControlled)
         {
@@ -231,6 +236,21 @@ public class ChipChop : InsectoidCreature
 		}
         if (BouncingMelonEffectDuration > 0 && fc.ContactPoint != default)
             fc.vel *= .9f + .1f * (1f - BouncingMelonEffectDuration / 5000f);
+        if (HiccupsEffectDuration > 0)
+        {
+            if (Random.value <= .025f)
+            {
+                rm.AddObject(new ShockWave(fc.pos, 60f, 5f, 5));
+                rm.PlaySound(SoundID.Snail_Pop, fc, false, .8f, .75f + Random.value * .5f);
+                var crits = rm.abstractRoom.creatures;
+                for (var i = 0; i < crits.Count; i++)
+                {
+                    if (crits[i]?.realizedCreature is Creature c && c != this && Custom.DistLess(c.mainBodyChunk.pos, fc.pos, 60f + .5f * (c.mainBodyChunk.rad + fc.rad)))
+                        c.Stun(40);
+                }
+                Stun(20);
+            }
+        }
     }
 
     public virtual void Crawl(Room rm)
@@ -392,6 +412,13 @@ public class ChipChop : InsectoidCreature
     public virtual void BiteItem(PhysicalObject item, Grasp g0)
 	{
         if (item is Physalis or StarLemon or GummyAnther or MiniFruit or LittleBalloon or LimeMushroom or ThornyStrawberry or DendriticNeuron or BouncingMelon or MarineEye or DarkGrub)
+        {
+            (item.abstractPhysicalObject as AbstractConsumable)!.Consume();
+            (item as IPlayerEdible)!.BitByPlayer(g0, evenUpdate);
+            item.firstChunk.MoveFromOutsideMyUpdate(evenUpdate, DangerPos);
+            --Hunger;
+        }
+        else if (item?.abstractPhysicalObject.type?.value is string s && s.StartsWith("OY"))
         {
             (item.abstractPhysicalObject as AbstractConsumable)!.Consume();
             (item as IPlayerEdible)!.BitByPlayer(g0, evenUpdate);
@@ -785,7 +812,7 @@ public class ChipChop : InsectoidCreature
     public virtual void Move(MovementConnection con)
 	{
 		var dest = room.MiddleOfTile(con.DestTile);
-		firstChunk.vel += (Custom.DirVec(firstChunk.pos, dest) + Custom.DegToVec(Random.value * 360f) * .75f * Mathf.Lerp(.8f, 1.2f, IVars.Size / 1.5f)) * (1f + Excitement * .5f);
+		firstChunk.vel += (Custom.DirVec(firstChunk.pos, dest) + Custom.DegToVec(Random.value * 360f) * .75f * Mathf.Lerp(.8f, 1.2f, IVars.Size / 1.5f)) * (1f + Excitement * .5f + SpeedEffectDuration / 2400f);
 	}
 
     public virtual bool VisualContact(Vector2 pos)
