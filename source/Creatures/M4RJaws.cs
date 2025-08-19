@@ -883,7 +883,7 @@ public class M4RJaws : Creature
                     JawOpen = .15f;
                     JawVel = 0f;
                     num = cr is not Player ? 1 : 2;
-                    cr.Violence(head, Custom.DirVec(head.pos, b.pos) * 4f, b, null, DamageType.Bite, 1.2f, 0f);
+                    cr.Violence(head, Custom.DirVec(head.pos, b.pos) * 4f, b, null, DamageType.Bite, 4.4f, 0f);
                     break;
                 }
             }
