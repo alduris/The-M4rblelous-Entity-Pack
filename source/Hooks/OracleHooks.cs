@@ -2,7 +2,7 @@
 using MoreSlugcats;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class OracleHooks
 {
     internal static void On_MoonConversation_AddEvents(On.SLOracleBehaviorHasMark.MoonConversation.orig_AddEvents orig, SLOracleBehaviorHasMark.MoonConversation self)
@@ -63,6 +63,8 @@ public static class OracleHooks
             }
             else if (item == MiscItemType.DarkGrub)
                 self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("It seems like some kind of... grub?<LINE>The glowing would suggest that it's well adapted to dark environments."), 0));
+            else if (item == MiscItemType.ScavengerRagMask)
+                self.events.Add(new Conversation.TextEvent(self, 10, self.Translate("I honestly can't tell what this is. It's light but strong... appears to be some composite material interwoven with bone.<LINE>It seems to have been altered from its original form and decorated with textile fibers."), 0));
         }
     }
 
@@ -74,7 +76,7 @@ public static class OracleHooks
             self.dialogBox.NewMessage(self.Translate("Oh, that is not a friend..."), 10);
         else if (type == CreatureTemplateType.FatFireFly)
             self.dialogBox.NewMessage(self.Translate("It is on fire! How did you bring that in here?!"), 10);
-        else if (type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.Blizzor)
+        else if (type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.Blizzor || type == CreatureTemplateType.SparkEye)
             self.dialogBox.NewMessage(self.Translate("Your friend is very large, how did you fit them in here?"), 10);
     }
 
@@ -110,6 +112,8 @@ public static class OracleHooks
             return MiscItemType.Durian;
         if (testItem is DarkGrub)
             return MiscItemType.DarkGrub;
+        if (testItem is VultureMask m && m.maskGfx is M4RScavMaskGraphics)
+            return MiscItemType.ScavengerRagMask;
         return orig(self, testItem);
     }
 
@@ -117,7 +121,7 @@ public static class OracleHooks
     {
         orig(self);
         var type = self.CheckStrayCreatureInRoom();
-        if (type == CreatureTemplateType.RedHorrorCenti || type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.Blizzor)
+        if (type == CreatureTemplateType.RedHorrorCenti || type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.Blizzor || type == CreatureTemplateType.SparkEye)
             self.dialogBox.NewMessage(self.Translate("How did you fit them inside here anyhow?"), 10);
         else if (type == CreatureTemplateType.FatFireFly)
             self.dialogBox.NewMessage(self.Translate("Your friend is on fire! Take it with you, please!"), 10);

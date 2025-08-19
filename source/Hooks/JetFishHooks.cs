@@ -3,7 +3,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class JetFishHooks
 {
     internal static void On_JetFish_ctor(On.JetFish.orig_ctor orig, JetFish self, AbstractCreature abstractCreature, World world)

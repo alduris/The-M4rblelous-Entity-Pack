@@ -8,7 +8,7 @@ using Mono.Cecil.Cil;
 using System;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class CollectiblesTrackerHooks
 {
     public static ConditionalWeakTable<CollectiblesTracker.SaveGameData, HashSet<string>> TrackerScoreData = new();

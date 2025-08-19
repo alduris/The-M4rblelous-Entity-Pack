@@ -7,7 +7,7 @@ using Mono.Cecil.Cil;
 using Watcher;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class ShortcutHooks
 {
     internal static bool On_ShortcutHelper_PopsOutOfDeadShortcuts(On.ShortcutHelper.orig_PopsOutOfDeadShortcuts orig, ShortcutHelper self, PhysicalObject physicalObject) => (physicalObject.grabbedBy.Count == 0 && physicalObject is HazerMom) || orig(self, physicalObject);

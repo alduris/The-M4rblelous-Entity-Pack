@@ -7,7 +7,7 @@ using System;
 using UnityEngine;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class PlayerHooks
 {
     internal static void On_GourmandCombos_InitCraftingLibrary(On.MoreSlugcats.GourmandCombos.orig_InitCraftingLibrary orig)
@@ -175,6 +175,18 @@ public static class PlayerHooks
         if (grabCheck is TintedBeetle or SurfaceSwimmer or BouncingBall)
             return true;
         return orig(self, grabCheck);
+    }
+
+    internal static void On_Player_MaulingUpdate(On.Player.orig_MaulingUpdate orig, Player self, int graspIndex)
+    {
+        if (self.grasps[graspIndex] is Creature.Grasp gr && gr.grabbed is ScavengerSentinel c && self.maulTimer > 15)
+        {
+            var bs = c.bodyChunks;
+            bs[0].mass = .5f;
+            bs[1].mass = .3f;
+            bs[2].mass = .05f;
+        }
+        orig(self, graspIndex);
     }
 
     internal static void On_Player_SwallowObject(On.Player.orig_SwallowObject orig, Player self, int grasp)

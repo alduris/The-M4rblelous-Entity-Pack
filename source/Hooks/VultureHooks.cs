@@ -1,7 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.VultureHooks;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class VultureHooks
 {
     internal static void On_Vulture_AirBrake(On.Vulture.orig_AirBrake orig, Vulture self, int frames)

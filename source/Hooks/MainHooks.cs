@@ -5,9 +5,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class MainHooks
 {
     [StructLayout(LayoutKind.Sequential)]
@@ -126,6 +128,10 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.XyloWorm);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.BigXyloWorm))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.BigXyloWorm);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.SparkEye))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.SparkEye);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.ScavengerSentinel))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.ScavengerSentinel);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();
@@ -163,6 +169,8 @@ public static class MainHooks
                 Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw", "atlases/wwdvb_wingw" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
             if (!Futile.atlasManager.DoesContainAtlas("wwdvb_wingw2"))
                 Futile.atlasManager.ActuallyLoadAtlasOrImage("wwdvb_wingw2", "atlases/wwdvb_wingw2" + Futile.resourceSuffix, string.Empty).texture.wrapMode = TextureWrapMode.Clamp;
+            if (!Futile.atlasManager.DoesContainAtlas("M4RDoubleJawNeck"))
+                Futile.atlasManager.ActuallyLoadAtlasOrImage("M4RDoubleJawNeck", "atlases/M4RDoubleJawNeck" + Futile.resourceSuffix, string.Empty);
         }
         catch (Exception ex)
         {
@@ -278,8 +286,27 @@ public static class MainHooks
             Futile.atlasManager.UnloadAtlas("wwdvb_spr");
         if (Futile.atlasManager.DoesContainAtlas("XyloDarkness"))
             Futile.atlasManager.UnloadAtlas("XyloDarkness");
+        if (Futile.atlasManager.DoesContainAtlas("M4RDoubleJawNeck"))
+            Futile.atlasManager.UnloadAtlas("M4RDoubleJawNeck");
         LBMergedModsPlugin.Bundle?.Unload(true);
         LBMergedModsPlugin.Bundle = null;
+    }
+
+    internal static void IL_RainWorldGame_SendScavsToPlayer(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
+             .EmitDelegate((bool flag, AbstractCreature abstractCreature) => flag || abstractCreature.creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook RainWorldGame.SendScavsToPlayer!");
     }
 
     internal static void On_SoundLoader_LoadSounds(On.SoundLoader.orig_LoadSounds orig, SoundLoader self)

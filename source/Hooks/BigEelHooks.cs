@@ -8,7 +8,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class BigEelHooks
 {
     public static int _MiniLeviColorA, _MiniLeviColorB, _MiniLeviColorHead, _AMiniLeviColorA, _AMiniLeviColorB, _AMiniLeviColorHead, _GRJLeviathanColorA, _GRJLeviathanColorB, _GRJLeviathanColorHead, _GRJMiniLeviathanColorA, _GRJMiniLeviathanColorB, _GRJMiniLeviathanColorHead, _LBCustom_RottenTentacleBlack;

@@ -12,7 +12,7 @@ using MoreSlugcats;
 using Watcher;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class LizardHooks
 {
     internal static void On_AxolotlGills_DrawSprites(On.LizardCosmetics.AxolotlGills.orig_DrawSprites orig, AxolotlGills self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)

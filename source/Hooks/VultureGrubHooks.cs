@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 using UnityEngine;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class VultureGrubHooks
 {
     internal static void IL_VultureGrub_AttemptCallVulture(ILContext il)

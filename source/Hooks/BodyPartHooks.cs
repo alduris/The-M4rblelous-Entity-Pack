@@ -4,7 +4,7 @@ using RWCustom;
 using System;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class BodyPartHooks
 {
     internal static void On_BodyPart_ConnectToPoint(On.BodyPart.orig_ConnectToPoint orig, BodyPart self, Vector2 pnt, float connectionRad, bool push, float elasticMovement, Vector2 hostVel, float adaptVel, float exaggerateVel)

@@ -101,7 +101,9 @@ public static class CreatureTemplateType
         ChipChop = new(nameof(ChipChop), true),
         MiniScutigera = new(nameof(MiniScutigera), true),
         Xylo = new(nameof(Xylo), true),
-        XyloWorm = new(nameof(XyloWorm), true);
+        XyloWorm = new(nameof(XyloWorm), true),
+        SparkEye = new(nameof(SparkEye), true),
+        ScavengerSentinel = new(nameof(ScavengerSentinel), true);
 
     static CreatureTemplateType()
     {
@@ -135,7 +137,9 @@ public static class CreatureTemplateType
             ChipChop,
             MiniScutigera,
             Xylo,
-            XyloWorm];
+            XyloWorm,
+            SparkEye,
+            ScavengerSentinel];
     }
 
     public static void UnregisterValues()
@@ -295,6 +299,16 @@ public static class CreatureTemplateType
             XyloWorm.Unregister();
             XyloWorm = null!;
         }
+        if (SparkEye is not null)
+        {
+            SparkEye.Unregister();
+            SparkEye = null!;
+        }
+        if (ScavengerSentinel is not null)
+        {
+            ScavengerSentinel.Unregister();
+            ScavengerSentinel = null!;
+        }
     }
 }
 
@@ -347,7 +361,9 @@ public static class SandboxUnlockID
         BigXyloWorm = new(nameof(BigXyloWorm), true),
         FumeFruit = new(nameof(FumeFruit), true),
         Durian = new(nameof(Durian), true),
-        DarkGrub = new(nameof(DarkGrub), true);
+        DarkGrub = new(nameof(DarkGrub), true),
+        SparkEye = new(nameof(SparkEye), true),
+        ScavengerSentinel = new(nameof(ScavengerSentinel), true);
 
     static SandboxUnlockID()
     {
@@ -397,7 +413,9 @@ public static class SandboxUnlockID
             BigXyloWorm,
             FumeFruit,
             Durian,
-            DarkGrub];
+            DarkGrub,
+            SparkEye,
+            ScavengerSentinel];
     }
 
     public static void UnregisterValues()
@@ -636,6 +654,16 @@ public static class SandboxUnlockID
         {
             DarkGrub.Unregister();
             DarkGrub = null!;
+        }
+        if (SparkEye is not null)
+        {
+            SparkEye.Unregister();
+            SparkEye = null!;
+        }
+        if (ScavengerSentinel is not null)
+        {
+            ScavengerSentinel.Unregister();
+            ScavengerSentinel = null!;
         }
     }
 }
@@ -1038,7 +1066,8 @@ public static class MiscItemType
         MiniBlueFruit = new(nameof(MiniBlueFruit), true),
         FumeFruit = new(nameof(FumeFruit), true),
         Durian = new(nameof(Durian), true),
-        DarkGrub = new(nameof(DarkGrub), true);
+        DarkGrub = new(nameof(DarkGrub), true),
+        ScavengerRagMask = new(nameof(ScavengerRagMask), true);
 
     public static void UnregisterValues()
     {
@@ -1116,6 +1145,11 @@ public static class MiscItemType
         {
             DarkGrub.Unregister();
             DarkGrub = null!;
+        }
+        if (ScavengerRagMask is not null)
+        {
+            ScavengerRagMask.Unregister();
+            ScavengerRagMask = null!;
         }
     }
 }
@@ -1209,7 +1243,8 @@ public static class NewSoundID
         M4R_Caterpillar_Crawl_LOOP = new(nameof(M4R_Caterpillar_Crawl_LOOP), true),
         M4R_SurfaceSwimmer_Chip = new(nameof(M4R_SurfaceSwimmer_Chip), true),
         M4R_GenericBug_BigChip = new(nameof(M4R_GenericBug_BigChip), true),
-        M4R_GenericBug_Chip = new(nameof(M4R_GenericBug_Chip), true);
+        M4R_GenericBug_Chip = new(nameof(M4R_GenericBug_Chip), true),
+        M4R_DoubleJaw_Hiss = new(nameof(M4R_DoubleJaw_Hiss), true);
 
     public static void UnregisterValues()
     {
@@ -1307,6 +1342,11 @@ public static class NewSoundID
         {
             M4R_GenericBug_BigChip.Unregister();
             M4R_GenericBug_BigChip = null!;
+        }
+        if (M4R_DoubleJaw_Hiss is not null)
+        {
+            M4R_DoubleJaw_Hiss.Unregister();
+            M4R_DoubleJaw_Hiss = null!;
         }
     }
 }

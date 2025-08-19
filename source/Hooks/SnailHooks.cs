@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class SnailHooks
 {
     internal static void IL_Snail_Click(ILContext il)

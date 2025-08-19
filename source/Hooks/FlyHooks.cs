@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using System.IO;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class FlyHooks
 {
     public static Dictionary<string, bool> SeedRooms = [];

@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class DaddyHooks
 {
     public static Dictionary<string, Color> JLLRooms = [];

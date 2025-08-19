@@ -1,7 +1,9 @@
 ﻿global using static LBMergedMods.Hooks.DropBugHooks;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class DropBugHooks
 {
     internal static CreatureTemplate.Relationship On_DropBugAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.DropBugAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, DropBugAI self, RelationshipTracker.DynamicRelationship dRelation)
@@ -35,5 +37,25 @@ public static class DropBugHooks
                 res = true;
         }
         return res;
+    }
+
+    internal static void IL_CeilingSitModule_SitUpdate(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_Any,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
+             .EmitDelegate((bool flag, DropBugAI.CeilingSitModule self, int i) => flag || self.AI.tracker.GetRep(i).representedCreature.creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook DropBugAI.CeilingSitModule.SitUpdate!");
     }
 }

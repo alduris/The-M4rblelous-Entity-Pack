@@ -11,12 +11,12 @@ using Fisobs.Sandbox;
 using System.Linq;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class ArenaHooks
 {
     public const int M4R_DATA_NUMBER = 319, M4R_DATA_NUMBER2 = 320, M4R_DATA_NUMBER3 = 321;
 
-    internal static bool On_ArenaCreatureSpawner_IsMajorCreature(On.ArenaCreatureSpawner.orig_IsMajorCreature orig, CreatureTemplate.Type type) => type == CreatureTemplateType.RedHorrorCenti || type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.FatFireFly || type == CreatureTemplateType.Blizzor || orig(type);
+    internal static bool On_ArenaCreatureSpawner_IsMajorCreature(On.ArenaCreatureSpawner.orig_IsMajorCreature orig, CreatureTemplate.Type type) => type == CreatureTemplateType.RedHorrorCenti || type == CreatureTemplateType.FlyingBigEel || type == CreatureTemplateType.FatFireFly || type == CreatureTemplateType.Blizzor || type == CreatureTemplateType.SparkEye || orig(type);
 
     internal static void On_ArenaGameSession_SpawnItem(On.ArenaGameSession.orig_SpawnItem orig, ArenaGameSession self, Room room, PlacedObject placedObj)
     {

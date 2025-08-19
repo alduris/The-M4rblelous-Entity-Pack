@@ -1,7 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.SporePlantHooks;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class SporePlantHooks
 {
     internal static void On_SporePlant_HitByWeapon(On.SporePlant.orig_HitByWeapon orig, SporePlant self, Weapon weapon)

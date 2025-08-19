@@ -1,7 +1,7 @@
 ﻿global using static LBMergedMods.Hooks.NeedleWormHooks;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class NeedleWormHooks
 {
     internal static CreatureTemplate.Relationship On_BigNeedleWormAI_IUseARelationshipTracker_UpdateDynamicRelationship(On.BigNeedleWormAI.orig_IUseARelationshipTracker_UpdateDynamicRelationship orig, BigNeedleWormAI self, RelationshipTracker.DynamicRelationship dRelation)

@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class AImapHooks
 {
     internal static int On_AImap_ExitDistanceForCreatureAndCheckNeighbours(On.AImap.orig_ExitDistanceForCreatureAndCheckNeighbours orig, AImap self, IntVector2 pos, int creatureSpecificExitIndex, CreatureTemplate crit)

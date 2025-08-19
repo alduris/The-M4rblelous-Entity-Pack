@@ -7,7 +7,6 @@ using DevConsole;
 using DevConsole.Commands;
 using RWCustom;
 using UnityEngine;
-using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 using CritType = CreatureTemplate.Type;
 using ObjType = AbstractPhysicalObject.AbstractObjectType;
 using Random = UnityEngine.Random;
@@ -32,6 +31,7 @@ static class DevConsoleCommands
         {
             // Collect copies of types so we can add our own stuff if wanted
             s_objectTypes = [.. AbstractObjectType.M4RItemList];
+            s_objectTypes.Add(new("ScavengerRagMask"));
             s_objectTypes.Remove(AbstractObjectType.MiniFruitSpawner);
             s_critterTypes = [.. CreatureTemplateType.M4RCreatureList.Union([new("Bigrub"), new("Bigworm"), new("SeedBat"), new("JellyLongLegs"), new("AlbinoHazer"), new("RottenKelp")])];
             s_sandboxUnlocks = [.. SandboxUnlockID.M4RUnlockList]; // creating a copy
@@ -162,6 +162,16 @@ static class DevConsoleCommands
                         ForceColor = color
                     });
                     entity = flower;
+                }
+                else if (objType.value == "ScavengerRagMask")
+                {
+                    if (foundFloats.Count != 2 && foundStrings.Count != 1)
+                    {
+                        GameConsole.WriteLine("Invalid spawn line for scavenger rag mask!", Color.red);
+                        return;
+                    }
+                    var s = foundStrings[0].ToUpperInvariant();
+                    entity = new VultureMask.AbstractVultureMask(game.world, null, pos, ID, (int)foundFloats[0], false, false, "M4RScavMask" + Mathf.Clamp((int)foundFloats[1], 1, 2) + "_" + (s is "A" or "B" or "C" ? s : "C"));
                 }
                 else if (objType.value == "BigGoldenPearl")
                     entity = new DataPearl.AbstractDataPearl(game.world, objType, null, pos, ID, -1, -1, null, new("BigGoldenPearl"));
@@ -339,7 +349,8 @@ static class DevConsoleCommands
                 startIndex = 2;
             // Search for ints and floats
             int foundFloats = 0,
-                foundBools = 0;
+                foundBools = 0,
+                foundStrings = 0;
             for (var i = startIndex; i < args.Length; i++)
             {
                 var arg = args[i];
@@ -347,6 +358,8 @@ static class DevConsoleCommands
                     ++foundFloats;
                 else if (bool.TryParse(arg, out _))
                     ++foundBools;
+                else if (!string.IsNullOrEmpty(arg))
+                    ++foundStrings;
             }
             if (s_objectTypes.Contains(objType))
             {
@@ -380,6 +393,27 @@ static class DevConsoleCommands
                         };
                         if (hint is not null)
                             yield return hint;
+                    }
+                }
+                else if (objType.value == "ScavengerRagMask")
+                {
+                    switch (foundFloats)
+                    {
+                        case 0:
+                            yield return K_HINT_PREFIX + "colorSeed: int";
+                            break;
+                        case 1:
+                            yield return "1";
+                            yield return "2";
+                            break;
+                        case 2:
+                            if (foundStrings == 0)
+                            {
+                                yield return "A";
+                                yield return "B";
+                                yield return "C";
+                            }
+                            break;
                     }
                 }
             }

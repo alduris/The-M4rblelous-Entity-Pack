@@ -41,6 +41,7 @@ static class InternalMatch
         s_MatchCall_Mathf_Lerp = MatchCall_Mathf_Lerp,
         s_MatchCall_Mathf_Max = MatchCall_Mathf_Max,
         s_MatchCall_Mathf_RoundToInt = MatchCall_Mathf_RoundToInt,
+        s_MatchCall_ModManager_get_DLCShared = MatchCall_ModManager_get_DLCShared,
         s_MatchCall_op_Equality_Any = MatchCall_op_Equality_Any,
         s_MatchCall_Random_Range_int_int = MatchCall_Random_Range_int_int,
         s_MatchCall_StaticWorld_GetCreatureTemplate_CreatureTemplate_Type = MatchCall_StaticWorld_GetCreatureTemplate_CreatureTemplate_Type,
@@ -101,6 +102,8 @@ static class InternalMatch
         s_MatchLdcR4_2 = MatchLdcR4_2,
         s_MatchLdcR4_2_3 = MatchLdcR4_2_3,
         s_MatchLdcR4_7 = MatchLdcR4_7,
+        s_MatchLdcR4_15 = MatchLdcR4_15,
+        s_MatchLdcR4_45 = MatchLdcR4_45,
         s_MatchLdcR4_60 = MatchLdcR4_60,
         s_MatchLdcR4_1000 = MatchLdcR4_1000,
         s_MatchLdelema_AbstractRoomNode = MatchLdelema_AbstractRoomNode,
@@ -178,6 +181,7 @@ static class InternalMatch
         s_MatchLdsfld_CreatureTemplate_Type_Overseer = MatchLdsfld_CreatureTemplate_Type_Overseer,
         s_MatchLdsfld_CreatureTemplate_Type_PoleMimic = MatchLdsfld_CreatureTemplate_Type_PoleMimic,
         s_MatchLdsfld_CreatureTemplate_Type_Salamander = MatchLdsfld_CreatureTemplate_Type_Salamander,
+        s_MatchLdsfld_CreatureTemplate_Type_Scavenger = MatchLdsfld_CreatureTemplate_Type_Scavenger,
         s_MatchLdsfld_CreatureTemplate_Type_Slugcat = MatchLdsfld_CreatureTemplate_Type_Slugcat,
         s_MatchLdsfld_CreatureTemplate_Type_Snail = MatchLdsfld_CreatureTemplate_Type_Snail,
         s_MatchLdsfld_CreatureTemplate_Type_SpitterSpider = MatchLdsfld_CreatureTemplate_Type_SpitterSpider,
@@ -246,6 +250,7 @@ static class InternalMatch
         s_MatchCall_Mathf_Lerp = null!;
         s_MatchCall_Mathf_Max = null!;
         s_MatchCall_Mathf_RoundToInt = null!;
+        s_MatchCall_ModManager_get_DLCShared = null!;
         s_MatchCall_op_Equality_Any = null!;
         s_MatchCall_Random_Range_int_int = null!;
         s_MatchCall_StaticWorld_GetCreatureTemplate_CreatureTemplate_Type = null!;
@@ -306,6 +311,8 @@ static class InternalMatch
         s_MatchLdcR4_2 = null!;
         s_MatchLdcR4_2_3 = null!;
         s_MatchLdcR4_7 = null!;
+        s_MatchLdcR4_15 = null!;
+        s_MatchLdcR4_45 = null!;
         s_MatchLdcR4_60 = null!;
         s_MatchLdcR4_1000 = null!;
         s_MatchLdelema_AbstractRoomNode = null!;
@@ -383,6 +390,7 @@ static class InternalMatch
         s_MatchLdsfld_CreatureTemplate_Type_Overseer = null!;
         s_MatchLdsfld_CreatureTemplate_Type_PoleMimic = null!;
         s_MatchLdsfld_CreatureTemplate_Type_Salamander = null!;
+        s_MatchLdsfld_CreatureTemplate_Type_Scavenger = null!;
         s_MatchLdsfld_CreatureTemplate_Type_Slugcat = null!;
         s_MatchLdsfld_CreatureTemplate_Type_Snail = null!;
         s_MatchLdsfld_CreatureTemplate_Type_SpitterSpider = null!;
@@ -500,6 +508,8 @@ static class InternalMatch
 
     internal static bool MatchCallOrCallvirt_LizardAI_LizardSpitTracker_get_lizardAI(Instruction x) => x.MatchCallOrCallvirt<LizardAI.LizardSpitTracker>("get_lizardAI");
 
+    internal static bool MatchCall_ModManager_get_DLCShared(Instruction x) => x.MatchCall<ModManager>("get_DLCShared");
+
     internal static bool MatchCallOrCallvirt_OutRef(Instruction x) => x.MatchCallOrCallvirt(out s_ref);
 
     internal static bool MatchCallOrCallvirt_Player_get_CanPutSpearToBack(Instruction x) => x.MatchCallOrCallvirt<Player>("get_CanPutSpearToBack");
@@ -573,6 +583,10 @@ static class InternalMatch
     internal static bool MatchLdcR4_2_3(Instruction x) => x.MatchLdcR4(2.3f);
 
     internal static bool MatchLdcR4_7(Instruction x) => x.MatchLdcR4(7f);
+
+    internal static bool MatchLdcR4_15(Instruction x) => x.MatchLdcR4(15f);
+
+    internal static bool MatchLdcR4_45(Instruction x) => x.MatchLdcR4(45f);
 
     internal static bool MatchLdcR4_60(Instruction x) => x.MatchLdcR4(60f);
 
@@ -727,6 +741,8 @@ static class InternalMatch
     internal static bool MatchLdsfld_CreatureTemplate_Type_PoleMimic(Instruction x) => x.MatchLdsfld<CreatureTemplate.Type>("PoleMimic");
 
     internal static bool MatchLdsfld_CreatureTemplate_Type_Salamander(Instruction x) => x.MatchLdsfld<CreatureTemplate.Type>("Salamander");
+
+    internal static bool MatchLdsfld_CreatureTemplate_Type_Scavenger(Instruction x) => x.MatchLdsfld<CreatureTemplate.Type>("Scavenger");
 
     internal static bool MatchLdsfld_CreatureTemplate_Type_Slugcat(Instruction x) => x.MatchLdsfld<CreatureTemplate.Type>("Slugcat");
 

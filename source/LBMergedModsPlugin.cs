@@ -1,18 +1,18 @@
-﻿global using LBMergedMods.Items;
-global using LBMergedMods.Creatures;
+﻿global using LBMergedMods.Creatures;
+global using LBMergedMods.Items;
 using BepInEx;
-using System.Security.Permissions;
-using System.Security;
-using UnityEngine;
 using BepInEx.Logging;
 using Fisobs.Core;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using MonoMod.RuntimeDetour;
 using Fisobs.Sandbox;
-using Watcher;
+using MonoMod.RuntimeDetour;
+using MoreSlugcats;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Unity.Mathematics;
+using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
+using UnityEngine;
+using Watcher;
 
 #pragma warning disable CS0618 // ignore false message
 [module: UnverifiableCode]
@@ -21,7 +21,7 @@ using Unity.Mathematics;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "10.0.2"), BepInDependency("io.github.dual.fisobs"), BepInDependency("com.rainworldgame.lizardcustomizer.plugin", BepInDependency.DependencyFlags.SoftDependency), BepInDependency("slime-cubed.devconsole", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "10.0.3"), BepInDependency("io.github.dual.fisobs"), BepInDependency("com.rainworldgame.lizardcustomizer.plugin", BepInDependency.DependencyFlags.SoftDependency), BepInDependency("slime-cubed.devconsole", BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -216,7 +216,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardTongue.ctor += On_LizardTongue_ctor;
         new Hook(typeof(LizardBreedParams).GetMethod("get_WallClimber", ALL_FLAGS), On_LizardBreedParams_get_WallClimber);
         On.LizardGraphics.DynamicBodyColor += On_LizardGraphics_DynamicBodyColor;
-        On.LizardGraphics.HeadColor += Hooks.LizardHooks.On_LizardGraphics_HeadColor;
+        On.LizardGraphics.HeadColor += On_LizardGraphics_HeadColor;
         On.LizardGraphics.WhiteFlicker += On_LizardGraphics_WhiteFlicker;
         On.LizardAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_LizardAI_IUseARelationshipTracker_UpdateDynamicRelationship;
         On.Lizard.HitHeadShield += On_Lizard_HitHeadShield;
@@ -341,6 +341,66 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.Watcher.LoachAI.UpdateDynamicRelationship += On_LoachAI_UpdateDynamicRelationship;
         On.Watcher.Loach.Collide += On_Loach_Collide;
         On.DaddyCorruption.Update += On_DaddyCorruption_Update;
+        new Hook(typeof(VultureMaskGraphics).GetMethod("get_King", ALL_FLAGS), On_VultureMaskGraphics_get_King);
+        new Hook(typeof(VultureMaskGraphics).GetMethod("get_ScavKing", ALL_FLAGS), On_VultureMaskGraphics_get_King); // same hook
+        new Hook(typeof(VultureMaskGraphics).GetMethod("get_BaseTotalSprites", ALL_FLAGS), On_VultureMaskGraphics_get_BaseTotalSprites);
+        On.MoreSlugcats.VultureMaskGraphics.AddToContainer += On_VultureMaskGraphics_AddToContainer;
+        On.MoreSlugcats.VultureMaskGraphics.ApplyPalette += On_VultureMaskGraphics_ApplyPalette;
+        On.MoreSlugcats.VultureMaskGraphics.InitiateSprites += On_VultureMaskGraphics_InitiateSprites;
+        On.MoreSlugcats.VultureMaskGraphics.DrawSprites += On_VultureMaskGraphics_DrawSprites;
+        On.MoreSlugcats.VultureMaskGraphics.Update += On_VultureMaskGraphics_Update;
+        On.VultureMask.PlaceInRoom += On_VultureMask_PlaceInRoom;
+        On.PlayerCarryableItem.NewRoom += On_PlayerCarryableItem_NewRoom;
+        On.VultureMask.Update += On_VultureMask_Update;
+        On.VultureMask.ctor += On_VultureMask_ctor;
+        IL.SaveState.AbstractPhysicalObjectFromString += IL_SaveState_AbstractPhysicalObjectFromString;
+        On.Player.MaulingUpdate += On_Player_MaulingUpdate;
+        new Hook(typeof(AbstractCreature).GetMethod("get_karmicPotential", ALL_FLAGS), On_AbstractCreature_get_karmicPotential);
+        IL.World.ToggleCreatureAccessFromCutscene += IL_World_ToggleCreatureAccessFromCutscene;
+        On.MoreSlugcats.CutsceneArtificer.ToggleScavengerAccessToArtyIntro += On_CutsceneArtificer_ToggleScavengerAccessToArtyIntro;
+        IL.ShelterDoor.Update += IL_ShelterDoor_Update;
+        IL.OverseerAI.Update += IL_OverseerAI_Update;
+        IL.OverseerAI.FlyingWeapon += IL_OverseerAI_FlyingWeapon;
+        IL.ScavengerTreasury.Update += IL_ScavengerTreasury_Update;
+        IL.DropBugAI.CeilingSitModule.SitUpdate += IL_CeilingSitModule_SitUpdate;
+        IL.RainWorldGame.SendScavsToPlayer += IL_RainWorldGame_SendScavsToPlayer;
+        IL.OverseerAbstractAI.PlayerGuideUpdate += IL_OverseerAbstractAI_PlayerGuideUpdate;
+        IL.FirecrackerPlant.ScareObject.Update += IL_ScareObject_Update;
+        On.PreyTracker.TrackedPrey.Attractiveness += On_TrackedPrey_Attractiveness;
+        On.MoreSlugcats.MSCRoomSpecificScript.DS_RIVSTARTcutscene.ctor += On_DS_RIVSTARTcutscene_ctor;
+        IL.MoreSlugcats.MSCRoomSpecificScript.LC_FINAL.SummonScavengers += IL_LC_FINAL_SummonScavengers;
+        IL.Scavenger.NewTile += IL_Scavenger_NewTile;
+        new Hook(typeof(Scavenger).GetMethod("get_MeleeRange", ALL_FLAGS), On_Scavenger_get_MeleeRange);
+        new Hook(typeof(Scavenger).GetMethod("get_MidRange", ALL_FLAGS), On_Scavenger_get_MidRange);
+        On.ScavengerGraphics.GenerateColors += On_ScavengerGraphics_GenerateColors;
+        IL.ScavengerAI.CheckThrow += IL_ScavengerAI_CheckThrow;
+        IL.ScavengerGraphics.DrawSprites += IL_ScavengerGraphics_DrawSprites;
+        IL.ScavengerGraphics.InitiateSprites += IL_ScavengerGraphics_InitiateSprites;
+        IL.ScavengerGraphics.ctor += IL_ScavengerGraphics_ctor;
+        IL.ScavengerGraphics.Eartlers.GenerateSegments += IL_Eartlers_GenerateSegments;
+        On.ScavengerGraphics.IndividualVariations.ctor += On_IndividualVariations_ctor;
+        On.ScavengerCosmetic.BackDecals.GeneratePattern += On_BackDecals_GeneratePattern;
+        On.ScavengerCosmetic.BackTuftsAndRidges.ctor += On_BackTuftsAndRidges_ctor;
+        IL.ScavengerAI.SeeThrownWeapon += IL_ScavengerAI_SeeThrownWeapon;
+        IL.ScavengerAI.IdleBehavior += IL_ScavengerAI_IdleBehavior;
+        IL.ScavengerAI.AttackBehavior += IL_ScavengerAI_AttackBehavior;
+        IL.ScavengerAI.SpearThrowPositionScore += IL_ScavengerAI_SpearThrowPositionScore;
+        IL.ScavengerAI.CreatureSpotted += IL_ScavengerAI_CreatureSpotted;
+        IL.ScavengerAI.CommunicationModule.EvaluateCommunicationDemand += IL_CommunicationModule_EvaluateCommunicationDemand;
+        IL.Scavenger.CombatUpdate += IL_Scavenger_CombatUpdate;
+        IL.Scavenger.TryToMeleeCreature += IL_Scavenger_TryToMeleeCreature;
+        On.Scavenger.SetUpCombatSkills += On_Scavenger_SetUpCombatSkills;
+        IL.Scavenger.MidRangeUpdate += IL_Scavenger_MidRangeUpdate;
+        IL.Scavenger.TryThrow_BodyChunk_ViolenceType_Nullable1 += IL_Scavenger_TryThrow_BodyChunk_ViolenceType_Nullable1;
+        IL.Scavenger.Throw += IL_Scavenger_Throw;
+        IL.Scavenger.GetUnstuckRoutine += IL_Scavenger_GetUnstuckRoutine;
+        On.Scavenger.FastReactionCheck += On_Scavenger_FastReactionCheck;
+        On.Scavenger.ReactionCheck += On_Scavenger_ReactionCheck;
+        IL.ScavengerAbstractAI.GoToRoom += IL_ScavengerAbstractAI_GoToRoom;
+        IL.ScavengerAbstractAI.RandomDestinationRoom += IL_ScavengerAbstractAI_RandomDestinationRoom;
+        new Hook(typeof(ScavengerAbstractAI.ScavengerSquad).GetMethod("get_HasAMission", ALL_FLAGS), On_ScavengerSquad_get_HasAMission);
+        On.ScavengerAbstractAI.IsSpearExplosive += On_ScavengerAbstractAI_IsSpearExplosive;
+        IL.ScavengerAbstractAI.InitGearUp += IL_ScavengerAbstractAI_InitGearUp;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -355,6 +415,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new HoverflyCritob(),
                         new FatFireFlyCritob(),
                         new BlizzorCritob(),
+                        new M4RJawsCritob(),
                         new DivingBeetleCritob(),
                         new SurfaceSwimmerCritob(),
                         new ThornBugCritob(),
@@ -371,7 +432,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new FlyingBigEelCritob(),
                         new DentureCritob(),
                         new XyloCritob(),
-                        new XyloWormCritob());
+                        new XyloWormCritob(),
+                        new ScavengerSentinelCritob());
     }
 
     public void OnDisable()

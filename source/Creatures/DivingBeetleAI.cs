@@ -2,6 +2,7 @@ using Noise;
 using RWCustom;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System;
 
 namespace LBMergedMods.Creatures;
 //CHK
@@ -191,9 +192,9 @@ public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
             num -= 100f;
         if (rm.GetTile(coord + new IntVector2(0, 1)).Solid)
             num -= 300f;
-        num += Mathf.Max(0f, creature.pos.Tile.FloatDist(coord.Tile) - 80f) / 2f;
+        num += Math.Max(0f, creature.pos.Tile.FloatDist(coord.Tile) - 80f) / 2f;
         num += aiTile.visibility / 800f;
-        num -= Mathf.Max(aiTile.smoothedFloorAltitude, 16f) * 2f;
+        num -= Math.Max(aiTile.smoothedFloorAltitude, 16f) * 2f;
         if (!flag)
             num *= .1f;
         return num;
@@ -237,12 +238,12 @@ public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, 
     public virtual CreatureTemplate.Relationship UpdateDynamicRelationship(RelationshipTracker.DynamicRelationship dRelation)
     {
         if (dRelation.trackerRep.representedCreature.creatureTemplate.smallCreature)
-            return new CreatureTemplate.Relationship(CreatureTemplate.Relationship.Type.Ignores, 0f);
+            return new(CreatureTemplate.Relationship.Type.Ignores, 0f);
         if (dRelation.trackerRep.VisualContact)
             dRelation.state.alive = dRelation.trackerRep.representedCreature.state.alive;
         var result = StaticRelationship(dRelation.trackerRep.representedCreature);
         if (result.type != CreatureTemplate.Relationship.Type.Eats && dRelation.trackerRep.representedCreature.realizedCreature is Creature c && c.dead && c.TotalMass < Bug.TotalMass * 1.15f)
-            result = new CreatureTemplate.Relationship(CreatureTemplate.Relationship.Type.Eats, Mathf.InverseLerp(Bug.TotalMass * .3f, Bug.TotalMass * 1.15f, c.TotalMass) * .5f);
+            result = new(CreatureTemplate.Relationship.Type.Eats, Mathf.InverseLerp(Bug.TotalMass * .3f, Bug.TotalMass * 1.15f, c.TotalMass) * .5f);
         if (result.type == CreatureTemplate.Relationship.Type.Eats)
         {
             result.intensity *= Mathf.InverseLerp(.1f, 1.5f, dRelation.trackerRep.representedCreature.creatureTemplate.bodySize);

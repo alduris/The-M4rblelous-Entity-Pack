@@ -5,7 +5,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class HazerHooks
 {
     internal static void On_Hazer_Collide(On.Hazer.orig_Collide orig, Hazer self, PhysicalObject otherObject, int myChunk, int otherChunk)

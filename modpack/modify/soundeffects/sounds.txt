@@ -17,3 +17,4 @@
 [ADD]M4R_SurfaceSwimmer_Chip : M4RFUW1/vol=0.5/pitch=0.5, M4RFUW2/vol=0.5/pitch=0.5
 [ADD]M4R_GenericBug_BigChip : M4RTCH1/vol=0.22, M4RTCH4/vol=0.22, M4RTCH6/vol=0.22, M4RTCH7/vol=0.22
 [ADD]M4R_GenericBug_Chip : M4RTCH4/vol=0.15/pitch=0.9, M4RTCH6/vol=0.15/pitch=0.9, M4RTCH7/vol=0.15/pitch=0.9
+[ADD]M4R_DoubleJaw_Hiss : M4RDBJ1/vol=0.85/pitch=1.05, M4RDBJ2/vol=0.85/pitch=1.05, M4RDBJ3/vol=0.85/pitch=1.05

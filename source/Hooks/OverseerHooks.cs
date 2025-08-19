@@ -6,7 +6,7 @@ using RWCustom;
 using OverseerHolograms;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class OverseerHooks
 {
     internal static bool On_OverseerAbstractAI_AllowSwarmTarget(On.OverseerAbstractAI.orig_AllowSwarmTarget orig, OverseerAbstractAI self, AbstractCreature evalTarget, AbstractRoom roomCheck)
@@ -38,7 +38,38 @@ public static class OverseerHooks
             c.Emit(OpCodes.Brtrue, s_label);
         }
         else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerAbstractAI.HowInterestingIsCreature!");
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerAbstractAI.HowInterestingIsCreature! (part 1)");
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdarg_1,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldarg_1)
+             .EmitDelegate((bool flag, AbstractCreature testCrit) => flag || testCrit.creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerAbstractAI.HowInterestingIsCreature! (part 2)");
+    }
+
+    internal static void IL_OverseerAbstractAI_PlayerGuideUpdate(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_Any,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
+             .Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((bool flag, int i, OverseerAbstractAI self) => flag || self.RelevantPlayer.Room.creatures[i].creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerAbstractAI.PlayerGuideUpdate!");
     }
 
     internal static float On_OverseerAbstractAI_HowInterestingIsCreature(On.OverseerAbstractAI.orig_HowInterestingIsCreature orig, OverseerAbstractAI self, AbstractCreature testCrit)
@@ -71,6 +102,38 @@ public static class OverseerHooks
         return res;
     }
 
+    internal static void IL_OverseerAI_FlyingWeapon(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldarg_1)
+             .EmitDelegate((bool flag, Weapon weapon) => flag || weapon.thrownBy.Template.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerAI.FlyingWeapon!");
+    }
+
+    internal static void IL_OverseerAI_Update(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
+             .EmitDelegate((bool flag, AbstractCreature abstractCreature) => flag || abstractCreature.creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerAI.Update!");
+    }
+
     internal static void IL_CreaturePointer_Update(ILContext il)
     {
         var c = new ILCursor(il);
@@ -95,7 +158,16 @@ public static class OverseerHooks
              .EmitDelegate((bool flag, AbstractCreature creature) => flag && (creature.realizedCreature is not Denture dt || dt.JawOpen <= .5f));
         }
         else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerCommunicationModule.CreatureDangerScore!");
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerCommunicationModule.CreatureDangerScore! (part 1)");
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldarg_1)
+             .EmitDelegate((bool flag, AbstractCreature creature) => flag || creature.creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook OverseerCommunicationModule.CreatureDangerScore! (part 2)");
     }
 
     internal static float On_OverseerCommunicationModule_FoodDelicousScore(On.OverseerCommunicationModule.orig_FoodDelicousScore orig, OverseerCommunicationModule self, AbstractPhysicalObject foodObject, Player player)

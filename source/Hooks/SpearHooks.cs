@@ -4,7 +4,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class SpearHooks
 {
     internal static void IL_Spear_HitSomething(ILContext il)

@@ -5,7 +5,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Items;
-//CHK
+
 public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHaveAStalkState, IHaveAStalk
 {
     public struct StalkPart
@@ -158,6 +158,11 @@ public class LimeMushroom : PlayerCarryableItem, IDrawable, IPlayerEdible, IHave
             fc.vel *= .7f;
             fc.vel += (HoverPos - fc.pos) / 20f;
             Rotation = Custom.DegToVec(Custom.AimFromOneVectorToAnother(GrowPos.Value, fc.pos) + HoverDirAdd);
+            if (!room.game.rainWorld.safariMode && (!ModManager.MMF || MMF.cfgExtraTutorials.Value) && room.game.session is StoryGameSession session && ScoreData.TryGetValue(session.saveState.deathPersistentSaveData, out var data) && !data.LimeMushroomMessage && room.ViewedByAnyCamera(fc.pos, 20f) && room.game.cameras[0].hud is HUD.HUD hud)
+            {
+                data.LimeMushroomMessage = true;
+                hud.textPrompt.AddMessage(room.game.rainWorld.inGameTranslator.Translate("This fungus has a repulsive scent."), 80, 120, true, true);
+            }
         }
         for (var m = 2; m < stk.Length; m++)
         {

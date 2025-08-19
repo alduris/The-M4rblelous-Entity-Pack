@@ -7,7 +7,7 @@ using Mono.Cecil.Cil;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class EggBugHooks
 {
     internal static void IL_EggBug_Act(ILContext il)

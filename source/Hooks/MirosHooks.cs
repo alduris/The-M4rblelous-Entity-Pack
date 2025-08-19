@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 using System;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class MirosHooks
 {
     internal static void On_BirdLeg_RunMode(On.MirosBird.BirdLeg.orig_RunMode orig, MirosBird.BirdLeg self)
@@ -152,6 +152,6 @@ public static class MirosHooks
     internal static bool On_MirosBirdAI_DoIWantToBiteCreature(On.MirosBirdAI.orig_DoIWantToBiteCreature orig, MirosBirdAI self, AbstractCreature creature)
     {
         var tp = creature.creatureTemplate.type;
-        return tp != CreatureTemplateType.FatFireFly && tp != CreatureTemplateType.Blizzor && orig(self, creature);
+        return tp != CreatureTemplateType.FatFireFly && tp != CreatureTemplateType.Blizzor && tp != CreatureTemplateType.SparkEye && orig(self, creature);
     }
 }

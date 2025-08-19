@@ -1,12 +1,13 @@
 ﻿global using static LBMergedMods.Hooks.SaveHooks;
+using MonoMod.Cil;
 using System;
-using UnityEngine;
-using System.Text;
-using System.Runtime.CompilerServices;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Text;
+using UnityEngine;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class SaveHooks
 {
     public static ConditionalWeakTable<DeathPersistentSaveData, DeathPersistentScoreData> ScoreData = new();
@@ -17,7 +18,7 @@ public static class SaveHooks
         if (ScoreData.TryGetValue(self, out var data))
         {
             var unrec = self.unrecognizedSaveStrings;
-            bool flag1 = false, flag2 = false;
+            bool flag1 = false, flag2 = false, flag3 = false;
             for (var i = 0; i < unrec.Count; i++)
             {
                 var str = unrec[i];
@@ -31,7 +32,12 @@ public static class SaveHooks
                     int.TryParse(str.Remove(0, 27), out data.Score);
                     flag2 = true;
                 }
-                if (flag1 && flag2)
+                else if (str.Equals("M4R_LimeMushroomMessage", StringComparison.OrdinalIgnoreCase))
+                {
+                    data.LimeMushroomMessage = true;
+                    flag3 = true;
+                }
+                if (flag1 && flag2 && flag3)
                     return;
             }
         }
@@ -50,12 +56,16 @@ public static class SaveHooks
         {
             var strs = self.unrecognizedSaveStrings;
             int i = -1, k = -1;
+            var limeFlag = false;
             for (var j = 0; j < strs.Count; j++)
             {
-                if (strs[j].StartsWith("M4R_CollectedScoreTokens<scm4r>", StringComparison.OrdinalIgnoreCase))
+                var str = strs[j];
+                if (str.StartsWith("M4R_CollectedScoreTokens<scm4r>", StringComparison.OrdinalIgnoreCase))
                     i = j;
-                else if (strs[j].StartsWith("M4R_ScoreTokensBonus<scm4r>", StringComparison.OrdinalIgnoreCase))
+                else if (str.StartsWith("M4R_ScoreTokensBonus<scm4r>", StringComparison.OrdinalIgnoreCase))
                     k = j;
+                else if (str.Equals("M4R_LimeMushroomMessage", StringComparison.OrdinalIgnoreCase))
+                    limeFlag = true;
             }
             var sb = new StringBuilder("M4R_CollectedScoreTokens");
             foreach (var id in data.CollectedTokens)
@@ -68,8 +78,22 @@ public static class SaveHooks
                 strs[k] = "M4R_ScoreTokensBonus<scm4r>" + data.Score;
             else
                 strs.Add("M4R_ScoreTokensBonus<scm4r>" + data.Score);
+            if (!limeFlag && data.LimeMushroomMessage)
+                strs.Add("M4R_LimeMushroomMessage");
         }
         return orig(self, saveAsIfPlayerDied, saveAsIfPlayerQuit);
+    }
+
+    internal static void IL_SaveState_AbstractPhysicalObjectFromString(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            x => x.MatchLdsfld<AbstractPhysicalObject.AbstractObjectType>("VultureMask"))
+         && c.TryGotoNext(MoveType.After,
+            x => x.MatchCall<ModManager>("get_DLCShared")))
+            c.EmitDelegate((bool _) => true);
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook SaveState.AbstractPhysicalObjectFromString!");
     }
 
     internal static AbstractPhysicalObject? On_SaveState_AbstractPhysicalObjectFromString(On.SaveState.orig_AbstractPhysicalObjectFromString orig, World world, string objString)

@@ -1,14 +1,15 @@
 ﻿global using static LBMergedMods.Hooks.AbstractPhysicalObjectHooks;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using MoreSlugcats;
 using System;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class AbstractPhysicalObjectHooks
 {
     public static ConditionalWeakTable<AbstractCreature, BigrubProperties> Big = new();
@@ -119,6 +120,13 @@ public static class AbstractPhysicalObjectHooks
         return res;
     }
 
+    internal static int On_AbstractCreature_get_karmicPotential(Func<AbstractCreature, int> orig, AbstractCreature self)
+    {
+        if ((!ModManager.MSC || !MoreSlugcats.MoreSlugcats.cfgArtificerCorpseMaxKarma.Value) && self.realizedCreature is ScavengerSentinel)
+            return Mathf.Clamp(1 + Math.Min(4, (int)Mathf.Floor(self.personality.bravery * 2f + self.personality.energy * 2f + self.personality.sympathy * 2f + self.personality.dominance * 2f)) - self.RemovedKarma, 0, 5);
+        return orig(self);
+    }
+
     internal static void IL_AbstractCreature_OpportunityToEnterDen(ILContext il)
     {
         var c = new ILCursor(il);
@@ -204,6 +212,11 @@ public static class AbstractPhysicalObjectHooks
             AbsProps.Add(self, new());
         if (tp == CreatureTemplateType.Denture)
             self.remainInDenCounter = 0;
+        else if (tp == CreatureTemplateType.ScavengerSentinel)
+        {
+            self.personality.dominance = Mathf.Lerp(self.personality.dominance, 1f, .5f);
+            self.personality.bravery = Mathf.Lerp(self.personality.bravery, 1f, .25f);
+        }
     }
 
     internal static AbstractRoomNode.Type On_AbstractCreature_get_GetNodeType(Func<AbstractCreature, AbstractRoomNode.Type> orig, AbstractCreature self)
@@ -390,6 +403,13 @@ public static class AbstractPhysicalObjectHooks
             else if (type == AbstractObjectType.DarkGrub)
                 self.realizedObject = new DarkGrub(self);
         }
+    }
+
+    internal static void On_PlayerCarryableItem_NewRoom(On.PlayerCarryableItem.orig_NewRoom orig, PlayerCarryableItem self, Room newRoom)
+    {
+        orig(self, newRoom);
+        if (self is VultureMask mask && mask.maskGfx is M4RScavMaskGraphics g)
+            g.Reset();
     }
 
     public static (bool Consumed, int WaitCycles) PlantConsumed(this RegionState self, int originRoom, int placedObjectIndex)

@@ -3,7 +3,7 @@ using Random = UnityEngine.Random;
 using RWCustom;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class FlareBombHooks
 {
     internal static void On_FlareBomb_Update(On.FlareBomb.orig_Update orig, FlareBomb self, bool eu)

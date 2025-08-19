@@ -9,7 +9,7 @@ using UnityEngine;
 using Watcher;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class CreatureHooks
 {
     public static Action<ArtificialIntelligence, bool, FoodItemRepresentation>? OnFoodItemSpotted;
@@ -129,13 +129,21 @@ public static class CreatureHooks
         return res;
     }
 
-    internal static bool On_StowawayBugAI_WantToEat(On.MoreSlugcats.StowawayBugAI.orig_WantToEat orig, StowawayBugAI self, CreatureTemplate.Type input) => input != CreatureTemplateType.Xylo && input != CreatureTemplateType.Denture && input != CreatureTemplateType.MiniLeviathan && input != CreatureTemplateType.FatFireFly && input != CreatureTemplateType.FlyingBigEel && input != CreatureTemplateType.MiniFlyingBigEel && input != CreatureTemplateType.Blizzor && orig(self, input);
+    internal static bool On_StowawayBugAI_WantToEat(On.MoreSlugcats.StowawayBugAI.orig_WantToEat orig, StowawayBugAI self, CreatureTemplate.Type input) => input != CreatureTemplateType.Xylo && input != CreatureTemplateType.Denture && input != CreatureTemplateType.MiniLeviathan && input != CreatureTemplateType.FatFireFly && input != CreatureTemplateType.FlyingBigEel && input != CreatureTemplateType.MiniFlyingBigEel && input != CreatureTemplateType.Blizzor && input != CreatureTemplateType.SparkEye && orig(self, input);
 
     internal static float On_ThreatDetermination_ThreatOfCreature(On.ThreatDetermination.orig_ThreatOfCreature orig, ThreatDetermination self, Creature creature, Player player)
     {
         if ((creature is Sporantula spore && (spore.dead || (spore.AI is SporantulaAI sporeAI && !sporeAI.DoIWantToKill(player.abstractCreature)))) || (creature is Scutigera centi && (centi.dead || (centi.AI is ScutigeraAI centiAI && !centiAI.DoIWantToShockCreature(player.abstractCreature)))))
             return 0f;
         return orig(self, creature, player);
+    }
+
+    internal static float On_TrackedPrey_Attractiveness(On.PreyTracker.TrackedPrey.orig_Attractiveness orig, PreyTracker.TrackedPrey self)
+    {
+        var res = orig(self);
+        if (ModManager.MSC && self.owner.AI.creature.Room.world.game.session is StoryGameSession sess && sess.saveState.saveStateNumber == MoreSlugcatsEnums.SlugcatStatsName.Artificer && self.critRep.representedCreature.realizedCreature is ScavengerSentinel s && s.grabbedBy.Count > 0 && s.grabbedBy[0]?.grabber is Player)
+            res *= .1f;
+        return res;
     }
 
     public static FoodItemRepresentation CreateTrackerRepresentationForItem(this ArtificialIntelligence self, AbstractPhysicalObject item)

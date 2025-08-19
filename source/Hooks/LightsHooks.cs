@@ -3,7 +3,7 @@ using MonoMod.Cil;
 using RWCustom;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class LightsHooks
 {
     internal static void On_LightSource_InitiateSprites(On.LightSource.orig_InitiateSprites orig, LightSource self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)

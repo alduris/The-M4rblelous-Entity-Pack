@@ -7,7 +7,7 @@ using RWCustom;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class CentipedeHooks
 {
     internal static bool On_Centipede_get_Centiwing(Func<Centipede, bool> orig, Centipede self) => self is RedHorror || orig(self);

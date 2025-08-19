@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class ExpeditionHooks
 {
     internal static void On_ChallengeTools_CreatureName(On.Expedition.ChallengeTools.orig_CreatureName orig, ref string?[] creatureNames)

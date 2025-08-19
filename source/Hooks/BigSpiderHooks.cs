@@ -8,7 +8,7 @@ using Noise;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class BigSpiderHooks
 {
     internal static bool On_BigSpider_get_CanIBeRevived(Func<BigSpider, bool> orig, BigSpider self) => self is not Sporantula && orig(self);
@@ -260,6 +260,20 @@ public static class BigSpiderHooks
     {
         var c = new ILCursor(il);
         if (c.TryGotoNext(MoveType.After,
+            s_MatchLdarg_1,
+            s_MatchLdfld_RelationshipTracker_DynamicRelationship_trackerRep,
+            s_MatchLdfld_Tracker_CreatureRepresentation_representedCreature,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldarg_1)
+             .EmitDelegate((bool flag, RelationshipTracker.DynamicRelationship dRelation) => flag || dRelation.trackerRep.representedCreature.creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpiderAI.IUseARelationshipTracker.UpdateDynamicRelationship! (part 1)");
+        if (c.TryGotoNext(MoveType.After,
             s_MatchLdarg_0,
             s_MatchLdarg_1,
             s_MatchLdfld_RelationshipTracker_DynamicRelationship_trackerRep,
@@ -280,7 +294,7 @@ public static class BigSpiderHooks
             c.Emit(OpCodes.Stloc, l);
         }
         else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpiderAI.IUseARelationshipTracker.UpdateDynamicRelationship!");
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook BigSpiderAI.IUseARelationshipTracker.UpdateDynamicRelationship! (part 2)");
         var ins = il.Instrs;
         for (var i = 0; i < ins.Count; i++)
         {

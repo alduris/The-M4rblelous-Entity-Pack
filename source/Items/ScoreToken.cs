@@ -554,7 +554,7 @@ public class ScoreToken : UpdatableAndDeletable, IDrawable
                     for (i = 0; i < 20; i++)
                         rm.AddObject(new TokenSpark(Pos + Custom.RNV() * 2f, Custom.RNV() * 16f * Random.value, Color.Lerp(TokenColor, Color.white, .5f + .5f * Random.value), Underwater));
                     rm.PlaySound(SoundID.Token_Collected_Sparks, Pos);
-                    if (AnythingUnlocked && session.saveState?.deathPersistentSaveData is DeathPersistentSaveData dt && SaveHooks.ScoreData.TryGetValue(dt, out var data) && game.cameras[0].hud?.textPrompt is TextPrompt prompt)
+                    if (AnythingUnlocked && session.saveState?.deathPersistentSaveData is DeathPersistentSaveData dt && ScoreData.TryGetValue(dt, out var data) && game.cameras[0].hud?.textPrompt is TextPrompt prompt)
                     {
                         data.Score += Score;
                         prompt.AddMessage(game.rainWorld.inGameTranslator.Translate("Score:") + " +" + Score, 20, 160, true, true);

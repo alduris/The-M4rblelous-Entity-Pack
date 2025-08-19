@@ -6,7 +6,7 @@ using HUD;
 using Fisobs.Core;
 
 namespace LBMergedMods.Hooks;
-// CHK
+
 public static class IconHooks
 {
     public static Color BalloonColor = new(.5f, .1f, .35f),

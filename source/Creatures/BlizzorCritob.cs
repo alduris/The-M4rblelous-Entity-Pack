@@ -37,10 +37,15 @@ sealed class BlizzorCritob : Critob
 
     public override void TileIsAllowed(AImap map, IntVector2 tilePos, ref bool? allow)
     {
-        if (map.getTerrainProximity(tilePos) < 2)
+        var prox = map.getTerrainProximity(tilePos);
+        if (prox < 2)
             allow = false;
-        if (map.room?.game?.GetArenaGameSession?.arenaSitting?.sandboxPlayMode is true or null && map.getAItile(tilePos).smoothedFloorAltitude > 2 && map.getAItile(tilePos).smoothedFloorAltitude + map.getAItile(tilePos).floorAltitude > Custom.LerpMap(map.getTerrainProximity(tilePos), 2f, 6f, 6f, 4f) * 2f)
-            allow = false;
+        else if (map.room?.game?.GetArenaGameSession?.arenaSitting?.sandboxPlayMode is true or null)
+        {
+            var aItile = map.getAItile(tilePos);
+            if (aItile.smoothedFloorAltitude > 2 && aItile.smoothedFloorAltitude + aItile.floorAltitude > Custom.LerpMap(prox, 2f, 6f, 6f, 4f) * 2f)
+                allow = false;
+        }
     }
 
     public override CreatureTemplate CreateTemplate()

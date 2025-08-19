@@ -8,12 +8,48 @@ using System.Runtime.CompilerServices;
 using RWCustom;
 using System.Collections.Generic;
 using CoralBrain;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+using MoreSlugcats;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class RoomHooks
 {
     public static AbstractRoomNode.Type UnregisteredNodeType = new("UnregisteredNodeType");
+
+    internal static void On_CutsceneArtificer_ToggleScavengerAccessToArtyIntro(On.MoreSlugcats.CutsceneArtificer.orig_ToggleScavengerAccessToArtyIntro orig, Room room, bool ScavAccess)
+    {
+        orig(room, ScavAccess);
+        room.world.ToggleCreatureAccessFromCutscene("GW_A24", CreatureTemplateType.ScavengerSentinel, ScavAccess);
+        room.world.ToggleCreatureAccessFromCutscene("GW_A25", CreatureTemplateType.ScavengerSentinel, ScavAccess);
+    }
+
+    internal static void On_DS_RIVSTARTcutscene_ctor(On.MoreSlugcats.MSCRoomSpecificScript.DS_RIVSTARTcutscene.orig_ctor orig, MSCRoomSpecificScript.DS_RIVSTARTcutscene self, Room room)
+    {
+        orig(self, room);
+        room.world.ToggleCreatureAccessFromCutscene("DS_RIVSTART", CreatureTemplateType.ScavengerSentinel, false);
+        room.world.ToggleCreatureAccessFromCutscene("DS_GUTTER03", CreatureTemplateType.ScavengerSentinel, false);
+        room.world.ToggleCreatureAccessFromCutscene("DS_GUTTER04", CreatureTemplateType.ScavengerSentinel, false);
+        room.world.ToggleCreatureAccessFromCutscene("DS_GUTTER05", CreatureTemplateType.ScavengerSentinel, false);
+    }
+
+    internal static void IL_LC_FINAL_SummonScavengers(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_OutLoc1,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
+             .EmitDelegate((bool flag, AbstractCreature creature) => flag || creature.creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook LC_FINAL.SummonScavengers!");
+    }
 
     internal static void On_Room_Loaded(On.Room.orig_Loaded orig, Room self)
     {
@@ -328,6 +364,25 @@ public static class RoomHooks
         }
         else
             orig(self, placedObj);
+    }
+
+    internal static void IL_ShelterDoor_Update(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_Any,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_Scavenger,
+            s_MatchCall_Any))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
+             .EmitDelegate((bool flag, ShelterDoor self, int i) => flag || self.room.abstractRoom.creatures[i].creatureTemplate.type == CreatureTemplateType.ScavengerSentinel);
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ShelterDoor.Update!");
     }
 
     [SuppressMessage(null, "IDE0060"), MethodImpl(MethodImplOptions.NoInlining)]

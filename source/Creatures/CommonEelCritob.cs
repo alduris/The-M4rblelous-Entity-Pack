@@ -20,7 +20,7 @@ sealed class CommonEelCritob : Critob, ISandboxHandler
         RegisterUnlock(KillScore.Configurable(12), SandboxUnlockID.CommonEel);
     }
 
-    public override int ExpeditionScore() => 7;
+    public override int ExpeditionScore() => 12;
 
     public override Color DevtoolsMapColor(AbstractCreature acrit) => CommonEel.EelCol;
 

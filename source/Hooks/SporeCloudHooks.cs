@@ -2,7 +2,7 @@
 using MonoMod.Cil;
 
 namespace LBMergedMods.Hooks;
-//CHK
+
 public static class SporeCloudHooks
 {
     internal static void IL_SporeCloud_Update(ILContext il)
