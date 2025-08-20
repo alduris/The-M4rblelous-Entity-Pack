@@ -10,7 +10,7 @@ using System;
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class DentureCritob : Critob, ISandboxHandler
 {
     internal DentureCritob() : base(CreatureTemplateType.Denture)
