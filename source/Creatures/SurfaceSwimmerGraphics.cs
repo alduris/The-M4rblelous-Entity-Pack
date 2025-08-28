@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class SurfaceSwimmerGraphics : EggBugGraphics
 {
     public SurfaceSwimmerGraphics(SurfaceSwimmer ow) : base(ow) => legLength *= 2f;
@@ -74,6 +74,17 @@ public class SurfaceSwimmerGraphics : EggBugGraphics
                     leg.scaleY *= .7f;
                 }
             }
+        }
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        base.ApplyPalette(sLeaser, rCam, palette);
+        var col = Color.Lerp(antennaTipColor, eggColors[2], .5f);
+        for (var num17 = 0; num17 < 2; num17++)
+        {
+            for (var num18 = 0; num18 < 3; num18++)
+                sLeaser.sprites[BackEggSprite(num17, num18, 2)].color = sLeaser.sprites[FrontEggSprite(num17, num18, 2)].color = col;
         }
     }
 

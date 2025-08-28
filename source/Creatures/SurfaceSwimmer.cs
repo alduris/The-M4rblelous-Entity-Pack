@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class SurfaceSwimmer : EggBug
 {
     public static Color BugCol = Color.Lerp(Color.cyan, Color.blue, .5f);

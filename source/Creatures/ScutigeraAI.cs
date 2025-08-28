@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ScutigeraAI : CentipedeAI
 {
     public ScutigeraAI(AbstractCreature creature, World world) : base(creature, world) => pathFinder.stepsPerFrame = 15;

@@ -5,7 +5,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class HazerMomGraphics : GraphicsModule
 {
     public const int MESH_SPRITE = 0, BODY_SPRITE = 1;

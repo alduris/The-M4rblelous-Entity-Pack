@@ -3,7 +3,7 @@ using RWCustom;
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class NoodleEater : Lizard
 {
     public static Color NEatColor = Custom.HSL2RGB(.8333f, .9f, .7f);

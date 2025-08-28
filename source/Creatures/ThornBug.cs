@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ThornBug : InsectoidCreature
 {
     public static Color BugCol = Color.Lerp(Color.red, Color.yellow, .3f);

@@ -9,7 +9,7 @@ using DevInterface;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class ScutigeraCritob : Critob
 {
     internal ScutigeraCritob() : base(CreatureTemplateType.Scutigera)

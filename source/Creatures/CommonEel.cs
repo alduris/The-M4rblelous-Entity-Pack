@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class CommonEel : Lizard
 {
     public static Color EelCol = Color.Lerp(new(46f / 51f, .05490196f, .05490196f), Color.gray, .2f);
@@ -24,7 +24,11 @@ public class CommonEel : Lizard
         rotModule = null;
     }
 
-    public override void InitiateGraphicsModule() => graphicsModule ??= new CommonEelGraphics(this);
+    public override void InitiateGraphicsModule()
+    {
+        graphicsModule ??= new CommonEelGraphics(this);
+        graphicsModule.Reset();
+    }
 
     public override void Update(bool eu)
     {

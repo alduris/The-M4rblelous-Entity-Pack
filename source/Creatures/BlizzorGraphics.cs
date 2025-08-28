@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class BlizzorGraphics : MirosBirdGraphics
 {
     public BlizzorGraphics(Blizzor ow) : base(ow)
@@ -41,11 +41,12 @@ public class BlizzorGraphics : MirosBirdGraphics
         var clr = Color.Lerp(Color.white, palette.fogColor, Mathf.Lerp(palette.fogAmount, 0f, .75f) + .1f);
         for (var i = 0; i < sprites.Length; i++)
         {
-            if (i != EyeTrailSprite && (i < FirstBeakSprite || i > LastBeakSprite) && (i < FirstLegSprite || i > LastLegSprite))
+            if (i != EyeTrailSprite && i != EyeSprite && (i < FirstBeakSprite || i > LastBeakSprite) && (i < FirstLegSprite || i > LastLegSprite))
                 sprites[i].color = clr;
         }
         var lgs = legs;
         for (var i = 0; i < lgs.Length; i++)
             sprites[lgs[i].firstSprite].color = clr;
+        sprites[EyeSprite].color = EyeColor;
     }
 }

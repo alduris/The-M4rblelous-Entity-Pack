@@ -4,7 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class CaterpillarGraphics : GraphicsModule
 {
     public const int TUBE_SPRITE = 0;
@@ -478,11 +478,52 @@ public class CaterpillarGraphics : GraphicsModule
 
     public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
     {
-        if (Crit.Glowing)
+        var glowing = Crit.Glowing;
+        if (glowing)
             GlowColor = EffectColor == 2 ? Color.white : Color.Lerp(palette.texture.GetPixel(30, 5 - EffectColor * 2), Color.white, .05f);
         BlackColor = palette.blackColor;
         var sprites = sLeaser.sprites;
         for (var i = 0; i < sprites.Length; i++)
             sprites[i].color = BlackColor;
+        var hairy = !glowing && Crit.abstractCreature.superSizeMe;
+        var col = Color.Lerp(BlackColor, GlowColor, LightAlpha);
+        var clr = Custom.HSL2RGB(Hue, Saturation, .5f);
+        var chsL = Crit.bodyChunks.Length;
+        var lt = chsL - 1;
+        var mbc = Crit.mainBodyChunk;
+        for (var i = 0; i < chsL; i++)
+        {
+            var dots = sprites[DotsSprite(i)];
+            if (i == 0 || (!hairy && RotatAtChunk(i, 1f).normalized.y > 0f && (!glowing || i != lt)))
+            {
+                if (i == 0)
+                    dots.color = !Crit.Consious ? BlackColor : (glowing ? Color.Lerp(GlowColor, Color.white, .33f * LightAlpha) : Color.Lerp(Custom.HSL2RGB(Hue, Saturation, .7f), BlackColor, Darkness * .2f + .5f));
+                else
+                    dots.color = glowing ? col : Color.Lerp(clr, BlackColor, Darkness * .2f + .8f);
+            }
+            if (glowing && i == lt)
+            {
+                sprites[SegmentSprite(i)].color = col;
+                var leg = Legs[i];
+                for (var l = 0; l < leg.Length; l++)
+                    sprites[LegSprite(i, l, 0)].color = sprites[LegSprite(i, l, 1)].color = col;
+            }
+        }
+        if (hairy)
+        {
+            var mbci = mbc.index;
+            var mbcip1 = mbci + 1;
+            var mbcim1 = mbci - 1;
+            sprites[LegSprite(mbcip1, 0, 0)].color = sprites[LegSprite(mbcip1, 0, 1)].color = sprites[LegSprite(mbcip1, 1, 0)].color = sprites[LegSprite(mbcip1, 1, 1)].color = sprites[SegmentSprite(mbcip1)].color = sprites[LegSprite(mbcim1, 0, 0)].color = sprites[LegSprite(mbcim1, 0, 1)].color = sprites[LegSprite(mbcim1, 1, 0)].color = sprites[LegSprite(mbcim1, 1, 1)].color = sprites[SegmentSprite(mbcim1)].color = Color.Lerp(clr, BlackColor, Darkness * .06f + .94f);
+            sprites[LegSprite(mbci, 0, 0)].color = sprites[LegSprite(mbci, 0, 1)].color = sprites[LegSprite(mbci, 1, 0)].color = sprites[LegSprite(mbci, 1, 1)].color = sprites[SegmentSprite(mbci)].color = Color.Lerp(clr, BlackColor, Darkness * .12f + .88f);
+        }
+        if (glowing)
+        {
+            for (var n = 0; n < 2; n++)
+            {
+                for (var num11 = 0; num11 < 2; num11++)
+                    (sprites[WhiskerSprite(1, n, num11)] as TriangleMesh)!.color = col;
+            }
+        }
     }
 }

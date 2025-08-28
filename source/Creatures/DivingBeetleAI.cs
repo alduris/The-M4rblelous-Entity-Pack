@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class DivingBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)

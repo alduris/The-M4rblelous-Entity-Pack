@@ -7,7 +7,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class Caterpillar : InsectoidCreature, IProvideWarmth
 {
     public CaterpillarAI? AI;

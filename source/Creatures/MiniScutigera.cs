@@ -3,7 +3,7 @@ using RWCustom;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class MiniScutigera(AbstractCreature abstractCreature, World world) : Centipede(abstractCreature, world)
 {
     public override void InitiateGraphicsModule() => graphicsModule ??= new MiniScutigeraGraphics(this);

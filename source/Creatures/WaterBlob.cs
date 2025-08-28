@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using RWCustom;
 using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class WaterBlob : Creature, Weapon.INotifyOfFlyingWeapons
 {
     public class BodyFragment : CosmeticSprite

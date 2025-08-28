@@ -132,6 +132,8 @@ public static class MainHooks
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.SparkEye);
                 if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.ScavengerSentinel))
                     MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.ScavengerSentinel);
+                if (MultiplayerUnlocks.CreatureUnlockList.Contains(SandboxUnlockID.AlphaOrange))
+                    MultiplayerUnlocks.CreatureUnlockList.Remove(SandboxUnlockID.AlphaOrange);
                 RoomEffectType.UnregisterValues();
                 SandboxUnlockID.UnregisterValues();
                 CreatureTemplateType.UnregisterValues();
@@ -251,9 +253,16 @@ public static class MainHooks
                 IL.MoreSlugcats.SlugNPCAI.PassingGrab += IL_SlugNPCAI_PassingGrab;
                 On.MoreSlugcats.SlugNPCAI.LethalWeaponScore += On_SlugNPCAI_LethalWeaponScore;
             }
+            var mods = ModManager.ActiveMods;
+            for (var i = 0; i < mods.Count; i++)
+            {
+                if (mods[i].id == "slime-cubed.devconsole")
+                {
+                    DevConsoleCommands.RegisterDevConsole();
+                    break;
+                }
+            }
             s_init = true;
-
-            if (ModManager.ActiveMods.Any(x => x.id == "slime-cubed.devconsole")) DevConsoleCommands.RegisterDevConsole();
         }
         _ = PlacedObjectType.ThornyStrawberry;
         _ = MultiplayerItemType.ThornyStrawberry;

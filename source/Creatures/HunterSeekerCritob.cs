@@ -6,7 +6,7 @@ using UnityEngine;
 using Fisobs.Sandbox;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class HunterSeekerCritob : Critob
 {
     internal HunterSeekerCritob() : base(CreatureTemplateType.HunterSeeker) 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class RedHorrorAI(AbstractCreature creature, World world) : CentipedeAI(creature, world)
 {
     public override void CreatureSpotted(bool firstSpot, Tracker.CreatureRepresentation creatureRep)

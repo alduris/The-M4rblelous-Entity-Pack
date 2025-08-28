@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using LizardCosmetics;
+﻿using LizardCosmetics;
+using UnityEngine;
+using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class HunterSeekerGraphics : LizardGraphics
 {
     public HunterSeekerGraphics(HunterSeeker ow) : base(ow)
@@ -79,6 +80,15 @@ public class HunterSeekerGraphics : LizardGraphics
     {
         base.ApplyPalette(sLeaser, rCam, palette);
         if (!debugVisualization)
-            ColorBody(sLeaser, Color.white);
+        {
+            ColorBody(sLeaser, DynamicBodyColor(0f));
+            var sprites = sLeaser.sprites;
+            var num8 = SpriteLimbsColorStart - SpriteLimbsStart;
+            var end = SpriteLimbsEnd;
+            for (var m = SpriteLimbsStart; m < end; m++)
+                sprites[m + num8].color = palette.blackColor;
+            if (lizard.rotModule is not null && lizard.LizardState.rotType == LizardState.RotType.Full)
+                sLeaser.sprites[SpriteHeadStart + 4].color = lizard.rotModule.rotColor;
+        }
     }
 }

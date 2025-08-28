@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class SporantulaAI : BigSpiderAI
 {
     public SporantulaAI(AbstractCreature creature, World world) : base(creature, world)

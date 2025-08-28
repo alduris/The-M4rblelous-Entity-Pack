@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class FoodItemRepresentation(Tracker parent, AbstractPhysicalObject representedItem, float priority, bool forgetWhenNotVisible)
 {
     public Tracker Parent = parent;

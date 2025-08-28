@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class HoverflyGraphics : GraphicsModule, ILookingAtCreatures
 {
     public enum HeadState

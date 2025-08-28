@@ -3,7 +3,7 @@ using UnityEngine;
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class WaterSpitter : Lizard
 {
     public WaterSpitter(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

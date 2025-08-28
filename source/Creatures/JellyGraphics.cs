@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class JellyGraphics(PhysicalObject ow) : DaddyGraphics(ow), DaddyGraphics.DaddyBubbleOwner
 {
     public float Consious, Lerper, LastRot, Rot, LastAlpha, Alpha;

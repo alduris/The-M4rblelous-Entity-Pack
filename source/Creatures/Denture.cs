@@ -190,7 +190,7 @@ public class Denture : Creature
         var crits = rm.abstractRoom.creatures;
         for (var i = 0; i < crits.Count; i++)
         {
-            if (crits[i]?.realizedCreature is Creature c && !c.inShortcut && WantsToEat(c) && BiggestCreatureChunk(c) is BodyChunk ch && DistLess(ch.pos, fcp, rd))
+            if (crits[i]?.realizedCreature is Creature c && !c.inShortcut && !c.abstractPhysicalObject.InDen && WantsToEat(c) && BiggestCreatureChunk(c) is BodyChunk ch && DistLess(ch.pos, fcp, rd))
             {
                 bool flag;
                 if (OutDir == Vector2.up)
@@ -216,7 +216,7 @@ public class Denture : Creature
         bool playerCrush = false, badFood = false;
         for (var i = 0; i < crits.Count; i++)
         {
-            if (crits[i]?.realizedCreature is Creature c && !c.inShortcut && WantsToEat(c) && BiggestCreatureChunk(c) is BodyChunk ch && DistLess(ch.pos, fcp, rd))
+            if (crits[i]?.realizedCreature is Creature c && !c.inShortcut && !c.abstractPhysicalObject.InDen && WantsToEat(c) && BiggestCreatureChunk(c) is BodyChunk ch && DistLess(ch.pos, fcp, rd))
             {
                 if (c.grabbedBy is List<Grasp> grabs)
                 {

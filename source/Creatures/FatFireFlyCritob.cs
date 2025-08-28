@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class FatFireFlyCritob : Critob, ISandboxHandler
 {
     internal FatFireFlyCritob() : base(CreatureTemplateType.FatFireFly)

@@ -4,7 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class FatFireFlyGraphics : VultureGraphics
 {
     public class FireSprite(Vector2 pos, bool altForm) : UpdatableAndDeletable, IDrawable
@@ -139,7 +139,8 @@ public class FatFireFlyGraphics : VultureGraphics
             bs1 = sprites[BackShieldSprite(1)],
             body = sprites[BodySprite],
             eye = sprites[EyesSprite];
-        var altForm = vulture.abstractCreature.superSizeMe;
+        var altForm = AltForm;
+        var albino = this.albino;
         if (!spritesInShadowMode)
         {
             fs0.isVisible = true;
@@ -180,5 +181,23 @@ public class FatFireFlyGraphics : VultureGraphics
         bs = sLeaser.sprites[BackShieldSprite(1)];
         bs.RemoveFromContainer();
         newContainer.AddChild(bs);
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        var albino = this.albino = vulture.abstractCreature.Albino();
+        var altForm = AltForm = vulture.abstractCreature.superSizeMe;
+        base.ApplyPalette(sLeaser, rCam, palette);
+        var sprites = sLeaser.sprites;
+        FSprite fs0 = sprites[FrontShieldSprite(0)],
+            bs0 = sprites[BackShieldSprite(0)],
+            bs1 = sprites[BackShieldSprite(1)],
+            eye = sprites[EyesSprite];
+        bs1.color = bs0.color = Color.white;
+        if (!spritesInShadowMode)
+        {
+            eye.color = Color.Lerp(altForm ? (albino ? new(0f, .15f, .75f) : new(.92f, .92f, .95f)) : new(.75f, .15f, 0f), eye.color, altForm && !albino ? .25f : .5f);
+            fs0.color = Color.Lerp(ColorB.rgb, Color.Lerp(altForm ? Color.blue : Color.red, albino ? Color.black : Color.white, .5f), .25f);
+        }
     }
 }

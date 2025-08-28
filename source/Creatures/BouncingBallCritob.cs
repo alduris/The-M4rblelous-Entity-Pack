@@ -8,7 +8,7 @@ using static MovementConnection.MovementType;
 using Fisobs.Sandbox;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class BouncingBallCritob : Critob
 {
     internal BouncingBallCritob() : base(CreatureTemplateType.BouncingBall)

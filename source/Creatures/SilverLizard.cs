@@ -3,7 +3,7 @@ using RWCustom;
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class SilverLizard : Lizard
 {
     public SilverLizard(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

@@ -1,10 +1,10 @@
 using RWCustom;
-using UnityEngine;
 using System;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class DivingBeetleGraphics : GraphicsModule
 {
     public const int HEAD_SPRITE = 8, MESH_SPRITE = 9, SHINE_MESH_SPRITE = 10, TOTAL_SPRITES = 27;
@@ -425,13 +425,13 @@ public class DivingBeetleGraphics : GraphicsModule
             s.anchorY = 0f;
             s.rotation = Custom.AimFromOneVectorToAnother(vector23, vector25);
             s.scaleY = Vector2.Distance(vector23, vector25) / s.element.sourcePixelSize.y;
-            s.scaleX = 0f - Mathf.Sign(num11);
+            s.scaleX = -Math.Sign(num11);
             var s2 = sprites[MandibleSprite(m, 1)];
             s2.SetPosition(vector25 - camPos);
             s2.anchorY = 0f;
             s2.rotation = Custom.AimFromOneVectorToAnother(vector25, vector24);
             s2.scaleY = Vector2.Distance(vector25, vector24) / s.element.sourcePixelSize.y;
-            s2.scaleX = (0f - Mathf.Sign(num11)) * .6f;
+            s2.scaleX = Math.Sign(num11) * -.6f;
             var wing = sprites[WingSprite(m)];
             var vector26 = Custom.DegToVec(90f * num + (m == 0 ? -1f : 1f) * 34f);
             var tst = sprites[25 + m];
@@ -489,7 +489,26 @@ public class DivingBeetleGraphics : GraphicsModule
     {
         var sprites = sLeaser.sprites;
         for (var i = 0; i < sprites.Length; i++)
-            sprites[i].color = CurrentSkinColor;
+        {
+            if (i != WingSprite(0) && i != WingSprite(1))
+                sprites[i].color = CurrentSkinColor;
+        }
+        var sMesh = (sprites[SHINE_MESH_SPRITE] as TriangleMesh)!;
+        for (var i = 0; i < 11; i++)
+        {
+            var verts = sMesh.verticeColors;
+            if (Bug.Submersion >= 1f)
+            {
+                var clr = new Color(0f, .003921569f, 0f);
+                for (var j = 0; j < verts.Length; j++)
+                    verts[j] = clr;
+            }
+            else
+            {
+                for (var j = 0; j < verts.Length; j++)
+                    verts[j] = Color.Lerp(CurrentSkinColor, ShineColor, .25f * Mathf.Pow(Mathf.Clamp01(Mathf.Sin(Mathf.Pow(Mathf.InverseLerp(0f, verts.Length - 1, j), 4f) * Mathf.PI)), .5f));
+            }
+        }
         if (ColoredAntennae <= 0f)
             return;
         for (var k = 0; k < 2; k++)

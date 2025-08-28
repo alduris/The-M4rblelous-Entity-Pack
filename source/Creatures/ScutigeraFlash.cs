@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ScutigeraFlash(Vector2 pos, float size) : ElectricDeath.SparkFlash(pos, size)
 {
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)

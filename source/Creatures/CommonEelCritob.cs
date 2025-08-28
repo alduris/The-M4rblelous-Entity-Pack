@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class CommonEelCritob : Critob, ISandboxHandler
 {
     internal CommonEelCritob() : base(CreatureTemplateType.CommonEel)

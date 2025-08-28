@@ -3,7 +3,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class NoodleEaterGraphics : LizardGraphics
 {
     public int PupilSprite = -1;
@@ -84,20 +84,21 @@ public class NoodleEaterGraphics : LizardGraphics
         base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
         if (!culled && !debugVisualization && lizard is NoodleEater liz)
         {
+            var ef = effectColor;
             var sprites = sLeaser.sprites;
             var eye = sprites[SpriteHeadStart + 4];
             var stre = (3 - (int)(Math.Abs(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, timeStacker)) * 3.9f)).ToString();
             eye.element = Futile.atlasManager.GetElementWithName("NoodleEaterEyeDead" + stre);
-            eye.color = liz.Consious ? effectColor : palette.blackColor;
+            eye.color = liz.Consious ? ef : palette.blackColor;
             var num8 = SpriteLimbsColorStart - SpriteLimbsStart;
             for (var l = SpriteLimbsStart; l < SpriteLimbsEnd; l++)
                 sprites[l + num8].color = palette.blackColor;
             if (liz.tongue is LizardTongue t && t.Out)
             {
-                sprites[SpriteTongueStart + 1].color = effectColor;
+                sprites[SpriteTongueStart + 1].color = ef;
                 var verts = (sprites[SpriteTongueStart] as TriangleMesh)!.verticeColors;
                 for (var num18 = 0; num18 < verts.Length; num18++)
-                    verts[num18] = effectColor;
+                    verts[num18] = ef;
             }
             if (PupilSprite >= 0 && PupilSprite < sprites.Length)
             {
@@ -112,6 +113,29 @@ public class NoodleEaterGraphics : LizardGraphics
                 pupil.isVisible = liz.Consious;
                 pupil.element = Futile.atlasManager.GetElementWithName("WB64NoodleEaterEye" + stre);
             }
+        }
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        base.ApplyPalette(sLeaser, rCam, palette);
+        if (!debugVisualization && lizard is NoodleEater liz)
+        {
+            var sprites = sLeaser.sprites;
+            var ef = effectColor;
+            sprites[SpriteHeadStart + 4].color = liz.Consious ? ef : palette.blackColor;
+            var num8 = SpriteLimbsColorStart - SpriteLimbsStart;
+            for (var l = SpriteLimbsStart; l < SpriteLimbsEnd; l++)
+                sprites[l + num8].color = palette.blackColor;
+            if (liz.tongue is LizardTongue t && t.Out)
+            {
+                sprites[SpriteTongueStart + 1].color = ef;
+                var verts = (sprites[SpriteTongueStart] as TriangleMesh)!.verticeColors;
+                for (var num18 = 0; num18 < verts.Length; num18++)
+                    verts[num18] = ef;
+            }
+            if (PupilSprite >= 0 && PupilSprite < sprites.Length)
+                sprites[PupilSprite].color = Color.black;
         }
     }
 }

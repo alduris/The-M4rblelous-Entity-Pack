@@ -3,7 +3,7 @@ using UnityEngine;
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class MoleSalamander : Lizard
 {
     public bool Black;

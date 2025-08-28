@@ -4,7 +4,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class TintedBeetleGraphics : GraphicsModule
 {
     public const float LEG_LENGTH = 30f;
@@ -379,5 +379,8 @@ public class TintedBeetleGraphics : GraphicsModule
         var colors2 = (sprs[MESH_2] as TriangleMesh)!.verticeColors;
         for (var num = 0; num < colors.Length; num++)
             colors2[num] = colors[num] = Color.Lerp(BlackColor, bodyCol, (float)num / (colors.Length - 1) - .1f);
+        var col = Bug.Consious ? Color.Lerp(Color.Lerp(palette.fogColor, AltForm ? Custom.HSL2RGB(348f / 360f, .77f, .81f) : Custom.HSL2RGB(Bug.Hue, 1f, .5f), .75f), BlackColor, Mathf.InverseLerp(.75f, 1f, Darkness) * .4f) : BlackColor;
+        for (var n = 0; n < 2; n++)
+            sprs[EyeSprite(n)].color = col;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class FoodItemTracker(ArtificialIntelligence AI, int maxRememberedItems, float persistanceBias, float sureToGetItemDistance, float sureToLoseItemDistance) : AIModule(AI)
 {
     public class TrackedItem(FoodItemTracker owner, FoodItemRepresentation itemRep)

@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ChipChop : InsectoidCreature
 {
 	[StructLayout(LayoutKind.Sequential)]

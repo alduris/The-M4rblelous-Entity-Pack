@@ -3,7 +3,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class HoverflyPather(ArtificialIntelligence AI, World world, AbstractCreature creature) : PathFinder(AI, world, creature)
 {
     public override PathCost CheckConnectionCost(PathingCell start, PathingCell goal, MovementConnection connection, bool followingPath)

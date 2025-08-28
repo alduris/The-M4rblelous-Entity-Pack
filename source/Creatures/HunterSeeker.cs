@@ -2,7 +2,7 @@
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class HunterSeeker : Lizard
 {
     public override float VisibilityBonus => graphicsModule is HunterSeekerGraphics g ? -g.Camouflaged : base.VisibilityBonus;

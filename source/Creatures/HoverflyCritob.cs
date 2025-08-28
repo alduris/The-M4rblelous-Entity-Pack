@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using static PathCost.Legality;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class HoverflyCritob : Critob, ISandboxHandler
 {
     internal HoverflyCritob() : base(CreatureTemplateType.Hoverfly)

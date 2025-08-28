@@ -1,10 +1,10 @@
 using RWCustom;
-using UnityEngine;
 using System;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ThornBugGraphics : GraphicsModule
 {
     public const float HUE_OFF = .05f;
@@ -403,11 +403,13 @@ public class ThornBugGraphics : GraphicsModule
         sprs[FRONT_SPIKE + 1].color = sprs[BACK_SPIKE + 1].color = Color.Lerp(Custom.HSL2RGB(Bug.Hue, 1f, .5f), BlackColor, Darkness * .4f);
         sprs[FRONT_SPIKE + 2].color = sprs[BACK_SPIKE + 2].color = Color.Lerp(color2, BlackColor, Darkness * .4f);
         AntennaTipColor = Color.Lerp(BlackColor, color2, .2f * Mathf.Pow(1f - Darkness, .2f));
+        var col = Bug.Consious ? Color.Lerp(Color.Lerp(palette.fogColor, Custom.HSL2RGB(Bug.Hue, 1f, .5f), .75f), BlackColor, Mathf.InverseLerp(.75f, 1f, Darkness) * .4f) : BlackColor;
         for (var n = 0; n < 2; n++)
         {
             var colors = (sprs[AntennaSprite(n)] as TriangleMesh)!.verticeColors;
             for (var num = 0; num < colors.Length; num++)
                 colors[num] = Color.Lerp(BlackColor, AntennaTipColor, (float)num / (colors.Length - 1));
+            sprs[EyeSprite(n)].color = col;
         }
     }
 }

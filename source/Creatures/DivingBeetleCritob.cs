@@ -8,7 +8,7 @@ using DevInterface;
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class DivingBeetleCritob : Critob
 {
     internal DivingBeetleCritob() : base(CreatureTemplateType.DivingBeetle)

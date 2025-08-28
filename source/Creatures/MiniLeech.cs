@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class MiniLeech : Leech
 {
     public MiniLeech(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

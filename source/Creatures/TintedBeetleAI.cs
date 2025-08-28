@@ -7,7 +7,7 @@ using System;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class TintedBeetleAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction, FriendTracker.IHaveFriendTracker, IReactToSocialEvents
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)

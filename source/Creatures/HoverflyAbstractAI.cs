@@ -1,5 +1,5 @@
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class HoverflyAbstractAI(World world, AbstractCreature parent) : AbstractCreatureAI(world, parent)
 {
     public override void AbstractBehavior(int time)

@@ -217,6 +217,8 @@ public static class AbstractPhysicalObjectHooks
             self.personality.dominance = Mathf.Lerp(self.personality.dominance, 1f, .5f);
             self.personality.bravery = Mathf.Lerp(self.personality.bravery, 1f, .25f);
         }
+        else if (tp == CreatureTemplateType.AlphaOrange)
+            self.personality.dominance = 1f;
     }
 
     internal static AbstractRoomNode.Type On_AbstractCreature_get_GetNodeType(Func<AbstractCreature, AbstractRoomNode.Type> orig, AbstractCreature self)

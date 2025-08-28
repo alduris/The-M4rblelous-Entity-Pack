@@ -2,7 +2,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class CaterpillarAI : ArtificialIntelligence, IUseARelationshipTracker
 {
 	public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)

@@ -6,6 +6,7 @@ using Fisobs.Core;
 using Fisobs.Sandbox;
 using MonoMod.RuntimeDetour;
 using MoreSlugcats;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
@@ -21,7 +22,7 @@ using Watcher;
 
 namespace LBMergedMods;
 
-[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "10.0.3"), BepInDependency("io.github.dual.fisobs"), BepInDependency("com.rainworldgame.lizardcustomizer.plugin", BepInDependency.DependencyFlags.SoftDependency), BepInDependency("slime-cubed.devconsole", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInPlugin("lb-fgf-m4r-ik.modpack", "LB Merged Mods", "10.0.4"), BepInDependency("io.github.dual.fisobs"), BepInDependency("com.rainworldgame.lizardcustomizer.plugin", BepInDependency.DependencyFlags.SoftDependency), BepInDependency("slime-cubed.devconsole", BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class LBMergedModsPlugin : BaseUnityPlugin
 {
     public static AssetBundle? Bundle;
@@ -401,6 +402,15 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         new Hook(typeof(ScavengerAbstractAI.ScavengerSquad).GetMethod("get_HasAMission", ALL_FLAGS), On_ScavengerSquad_get_HasAMission);
         On.ScavengerAbstractAI.IsSpearExplosive += On_ScavengerAbstractAI_IsSpearExplosive;
         IL.ScavengerAbstractAI.InitGearUp += IL_ScavengerAbstractAI_InitGearUp;
+        On.LizardCosmetics.Whiskers.ApplyPalette += On_Whiskers_ApplyPalette;
+        On.LizardCosmetics.BumpHawk.ApplyPalette += On_BumpHawk_ApplyPalette;
+        On.LizardCosmetics.JumpRings.ApplyPalette += On_JumpRings_ApplyPalette;
+        On.LizardCosmetics.LongBodyScales.ApplyPalette += On_LongBodyScales_ApplyPalette;
+        On.LizardCosmetics.SpineSpikes.ApplyPalette += On_SpineSpikes_ApplyPalette;
+        On.LizardCosmetics.TailFin.ApplyPalette += On_TailFin_ApplyPalette;
+        On.LizardCosmetics.WingScales.ApplyPalette += On_WingScales_ApplyPalette;
+        On.Lizard.EnterAnimation += On_Lizard_EnterAnimation;
+        IL.LizardCosmetics.Antennae.ctor += IL_Antennae_ctor;
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),
@@ -408,6 +418,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
                         new CommonEelCritob(),
                         new NoodleEaterCritob(),
                         new PolliwogCritob(),
+                        new AlphaOrangeCritob(),
                         new WaterSpitterCritob(),
                         new MoleSalamanderCritob(),
                         new SilverLizardCritob(),

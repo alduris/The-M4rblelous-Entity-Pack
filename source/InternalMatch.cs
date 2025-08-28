@@ -1,4 +1,5 @@
 ﻿global using static LBMergedMods.InternalMatch;
+using LizardCosmetics;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -208,6 +209,7 @@ static class InternalMatch
         s_MatchNewobj_DaddyBubble = MatchNewobj_DaddyBubble,
         s_MatchNewobj_DaddyRipple = MatchNewobj_DaddyRipple,
         s_MatchRet = MatchRet,
+        s_MatchStfld_Antennae_length = MatchStfld_Antennae_length,
         s_MatchStfld_BigEelGraphics_tailSwim = MatchStfld_BigEelGraphics_tailSwim,
         s_MatchStfld_BodyChunk_vel = MatchStfld_BodyChunk_vel,
         s_MatchStfld_CentipedeAI_annoyingCollisions = MatchStfld_CentipedeAI_annoyingCollisions,
@@ -417,6 +419,7 @@ static class InternalMatch
         s_MatchNewobj_DaddyBubble = null!;
         s_MatchNewobj_DaddyRipple = null!;
         s_MatchRet = null!;
+        s_MatchStfld_Antennae_length = null!;
         s_MatchStfld_BigEelGraphics_tailSwim = null!;
         s_MatchStfld_BodyChunk_vel = null!;
         s_MatchStfld_CentipedeAI_annoyingCollisions = null!;
@@ -795,6 +798,8 @@ static class InternalMatch
     internal static bool MatchNewobj_DaddyRipple(Instruction x) => x.MatchNewobj<DaddyRipple>();
 
     internal static bool MatchRet(Instruction x) => x.MatchRet();
+
+    internal static bool MatchStfld_Antennae_length(Instruction x) => x.MatchStfld<Antennae>("length");
 
     internal static bool MatchStfld_BigEelGraphics_tailSwim(Instruction x) => x.MatchStfld<BigEelGraphics>("tailSwim");
 

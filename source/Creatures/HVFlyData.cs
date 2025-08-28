@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 [StructLayout(LayoutKind.Sequential)]
 public sealed class HVFlyData
 {

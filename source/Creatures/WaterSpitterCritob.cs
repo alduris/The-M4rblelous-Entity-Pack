@@ -6,7 +6,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class WaterSpitterCritob : Critob
 {
     internal WaterSpitterCritob() : base(CreatureTemplateType.WaterSpitter)

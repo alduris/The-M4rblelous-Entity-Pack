@@ -2,7 +2,7 @@
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class FatFireFly : Vulture, IProvideWarmth
 {
     public virtual Room loadedRoom => room;

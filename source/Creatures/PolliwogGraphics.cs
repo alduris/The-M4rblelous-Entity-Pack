@@ -2,7 +2,7 @@
 using LizardCosmetics;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 public class PolliwogGraphics : LizardGraphics
 {
     public PolliwogGraphics(Polliwog ow) : base(ow)
@@ -27,6 +27,16 @@ public class PolliwogGraphics : LizardGraphics
                 sprites[l].isVisible = false;
                 sprites[l + num8].isVisible = false;
             }
+        }
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        base.ApplyPalette(sLeaser, rCam, palette);
+        if (!debugVisualization)
+        {
+            if (lizard.rotModule is not null && lizard.LizardState.rotType == LizardState.RotType.Full)
+                sLeaser.sprites[SpriteHeadStart + 4].color = lizard.rotModule.rotColor;
         }
     }
 }

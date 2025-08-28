@@ -5,7 +5,7 @@ using Noise;
 using System.Collections.Generic;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class HoverflyAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction
 {
     public class FlyBehavior(string value, bool register = false) : ExtEnum<FlyBehavior>(value, register)

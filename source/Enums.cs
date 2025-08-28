@@ -103,7 +103,8 @@ public static class CreatureTemplateType
         Xylo = new(nameof(Xylo), true),
         XyloWorm = new(nameof(XyloWorm), true),
         SparkEye = new(nameof(SparkEye), true),
-        ScavengerSentinel = new(nameof(ScavengerSentinel), true);
+        ScavengerSentinel = new(nameof(ScavengerSentinel), true),
+        AlphaOrange = new(nameof(AlphaOrange), true);
 
     static CreatureTemplateType()
     {
@@ -139,7 +140,8 @@ public static class CreatureTemplateType
             Xylo,
             XyloWorm,
             SparkEye,
-            ScavengerSentinel];
+            ScavengerSentinel,
+            AlphaOrange];
     }
 
     public static void UnregisterValues()
@@ -309,6 +311,11 @@ public static class CreatureTemplateType
             ScavengerSentinel.Unregister();
             ScavengerSentinel = null!;
         }
+        if (AlphaOrange is not null)
+        {
+            AlphaOrange.Unregister();
+            AlphaOrange = null!;
+        }
     }
 }
 
@@ -363,7 +370,8 @@ public static class SandboxUnlockID
         Durian = new(nameof(Durian), true),
         DarkGrub = new(nameof(DarkGrub), true),
         SparkEye = new(nameof(SparkEye), true),
-        ScavengerSentinel = new(nameof(ScavengerSentinel), true);
+        ScavengerSentinel = new(nameof(ScavengerSentinel), true),
+        AlphaOrange = new(nameof(AlphaOrange), true);
 
     static SandboxUnlockID()
     {
@@ -415,7 +423,8 @@ public static class SandboxUnlockID
             Durian,
             DarkGrub,
             SparkEye,
-            ScavengerSentinel];
+            ScavengerSentinel,
+            AlphaOrange];
     }
 
     public static void UnregisterValues()
@@ -664,6 +673,11 @@ public static class SandboxUnlockID
         {
             ScavengerSentinel.Unregister();
             ScavengerSentinel = null!;
+        }
+        if (AlphaOrange is not null)
+        {
+            AlphaOrange.Unregister();
+            AlphaOrange = null!;
         }
     }
 }

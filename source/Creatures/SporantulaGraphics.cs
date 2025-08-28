@@ -1,11 +1,12 @@
 ﻿using RWCustom;
 using Smoke;
 using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class SporantulaGraphics : BigSpiderGraphics
 {
     public SporantulaScale[] Scales;
@@ -94,7 +95,10 @@ public class SporantulaGraphics : BigSpiderGraphics
         for (var j = 0; j < scls.Length; j++)
             scls[j]?.InitiateSprites(k + j, sLeaser, rCam);
         for (var j = 0; j < dots.Length; j++)
-            dots[j]?.InitiateSprites(n + j * dots[j].Dots.Length * 2, sLeaser, rCam);
+        {
+            if (dots[j] is SporantulaDots dot)
+                dot.InitiateSprites(n + j * dot.Dots.Length * 2, sLeaser, rCam);
+        }
     }
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
@@ -120,11 +124,11 @@ public class SporantulaGraphics : BigSpiderGraphics
         }
         for (var l = 0; l < 2; l++)
         {
-            var spr = sLeaser.sprites[MandibleSprite(l, 1)] as CustomFSprite;
-            spr!.verticeColors[2] = spr.verticeColors[3] = blackColor;
+            var spr = (sLeaser.sprites[MandibleSprite(l, 1)] as CustomFSprite)!;
+            spr.verticeColors[2] = spr.verticeColors[3] = blackColor;
             spr.verticeColors[0] = spr.verticeColors[1] = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), rCam.currentPalette.texture.GetPixel(11, 4), .5f), blackColor, .6f * (1f - num2) + .4f * darkness + .2f);
         }
-        var colr = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), rCam.currentPalette.texture.GetPixel(11, 4), .5f), rCam.currentPalette.blackColor, rCam.currentPalette.darkness / 2f);
+        var colr = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), rCam.currentPalette.texture.GetPixel(11, 4), .5f), rCam.currentPalette.blackColor, rCam.currentPalette.darkness * .5f);
         var mesh = (sLeaser.sprites[MeshSprite] as TriangleMesh)!;
         mesh.color = colr;
         var mesh2 = (sLeaser.sprites[OrigNumOfSprites] as TriangleMesh)!;
@@ -137,16 +141,16 @@ public class SporantulaGraphics : BigSpiderGraphics
         {
             var f = Mathf.InverseLerp(0f, 6f, i);
             var vector6 = Custom.Bezier(vector22 + vector3 * 3f, vector2, b, vector2, f);
-            var num4 = Mathf.Lerp(2.5f, 10f + Mathf.Sin(Mathf.Lerp(lastBreathCounter, breathCounter, timeStacker) / 10f), Mathf.Sin(Mathf.Pow(f, .75f) * Mathf.PI)) * bodyThickness * .675f;
+            var num4 = Mathf.Lerp(2.5f, 10f + Mathf.Sin(Mathf.Lerp(lastBreathCounter, breathCounter, timeStacker) * .1f), Mathf.Sin(Mathf.Pow(f, .75f) * Mathf.PI)) * bodyThickness * .675f;
             var vector7 = Custom.PerpendicularVector(vector6, vector5);
-            mesh2.MoveVertice(i * 4, (vector5 + vector6) / 2f - vector7 * (num4 + num3) * .5f - camPos);
-            mesh2.MoveVertice(i * 4 + 1, (vector5 + vector6) / 2f + vector7 * (num4 + num3) * .5f - camPos);
+            mesh2.MoveVertice(i * 4, (vector5 + vector6) * .5f - vector7 * (num4 + num3) * .5f - camPos);
+            mesh2.MoveVertice(i * 4 + 1, (vector5 + vector6) * .5f + vector7 * (num4 + num3) * .5f - camPos);
             mesh2.MoveVertice(i * 4 + 2, vector6 - vector7 * num4 - camPos);
             mesh2.MoveVertice(i * 4 + 3, vector6 + vector7 * num4 - camPos);
             vector5 = vector6;
             num3 = num4;
         }
-        mesh2.color = Color.Lerp(colr, Color.Lerp(Color.white, rCam.currentPalette.blackColor, rCam.currentPalette.darkness / 4f), .3f);
+        mesh2.color = Color.Lerp(colr, Color.Lerp(Color.white, rCam.currentPalette.blackColor, rCam.currentPalette.darkness * .25f), .3f);
         mesh2.alpha = .5f;
         if (bug is BigSpider bs && bs.dead)
             mesh.isVisible = mesh2.isVisible = false;
@@ -155,31 +159,37 @@ public class SporantulaGraphics : BigSpiderGraphics
     public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
     {
         base.ApplyPalette(sLeaser, rCam, palette);
-        var clr = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.texture.GetPixel(11, 4), .5f), palette.blackColor, palette.darkness / 2f);
+        var clr = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.texture.GetPixel(11, 4), .5f), palette.blackColor, palette.darkness * .5f);
         var sprites = sLeaser.sprites;
         for (var i = 0; i < sprites.Length; i++)
             sprites[i].color = clr;
-        for (var j = 0; j < 2; j++)
+        for (var l = 0; l < 2; l++)
         {
-            for (var k = 0; k < 4; k++)
-                (sprites[MandibleSprite(j, 1)] as CustomFSprite)!.verticeColors[k] = clr;
+            var spr = (sprites[MandibleSprite(l, 1)] as CustomFSprite)!;
+            spr.verticeColors[2] = spr.verticeColors[3] = blackColor;
+            spr.verticeColors[0] = spr.verticeColors[1] = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.texture.GetPixel(11, 4), .5f), blackColor, .6f * (1f - mandiblesCharge) + .4f * darkness + .2f);
         }
+        (sprites[OrigNumOfSprites] as TriangleMesh)!.color = Color.Lerp(clr, Color.Lerp(Color.white, palette.blackColor, palette.darkness * .25f), .3f);
         var scls = Scales;
         var dots = Dots;
         for (var j = 0; j < scls.Length; j++)
             scls[j]?.ApplyPalette(OrigNumOfSprites + 1 + j, sLeaser, palette);
         for (var j = 0; j < dots.Length; j++)
-            dots[j]?.ApplyPalette(OrigNumOfSprites + 1 + scls.Length + j * dots[j].Dots.Length * 2, sLeaser, palette);
+        {
+            if (dots[j] is SporantulaDots dot)
+                dot.ApplyPalette(OrigNumOfSprites + 1 + scls.Length + j * dot.Dots.Length * 2, sLeaser, palette);
+        }
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public class SporantulaScale
     {
-        public Color SporeColor;
         public Vector2[][] Segments;
         public SporesSmoke? Smoke;
         public BigSpiderGraphics Graphics;
-        public float BaseY;
+        public Color SporeColor;
         public Vector2 Pos, LastPos;
+        public float BaseY;
 
         public virtual Room? Room => Graphics?.bug?.room;
 
@@ -300,19 +310,20 @@ public class SporantulaGraphics : BigSpiderGraphics
 
         public virtual void ApplyPalette(int startIndex, RoomCamera.SpriteLeaser sLeaser, RoomPalette palette)
         {
-            var color = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.texture.GetPixel(11, 4), .5f), palette.blackColor, palette.darkness / 2f);
+            var color = Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.texture.GetPixel(11, 4), .5f), palette.blackColor, palette.darkness * .5f);
             sLeaser.sprites[startIndex].color = color;
             SporeColor = Color.Lerp(color, new(.02f, .1f, .08f), .85f);
         }
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public class SporantulaDots
     {
-        public Color SporeColor;
         public Vector2[] Dots;
         public BigSpiderGraphics Graphics;
-        public float BaseY;
+        public Color SporeColor;
         public Vector2 Pos, LastPos;
+        public float BaseY;
 
         public SporantulaDots(BigSpiderGraphics graphicsModule, float baseY)
         {
@@ -339,6 +350,7 @@ public class SporantulaGraphics : BigSpiderGraphics
                 }
             }
             float num2 = 1f, num3 = -1f, num4 = 1f, num5 = -1f, num6 = 0f;
+            // don't change Mathf here !!!
             for (var m = 0; m < dots.Length; m++)
             {
                 var dot = dots[m];
@@ -392,8 +404,8 @@ public class SporantulaGraphics : BigSpiderGraphics
 
         public virtual void ApplyPalette(int startIndex, RoomCamera.SpriteLeaser sLeaser, RoomPalette palette)
         {
-            SporeColor = Color.Lerp(Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.blackColor, palette.darkness / 2f), palette.texture.GetPixel(11, 4), .5f), new(.02f, .1f, .08f), .85f);
-            var color = Color.Lerp(Color.Lerp(Color.Lerp(new(.8f, 1f, .5f), palette.texture.GetPixel(11, 4), .2f), palette.blackColor, .5f), palette.blackColor, palette.darkness / 2f);
+            SporeColor = Color.Lerp(Color.Lerp(Color.Lerp(new(.9f, 1f, .8f), palette.blackColor, palette.darkness * .5f), palette.texture.GetPixel(11, 4), .5f), new(.02f, .1f, .08f), .85f);
+            var color = Color.Lerp(Color.Lerp(Color.Lerp(new(.8f, 1f, .5f), palette.texture.GetPixel(11, 4), .2f), palette.blackColor, .5f), palette.blackColor, palette.darkness * .5f);
             var lth = Dots.Length;
             var sprites = sLeaser.sprites;
             for (var j = 0; j < lth; j++)

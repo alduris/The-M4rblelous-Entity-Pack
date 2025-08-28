@@ -5,7 +5,7 @@ using System;
 using Smoke;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ChipChopGraphics : GraphicsModule
 {
     public class SpeedSmoke(Room room, Vector2 pos, BodyChunk chunk, Color fireColor) : BombSmoke(room, pos, chunk, fireColor)

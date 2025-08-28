@@ -3,7 +3,7 @@ using RWCustom;
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ThornBugAI : ArtificialIntelligence, IUseARelationshipTracker, IAINoiseReaction
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)

@@ -1,20 +1,44 @@
 ﻿global using static LBMergedMods.Hooks.LizardHooks;
-using UnityEngine;
 using LizardCosmetics;
-using System;
-using Random = UnityEngine.Random;
-using MonoMod.Cil;
 using Mono.Cecil.Cil;
-using RWCustom;
-using System.Collections.Generic;
-using Noise;
+using MonoMod.Cil;
 using MoreSlugcats;
+using Noise;
+using RWCustom;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 using Watcher;
+using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Hooks;
 
 public static class LizardHooks
 {
+    internal static void IL_Antennae_ctor(ILContext il)
+    {
+        var c = new ILCursor(il);
+        if (c.TryGotoNext(
+            s_MatchStfld_Antennae_length))
+        {
+            c.MoveAfterLabels()
+             .Emit(OpCodes.Ldarg_0)
+             .EmitDelegate((float value, Antennae self) =>
+             {
+                 if (self.lGraphics.lizard is AlphaOrange l)
+                 {
+                     var state = Random.state;
+                     Random.InitState(l.abstractPhysicalObject.ID.RandomSeed);
+                     value = Random.Range(.75f, 1f);
+                     Random.state = state;
+                 }
+                 return value;
+             });
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Antennae.ctor!");
+    }
+
     internal static void On_AxolotlGills_DrawSprites(On.LizardCosmetics.AxolotlGills.orig_DrawSprites orig, AxolotlGills self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
         orig(self, sLeaser, rCam, timeStacker, camPos);
@@ -25,11 +49,82 @@ public static class LizardHooks
                 flicker = 0f;
             var sprites = sLeaser.sprites;
             var lgt = self.scalesPositions.Length;
+            var headColor = lg.HeadColor(timeStacker);
             for (var num = self.startSprite + lgt - 1; num >= self.startSprite; num--)
             {
-                sprites[num].color = Color.Lerp(lg.HeadColor(timeStacker), Color.Lerp(lg.HeadColor(timeStacker), lg.effectColor, .6f), flicker);
+                sprites[num].color = Color.Lerp(headColor, Color.Lerp(headColor, lg.effectColor, .6f), flicker);
                 if (self.colored)
-                    sprites[num + lgt].color = c.PackLeader ? lg.HeadColor(timeStacker) : Color.Lerp(lg.HeadColor(timeStacker), new(1f, .007843137254902f, .3529411764705882f), flicker);
+                    sprites[num + lgt].color = c.PackLeader ? headColor : Color.Lerp(headColor, new(1f, .007843137254902f, .3529411764705882f), flicker);
+            }
+        }
+    }
+
+    internal static void On_LongBodyScales_ApplyPalette(On.LizardCosmetics.LongBodyScales.orig_ApplyPalette orig, LongBodyScales self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        orig(self, sLeaser, rCam, palette);
+        int lgt, num;
+        Color c, c2;
+        FSprite[] sprs;
+        if (self is LongHeadScales)
+        {
+            if (self.lGraphics is LizardGraphics lg && lg is HunterSeekerGraphics or SilverLizardGraphics or MoleSalamanderGraphics or PolliwogGraphics or WaterSpitterGraphics or AlphaOrangeGraphics)
+            {
+                lgt = self.scalesPositions.Length;
+                c = lg.HeadColor(1f);
+                c2 = lg is HunterSeekerGraphics ? c : lg.effectColor;
+                sprs = sLeaser.sprites;
+                for (num = self.startSprite + lgt - 1; num >= self.startSprite; num--)
+                {
+                    sprs[num].color = c;
+                    if (self.colored)
+                        sprs[num + lgt].color = c2;
+                }
+            }
+        }
+        else if (self is AxolotlGills && self.lGraphics is LizardGraphics lg)
+        {
+            if (lg is PolliwogGraphics && lg.lizard is Polliwog l && l.AI?.yellowAI is PolliwogCommunication co)
+            {
+                lgt = self.scalesPositions.Length;
+                var flicker = l.Consious ? co.CurrentFlicker : 0f;
+                sprs = sLeaser.sprites;
+                c = lg.HeadColor(1f);
+                c2 = lg.effectColor;
+                for (num = self.startSprite + lgt - 1; num >= self.startSprite; num--)
+                {
+                    sprs[num].color = Color.Lerp(c, Color.Lerp(c, c2, .6f), flicker);
+                    if (self.colored)
+                        sprs[num + lgt].color = co.PackLeader ? c : Color.Lerp(c, new(1f, .007843137254902f, .3529411764705882f), flicker);
+                }
+            }
+            else if (self.lGraphics is MoleSalamanderGraphics or WaterSpitterGraphics or SilverLizardGraphics)
+            {
+                lgt = self.scalesPositions.Length;
+                c = lg.HeadColor(1f);
+                c2 = lg.effectColor;
+                sprs = sLeaser.sprites;
+                for (num = self.startSprite + lgt - 1; num >= self.startSprite; num--)
+                {
+                    sprs[num].color = c;
+                    if (self.colored)
+                        sprs[num + lgt].color = c2;
+                }
+            }
+        }
+        else
+        {
+            if (self.lGraphics is HunterSeekerGraphics lg1)
+            {
+                lgt = self.scalesPositions.Length;
+                c = lg1.BodyColor(1f);
+                c2 = lg1.HeadColor(1f);
+                sprs = sLeaser.sprites;
+                for (num = self.startSprite + lgt - 1; num >= self.startSprite; num--)
+                {
+                    sprs[num].color = c;
+                    if (self.colored)
+                        sprs[num + lgt].color = c2;
+                }
             }
         }
     }
@@ -53,9 +148,43 @@ public static class LizardHooks
         }
     }
 
+    internal static void On_BumpHawk_ApplyPalette(On.LizardCosmetics.BumpHawk.orig_ApplyPalette orig, BumpHawk self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        orig(self, sLeaser, rCam, palette);
+        if (self.lGraphics is HunterSeekerGraphics g)
+        {
+            var sprites = sLeaser.sprites;
+            int start = self.startSprite, numMax = start + self.numberOfSprites - 1;
+            for (var num = numMax; num >= start; num--)
+            {
+                var spr = sprites[num];
+                var num2 = Mathf.InverseLerp(start, numMax, num);
+                if (self.coloredHawk)
+                    spr.color = Color.Lerp(g.HeadColor(1f), g.BodyColor(1f), num2);
+                else
+                    spr.color = g.DynamicBodyColor(1f);
+            }
+        }
+    }
+
     internal static void On_JumpRings_DrawSprites(On.LizardCosmetics.JumpRings.orig_DrawSprites orig, JumpRings self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
         orig(self, sLeaser, rCam, timeStacker, camPos);
+        if (self.lGraphics is HunterSeekerGraphics g)
+        {
+            var sprs = sLeaser.sprites;
+            var c = g.BodyColor(1f);
+            for (var i = 0; i < 2; i++)
+            {
+                for (var j = 0; j < 2; j++)
+                    sprs[self.RingSprite(i, j, 1)].color = c;
+            }
+        }
+    }
+
+    internal static void On_JumpRings_ApplyPalette(On.LizardCosmetics.JumpRings.orig_ApplyPalette orig, JumpRings self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        orig(self, sLeaser, rCam, palette);
         if (self.lGraphics is HunterSeekerGraphics g)
         {
             var sprs = sLeaser.sprites;
@@ -142,6 +271,18 @@ public static class LizardHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.EnterAnimation!");
+    }
+
+    internal static void On_Lizard_EnterAnimation(On.Lizard.orig_EnterAnimation orig, Lizard self, Lizard.Animation anim, bool forceAnimationChange)
+    {
+        if (self is AlphaOrange && (forceAnimationChange || (int)anim >= (int)self.animation) && self.animation != anim && anim == Lizard.Animation.PreyReSpotted && !self.safariControlled)
+        {
+            if (self.AI.yellowAI.pack?.PackLeader == self.abstractCreature)
+                self.voice.MakeSound(LizardVoice.Emotion.SpottedPreyFirstTime);
+            else
+                self.voice.MakeSound(LizardVoice.Emotion.ReSpottedPrey, Random.Range(.1f, .25f));
+        }
+        orig(self, anim, forceAnimationChange);
     }
 
     internal static bool On_LizardGraphics_get_HeadLightsUpFromNoise(Func<LizardGraphics, bool> orig, LizardGraphics self)
@@ -423,7 +564,7 @@ public static class LizardHooks
             temp.preBakedPathingAncestor = greenTemplate;
             return temp;
         }
-        else if (type == CreatureTemplateType.NoodleEater)
+        if (type == CreatureTemplateType.NoodleEater)
         {
             temp = orig(CreatureTemplate.Type.BlueLizard, lizardAncestor, pinkTemplate, blueTemplate, greenTemplate);
             breedParams = (temp.breedParameters as LizardBreedParams)!;
@@ -468,7 +609,7 @@ public static class LizardHooks
             temp.dangerousToPlayer = 0f;
             return temp;
         }
-        else if (type == CreatureTemplateType.Polliwog)
+        if (type == CreatureTemplateType.Polliwog)
         {
             temp = orig(CreatureTemplate.Type.Salamander, lizardAncestor, pinkTemplate, blueTemplate, greenTemplate);
             breedParams = (LizardBreedParams)temp.breedParameters;
@@ -573,7 +714,7 @@ public static class LizardHooks
             temp.jumpAction = "N/A";
             return temp;
         }
-        else if (type == CreatureTemplateType.HunterSeeker)
+        if (type == CreatureTemplateType.HunterSeeker)
         {
             temp = orig(CreatureTemplate.Type.WhiteLizard, lizardAncestor, pinkTemplate, blueTemplate, greenTemplate);
             breedParams = (LizardBreedParams)temp.breedParameters;
@@ -587,7 +728,7 @@ public static class LizardHooks
             temp.preBakedPathingAncestor = StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.WhiteLizard);
             return temp;
         }
-        else if (type == CreatureTemplateType.MoleSalamander)
+        if (type == CreatureTemplateType.MoleSalamander)
         {
             temp = orig(CreatureTemplate.Type.Salamander, lizardAncestor, pinkTemplate, blueTemplate, greenTemplate);
             breedParams = (LizardBreedParams)temp.breedParameters;
@@ -637,7 +778,7 @@ public static class LizardHooks
             temp.throughSurfaceVision = 0f;
             return temp;
         }
-        else if (type == CreatureTemplateType.CommonEel)
+        if (type == CreatureTemplateType.CommonEel)
         {
             temp = orig(CreatureTemplate.Type.Salamander, lizardAncestor, pinkTemplate, blueTemplate, greenTemplate);
             breedParams = (LizardBreedParams)temp.breedParameters;
@@ -715,6 +856,131 @@ public static class LizardHooks
             temp.pathingPreferencesConnections[(int)MovementConnection.MovementType.DropToWater] = new(1f, PathCost.Legality.Allowed);
             temp.pathingPreferencesConnections[(int)MovementConnection.MovementType.DropToFloor] = new(10f, PathCost.Legality.Unwanted);
             temp.pathingPreferencesConnections[(int)MovementConnection.MovementType.ReachOverGap] = new(10f, PathCost.Legality.Unwanted);
+            return temp;
+        }
+        if (type == CreatureTemplateType.AlphaOrange)
+        {
+            breedParams = new LizardBreedParams(type)
+            {
+                terrainSpeeds = new LizardBreedParams.SpeedMultiplier[Enum.GetNames(typeof(AItile.Accessibility)).Length],
+                bodyRadFac = 1f,
+                pullDownFac = 1f,
+                bodyLengthFac = 1f,
+                biteDelay = 12,
+                biteInFront = 15f,
+                biteHomingSpeed = 1.2f,
+                biteChance = 1f / 6f,
+                attemptBiteRadius = 40f,
+                getFreeBiteChance = .65f,
+                biteDamage = 1f,
+                biteDamageChance = .4f,
+                toughness = .8f,
+                stunToughness = 1f,
+                regainFootingCounter = 3,
+                baseSpeed = 4.84f,
+                bodyMass = 2f,
+                bodySizeFac = 1f,
+                floorLeverage = .5f,
+                maxMusclePower = 5f,
+                danger = .7f,
+                aggressionCurveExponent = .9f,
+                wiggleSpeed = 1f,
+                wiggleDelay = 15,
+                bodyStiffnes = .2f,
+                swimSpeed = .45f,
+                idleCounterSubtractWhenCloseToIdlePos = 1,
+                headShieldAngle = 100f,
+                canExitLounge = true,
+                canExitLoungeWarmUp = true,
+                findLoungeDirection = 1f,
+                loungeDistance = 130f,
+                preLoungeCrouch = 35,
+                preLoungeCrouchMovement = -.3f,
+                loungeSpeed = 4.5f,
+                loungeMaximumFrames = 20,
+                loungePropulsionFrames = 10,
+                loungeJumpyness = .9f,
+                loungeDelay = 110,
+                riskOfDoubleLoungeDelay = .8f,
+                postLoungeStun = 10,
+                loungeTendensy = .033f,
+                perfectVisionAngle = Mathf.Lerp(1f, -1f, 1f / 12f),
+                periferalVisionAngle = Mathf.Lerp(1f, -1f, 19f / 36f),
+                biteDominance = .45f,
+                limbSize = 1f,
+                limbThickness = 1f,
+                stepLength = .5f,
+                liftFeet = .3f,
+                feetDown = .5f,
+                noGripSpeed = .1f,
+                limbSpeed = 5f,
+                limbQuickness = .5f,
+                limbGripDelay = 1,
+                smoothenLegMovement = true,
+                legPairDisplacement = .2f,
+                standardColor = new(1f, .6f, 0f),
+                walkBob = 4f,
+                tailSegments = 6,
+                tailStiffness = 250f,
+                tailStiffnessDecline = .2f,
+                tailLengthFactor = 1.8f,
+                tailColorationStart = .3f,
+                tailColorationExponent = 2f,
+                headSize = 1.2f,
+                neckStiffness = .2f,
+                jawOpenAngle = 110f,
+                jawOpenLowerJawFac = .55f,
+                jawOpenMoveJawsApart = 23f,
+                headGraphics = new int[5],
+                framesBetweenLookFocusChange = 80,
+                tamingDifficulty = 3f
+            };
+            var speeds = breedParams.terrainSpeeds;
+            for (var i = 0; i < speeds.Length; i++)
+                speeds[i] = new(.1f, 1f, 1f, 1f);
+            speeds[1] = new(1f, 1f, 1f, 1f);
+            speeds[3] = new(1.2f, 1f, 1f, 1f);
+            speeds[4] = new(.5f, 1f, .75f, 1f);
+            speeds[5] = new(.8f, 1f, 1f, 1f);
+            speeds[6] = new(.6f, 1f, 1f, 1f);
+            temp = new CreatureTemplate(type, lizardAncestor,
+            [
+                new(AItile.Accessibility.Floor, 1f, PathCost.Legality.Allowed),
+                new(AItile.Accessibility.CurvedFloor, 1f, PathCost.Legality.Allowed),
+                new(AItile.Accessibility.Corridor, 1.2f, PathCost.Legality.Allowed),
+                new(AItile.Accessibility.Climb, 2.5f, PathCost.Legality.Allowed),
+                new(AItile.Accessibility.Wall, 1f, PathCost.Legality.Allowed),
+                new(AItile.Accessibility.Ceiling, 1.2f, PathCost.Legality.Allowed),
+            ],
+            [
+                new(MovementConnection.MovementType.DropToFloor, 2f, PathCost.Legality.Allowed),
+                new(MovementConnection.MovementType.DropToClimb, 2f, PathCost.Legality.Allowed),
+                new(MovementConnection.MovementType.ShortCut, 5f, PathCost.Legality.Allowed),
+                new(MovementConnection.MovementType.ReachOverGap, 1.1f, PathCost.Legality.Allowed),
+                new(MovementConnection.MovementType.ReachUp, 1.1f, PathCost.Legality.Allowed),
+                new(MovementConnection.MovementType.ReachDown, 1.1f, PathCost.Legality.Allowed),
+                new(MovementConnection.MovementType.CeilingSlope, 2f, PathCost.Legality.Allowed),
+            ],
+            new(CreatureTemplate.Relationship.Type.Ignores, 0f))
+            {
+                name = "AlphaOrange",
+                waterPathingResistance = 5f,
+                visualRadius = 1000f,
+                waterVision = .4f,
+                throughSurfaceVision = .85f,
+                breedParameters = breedParams,
+                baseDamageResistance = breedParams.toughness * 2f,
+                baseStunResistance = breedParams.toughness,
+                meatPoints = 6,
+                doPreBakedPathing = false,
+                preBakedPathingAncestor = blueTemplate,
+                virtualCreature = false,
+                pickupAction = "Bite",
+                jumpAction = "Call",
+                throwAction = "Launch",
+            };
+            temp.damageRestistances[(int)Creature.DamageType.Bite, 0] = 2.5f;
+            temp.damageRestistances[(int)Creature.DamageType.Bite, 1] = 3f;
             return temp;
         }
         return orig(type, lizardAncestor, pinkTemplate, blueTemplate, greenTemplate);
@@ -1179,6 +1445,14 @@ public static class LizardHooks
                 else
                     res = SoundID.None;
             }
+            else if (l is AlphaOrange)
+            {
+                soundID = MMFEnums.MMFSoundID.Lizard_Voice_Yellow_A;
+                if (soundID is not null && soundID.Index != -1 && l.abstractPhysicalObject.world.game.soundLoader.workingTriggers[soundID.Index])
+                    res = soundID;
+                else
+                    res = SoundID.None;
+            }
         }
         return res;
     }
@@ -1188,13 +1462,14 @@ public static class LizardHooks
         orig(self, sLeaser, rCam, timeStacker, camPos);
         if (self.lGraphics is HunterSeekerGraphics lg)
         {
+            var lgt = self.scalesPositions.Length;
             Color c = lg.BodyColor(1f), c2 = lg.HeadColor(timeStacker);
             var sprs = sLeaser.sprites;
-            for (var num = self.startSprite + self.scalesPositions.Length - 1; num >= self.startSprite; num--)
+            for (var num = self.startSprite + lgt - 1; num >= self.startSprite; num--)
             {
                 sprs[num].color = c;
                 if (self.colored)
-                    sprs[num + self.scalesPositions.Length].color = c2;
+                    sprs[num + lgt].color = c2;
             }
         }
     }
@@ -1214,10 +1489,11 @@ public static class LizardHooks
         orig(self, sLeaser, rCam, timeStacker, camPos);
         if (self.colored && self.lGraphics is HunterSeekerGraphics lg)
         {
+            var lgt = self.scalesPositions.Length;
             var c = lg.HeadColor(timeStacker);
             var sprs = sLeaser.sprites;
-            for (var num = self.startSprite + self.scalesPositions.Length - 1; num >= self.startSprite; num--)
-                sprs[num + self.scalesPositions.Length].color = c;
+            for (var num = self.startSprite + lgt - 1; num >= self.startSprite; num--)
+                sprs[num + lgt].color = c;
         }
     }
 
@@ -1299,6 +1575,29 @@ public static class LizardHooks
         }
     }
 
+    internal static void On_SpineSpikes_ApplyPalette(On.LizardCosmetics.SpineSpikes.orig_ApplyPalette orig, SpineSpikes self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        orig(self, sLeaser, rCam, palette);
+        if (self.lGraphics is HunterSeekerGraphics g)
+        {
+            Color bc = g.BodyColor(1f), hc = g.HeadColor(1f);
+            var sprs = sLeaser.sprites;
+            var start = self.startSprite;
+            var bumps = self.bumps;
+            for (var i = start; i < start + bumps; i++)
+            {
+                sprs[i].color = bc;
+                if (self.colored == 1)
+                    sprs[i + bumps].color = hc;
+                else if (self.colored == 2)
+                {
+                    var f2 = Mathf.InverseLerp(start, start + bumps - 1, i);
+                    sprs[i + bumps].color = Color.Lerp(hc, bc, Mathf.Pow(f2, .5f));
+                }
+            }
+        }
+    }
+
     internal static void On_TailFin_DrawSprites(On.LizardCosmetics.TailFin.orig_DrawSprites orig, TailFin self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
         orig(self, sLeaser, rCam, timeStacker, camPos);
@@ -1311,6 +1610,24 @@ public static class LizardHooks
             {
                 var num = i * bumps * 2;
                 var col = g.HeadColor(timeStacker);
+                for (var j = start; j < start + bumps; j++)
+                    sprs[j + bumps + num].color = col;
+            }
+        }
+    }
+
+    internal static void On_TailFin_ApplyPalette(On.LizardCosmetics.TailFin.orig_ApplyPalette orig, TailFin self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        orig(self, sLeaser, rCam, palette);
+        if (self.colored && self.lGraphics is HunterSeekerGraphics g)
+        {
+            var sprs = sLeaser.sprites;
+            var bumps = self.bumps;
+            var start = self.startSprite;
+            for (var i = 0; i < 2; i++)
+            {
+                var num = i * bumps * 2;
+                var col = g.HeadColor(1f);
                 for (var j = start; j < start + bumps; j++)
                     sprs[j + bumps + num].color = col;
             }
@@ -1340,6 +1657,27 @@ public static class LizardHooks
             self.spritesOverlap = Template.SpritesOverlap.BehindHead;
     }
 
+    internal static void On_Whiskers_ApplyPalette(On.LizardCosmetics.Whiskers.orig_ApplyPalette orig, Whiskers self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        orig(self, sLeaser, rCam, palette);
+        if (self.lGraphics is MoleSalamanderGraphics or WaterSpitterGraphics)
+        {
+            var col = self.lGraphics.HeadColor(1f);
+            for (var i = 0; i < self.amount; i++)
+            {
+                for (var j = 0; j < 2; j++)
+                {
+                    var verts = (sLeaser.sprites[self.startSprite + i * 2 + j] as TriangleMesh)!.verticeColors;
+                    for (var k = 0; k < 4; k++)
+                    {
+                        for (var l = k * 4; l < k * 4 + (k == 3 ? 3 : 4); l++)
+                            verts[l] = Color.Lerp(col, Color.white, (k - 1) / 2f * self.whiskerLightUp[i, j, 0]);
+                    }
+                }
+            }
+        }
+    }
+
     internal static Vector2 On_Whiskers_AnchorPoint(On.LizardCosmetics.Whiskers.orig_AnchorPoint orig, Whiskers self, int side, int m, float timeStacker)
     {
         var vec = orig(self, side, m, timeStacker);
@@ -1363,6 +1701,45 @@ public static class LizardHooks
             var num = self.numberOfSprites;
             for (var i = 0; i < num; i++)
                 sprs[self.startSprite + i].color = c;
+        }
+        else if (self.lGraphics is AlphaOrangeGraphics g2)
+        {
+            var headColor = g2.HeadColor(timeStacker);
+            var scls = self.scales;
+            var sprs = sLeaser.sprites;
+            var l1 = scls.GetLength(1);
+            var l0 = scls.GetLength(0);
+            for (var i = 0; i < l1; i++)
+            {
+                for (var j = 0; j < l0; j++)
+                    sprs[self.ScaleSprite(j, i)].color = headColor;
+            }
+        }
+    }
+
+    internal static void On_WingScales_ApplyPalette(On.LizardCosmetics.WingScales.orig_ApplyPalette orig, WingScales self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        orig(self, sLeaser, rCam, palette);
+        if (self.lGraphics is HunterSeekerGraphics g)
+        {
+            var c = g.BodyColor(1f);
+            var sprs = sLeaser.sprites;
+            var num = self.numberOfSprites;
+            for (var i = 0; i < num; i++)
+                sprs[self.startSprite + i].color = c;
+        }
+        else if (self.lGraphics is AlphaOrangeGraphics g2)
+        {
+            var headColor = g2.HeadColor(1f);
+            var scls = self.scales;
+            var sprs = sLeaser.sprites;
+            var l1 = scls.GetLength(1);
+            var l0 = scls.GetLength(0);
+            for (var i = 0; i < l1; i++)
+            {
+                for (var j = 0; j < l0; j++)
+                    sprs[self.ScaleSprite(j, i)].color = headColor;
+            }
         }
     }
 
@@ -1416,6 +1793,22 @@ public static class LizardHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook YellowAI.Update! (part 3)");
+        c.Index = 0;
+        if (c.TryGotoNext(MoveType.After,
+            s_MatchLdloc_OutLoc1,
+            s_MatchCallOrCallvirt_Any,
+            s_MatchLdfld_AbstractCreature_creatureTemplate,
+            s_MatchLdfld_CreatureTemplate_type,
+            s_MatchLdsfld_CreatureTemplate_Type_YellowLizard)
+         && c.TryGotoNext(
+            s_MatchBrfalse_Any))
+        {
+            c.Emit(OpCodes.Ldarg_0)
+             .Emit(OpCodes.Ldloc, s_loc1)
+             .EmitDelegate((bool flag, YellowAI self, int i) => flag || (self is not PolliwogCommunication && self.lizard.room.abstractRoom.creatures[i].creatureTemplate.type == CreatureTemplateType.AlphaOrange));
+        }
+        else
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook YellowAI.Update! (part 4)");
     }
 
     internal static void On_YellowPack_FindLeader(On.YellowAI.YellowPack.orig_FindLeader orig, YellowAI.YellowPack self)

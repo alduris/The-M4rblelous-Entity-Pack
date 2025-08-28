@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class MiniScutigeraGraphics : CentipedeGraphics
 {
     public MiniScutigeraGraphics(MiniScutigera ow) : base(ow)
@@ -29,5 +29,15 @@ public class MiniScutigeraGraphics : CentipedeGraphics
                     spr.element = Futile.atlasManager.GetElementWithName("ScutigeraBellyShell");
             }
         }
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        var ar = new Color[centipede.bodyChunks.Length];
+        for (var i = 0; i < ar.Length; i++)
+            ar[i] = sLeaser.sprites[ShellSprite(i, 0)].color;
+        base.ApplyPalette(sLeaser, rCam, palette);
+        for (var i = 0; i < ar.Length; i++)
+            sLeaser.sprites[ShellSprite(i, 0)].color = ar[i];
     }
 }

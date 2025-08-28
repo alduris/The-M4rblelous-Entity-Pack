@@ -7,7 +7,7 @@ using UnityEngine;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class ChipChopCritob : Critob
 {
     internal ChipChopCritob() : base(CreatureTemplateType.ChipChop)

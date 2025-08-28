@@ -3,7 +3,7 @@ using LizardCosmetics;
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class WaterSpitterGraphics : LizardGraphics
 {
     public WaterSpitterGraphics(WaterSpitter ow) : base(ow)
@@ -30,6 +30,19 @@ public class WaterSpitterGraphics : LizardGraphics
             var sprites = sLeaser.sprites;
             for (var i = 7; i < 11; i++)
                 sprites[i + 9].color = Color.Lerp(palette.waterSurfaceColor1, Color.white, .1f);
+        }
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        base.ApplyPalette(sLeaser, rCam, palette);
+        if (!debugVisualization)
+        {
+            var sprites = sLeaser.sprites;
+            for (var i = 7; i < 11; i++)
+                sprites[i + 9].color = Color.Lerp(palette.waterSurfaceColor1, Color.white, .1f);
+            if (lizard.rotModule is not null && lizard.LizardState.rotType == LizardState.RotType.Full)
+                sLeaser.sprites[SpriteHeadStart + 4].color = lizard.rotModule.rotColor;
         }
     }
 

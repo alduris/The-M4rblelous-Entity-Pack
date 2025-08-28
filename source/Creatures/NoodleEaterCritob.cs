@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class NoodleEaterCritob : Critob, ISandboxHandler
 {
     internal NoodleEaterCritob() : base(CreatureTemplateType.NoodleEater)

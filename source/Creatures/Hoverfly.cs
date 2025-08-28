@@ -5,7 +5,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class Hoverfly : InsectoidCreature, Weapon.INotifyOfFlyingWeapons
 {
     public record struct IndividualVariations(float BodyBonus, float SoundPitchBonus, float DefaultWingDeployment, float SmallWingBonus, float BigWingBonus, int WingVar, Color Color);

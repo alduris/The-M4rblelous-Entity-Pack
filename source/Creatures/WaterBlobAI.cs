@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class WaterBlobAI : ArtificialIntelligence, IUseARelationshipTracker
 {
     public class Behavior(string value, bool register = false) : ExtEnum<Behavior>(value, register)

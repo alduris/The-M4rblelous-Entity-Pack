@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class MiniFlyingBigEel : BigEel
 {
     public MiniFlyingBigEel(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

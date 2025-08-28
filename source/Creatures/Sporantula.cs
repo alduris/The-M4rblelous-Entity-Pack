@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class Sporantula : BigSpider
 {
     public Sporantula(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)

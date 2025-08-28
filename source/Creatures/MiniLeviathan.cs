@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class MiniLeviathan : BigEel
 {
     public static Color LeviColor = Ext.MenuGrey;

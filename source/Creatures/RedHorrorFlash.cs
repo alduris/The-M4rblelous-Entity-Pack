@@ -2,7 +2,7 @@
 using MoreSlugcats;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class RedHorrorFlash(Vector2 pos, float size) : SingularityBomb.SparkFlash(pos, size, Color.blue)
 {
     public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)

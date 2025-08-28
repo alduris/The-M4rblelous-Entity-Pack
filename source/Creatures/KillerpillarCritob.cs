@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using System;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class KillerpillarCritob : Critob, ISandboxHandler
 {
     internal KillerpillarCritob() : base(CreatureTemplateType.Killerpillar)

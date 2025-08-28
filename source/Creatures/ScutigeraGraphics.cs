@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class ScutigeraGraphics : CentipedeGraphics
 {
     public ScutigeraGraphics(Scutigera ow) : base(ow)
@@ -26,6 +26,16 @@ public class ScutigeraGraphics : CentipedeGraphics
             wl[j] = Mathf.Lerp(3f, Custom.LerpMap(centipede.size, .5f, 1f, 60f, 80f), Mathf.Max(num2, num3) - Mathf.Sin(num * Mathf.PI) * .25f);
         }
         Random.state = state;
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        var ar = new Color[centipede.bodyChunks.Length];
+        for (var i = 0; i < ar.Length; i++)
+            ar[i] = sLeaser.sprites[ShellSprite(i, 0)].color;
+        base.ApplyPalette(sLeaser, rCam, palette);
+        for (var i = 0; i < ar.Length; i++)
+            sLeaser.sprites[ShellSprite(i, 0)].color = ar[i];
     }
 
     public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)

@@ -2,7 +2,7 @@
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class BouncingBall : Snail
 {
     public float Alpha = 1f, LastAlpha = 1f, Consciousness, Lerper;

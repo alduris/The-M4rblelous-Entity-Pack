@@ -7,7 +7,7 @@ using UnityEngine;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class WaterBlobCritob : Critob
 {
     internal WaterBlobCritob() : base(CreatureTemplateType.WaterBlob)

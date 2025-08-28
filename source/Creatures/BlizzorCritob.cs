@@ -8,7 +8,7 @@ using RWCustom;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 sealed class BlizzorCritob : Critob
 {
     internal BlizzorCritob() : base(CreatureTemplateType.Blizzor)

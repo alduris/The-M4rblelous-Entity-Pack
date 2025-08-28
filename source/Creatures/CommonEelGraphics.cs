@@ -3,7 +3,7 @@ using UnityEngine;
 using RWCustom;
 
 namespace LBMergedMods.Creatures;
-//CHK
+
 public class CommonEelGraphics : LizardGraphics
 {
     public CommonEelGraphics(CommonEel ow) : base(ow)
@@ -102,7 +102,70 @@ public class CommonEelGraphics : LizardGraphics
             }
             var vertCols = tail.verticeColors;
             var l = vertCols.Length;
-            if (Mathf.Sign(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, timeStacker)) == 1)
+            if (Math.Sign(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, timeStacker)) == 1)
+            {
+                for (var j = 0; j < vertCols.Length; j++)
+                {
+                    if (j % 2 == 1)
+                        vertCols[j] = Color.Lerp(ef, blackColor, .6f + darkness);
+                    else
+                        vertCols[j] = blackColor;
+                }
+                if (1 < l)
+                {
+                    vertCols[1] = blackColor;
+                    if (3 < l)
+                    {
+                        vertCols[3] = Color.Lerp(ef, blackColor, .9f + darkness);
+                        if (5 < l)
+                        {
+                            vertCols[5] = Color.Lerp(ef, blackColor, .8f + darkness);
+                            if (7 < l)
+                                vertCols[7] = Color.Lerp(ef, blackColor, .7f + darkness);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (var j = 0; j < vertCols.Length; j++)
+                {
+                    if (j % 2 == 0)
+                        vertCols[j] = Color.Lerp(ef, blackColor, .6f + darkness);
+                    else
+                        vertCols[j] = blackColor;
+                }
+                if (0 < l)
+                {
+                    vertCols[0] = blackColor;
+                    if (2 < l)
+                    {
+                        vertCols[2] = Color.Lerp(ef, blackColor, .9f + darkness);
+                        if (4 < l)
+                        {
+                            vertCols[4] = Color.Lerp(ef, blackColor, .8f + darkness);
+                            if (6 < l)
+                                vertCols[6] = Color.Lerp(ef, blackColor, .7f + darkness);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+    {
+        base.ApplyPalette(sLeaser, rCam, palette);
+        if (!debugVisualization && lizard is CommonEel eel)
+        {
+            var sprites = sLeaser.sprites;
+            var ef = effectColor;
+            var blackColor = palette.blackColor;
+            var darkness = palette.darkness * .075f;
+            sprites[SpriteHeadStart + 4].color = eel.dead ? blackColor : Color.Lerp(ef, blackColor, darkness);
+            var vertCols = (sprites[SpriteTail] as TriangleMesh)!.verticeColors;
+            var l = vertCols.Length;
+            if (Math.Sign(Mathf.Lerp(lastHeadDepthRotation, headDepthRotation, 1f)) == 1)
             {
                 for (var j = 0; j < vertCols.Length; j++)
                 {

@@ -5,11 +5,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace LBMergedMods.Creatures;
-/*TODO:
- * NVst port + finish
- * 
- * SDv make + echo color fix
- */
 
 public class Xylo : Creature
 {

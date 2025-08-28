@@ -6,7 +6,7 @@ using UnityEngine;
 using Fisobs.Sandbox;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class PolliwogCritob : Critob
 {
     internal PolliwogCritob() : base(CreatureTemplateType.Polliwog)

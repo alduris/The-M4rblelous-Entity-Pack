@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using DevInterface;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 sealed class MoleSalamanderCritob : Critob
 {
     internal MoleSalamanderCritob() : base(CreatureTemplateType.MoleSalamander)

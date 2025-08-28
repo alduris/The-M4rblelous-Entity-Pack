@@ -3,7 +3,7 @@ using RWCustom;
 using Watcher;
 
 namespace LBMergedMods.Creatures;
-// CHK
+
 public class Polliwog : Lizard
 {
     public Polliwog(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
