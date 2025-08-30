@@ -42,7 +42,7 @@ public class M4RJawsAI : ArtificialIntelligence, IUseARelationshipTracker, ILook
     public virtual float Disencouraged
     {
         get => MyDisencouragedTracker.Disencouraged;
-        set => MyDisencouragedTracker.Disencouraged = value;
+		set => MyDisencouragedTracker.Disencouraged = creature.abstractAI is M4RJawsAbstractAI ai && ai.AllowedNodes.Count > 0 ? value : 0f;
     }
 
     public M4RJawsAI(AbstractCreature creature, World world) : base(creature, world)
