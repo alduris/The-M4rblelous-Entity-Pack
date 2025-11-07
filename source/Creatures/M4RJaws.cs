@@ -967,7 +967,7 @@ public class M4RJaws : Creature
             return;
         if (JawOpen > .1f && !dead && grasps[0] is null)
             rm.PlaySound(NewSoundID.M4R_DoubleJaw_Hiss, Head, false, .7f, 1.5f);
-        AI?.Disencouraged += (damage * .25f + stunBonus * .015f) * (rm.game.StoryCharacter == SlugcatStats.Name.Yellow ? 1.5f : 1f);
+        if (AI != null) AI.Disencouraged += (damage * .25f + stunBonus * .015f) * (rm.game.StoryCharacter == SlugcatStats.Name.Yellow ? 1.5f : 1f);
         base.Violence(source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
     }
 
