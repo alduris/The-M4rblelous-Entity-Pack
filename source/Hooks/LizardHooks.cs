@@ -15,6 +15,8 @@ namespace LBMergedMods.Hooks;
 
 public static class LizardHooks
 {
+    internal static bool On_Lizard_Swimmer_get(Func<Lizard, bool> orig, Lizard self) => orig(self) ||  self is Polliwog or MoleSalamander or CommonEel;
+
     internal static void IL_Antennae_ctor(ILContext il)
     {
         var c = new ILCursor(il);
@@ -297,32 +299,6 @@ public static class LizardHooks
     internal static void IL_Lizard_SwimBehavior(ILContext il)
     {
         var c = new ILCursor(il);
-        if (c.TryGotoNext(
-            s_MatchLdcI4_1,
-            s_MatchStloc_OutLoc1))
-        {
-            var l = il.Body.Variables[s_loc1];
-            c.Emit(OpCodes.Ldarg_0)
-             .Emit(OpCodes.Ldloc, l)
-             .EmitDelegate((Lizard self, bool flag) => self is not WaterSpitter and not Polliwog and not MoleSalamander and not CommonEel && flag);
-            c.Emit(OpCodes.Stloc, l);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior! (part 1)");
-        if (c.TryGotoNext(
-            s_MatchLdarg_0,
-            s_MatchCallOrCallvirt_Creature_get_Template,
-            s_MatchLdfld_CreatureTemplate_type,
-            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
-            s_MatchCall_Any,
-            s_MatchBrtrue_OutLabel))
-        {
-            c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((Lizard self) => self is WaterSpitter or Polliwog or MoleSalamander or CommonEel);
-            c.Emit(OpCodes.Brtrue, s_label);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior! (part 2)");
         if (c.TryGotoNext(MoveType.After,
             s_MatchRet))
         {
@@ -335,7 +311,7 @@ public static class LizardHooks
             c.Emit(OpCodes.Ret);
         }
         else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior! (part 3)");
+            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Lizard.SwimBehavior!");
     }
 
     internal static void On_LizardAI_BitCreature(On.LizardAI.orig_BitCreature orig, LizardAI self, BodyChunk chunk)
@@ -1098,57 +1074,12 @@ public static class LizardHooks
     internal static void IL_LizardGraphics_Update(ILContext il)
     {
         var c = new ILCursor(il);
-        for (var i = 1; i <= 2; i++)
-        {
-            if (c.TryGotoNext(
-                s_MatchLdarg_0,
-                s_MatchLdfld_LizardGraphics_lizard,
-                s_MatchCallOrCallvirt_Creature_get_Template,
-                s_MatchLdfld_CreatureTemplate_type,
-                s_MatchLdsfld_CreatureTemplate_Type_Salamander,
-                s_MatchCall_Any,
-                s_MatchBrtrue_OutLabel))
-            {
-                c.Emit(OpCodes.Ldarg_0)
-                 .EmitDelegate((LizardGraphics self) => self is PolliwogGraphics or MoleSalamanderGraphics or CommonEelGraphics);
-                c.Emit(OpCodes.Brtrue, s_label);
-                c.Index += 7; // arbitrary num
-            }
-            else
-                LBMergedModsPlugin.s_logger.LogError($"Couldn't ILHook LizardGraphics.Update! (part {i})");
-        }
-        var label2 = il.DefineLabel();
-        if (c.TryGotoNext(MoveType.After,
-            s_MatchLdarg_0,
-            s_MatchLdfld_LizardGraphics_lizard,
-            s_MatchCallOrCallvirt_Creature_get_Template,
-            s_MatchLdfld_CreatureTemplate_type,
-            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
-            s_MatchCall_Any,
-            s_MatchBrfalse_Any)
-        && label2 is not null)
-        {
-            label2.Target = c.Next;
-            c.Index -= 6;
-            c.EmitDelegate((LizardGraphics self) => self is PolliwogGraphics or MoleSalamanderGraphics or CommonEelGraphics);
-            c.Emit(OpCodes.Brtrue, label2)
-             .Emit(OpCodes.Ldarg_0);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook LizardGraphics.Update! (part 3)");
-        c.Index = 0;
         var hsg = il.Import(typeof(HunterSeekerGraphics));
         for (var i = 0; i < 2; i++)
         {
             var label = il.DefineLabel();
-            if (c.TryGotoNext(MoveType.After,
-                s_MatchLdarg_0,
-                s_MatchLdfld_LizardGraphics_lizard,
-                s_MatchCallOrCallvirt_Creature_get_Template,
-                s_MatchLdfld_CreatureTemplate_type,
-                s_MatchLdsfld_CreatureTemplate_Type_WhiteLizard,
-                s_MatchCall_Any,
-                s_MatchBrfalse_Any))
+            if (c.TryGotoNext(MoveType.After, s_MatchLdsfld_CreatureTemplate_Type_WhiteLizard)
+                && c.TryGotoNext(MoveType.After, s_MatchBrfalse_Any))
             {
                 label.Target = c.Next;
                 c.Index -= 6;
@@ -1159,28 +1090,8 @@ public static class LizardHooks
                     c.Index += 12;
             }
             else
-                LBMergedModsPlugin.s_logger.LogError($"Couldn't ILHook LizardGraphics.Update! (part {i + 4})");
+                LBMergedModsPlugin.s_logger.LogError($"Couldn't ILHook LizardGraphics.Update! (part {i})");
         }
-    }
-
-    internal static void IL_LizardGraphics_UpdateTailSegment(ILContext il)
-    {
-        var c = new ILCursor(il);
-        if (c.TryGotoNext(
-            s_MatchLdarg_0,
-            s_MatchLdfld_LizardGraphics_lizard,
-            s_MatchCallOrCallvirt_Creature_get_Template,
-            s_MatchLdfld_CreatureTemplate_type,
-            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
-            s_MatchCall_Any,
-            s_MatchBrtrue_OutLabel))
-        {
-            c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((LizardGraphics self) => self is PolliwogGraphics or MoleSalamanderGraphics or CommonEelGraphics);
-            c.Emit(OpCodes.Brtrue, s_label);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook LizardGraphics.UpdateTailSegment!");
     }
 
     internal static void On_LizardGraphics_WhiteFlicker(On.LizardGraphics.orig_WhiteFlicker orig, LizardGraphics self, int fl)
@@ -1519,22 +1430,6 @@ public static class LizardHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook LizardAI.LurkTracker.LurkPosScore! (part 1)");
-        if (c.TryGotoNext(
-            s_MatchLdarg_0,
-            s_MatchLdfld_LizardAI_LurkTracker_lizard,
-            s_MatchCallOrCallvirt_Creature_get_Template,
-            s_MatchLdfld_CreatureTemplate_type,
-            s_MatchLdsfld_CreatureTemplate_Type_Salamander,
-            s_MatchCall_Any,
-            s_MatchBrtrue_OutLabel))
-        {
-            ++c.Index;
-            c.EmitDelegate((LizardAI.LurkTracker self) => self.lizard is Polliwog or MoleSalamander or CommonEel);
-            c.Emit(OpCodes.Brtrue, s_label)
-             .Emit(OpCodes.Ldarg_0);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook LizardAI.LurkTracker.LurkPosScore! (part 2)");
     }
 
     internal static float On_LurkTracker_Utility(On.LizardAI.LurkTracker.orig_Utility orig, LizardAI.LurkTracker self)
@@ -1785,30 +1680,6 @@ public static class LizardHooks
         }
         else
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook YellowAI.Update! (part 2)");
-        if (c.TryGotoNext(MoveType.After,
-            s_MatchLdsfld_CreatureTemplate_Type_YellowLizard))
-        {
-            c.Emit(OpCodes.Ldarg_0)
-             .EmitDelegate((CreatureTemplate.Type type, YellowAI self) => self is PolliwogCommunication ? CreatureTemplateType.Polliwog : type);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook YellowAI.Update! (part 3)");
-        c.Index = 0;
-        if (c.TryGotoNext(MoveType.After,
-            s_MatchLdloc_OutLoc1,
-            s_MatchCallOrCallvirt_Any,
-            s_MatchLdfld_AbstractCreature_creatureTemplate,
-            s_MatchLdfld_CreatureTemplate_type,
-            s_MatchLdsfld_CreatureTemplate_Type_YellowLizard)
-         && c.TryGotoNext(
-            s_MatchBrfalse_Any))
-        {
-            c.Emit(OpCodes.Ldarg_0)
-             .Emit(OpCodes.Ldloc, s_loc1)
-             .EmitDelegate((bool flag, YellowAI self, int i) => flag || (self is not PolliwogCommunication && self.lizard.room.abstractRoom.creatures[i].creatureTemplate.type == CreatureTemplateType.AlphaOrange));
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook YellowAI.Update! (part 4)");
     }
 
     internal static void On_YellowPack_FindLeader(On.YellowAI.YellowPack.orig_FindLeader orig, YellowAI.YellowPack self)

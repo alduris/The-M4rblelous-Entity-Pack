@@ -142,9 +142,8 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         IL.Lizard.SwimBehavior += IL_Lizard_SwimBehavior;
         On.LizardPather.HeuristicForCell += On_LizardPather_HeuristicForCell;
         IL.Lizard.EnterAnimation += IL_Lizard_EnterAnimation;
-        IL.LizardGraphics.UpdateTailSegment += IL_LizardGraphics_UpdateTailSegment;
         IL.LizardGraphics.Update += IL_LizardGraphics_Update;
-        IL.Menu.MultiplayerMenu.ctor += IL_MultiplayerMenu_ctor;
+        On.Menu.MultiplayerMenu.FindAllLevels += On_MultiplayerMenu_FindAllLevels;
         IL.DaddyLongLegs.ctor += IL_DaddyLongLegs_ctor;
         On.DaddyLongLegs.InitiateGraphicsModule += On_DaddyLongLegs_InitiateGraphicsModule;
         On.DaddyGraphics.Eye.RenderSlits += On_Eye_RenderSlits;
@@ -261,7 +260,6 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.HazerGraphics.ctor += On_HazerGraphics_ctor;
         IL.HazerGraphics.ApplyPalette += IL_HazerGraphics_ApplyPalette;
         On.Hazer.Update += On_Hazer_Update;
-        IL.DevInterface.ObjectsPage.AssembleObjectPages += IL_ObjectsPage_AssembleObjectPages;
         On.JetFish.ctor += On_JetFish_ctor;
         On.EggBugAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_EggBugAI_IUseARelationshipTracker_UpdateDynamicRelationship;
         On.BigNeedleWormAI.IUseARelationshipTracker_UpdateDynamicRelationship += On_BigNeedleWormAI_IUseARelationshipTracker_UpdateDynamicRelationship;
@@ -411,6 +409,7 @@ public sealed class LBMergedModsPlugin : BaseUnityPlugin
         On.LizardCosmetics.WingScales.ApplyPalette += On_WingScales_ApplyPalette;
         On.Lizard.EnterAnimation += On_Lizard_EnterAnimation;
         IL.LizardCosmetics.Antennae.ctor += IL_Antennae_ctor;
+        new Hook(typeof(Lizard).GetProperty(nameof(Lizard.Swimmer)).GetGetMethod(), On_Lizard_Swimmer_get);
         Content.Register(new WaterBlobCritob(),
                         new BouncingBallCritob(),
                         new HazerMomCritob(),

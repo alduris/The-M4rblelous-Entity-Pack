@@ -37,34 +37,6 @@ public static class DevtoolsHooks
         return res;
     }
 
-    internal static void IL_ObjectsPage_AssembleObjectPages(ILContext il)
-    {
-        ILLabel? label = null;
-        var c = new ILCursor(il);
-        if (c.TryGotoNext(
-            s_MatchLdarg_0,
-            s_MatchLdcI4_1,
-            s_MatchLdarg_0))
-        {
-            label = c.MarkLabel();
-            c.Index = 0;
-            if (c.TryGotoNext(MoveType.After,
-                s_MatchLdcI4_1,
-                s_MatchAdd,
-                s_MatchStloc_OutLoc1))
-            {
-                c.Emit(OpCodes.Ldarg_0)
-                 .Emit(OpCodes.Ldloc, il.Body.Variables[s_loc1])
-                 .EmitDelegate((ObjectsPage self, int num3) => num3 >= self.placedObjectTypes.Length);
-                c.Emit(OpCodes.Brtrue, label);
-            }
-            else
-                LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ObjectsPage.AssembleObjectPages! (part 2)");
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ObjectsPage.AssembleObjectPages! (part 1)");
-    }
-
     internal static void On_ObjectsPage_CreateObjRep(On.DevInterface.ObjectsPage.orig_CreateObjRep orig, ObjectsPage self, PlacedObject.Type tp, PlacedObject pObj)
     {
         if (tp == PlacedObjectType.ThornyStrawberry || tp == PlacedObjectType.LittleBalloon || tp == PlacedObjectType.BouncingMelon || tp == PlacedObjectType.HazerMom || tp == PlacedObjectType.AlbinoHazerMom || tp == PlacedObjectType.DeadHazerMom || tp == PlacedObjectType.DeadAlbinoHazerMom || tp == PlacedObjectType.DeadAlbinoFormHazer || tp == PlacedObjectType.AlbinoFormHazer || tp == PlacedObjectType.Physalis || tp == PlacedObjectType.LimeMushroom || tp == PlacedObjectType.MarineEye || tp == PlacedObjectType.StarLemon || tp == PlacedObjectType.DendriticNeuron || tp == PlacedObjectType.SporeProjectile || tp == PlacedObjectType.XyloNest || tp == PlacedObjectType.AltXyloNest || tp == PlacedObjectType.YellowXyloNest || tp == PlacedObjectType.XyloWorm || tp == PlacedObjectType.BigXyloWorm || tp == PlacedObjectType.DeadXyloWorm || tp == PlacedObjectType.DeadBigXyloWorm || tp == PlacedObjectType.FumeFruit || tp == PlacedObjectType.Durian)

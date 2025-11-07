@@ -222,7 +222,8 @@ static class InternalMatch
         s_MatchStloc_InLoc1 = MatchStloc_InLoc1,
         s_MatchStloc_OutLoc1 = MatchStloc_OutLoc1,
         s_MatchStloc_OutLoc2 = MatchStloc_OutLoc2,
-        s_MatchSub = MatchSub;
+        s_MatchSub = MatchSub,
+        s_MatchCall_Lizard_Swimmer_get = MatchCall_Lizard_Swimmer_get;
 
     internal static void Dispose()
     {
@@ -433,6 +434,7 @@ static class InternalMatch
         s_MatchStloc_OutLoc1 = null!;
         s_MatchStloc_OutLoc2 = null!;
         s_MatchSub = null!;
+        s_MatchCall_Lizard_Swimmer_get = null!;
     }
 
     internal static bool MatchAdd(Instruction x) => x.MatchAdd();
@@ -826,4 +828,6 @@ static class InternalMatch
     internal static bool MatchStloc_OutLoc2(Instruction x) => x.MatchStloc(out s_loc2);
 
     internal static bool MatchSub(Instruction x) => x.MatchSub();
+
+    internal static bool MatchCall_Lizard_Swimmer_get(Instruction x) => x.MatchCallOrCallvirt(typeof(LizardGraphics).GetProperty(nameof(Lizard.Swimmer)).GetGetMethod());
 }

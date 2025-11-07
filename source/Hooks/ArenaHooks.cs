@@ -67,61 +67,11 @@ public static class ArenaHooks
             LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook ExitManager.Update!");
     }
 
-    internal static void IL_MultiplayerMenu_ctor(ILContext il)
+    internal static List<string> On_MultiplayerMenu_FindAllLevels(On.Menu.MultiplayerMenu.orig_FindAllLevels orig)
     {
-        var c = new ILCursor(il);
-        if (c.TryGotoNext(MoveType.After,
-            s_MatchLdloc_OutLoc1,
-            s_MatchLdloc_OutLoc2,
-            s_MatchLdelemRef,
-            s_MatchLdloc_InLoc1,
-            s_MatchLdloc_InLoc2,
-            s_MatchLdelemRef,
-            s_MatchCallOrCallvirt_string_get_Length,
-            s_MatchLdcI4_4,
-            s_MatchSub,
-            s_MatchLdcI4_4,
-            s_MatchCallOrCallvirt_string_Substring_int_int,
-            s_MatchLdstr__txt,
-            s_MatchCall_string_op_Equality_string_string,
-            s_MatchBrfalse_OutLabel))
-        {
-            var stringIneq = il.Import(typeof(string).GetMethod("op_Inequality", [typeof(string), typeof(string)]));
-            var substring = il.Import(s_string_Substring_int_int);
-            var vars = il.Body.Variables;
-            VariableDefinition var0 = vars[s_loc1],
-                var2 = vars[s_loc2];
-            c.Emit(OpCodes.Ldloc, var0)
-             .Emit(OpCodes.Ldloc, var2)
-             .Emit(OpCodes.Ldelem_Ref)
-             .Emit(OpCodes.Ldloc, var0)
-             .Emit(OpCodes.Ldloc, var2)
-             .Emit(OpCodes.Ldelem_Ref)
-             .Emit<string>(OpCodes.Callvirt, "get_Length")
-             .Emit(OpCodes.Ldc_I4, 18)
-             .Emit(OpCodes.Sub)
-             .Emit(OpCodes.Ldc_I4, 18)
-             .Emit(OpCodes.Callvirt, substring)
-             .Emit(OpCodes.Ldstr, "_jellylonglegs.txt")
-             .Emit(OpCodes.Call, stringIneq)
-             .Emit(OpCodes.Brfalse, s_label)
-             .Emit(OpCodes.Ldloc, var0)
-             .Emit(OpCodes.Ldloc, var2)
-             .Emit(OpCodes.Ldelem_Ref)
-             .Emit(OpCodes.Ldloc, var0)
-             .Emit(OpCodes.Ldloc, var2)
-             .Emit(OpCodes.Ldelem_Ref)
-             .Emit<string>(OpCodes.Callvirt, "get_Length")
-             .Emit(OpCodes.Ldc_I4, 18)
-             .Emit(OpCodes.Sub)
-             .Emit(OpCodes.Ldc_I4, 18)
-             .Emit(OpCodes.Callvirt, substring)
-             .Emit(OpCodes.Ldstr, "_seedbats.txt")
-             .Emit(OpCodes.Call, stringIneq)
-             .Emit(OpCodes.Brfalse, s_label);
-        }
-        else
-            LBMergedModsPlugin.s_logger.LogError("Couldn't ILHook Menu.MultiplayerMenu.ctor!");
+        var levels = orig();
+        levels.RemoveAll(x => x.EndsWith("_jellylonglegs") || x.EndsWith("_seedbats"));
+        return levels;
     }
 
     internal static MultiplayerUnlocks.SandboxUnlockID On_MultiplayerUnlocks_SandboxUnlockForSymbolData(On.MultiplayerUnlocks.orig_SandboxUnlockForSymbolData orig, IconSymbol.IconSymbolData data)
